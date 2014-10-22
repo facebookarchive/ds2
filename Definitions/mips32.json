@@ -1,0 +1,274 @@
+// Copyright 2013-present Facebook. All Rights Reserved.
+{
+    // OABI32
+    "namespace" : "MIPS",
+    "register-sets" : {
+        "gpr" : {
+            "*" : {
+                //
+                // Common to all registers
+                //
+                "bit-size"              : 32,
+                "encoding"              : "int",
+                "format"                : "hex",
+
+                "base-gdb-reg-number"   : 0,
+                "base-gcc-reg-number"   : 0,
+                "base-dwarf-reg-number" : 0
+            },
+
+            "r0"  : {
+                "alternate-name" : "zero"
+            },
+            "r1"  : {
+                "alternate-name" : "at"
+            },
+            "r2"  : {
+                "alternate-name" : "v0"
+            },
+            "r3"  : {
+                "alternate-name" : "v1"
+            },
+            "r4"  : {
+                "alternate-name" : "a0",
+                "generic-name"   : "arg1"
+            },
+            "r5"  : {
+                "alternate-name" : "a1",
+                "generic-name"   : "arg2"
+            },
+            "r6"  : {
+                "alternate-name" : "a2",
+                "generic-name"   : "arg3"
+            },
+            "r7"  : {
+                "alternate-name" : "a3",
+                "generic-name"   : "arg4"
+            },
+            "r8"  : {
+                "alternate-name" : "t0"
+            },
+            "r9"  : {
+                "alternate-name" : "t1"
+            },
+            "r10" : {
+                "alternate-name" : "t2"
+            },
+            "r11" : {
+                "alternate-name" : "t3"
+            },
+            "r12" : {
+                "alternate-name" : "t4"
+            },
+            "r13" : {
+                "alternate-name" : "t5"
+            },
+            "r14" : {
+                "alternate-name" : "t6"
+            },
+            "r15" : {
+                "alternate-name" : "t7"
+            },
+            "r16" : {
+                "alternate-name" : "s0"
+            },
+            "r17" : {
+                "alternate-name" : "s1"
+            },
+            "r18" : {
+                "alternate-name" : "s2"
+            },
+            "r19" : {
+                "alternate-name" : "s3"
+            },
+            "r20" : {
+                "alternate-name" : "s4"
+            },
+            "r21" : {
+                "alternate-name" : "s5"
+            },
+            "r22" : {
+                "alternate-name" : "s6"
+            },
+            "r23" : {
+                "alternate-name" : "s7"
+            },
+            "r24" : {
+                "alternate-name" : "t8"
+            },
+            "r25" : {
+                "alternate-name" : "t9"
+            },
+            "r26" : {
+                "alternate-name" : "k0"
+            },
+            "r27" : {
+                "alternate-name" : "k1"
+            },
+            "r28" : {
+                "alternate-name" : "gp"
+            },
+            "r29" : {
+                "alternate-name" : "sp",
+                "generic-name"   : "sp"
+            },
+            "r30" : {
+                "alternate-name" : "s8",
+                "generic-name"   : "fp"
+            },
+            "r31" : {
+                "alternate-name" : "ra",
+                "generic-name"   : "lr"
+            },
+            "lo" : {
+                "gdb-reg-number" : 33
+            },
+            "hi" : {
+                "gdb-reg-number" : 34
+            },
+            "pc" : {
+                "alternate-name" : "pc",
+                "generic-name"   : "pc",
+                "gdb-reg-number" : 37
+            }
+        },
+
+        "cop0" : {
+            "*" : {
+                "bit-size"             : 32,
+                "encoding"             : "int",
+                "gdb-encoding"         : "int",
+                "format"               : "hex"
+            },
+
+            "status" : {
+                "alternate-name"       : "flags",
+                "generic-name"         : "flags",
+                "gdb-reg-number"       : 32
+            },
+            "badvaddr" : {
+                "gdb-reg-number"       : 35
+            },
+            "cause" : {
+                "gdb-reg-number"       : 36
+            }
+        },
+
+        "fpr" : {
+            "*" : {
+                //
+                // Common to all registers
+                //
+                "bit-size"              : 32,
+                "encoding"              : "ieee-single",
+                "format"                : "float",
+
+                "base-gdb-reg-number"   : 38
+            },
+
+            "f0"  : { },
+            "f1"  : { },
+            "f2"  : { },
+            "f3"  : { },
+            "f4"  : { },
+            "f5"  : { },
+            "f6"  : { },
+            "f7"  : { },
+            "f8"  : { },
+            "f9"  : { },
+            "f10"  : { },
+            "f11"  : { },
+            "f12"  : { },
+            "f13"  : { },
+            "f14"  : { },
+            "f15"  : { },
+            "f16"  : { },
+            "f17"  : { },
+            "f18"  : { },
+            "f19"  : { },
+            "f20"  : { },
+            "f21"  : { },
+            "f22"  : { },
+            "f23"  : { },
+            "f24"  : { },
+            "f25"  : { },
+            "f26"  : { },
+            "f27"  : { },
+            "f28"  : { },
+            "f29"  : { },
+            "f30"  : { },
+            "f31"  : { },
+
+            "fcsr" : {
+                "encoding"       : "int",
+                "format"         : "hex",
+                "gdb-encoding"   : "int",
+                "gdb-group"      : "float"
+            },
+            "fir" : {
+                "encoding"       : "int",
+                "format"         : "hex",
+                "gdb-encoding"   : "int",
+                "gdb-group"      : "float"
+            }
+        },
+
+        "linux" : {
+            "restart" : {
+                "bit-size"  : 32,
+                "encoding"  : "int",
+                "format"    : "hex",
+                "gdb-group" : "system"
+            }
+        }
+    },
+
+    "gdb-defs" : {
+        "architecture" : "mips",
+        "features"     : [
+            {
+                "filename"   : "mips-core.xml",
+                "identifier" : "org.gnu.gdb.mips.cpu",
+                "contents"   : [
+                    "register-sets:gpr"
+                ]
+            },
+            {
+                "filename"   : "mips-cp0.xml",
+                "identifier" : "org.gnu.gdb.mips.cp0",
+                "contents"   : [
+                    "register-sets:cop0"
+                ]
+            },
+            {
+                "filename"   : "mips-fpu.xml",
+                "identifier" : "org.gnu.gdb.mips.fpu",
+                "contents"   : [
+                    "register-sets:fpr"
+                ]
+            },
+            {
+                "filename"   : "mips-linux.xml",
+                "identifier" : "org.gnu.gdb.mips.linux",
+                "contents"   : [
+                    "register-sets:linux"
+                ]
+            }
+        ]
+    },
+
+    "lldb-defs" : [
+        {
+            "description" : "General Purpose Registers",
+            "sets"        : [ "gpr" ]
+        },
+        {
+            "description" : "Coprocessor 0 Registers",
+            "sets"        : [ "cop0" ]
+        },
+        {
+            "description" : "Floating Point Registers",
+            "sets"        : [ "fpr" ]
+        }
+    ]
+}

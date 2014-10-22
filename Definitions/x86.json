@@ -1,0 +1,534 @@
+// Copyright 2013-present Facebook. All Rights Reserved.
+{
+    "namespace" : "X86",
+
+    //
+    // This is shared between X86, X86-64 and X32.
+    //
+    "flag-sets" : {
+        "eflags" : {
+            "*" : {
+                "gdb-name" : "i386_eflags",
+                "bit-size" : 32
+            },
+
+            "CF"  : [  0, 1 ],
+            ""    : [  1, 1 ],
+            "PF"  : [  2, 1 ],
+            "AF"  : [  4, 1 ],
+            "ZF"  : [  6, 1 ],
+            "SF"  : [  7, 1 ],
+            "TF"  : [  8, 1 ],
+            "IF"  : [  9, 1 ],
+            "DF"  : [ 10, 1 ],
+            "OF"  : [ 11, 1 ],
+            "NT"  : [ 14, 1 ],
+            "RF"  : [ 16, 1 ],
+            "VM"  : [ 17, 1 ],
+            "AC"  : [ 18, 1 ],
+            "VIF" : [ 19, 1 ],
+            "VIP" : [ 20, 1 ],
+            "ID"  : [ 21, 1 ]
+        },
+
+        "mxcsr" : {
+            "*" : {
+                "gdb-name" : "i386_mxcsr",
+                "bit-size" : 32
+            },
+
+            "IE"  : [  0, 1 ],
+            "DE"  : [  1, 1 ],
+            "ZE"  : [  2, 1 ],
+            "OE"  : [  3, 1 ],
+            "UE"  : [  4, 1 ],
+            "PE"  : [  5, 1 ],
+            "DAZ" : [  6, 1 ],
+            "IM"  : [  7, 1 ],
+            "DM"  : [  8, 1 ],
+            "ZM"  : [  9, 1 ],
+            "OM"  : [ 10, 1 ],
+            "UM"  : [ 11, 1 ],
+            "PM"  : [ 12, 1 ],
+            "FZ"  : [ 15, 1 ]
+        }
+    },
+
+    "gdb-vector-set" : {
+        "*" : {
+            "bit-size" : 128
+        },
+
+        "v4f" : {
+            "encoding" : "ieee-single"
+        },
+        "v2d" : {
+            "encoding" : "ieee-double"
+        },
+        "v16i8" : {
+            "encoding"         : "int",
+            "element-bit-size" : 8
+        },
+        "v8i16" : {
+            "encoding"         : "int",
+            "element-bit-size" : 16
+        },
+        "v4i32" : {
+            "encoding"         : "int",
+            "element-bit-size" : 32
+        },
+        "v2i64" : {
+            "encoding"         : "int",
+            "element-bit-size" : 64
+        },
+
+        "vec128" : {
+            "encoding"     : "union",
+            "union-fields" : {
+                "v4_float"  : "v4f",
+                "v2_double" : "v2d",
+                "v16_int8"  : "v16i8",
+                "v8_int16"  : "v8i16",
+                "v4_int32"  : "v4i32",
+                "v2_int64"  : "v2i64",
+                "uint128"   : "uint128"
+            }
+        }
+    },
+
+    //
+    // This is specific to X86-64
+    //
+    "register-sets" : {
+        "gpr" : {
+            "*" : {
+                //
+                // Common to all registers
+                //
+                "bit-size"              : 32,
+                "encoding"              : "int",
+                "format"                : "hex",
+
+                "base-dwarf-reg-number" : 0,
+                "base-gdb-reg-number"   : 0,
+                "dwarf-gcc-alias"       : true,
+
+                "no-gdb-reg-number"     : true,
+
+                "referencing-sets"      : [ "pseudo-gpr16", "pseudo-gpr8h", "pseudo-gpr8l" ]
+            },
+
+            "eax" : {
+                "invalidate-registers" : [ "eax", "ax", "ah", "al" ]
+            },
+            "ebx" : {
+                "dwarf-reg-number"     : 3,
+                "invalidate-registers" : [ "ebx", "bx", "bh", "bl" ]
+            },
+            "ecx" : {
+                "dwarf-reg-number"     : 1,
+                "invalidate-registers" : [ "ecx", "cx", "ch", "cl" ]
+            },
+            "edx" : {
+                "dwarf-reg-number"     : 2,
+                "invalidate-registers" : [ "edx", "dx", "dh", "dl" ]
+            },
+            "esi" : {
+                "invalidate-registers" : [ "esi", "si" ]
+            },
+            "edi" : {
+                "invalidate-registers" : [ "edi", "di" ]
+            },
+            "ebp" : {
+                "alternate-name"       : "fp",
+                "generic-name"         : "fp",
+                "gdb-encoding"         : "data-pointer",
+                "invalidate-registers" : [ "ebp", "bp" ]
+            },
+            "esp" : {
+                "alternate-name"       : "sp",
+                "generic-name"         : "sp",
+                "gdb-encoding"         : "data-pointer",
+                "invalidate-registers" : [ "esp", "sp" ]
+            },
+            "eip" : {
+                "alternate-name"       : "pc",
+                "generic-name"         : "pc",
+                "gdb-encoding"         : "code-pointer"
+            }
+        },
+
+        "pseudo-gpr16" : {
+            "*" : {
+                "private"           : true,
+                "bit-size"          : 16,
+                "encoding"          : "int",
+                "format"            : "hex",
+
+                "parent-set"        : "gpr",
+                "parent-element"    : 0,
+                "referencing-sets"  : [ "gpr", "pseudo-gpr8h", "pseudo-gpr8l" ]
+            },
+
+            "ax" : {
+                "container-registers"  : [ "eax" ],
+                "invalidate-registers" : [ "eax", "ax", "ah", "al" ]
+            },
+            "bx" : {
+                "container-registers"  : [ "ebx" ],
+                "invalidate-registers" : [ "ebx", "bx", "bh", "bl" ]
+            },
+            "cx" : {
+                "container-registers"  : [ "ecx" ],
+                "invalidate-registers" : [ "ecx", "cx", "ch", "cl" ]
+            },
+            "dx" : {
+                "container-registers"  : [ "edx" ],
+                "invalidate-registers" : [ "edx", "dx", "dh", "dl" ]
+            },
+            "si" : {
+                "container-registers"  : [ "esi" ],
+                "invalidate-registers" : [ "esi", "si" ]
+            },
+            "di" : {
+                "container-registers"  : [ "edi" ],
+                "invalidate-registers" : [ "edi", "di" ]
+            },
+            "bp" : {
+                "container-registers"  : [ "ebp" ],
+                "invalidate-registers" : [ "ebp", "bp" ]
+            },
+            "sp" : {
+                "container-registers"  : [ "esp" ],
+                "invalidate-registers" : [ "esp", "sp" ]
+            }
+        },
+
+        "pseudo-gpr8h" : {
+            "*" : {
+                "private"           : true,
+                "bit-size"          : 8,
+                "encoding"          : "int",
+                "format"            : "hex",
+
+                "parent-set"        : "gpr",
+                "parent-element"    : 1,
+                "referencing-sets"  : [ "gpr", "pseudo-gpr16", "pseudo-gpr8l" ]
+            },
+
+            "ah" : {
+                "container-registers"  : [ "eax" ],
+                "invalidate-registers" : [ "eax", "ax", "ah", "al" ]
+            },
+            "bh" : {
+                "container-registers"  : [ "ebx" ],
+                "invalidate-registers" : [ "ebx", "bx", "bh", "bl" ]
+            },
+            "ch" : {
+                "container-registers"  : [ "ecx" ],
+                "invalidate-registers" : [ "ecx", "cx", "ch", "cl" ]
+            },
+            "dh" : {
+                "container-registers"  : [ "edx" ],
+                "invalidate-registers" : [ "edx", "dx", "dh", "dl" ]
+            }
+        },
+
+        "pseudo-gpr8l" : {
+            "*" : {
+                "private"           : true,
+                "bit-size"          : 8,
+                "encoding"          : "int",
+                "format"            : "hex",
+
+                "parent-set"        : "gpr",
+                "parent-element"    : 0,
+                "referencing-sets"  : [ "gpr", "pseudo-gpr16", "pseudo-gpr8h" ]
+            },
+
+            "al" : {
+                "container-registers"  : [ "eax" ],
+                "invalidate-registers" : [ "eax", "ax", "ah", "al" ]
+            },
+            "bl" : {
+                "container-registers"  : [ "ebx" ],
+                "invalidate-registers" : [ "ebx", "bx", "bh", "bl" ]
+            },
+            "cl" : {
+                "container-registers"  : [ "ecx" ],
+                "invalidate-registers" : [ "ecx", "cx", "ch", "cl" ]
+            },
+            "dl" : {
+                "container-registers"  : [ "edx" ],
+                "invalidate-registers" : [ "edx", "dx", "dh", "dl" ]
+            }
+        },
+
+        "eflags" : {
+            "*" : {
+                "bit-size" : 32,
+                "encoding" : "int",
+                "format"   : "hex"
+            },
+
+            "eflags" : {
+                "alternate-name" : "flags",
+                "generic-name"   : "flags",
+                "gdb-encoding"   : "i386_eflags",
+                "gdb-reg-number" : 17
+            }
+        },
+
+        "segs" : {
+            "*" : {
+                "bit-size"            : 32,
+                "encoding"            : "int",
+                "format"              : "hex",
+
+                "base-gdb-reg-number" : 18,
+                "no-gdb-reg-number"   : true
+            },
+
+            "cs" : { },
+            "ss" : { },
+            "ds" : { },
+            "es" : { },
+            "fs" : { },
+            "gs" : { }
+        },
+
+        "x87-regs" : {
+            "*" : {
+                "bit-size"              : 80,
+                "encoding"              : "ieee-extended",
+                "format"                : "float",
+                "gdb-encoding"          : "x87-extension",
+
+                "base-dwarf-reg-number" : 33,
+                "base-gdb-reg-number"   : 24,
+                "dwarf-gcc-alias"       : true,
+                "no-gdb-reg-number"     : true
+            },
+
+            "st0" : { "lldb-name" : "stmm0" },
+            "st1" : { "lldb-name" : "stmm1" },
+            "st2" : { "lldb-name" : "stmm2" },
+            "st3" : { "lldb-name" : "stmm3" },
+            "st4" : { "lldb-name" : "stmm4" },
+            "st5" : { "lldb-name" : "stmm5" },
+            "st6" : { "lldb-name" : "stmm6" },
+            "st7" : { "lldb-name" : "stmm7" }
+        },
+
+        "x87-flags" : {
+            "*" : {
+                "bit-size"              : 32,
+                "encoding"              : "int",
+                "format"                : "hex",
+                "gdb-encoding"          : "int",
+                "gdb-group"             : "float",
+
+                "base-gdb-reg-number"   : 32,
+
+                "no-gdb-reg-number"     : true
+            },
+
+            "fctrl" : { },
+            "fstat" : { },
+            "ftag"  : { },
+            "fiseg" : { },
+            "fioff" : { },
+            "foseg" : { },
+            "fooff" : { },
+            "fop"   : { }
+        },
+
+        "sse-flags" : {
+            "mxcsr" : {
+                "bit-size"          : 32,
+                "encoding"          : "int",
+                "format"            : "hex",
+                "gdb-encoding"      : "i386_mxcsr",
+                "gdb-group"         : "vector",
+                "gdb-reg-number"    : 48,
+                "no-gdb-reg-number" : true
+            }
+        },
+
+        "sse-mask" : {
+            "mxcsrmask" : {
+                "bit-size"     : 32,
+                "encoding"     : "int",
+                "format"       : "hex"
+            }
+        },
+
+        "avx-regs" : {
+            "*" : {
+                "bit-size"                : 256,
+                "encoding"                : "int",
+                "format"                  : "vector",
+
+                "base-dwarf-reg-number"   : 17,
+                "base-gdb-reg-number"     : 40,
+                "dwarf-gcc-alias"         : true,
+
+                "referencing-sets"        : [ "sse-regs" ]
+            },
+
+            "ymm0"  : {
+                "invalidate-registers" : [ "ymm0", "xmm0" ]
+            },
+            "ymm1"  : {
+                "invalidate-registers" : [ "ymm1", "xmm1" ]
+            },
+            "ymm2"  : {
+                "invalidate-registers" : [ "ymm2", "xmm2" ]
+            },
+            "ymm3"  : {
+                "invalidate-registers" : [ "ymm3", "xmm3" ]
+            },
+            "ymm4"  : {
+                "invalidate-registers" : [ "ymm4", "xmm4" ]
+            },
+            "ymm5"  : {
+                "invalidate-registers" : [ "ymm5", "xmm5" ]
+            },
+            "ymm6"  : {
+                "invalidate-registers" : [ "ymm6", "xmm6" ]
+            },
+            "ymm7"  : {
+                "invalidate-registers" : [ "ymm7", "xmm7" ]
+            }
+        },
+
+        "sse-regs" : {
+            "*" : {
+                "bit-size"                : 128,
+                "encoding"                : "int",
+                "format"                  : "vector",
+                "gdb-encoding"            : "vec128",
+
+                "explicit-gdb-reg-number" : true,
+                "base-dwarf-reg-number"   : 17,
+                "base-gdb-reg-number"     : 40,
+                "dwarf-gcc-alias"         : true,
+
+                "parent-set"              : "avx-regs",
+                "parent-element"          : 0,
+                "referencing-sets"        : [ "avx-regs" ]
+            },
+
+            "xmm0"  : {
+                "gdb-reg-number"       : 40,
+                "container-registers"  : [ "ymm0" ],
+                "invalidate-registers" : [ "ymm0", "xmm0" ]
+            },
+            "xmm1"  : {
+                "container-registers"  : [ "ymm1" ],
+                "invalidate-registers" : [ "ymm1", "xmm1" ]
+            },
+            "xmm2"  : {
+                "container-registers"  : [ "ymm2" ],
+                "invalidate-registers" : [ "ymm2", "xmm2" ]
+            },
+            "xmm3"  : {
+                "container-registers"  : [ "ymm3" ],
+                "invalidate-registers" : [ "ymm3", "xmm3" ]
+            },
+            "xmm4"  : {
+                "container-registers"  : [ "ymm4" ],
+                "invalidate-registers" : [ "ymm4", "xmm4" ]
+            },
+            "xmm5"  : {
+                "container-registers"  : [ "ymm5" ],
+                "invalidate-registers" : [ "ymm5", "xmm5" ]
+            },
+            "xmm6"  : {
+                "container-registers"  : [ "ymm6" ],
+                "invalidate-registers" : [ "ymm6", "xmm6" ]
+            },
+            "xmm7"  : {
+                "container-registers"  : [ "ymm7" ],
+                "invalidate-registers" : [ "ymm7", "xmm7" ]
+            }
+        },
+
+        "linux-regs" : {
+            "orig_eax" : {
+                "bit-size"       : 32,
+                "encoding"       : "int",
+                "format"         : "hex",
+                "gdb-encoding"   : "int",
+                "gdb-reg-number" : 57
+            }
+        }
+    },
+
+    "gdb-defs" : {
+        "architecture" : "i386:i386",
+        "features"     : [
+            {
+                "filename"      : "i386-core.xml",
+                "identifier"    : "org.gnu.gdb.i386.core",
+                "contents"      : [
+                    "flag-sets:eflags",
+                    "register-sets:gpr",
+                    "register-sets:eflags",
+                    "register-sets:segs",
+                    "register-sets:x87-regs",
+                    "register-sets:x87-flags"
+                ]
+            },
+            {
+                "filename"      : "i386-sse.xml",
+                "identifier"    : "org.gnu.gdb.i386.sse",
+                "contents"      : [
+                    "gdb-vector-set:v4f",
+                    "gdb-vector-set:v2d",
+                    "gdb-vector-set:v16i8",
+                    "gdb-vector-set:v8i16",
+                    "gdb-vector-set:v4i32",
+                    "gdb-vector-set:v2i64",
+                    "gdb-vector-set:vec128",
+                    "flag-sets:mxcsr",
+                    "register-sets:sse-regs",
+                    "register-sets:sse-flags"
+                ]
+            },
+            {
+                "filename"      : "i386-linux.xml",
+                "identifier"    : "org.gnu.gdb.i386.linux",
+                "osabi"         : "linux",
+                "contents"      : [
+                    "register-sets:linux-regs"
+                ]
+            }
+        ]
+    },
+
+    "lldb-defs" : [
+        {
+            "description" : "General Purpose Registers",
+            "sets"        : [
+                "gpr",
+                "eflags",
+                "segs",
+                "pseudo-gpr16",
+                "pseudo-gpr8h",
+                "pseudo-gpr8l"
+            ]
+        },
+        {
+            "description" : "Floating Point Registers",
+            "sets"        : [
+                "x87-flags",
+                "sse-flags",
+                "sse-mask",
+                "x87-regs",
+                "avx-regs",
+                "sse-regs"
+            ]
+        }
+    ]
+}
