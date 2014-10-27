@@ -439,10 +439,6 @@ ErrorCode ELFProcess::enumerateAuxiliaryVector(
   //
   ErrorCode error;
 
-  error = updateInfo();
-  if (error != kSuccess && error != kErrorAlreadyExist)
-    return error;
-
   error = updateAuxiliaryVector();
   if (error != kSuccess && error != kErrorAlreadyExist)
     return error;
