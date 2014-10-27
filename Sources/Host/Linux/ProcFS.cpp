@@ -309,7 +309,7 @@ bool ProcFS::ReadUptime(Uptime &uptime) {
     return true;
   });
 
-  fclose(fp);
+  std::fclose(fp);
   return true;
 }
 
@@ -493,7 +493,7 @@ bool ProcFS::ReadStat(pid_t pid, pid_t tid, Stat &stat) {
     return true;
   });
 
-  fclose(fp);
+  std::fclose(fp);
   return true;
 }
 
@@ -520,8 +520,8 @@ bool ProcFS::ReadProcessIds(pid_t pid, pid_t &ppid, uid_t &uid, uid_t &euid,
 
     return true;
   });
-  std::fclose(fp);
 
+  std::fclose(fp);
   return true;
 }
 
@@ -538,8 +538,8 @@ pid_t ProcFS::GetProcessParentPid(pid_t pid) {
     }
     return true;
   });
-  std::fclose(fp);
 
+  std::fclose(fp);
   return ppid;
 }
 
@@ -675,8 +675,8 @@ bool ProcFS::GetProcessArguments(pid_t pid, StringCollection &args) {
       arg.clear();
     }
   }
-  fclose(fp);
 
+  std::fclose(fp);
   return true;
 }
 
