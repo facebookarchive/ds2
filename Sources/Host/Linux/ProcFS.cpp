@@ -13,8 +13,10 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/ELFSupport.h"
 #include "DebugServer2/HexValues.h"
+#include "DebugServer2/Log.h"
 
 #include <cctype>
+#include <cerrno>
 #include <cstring>
 
 #include <libgen.h>
@@ -155,7 +157,10 @@ int ProcFS::OpenFd(pid_t pid, pid_t tid, char const *what, int mode) {
 FILE *ProcFS::OpenFILE(char const *what, char const *mode) {
   char path[PATH_MAX + 1];
   snprintf(path, PATH_MAX, "/proc/%s", what);
-  return fopen(path, mode);
+  FILE *res = fopen(path, mode);
+  if (res == NULL)
+    DS2LOG(Target, Error, "can't open %s: %s", path, strerror(errno));
+  return res;
 }
 
 FILE *ProcFS::OpenFILE(pid_t pid, char const *what, const char *mode) {
@@ -166,7 +171,10 @@ FILE *ProcFS::OpenFILE(pid_t pid, pid_t tid, char const *what,
                        char const *mode) {
   char path[PATH_MAX + 1];
   MakePath(path, PATH_MAX, pid, tid, what);
-  return fopen(path, mode);
+  FILE *res = fopen(path, mode);
+  if (res == NULL)
+    DS2LOG(Target, Error, "can't open %s: %s", path, strerror(errno));
+  return res;
 }
 
 DIR *ProcFS::OpenDIR(char const *what) {
@@ -734,6 +742,7 @@ std::string ProcFS::GetThreadName(pid_t pid, pid_t tid) {
     return true;
   });
 
+  std::fclose(fp);
   return thread_name;
 }
 
