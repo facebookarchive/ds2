@@ -73,10 +73,10 @@ private:
     sigfillset(&sa.sa_mask);
     sa.sa_flags = SA_SIGINFO | SA_ONSTACK;
 
-    sigaltstack(&ss, NULL);
-    sigaction(SIGILL, &sa, NULL);
-    sigaction(SIGBUS, &sa, NULL);
-    sigaction(SIGSEGV, &sa, NULL);
+    sigaltstack(&ss, nullptr);
+    sigaction(SIGILL, &sa, nullptr);
+    sigaction(SIGBUS, &sa, nullptr);
+    sigaction(SIGSEGV, &sa, nullptr);
   }
 
 public:

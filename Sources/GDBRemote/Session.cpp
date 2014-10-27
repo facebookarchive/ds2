@@ -978,7 +978,7 @@ void Session::Handle_P(ProtocolInterpreter::Handler const &,
 
   ptidptr = strchr(eptr, ';');
 
-  if (_compatMode != kCompatibilityModeLLDB || ptidptr == NULL) {
+  if (_compatMode != kCompatibilityModeLLDB || ptidptr == nullptr) {
     ptidptr = strchr(eptr, '\0');
   }
 

@@ -23,8 +23,8 @@ void Platform::Initialize() {
   // Disable buffering on standard streams. When running on Windows,
   // output seems to be block-buffered, which is a problem if we want
   // to see output as it gets produced.
-  setvbuf(stdout, NULL, _IONBF, 0);
-  setvbuf(stderr, NULL, _IONBF, 0);
+  setvbuf(stdout, nullptr, _IONBF, 0);
+  setvbuf(stderr, nullptr, _IONBF, 0);
 
   // Initialize the socket subsystem.
   WSADATA wsaData;
@@ -81,7 +81,7 @@ const char *Platform::GetHostName() {
     rc = ::gethostname(hostname, sizeof(hostname));
     if (rc == SOCKET_ERROR) {
       hostname[0] = '\0';
-      return NULL;
+      return nullptr;
     }
   }
 
@@ -133,7 +133,7 @@ char const *Platform::GetOSKernelPath() {
     rc = ::GetWindowsDirectoryA(kernelPath, sizeof(kernelPath));
     if (rc == 0 || rc >= sizeof(kernelPath)) {
       kernelPath[0] = '\0';
-      return NULL;
+      return nullptr;
     }
 
     ::strncpy(kernelPath + rc, "\\System32\\ntoskrnl.exe",
@@ -182,7 +182,7 @@ bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
 
   processHandle =
       OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
-  if (processHandle == NULL)
+  if (processHandle == nullptr)
     goto error;
 
   // Get process name.
@@ -245,7 +245,7 @@ bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
   return true;
 
 error:
-  if (processHandle != NULL)
+  if (processHandle != nullptr)
     CloseHandle(processHandle);
   return false;
 }
@@ -291,10 +291,10 @@ const char *Platform::GetSelfExecutablePath() {
   if (filenameStr[0] == '\0') {
     DWORD rc;
 
-    rc = ::GetModuleFileNameA(NULL, filenameStr, sizeof(filenameStr));
+    rc = ::GetModuleFileNameA(nullptr, filenameStr, sizeof(filenameStr));
     if (rc == 0 || rc >= sizeof(filenameStr)) {
       filenameStr[0] = '\0';
-      return NULL;
+      return nullptr;
     }
   }
 

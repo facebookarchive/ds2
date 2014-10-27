@@ -74,13 +74,13 @@ public:
   virtual void ptrace() const;
 
 public:
-  static ds2::Target::Process *Create(int argc, char **argv) { return NULL; }
+  static ds2::Target::Process *Create(int argc, char **argv) { return nullptr; }
   static ds2::Target::Process *
   Create(std::string const &path,
          StringCollection const &args = StringCollection()) {
-    return NULL;
+    return nullptr;
   }
-  static ds2::Target::Process *Attach(ProcessId pid) { return NULL; }
+  static ds2::Target::Process *Attach(ProcessId pid) { return nullptr; }
 
 public:
   virtual ErrorCode getSharedLibraryInfoAddress(Address &address) {

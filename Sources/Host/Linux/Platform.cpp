@@ -37,7 +37,7 @@ char const *Platform::GetOSVendorName() {
     return vendor.c_str();
 
   FILE *fp = std::fopen("/etc/lsb-release", "r");
-  if (fp != NULL) {
+  if (fp != nullptr) {
     ProcFS::ParseKeyValue(fp, 1024, '=',
                           [&](char const *key, char const *value) -> bool {
       if (std::strcmp(key, "DISTRIB_ID") == 0) {

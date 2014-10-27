@@ -186,7 +186,7 @@ bool Socket::wait(int ms) {
   fd_set fds;
   struct timeval tv, *ptv;
   if (ms < 0) {
-    ptv = NULL;
+    ptv = nullptr;
   } else {
     tv.tv_sec = ms / 1000;
     tv.tv_usec = (ms % 1000) * 1000;
@@ -195,7 +195,7 @@ bool Socket::wait(int ms) {
 
   FD_ZERO(&fds);
   FD_SET(_handle, &fds);
-  int nfds = ::select(_handle + 1, &fds, NULL, NULL, ptv);
+  int nfds = ::select(_handle + 1, &fds, nullptr, nullptr, ptv);
   return (nfds == 1);
 #else
   struct pollfd pfd;

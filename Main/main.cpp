@@ -270,7 +270,7 @@ int main(int argc, char **argv) {
 
   if (!opts.getString("log-output").empty()) {
     FILE *stream = fopen(opts.getString("log-output").c_str(), "a");
-    if (stream == NULL) {
+    if (stream == nullptr) {
       DS2LOG(Main, Error, "unable to open %s for writing: %s",
              opts.getString("log-output").c_str(), strerror(errno));
     } else {

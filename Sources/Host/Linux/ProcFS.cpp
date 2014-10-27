@@ -86,13 +86,13 @@ static void MakePath(char *path, size_t maxsize, pid_t pid, char const *what) {
   }
 
   if (pid == 0) {
-    if (what == NULL) {
+    if (what == nullptr) {
       snprintf(path, maxsize, "/proc/self");
     } else {
       snprintf(path, maxsize, "/proc/self/%s", what);
     }
   } else {
-    if (what == NULL) {
+    if (what == nullptr) {
       snprintf(path, maxsize, "/proc/%d", pid);
     } else {
       snprintf(path, maxsize, "/proc/%d/%s", pid, what);
@@ -120,7 +120,7 @@ static void MakePath(char *path, size_t maxsize, pid_t pid, pid_t tid,
       tid = gettid();
     }
 
-    if (what == NULL) {
+    if (what == nullptr) {
       snprintf(path, maxsize, "/proc/self/task/%d", tid);
     } else {
       snprintf(path, maxsize, "/proc/self/task/%d/%s", tid, what);
@@ -130,7 +130,7 @@ static void MakePath(char *path, size_t maxsize, pid_t pid, pid_t tid,
       tid = pid;
     }
 
-    if (what == NULL) {
+    if (what == nullptr) {
       snprintf(path, maxsize, "/proc/%d/task/%d", pid, tid);
     } else {
       snprintf(path, maxsize, "/proc/%d/task/%d/%s", pid, tid, what);
@@ -158,7 +158,7 @@ FILE *ProcFS::OpenFILE(char const *what, char const *mode) {
   char path[PATH_MAX + 1];
   snprintf(path, PATH_MAX, "/proc/%s", what);
   FILE *res = fopen(path, mode);
-  if (res == NULL)
+  if (res == nullptr)
     DS2LOG(Target, Error, "can't open %s: %s", path, strerror(errno));
   return res;
 }
@@ -172,7 +172,7 @@ FILE *ProcFS::OpenFILE(pid_t pid, pid_t tid, char const *what,
   char path[PATH_MAX + 1];
   MakePath(path, PATH_MAX, pid, tid, what);
   FILE *res = fopen(path, mode);
-  if (res == NULL)
+  if (res == nullptr)
     DS2LOG(Target, Error, "can't open %s: %s", path, strerror(errno));
   return res;
 }
@@ -212,7 +212,7 @@ void ProcFS::ParseKeyValue(
   char *line = (char *)malloc(maxsize + 1);
   for (;;) {
     char *ep, *lp = fgets(line, maxsize, fp);
-    if (lp == NULL)
+    if (lp == nullptr)
       break;
 
     ep = lp + strlen(lp) - 1;
@@ -230,9 +230,9 @@ void ProcFS::ParseKeyValue(
     }
 
     char *value = strchr(key, sep);
-    if (value == NULL) {
+    if (value == nullptr) {
       value = key;
-      key = NULL;
+      key = nullptr;
     } else {
       *value++ = '\0';
     }
@@ -253,7 +253,7 @@ void ProcFS::ParseValues(FILE *fp, size_t maxsize, char sep, bool includeSep,
   char *line = (char *)malloc(maxsize + 1);
   for (;;) {
     char *ep, *lp = fgets(line, maxsize, fp);
-    if (lp == NULL)
+    if (lp == nullptr)
       break;
 
     ep = lp + strlen(lp);
@@ -291,7 +291,7 @@ bool ProcFS::ReadStat(pid_t pid, Stat &stat) {
 
 bool ProcFS::ReadUptime(Uptime &uptime) {
   FILE *fp = OpenFILE("uptime");
-  if (fp == NULL)
+  if (fp == nullptr)
     return false;
 
   ParseValues(fp, 1024, ' ', false,
@@ -302,14 +302,14 @@ bool ProcFS::ReadUptime(Uptime &uptime) {
     case UPTIME_F_RUN_TIME:
       uptime.run_time.tv_sec = strtoll(value, &end, 0);
       if (*end++ == '.') {
-        uptime.run_time.tv_nsec = strtoll(end, NULL, 0) * 10000000;
+        uptime.run_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
       }
       break;
 
     case UPTIME_F_IDLE_TIME:
       uptime.idle_time.tv_sec = strtoll(value, &end, 0);
       if (*end++ == '.') {
-        uptime.idle_time.tv_nsec = strtoll(end, NULL, 0) * 10000000;
+        uptime.idle_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
       }
       break;
     }
@@ -323,7 +323,7 @@ bool ProcFS::ReadUptime(Uptime &uptime) {
 
 bool ProcFS::ReadStat(pid_t pid, pid_t tid, Stat &stat) {
   FILE *fp = OpenFILE(pid, tid, "stat");
-  if (fp == NULL)
+  if (fp == nullptr)
     return false;
 
   //
@@ -657,7 +657,7 @@ std::string ProcFS::GetProcessExecutableName(pid_t pid) {
 
 bool ProcFS::GetProcessArguments(pid_t pid, StringCollection &args) {
   FILE *fp = ProcFS::OpenFILE(pid, "cmdline");
-  if (fp == NULL)
+  if (fp == nullptr)
     return false;
 
   args.clear();
@@ -730,7 +730,7 @@ std::string ProcFS::GetThreadName(pid_t pid, pid_t tid) {
   FILE *fp;
 
   fp = ProcFS::OpenFILE(pid, tid, "status");
-  if (fp == NULL)
+  if (fp == nullptr)
     return std::string();
 
   ParseKeyValue(fp, 1024, ':', [&](char const *key, char const *value) -> bool {
@@ -791,7 +791,7 @@ bool ProcFS::ReadProcessInfo(pid_t pid, ProcessInfo &info) {
 bool ProcFS::EnumerateProcesses(bool allUsers, uid_t uid,
                                 std::function<void(pid_t, uid_t)> const &cb) {
   DIR *dir = OpenDIR("");
-  if (dir == NULL)
+  if (dir == nullptr)
     return false;
 
   while (struct dirent *dp = readdir(dir)) {
@@ -830,7 +830,7 @@ bool ProcFS::EnumerateProcesses(bool allUsers, uid_t uid,
 
 bool ProcFS::EnumerateThreads(pid_t pid, std::function<void(pid_t)> const &cb) {
   DIR *dir = OpenDIR(pid, "task");
-  if (dir == NULL)
+  if (dir == nullptr)
     return false;
 
   while (struct dirent *dp = readdir(dir)) {
