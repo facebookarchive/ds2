@@ -174,6 +174,10 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       // the Process therefore we don't need to retain the pointer),
       // resume the thread and just continue waiting.
       //
+      // There's no need to call traceThat() on the newly created thread
+      // here because the ptrace flags are inherited when new threads
+      // are created.
+      //
       DS2LOG(Target, Debug, "creating new thread tid=%d", tid);
       new Thread(this, tid);
       ptrace().resume(ProcessThreadId(_pid, tid), info, 0);
