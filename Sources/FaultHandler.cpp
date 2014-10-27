@@ -61,11 +61,19 @@ private:
 
   void installCatcher() {
     struct sigaction sa;
+    stack_t ss;
+
+    // Allocate our own signal stack so that fault handlers work even
+    // when the stack pointer is busted.
+    ss.ss_sp = malloc(SIGSTKSZ);
+    ss.ss_size = SIGSTKSZ;
+    ss.ss_flags = 0;
 
     sa.sa_sigaction = FaultHandler::signalHandler;
     sigfillset(&sa.sa_mask);
-    sa.sa_flags = SA_SIGINFO;
+    sa.sa_flags = SA_SIGINFO | SA_ONSTACK;
 
+    sigaltstack(&ss, NULL);
     sigaction(SIGILL, &sa, NULL);
     sigaction(SIGBUS, &sa, NULL);
     sigaction(SIGSEGV, &sa, NULL);
