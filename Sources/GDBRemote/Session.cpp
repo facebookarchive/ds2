@@ -17,6 +17,7 @@
 #include "DebugServer2/HexValues.h"
 #include "DebugServer2/Log.h"
 
+#include <cstdlib>
 #include <iomanip>
 #include <sstream>
 

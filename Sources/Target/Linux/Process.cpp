@@ -23,6 +23,7 @@
 #include <cerrno>
 #include <csignal>
 #include <cstdlib>
+#include <cstdio>
 #include <elf.h>
 #include <limits>
 #include <sys/ptrace.h>

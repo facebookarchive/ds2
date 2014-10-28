@@ -14,6 +14,7 @@
 #include "DebugServer2/Log.h"
 #include "DebugServer2/SwapEndian.h"
 
+#include <cstdlib>
 #include <sstream>
 #include <iomanip>
 

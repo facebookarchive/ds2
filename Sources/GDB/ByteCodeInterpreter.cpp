@@ -10,6 +10,8 @@
 
 #include "DebugServer2/GDB/ByteCodeInterpreter.h"
 
+#include <cstdio>
+
 using ds2::GDB::ByteCodeInterpreter;
 
 namespace {

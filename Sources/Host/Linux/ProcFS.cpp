@@ -17,6 +17,7 @@
 
 #include <cctype>
 #include <cerrno>
+#include <cstdlib>
 #include <cstring>
 
 #include <libgen.h>
