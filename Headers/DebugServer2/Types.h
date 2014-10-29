@@ -33,10 +33,10 @@ typedef uid_t UserId;
 typedef gid_t GroupId;
 #endif
 
-static constexpr ProcessId const kAllProcessId = static_cast<ProcessId>(-1);
-static constexpr ProcessId const kAnyProcessId = static_cast<ProcessId>(0);
-static constexpr ThreadId const kAllThreadId = static_cast<ThreadId>(-1);
-static constexpr ThreadId const kAnyThreadId = static_cast<ThreadId>(0);
+static constexpr ProcessId kAllProcessId = static_cast<ProcessId>(-1);
+static constexpr ProcessId kAnyProcessId = static_cast<ProcessId>(0);
+static constexpr ThreadId kAllThreadId = static_cast<ThreadId>(-1);
+static constexpr ThreadId kAnyThreadId = static_cast<ThreadId>(0);
 
 typedef std::vector<uint8_t> U8Vector;
 
