@@ -1,0 +1,11 @@
+language: cpp
+
+env:
+  - CMAKE_FLAGS="-DOS_NAME=Linux -DARCH_NAME=X86_64"
+
+before_script:
+  - mkdir -p build
+  - cd build
+script:
+  - cmake $CMAKE_FLAGS ..
+  - make
