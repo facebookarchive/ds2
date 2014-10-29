@@ -12,14 +12,19 @@ cmake_minimum_required(VERSION 2.8)
 
 project(DebugServer2)
 
-set(OS_NAME ${CMAKE_SYSTEM_NAME})
-execute_process(COMMAND uname -m OUTPUT_VARIABLE ARCH_NAME)
+if (OS_NAME STREQUAL "")
+  set(OS_NAME ${CMAKE_SYSTEM_NAME})
+endif ()
+
+if (ARCH_NAME STREQUAL "")
+  execute_process(COMMAND uname -m OUTPUT_VARIABLE ARCH_NAME)
+endif ()
+
 string(STRIP "${ARCH_NAME}" ARCH_NAME)
 string(TOUPPER "${ARCH_NAME}" ARCH_NAME)
-
-if ("${ARCH_NAME}" MATCHES "ARM")
+if (ARCH_NAME MATCHES "ARM")
   set(ARCH_NAME "ARM") # Normalize ARMHF -> ARM
-elseif ("${ARCH_NAME}" MATCHES "I386")
+elseif (ARCH_NAME MATCHES "I386")
   set(ARCH_NAME "X86")
 endif ()
 
@@ -151,8 +156,8 @@ add_executable(ds2 ${DEBUGSERVER2_SOURCES})
 include_directories(Headers)
 include_directories(Main)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wno-unused-parameter")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
 
 if (WIN32)
   # Some constructs from Windows API headers won't compile properly
