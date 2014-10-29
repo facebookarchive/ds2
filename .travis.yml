@@ -1,0 +1,21 @@
+language: cpp
+
+env:
+  - ARCH="ARM"
+  - ARCH="X86"
+  - ARCH="X86_64"
+
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo add-apt-repository -y ppa:linaro-maintainers/toolchain
+  - sudo apt-get update
+install:
+  - if [ "$ARCH" = "ARM" ]; then sudo apt-get install -y g++-arm-linux-gnueabi; export CXX="arm-linux-gnueabi-g++-4.7"; fi
+  - if [ "$ARCH" = "X86" ]; then sudo apt-get install -y g++-4.8-multilib; export CXX="g++-4.8"; export CXXFLAGS="-m32"; fi
+  - if [ "$ARCH" = "X86_64" ]; then sudo apt-get install -y g++-4.8; export CXX="g++-4.8"; fi
+
+before_script:
+  - mkdir -p build && cd build
+  - cmake -DOS_NAME="Linux" -DARCH_NAME="${ARCH}" ..
+script:
+  - make
