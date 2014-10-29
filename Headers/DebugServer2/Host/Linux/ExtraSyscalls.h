@@ -11,18 +11,20 @@
 #ifndef __DebugServer2_Host_Linux_ExtraSyscalls_h
 #define __DebugServer2_Host_Linux_ExtraSyscalls_h
 
-#if !defined(__ANDROID__)
+#if defined(__ANDROID__)
+#include <linux/personality.h>
+#undef personality
+#else
 #include <sys/personality.h>
 #endif
 #include <sys/syscall.h>
 #include <unistd.h>
 
+extern "C" {
+
 // Some older android versions do not have a stub for wait4 and personality in
 // their libc.
 #if defined(__ANDROID__)
-#include <linux/personality.h>
-#undef personality
-
 static inline int personality(unsigned long persona) {
   return ::syscall(__NR_personality, persona);
 }
@@ -45,5 +47,7 @@ static inline int tgkill(pid_t pid, pid_t tid, int signo) {
 #if !defined(__ANDROID__)
 static inline pid_t gettid() { return ::syscall(__NR_gettid); }
 #endif
+
+}
 
 #endif // !__DebugServer2_Host_Linux_ExtraSyscalls_h
