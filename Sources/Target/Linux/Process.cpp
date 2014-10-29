@@ -202,7 +202,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
         //
         DS2LOG(Target, Error, "thread %d stopped for no reason");
 
-        [[clang::fallthrough]];
+        // Fall-through.
 
       case TrapInfo::kReasonThreadNew:
         //
