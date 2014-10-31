@@ -12,20 +12,24 @@ cmake_minimum_required(VERSION 2.8)
 
 project(DebugServer2)
 
-if (OS_NAME STREQUAL "")
+include(FindThreads)
+
+if (NOT OS_NAME)
   set(OS_NAME ${CMAKE_SYSTEM_NAME})
 endif ()
 
-if (ARCH_NAME STREQUAL "")
+if (NOT ARCH_NAME)
   execute_process(COMMAND uname -m OUTPUT_VARIABLE ARCH_NAME)
 endif ()
 
 string(STRIP "${ARCH_NAME}" ARCH_NAME)
 string(TOUPPER "${ARCH_NAME}" ARCH_NAME)
-if (ARCH_NAME MATCHES "ARM")
+if (ARCH_NAME MATCHES "^ARM")
   set(ARCH_NAME "ARM") # Normalize ARMHF -> ARM
 elseif (ARCH_NAME MATCHES "I386")
   set(ARCH_NAME "X86")
+elseif (ARCH_NAME MATCHES "AMD64")
+  set(ARCH_NAME "X86_64")
 endif ()
 
 message("Building for target ${OS_NAME}-${ARCH_NAME}")
@@ -152,12 +156,15 @@ set(DEBUGSERVER2_SOURCES
     )
 
 add_executable(ds2 ${DEBUGSERVER2_SOURCES})
+target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
 
 include_directories(Headers)
 include_directories(Main)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+if (NOT NO_STATIC)
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+endif ()
 
 if (WIN32)
   # Some constructs from Windows API headers won't compile properly
