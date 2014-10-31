@@ -925,9 +925,13 @@ void Session::Handle_M(ProtocolInterpreter::Handler const &,
     return;
   }
 
+  std::string data(HexToString(eptr));
+  if (data.length() > length) {
+    data = data.substr(0, length);
+  }
+
   size_t nwritten = 0;
-  sendError(
-      _delegate->onWriteMemory(*this, address, HexToString(eptr), nwritten));
+  sendError(_delegate->onWriteMemory(*this, address, data, nwritten));
 }
 
 //
