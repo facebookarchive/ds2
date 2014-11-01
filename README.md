@@ -36,8 +36,10 @@ cmake -DOS_NAME=Linux -DARCH_NAME=ARM -DCMAKE_C_COMPILER="arm-linux-gnueabi-gcc-
 make
 ```
 
-This will generate a static binary that you can drop on your device to start
-debugging.
+This will generate a binary that you can drop on your device to start
+debugging. Adding `-DSTATIC=1` to the CMake line will generate a static binary
+instead, which might be useful if some of the libraries ds2 depends on are not
+present on the remote device.
 
 ## Running ds2
 

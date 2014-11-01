@@ -1,12 +1,12 @@
 language: cpp
 
 env:
-  - NO_STATIC=0 ARCH="ARM"
-  - NO_STATIC=0 ARCH="X86"
-  - NO_STATIC=0 ARCH="X86_64"
-  - NO_STATIC=1 ARCH="ARM"
-  - NO_STATIC=1 ARCH="X86"
-  - NO_STATIC=1 ARCH="X86_64"
+  - ARCH="ARM"
+  - ARCH="ARM" STATIC=1
+  - ARCH="X86"
+  - ARCH="X86" STATIC=1
+  - ARCH="X86_64"
+  - ARCH="X86_64" STATIC=1
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -19,6 +19,6 @@ install:
 
 before_script:
   - mkdir -p build && cd build
-  - cmake -DOS_NAME="Linux" -DARCH_NAME="${ARCH}" -DNO_STATIC="${NO_STATIC}" ..
+  - cmake -DOS_NAME="Linux" -DARCH_NAME="${ARCH}" -DSTATIC="${STATIC}" ..
 script:
   - make
