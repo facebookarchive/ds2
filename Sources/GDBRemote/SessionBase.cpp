@@ -94,10 +94,11 @@ bool SessionBase::send(std::string const &data, bool escaped) {
   ss << '$' << *datap << '#' << std::hex << std::setw(2) << std::setfill('0')
      << (unsigned)csum;
 
-  DS2LOG(Remote, Debug, "putpkt(\"%s\", %zu)", ss.str().c_str(),
-         ss.str().length());
+  std::string final_data = ss.str();
+  DS2LOG(Remote, Debug, "putpkt(\"%s\", %zu)", final_data.c_str(),
+         final_data.length());
 
-  return _channel->send(ss.str());
+  return _channel->send(final_data);
 }
 
 //
