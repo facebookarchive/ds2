@@ -274,6 +274,14 @@ int main(int argc, char **argv) {
                  "run in slave mode (used from platform spawner)");
 #endif
 
+  // llgs-compat options. These are no-ops.
+  opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
+                 "use native registers", true);
+  opts.addOption(ds2::OptParse::boolOption, "setsid", 's',
+                 "make ds2 run in its own session", true);
+  opts.addOption(ds2::OptParse::stringOption, "lldb-command", 'c',
+                 "run lldb commands", true);
+
   idx = opts.parse(argc, argv);
 
   if (!opts.getString("log-output").empty()) {
