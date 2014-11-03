@@ -113,6 +113,14 @@ static void DebugMain(int argc, char **argv, int attachPid, int port) {
 
   DS2LOG(Main, Info, "listening on port %d", port);
 
+  //
+  // This is required for compatibility with llgs. The testing framework
+  // expects to read this string to determine that llgs is started and ready to
+  // accept connections.
+  //
+  printf("Listening to port %d for a connection from %s...\n", port,
+         "localhost");
+
   ds2::Target::Process *process = nullptr;
   if (attachPid < 0) {
     process = ds2::Target::Process::Create(argc, argv);
