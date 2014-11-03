@@ -25,7 +25,7 @@ public:
 
 public:
   void addOption(OptionType type, std::string const &name, char shortName,
-                 std::string const &help = std::string());
+                 std::string const &help = std::string(), bool hidden = false);
 
 public:
   int parse(int argc, char **argv);
@@ -43,6 +43,7 @@ private:
     OptionType type;
     std::string value;
     std::string help;
+    bool hidden;
   };
 
   typedef std::map<std::string, OptionStorage> OptionCollection;

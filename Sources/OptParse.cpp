@@ -17,10 +17,10 @@
 namespace ds2 {
 
 void OptParse::addOption(OptionType type, std::string const &name,
-                         char shortName, std::string const &help) {
+                         char shortName, std::string const &help, bool hidden) {
   assert(_options.find(name) == _options.end());
   assert(findShortOpt(shortName) == _options.end());
-  _options[name] = {shortName, type, "", help};
+  _options[name] = {shortName, type, "", help, hidden};
 }
 
 int OptParse::parse(int argc, char **argv) {
@@ -104,6 +104,9 @@ void OptParse::usageDie(std::string const &message) {
   help_align += 2;
 
   for (auto const &e : _options) {
+    if (e.second.hidden)
+      continue;
+
     fprintf(stderr, "  -%c, --%s", e.second.shortName, e.first.c_str());
     fprintf(stderr, " %s", (e.second.type == stringOption ? "ARG" : "   "));
     for (size_t i = 0; i < help_align - e.first.size(); ++i) {
