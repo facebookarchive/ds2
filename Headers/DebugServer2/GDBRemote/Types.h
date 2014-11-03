@@ -159,6 +159,9 @@ struct RegisterInfo {
 
 struct HostInfo : ds2::HostInfo {
   bool watchpointExceptionsReceivedBefore;
+
+  HostInfo() : ds2::HostInfo(), watchpointExceptionsReceivedBefore(false) {}
+
   std::string encode() const;
 };
 
