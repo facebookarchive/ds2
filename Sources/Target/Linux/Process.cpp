@@ -303,7 +303,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
     continue;
   }
 
-  if (!WIFEXITED(status) || tid != _pid) {
+  if (!(WIFEXITED(status) || WIFSIGNALED(status)) || tid != _pid) {
     //
     // Suspend the process, this must be done after updating
     // the thread trap info.
@@ -311,7 +311,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
     suspend();
   }
 
-  if (WIFEXITED(status) && tid == _pid) {
+  if ((WIFEXITED(status) || WIFSIGNALED(status)) && tid == _pid) {
     _terminated = true;
   }
 
