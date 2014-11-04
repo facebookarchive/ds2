@@ -28,7 +28,7 @@ public:
   virtual ~Thread();
 
 public:
-  virtual ErrorCode terminate(int signal);
+  virtual ErrorCode terminate();
 
 public:
   virtual ErrorCode suspend();

@@ -768,7 +768,7 @@ ErrorCode DebugSessionImpl::onDetach(Session &, ProcessId, bool stopped) {
 ErrorCode DebugSessionImpl::onTerminate(Session &session,
                                         ProcessThreadId const &ptid,
                                         StopCode &stop) {
-  ErrorCode error = _process->terminate(0);
+  ErrorCode error = _process->terminate();
   if (error != kSuccess)
     return error;
 

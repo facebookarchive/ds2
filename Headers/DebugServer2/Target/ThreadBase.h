@@ -44,7 +44,7 @@ public:
   inline TrapInfo const &trapInfo() const { return _trap; }
 
 public:
-  virtual ErrorCode terminate(int signal) = 0;
+  virtual ErrorCode terminate() = 0;
 
 public:
   virtual ErrorCode suspend() = 0;

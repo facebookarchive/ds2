@@ -27,7 +27,7 @@ public:
   }
   virtual ErrorCode detach() { return ds2::kErrorUnsupported; }
   virtual ErrorCode interrupt() { return ds2::kErrorUnsupported; }
-  virtual ErrorCode terminate(int signal = 0) { return ds2::kErrorUnsupported; }
+  virtual ErrorCode terminate() { return ds2::kErrorUnsupported; }
   virtual bool isAlive() const;
 
 public:

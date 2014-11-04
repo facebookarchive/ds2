@@ -47,14 +47,16 @@ ErrorCode Process::interrupt() {
   if (_passthruSignals.find(SIGINT) != _passthruSignals.end()) {
     signal = SIGINT;
   }
-  return terminate(signal);
+  return ptrace().kill(_pid, signal);
 }
 
-ErrorCode Process::terminate(int signal) {
-  if (signal == 0) {
-    signal = SIGTERM;
-  }
-  return ptrace().kill(_pid, signal);
+ErrorCode Process::terminate() {
+  // We have to use SIGKILL here, for two (related) reasons:
+  // (1) we want to make sure the tracee can't catch the signal when we are
+  //     trying to terminate it;
+  // (2) using SIGKILL allows us to send the signal with a simple `kill()`
+  //     instead of having to use ptrace(PTRACE_CONT, ...)`.
+  return ptrace().kill(_pid, SIGKILL);
 }
 
 bool Process::isAlive() const { return (_pid > 0 && ::kill(_pid, 0) == 0); }

@@ -36,9 +36,9 @@ Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {
 
 Thread::~Thread() {}
 
-ErrorCode Thread::terminate(int signal) {
+ErrorCode Thread::terminate() {
   return process()->ptrace().kill(ProcessThreadId(process()->pid(), tid()),
-                                  signal);
+                                  SIGKILL);
 }
 
 ErrorCode Thread::suspend() {

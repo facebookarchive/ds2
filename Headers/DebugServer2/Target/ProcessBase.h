@@ -93,7 +93,7 @@ public:
 
 public:
   virtual ErrorCode interrupt() = 0;
-  virtual ErrorCode terminate(int signal = 0) = 0;
+  virtual ErrorCode terminate() = 0;
   virtual bool isAlive() const = 0;
 
 public:

@@ -39,7 +39,7 @@ public:
   virtual ErrorCode attach(bool reattach = false);
 
 public:
-  virtual ErrorCode terminate(int signal = 0);
+  virtual ErrorCode terminate();
   virtual bool isAlive() const;
 
 public:

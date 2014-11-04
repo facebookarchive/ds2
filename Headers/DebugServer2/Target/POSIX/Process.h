@@ -34,7 +34,7 @@ public:
 public:
   virtual ErrorCode detach();
   virtual ErrorCode interrupt();
-  virtual ErrorCode terminate(int signal = 0);
+  virtual ErrorCode terminate();
   virtual bool isAlive() const;
 
 public:

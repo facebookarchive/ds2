@@ -40,7 +40,7 @@ Process::Process()
     : super(), _breakpointManager(nullptr), _watchpointManager(nullptr),
       _terminated(false) {}
 
-Process::~Process() { terminate(SIGTERM); }
+Process::~Process() { terminate(); }
 
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   //
@@ -322,8 +322,8 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
   return kSuccess;
 }
 
-ErrorCode Process::terminate(int signal) {
-  ErrorCode error = super::terminate(signal);
+ErrorCode Process::terminate() {
+  ErrorCode error = super::terminate();
   if (error == kSuccess || error == kErrorProcessNotFound) {
     _terminated = !super::isAlive();
   }
