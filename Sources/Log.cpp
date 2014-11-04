@@ -44,14 +44,16 @@ void vLog(int category, int level, char const *classname, char const *funcname,
 
   std::stringstream ss;
 
-  // Double the size until the whole log line fits in the buffer.
   std::vector<char> buffer;
-  buffer.resize(128);
-  size_t written_bytes;
+  size_t required_bytes = 128;
+
   do {
-    buffer.resize(buffer.size() * 2);
-    written_bytes = vsnprintf(buffer.data(), buffer.size(), format, ap);
-  } while (written_bytes >= buffer.size());
+    va_list ap_copy;
+    va_copy(ap_copy, ap);
+    buffer.resize(required_bytes + 1);
+    required_bytes = vsnprintf(buffer.data(), buffer.size(), format, ap_copy);
+    va_end(ap_copy);
+  } while (required_bytes >= buffer.size());
 
   ss << '[' << Host::Platform::GetCurrentProcessId() << ']';
 
