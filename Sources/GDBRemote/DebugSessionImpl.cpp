@@ -768,9 +768,19 @@ ErrorCode DebugSessionImpl::onDetach(Session &, ProcessId, bool stopped) {
 ErrorCode DebugSessionImpl::onTerminate(Session &session,
                                         ProcessThreadId const &ptid,
                                         StopCode &stop) {
-  ErrorCode error = _process->terminate();
-  if (error != kSuccess)
+  ErrorCode error;
+
+  error = _process->terminate();
+  if (error != kSuccess) {
+    DS2LOG(DebugSession, Error, "couldn't terminate process");
     return error;
+  }
+
+  error = _process->wait();
+  if (error != kSuccess) {
+    DS2LOG(DebugSession, Error, "couldn't wait for process termination");
+    return error;
+  }
 
   return queryStopCode(session, _process->pid(), stop);
 }
