@@ -171,7 +171,8 @@ void ProtocolInterpreter::onCommand(std::string const &command,
 
   if (extra.find_first_of("*}") != std::string::npos) {
     extra = Uncompress(extra);
-    DS2LOG(Protocol, Debug, "args='%.*s'", extra.length(), &extra[0]);
+    DS2LOG(Protocol, Debug, "args='%.*s'", static_cast<int>(extra.length()),
+           &extra[0]);
   }
 
 #if 0

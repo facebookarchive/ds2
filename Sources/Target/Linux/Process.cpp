@@ -200,7 +200,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
         // print an error message and keep running as a
         // best-effort solution.
         //
-        DS2LOG(Target, Error, "thread %d stopped for no reason");
+        DS2LOG(Target, Error, "thread %d stopped for no reason", tid);
 
         // Fall-through.
 

@@ -328,7 +328,7 @@ ErrorCode ProcessSpawner::run(bool wait) {
       }
       argv.push_back(nullptr);
       if (::execv(_executablePath.c_str(), &argv[0]) < 0) {
-        DS2LOG(Main, Error, "cannot spawn executable %s, error=%d",
+        DS2LOG(Main, Error, "cannot spawn executable %s, error=%s",
                _executablePath.c_str(), strerror(errno));
       }
     }

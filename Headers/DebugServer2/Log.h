@@ -12,6 +12,7 @@
 #define __DebugServer2_Log_h
 
 #include "DebugServer2/Base.h"
+#include "DebugServer2/CompilerSupport.h"
 
 namespace ds2 {
 
@@ -40,8 +41,9 @@ void SetLogLevel(uint32_t level);
 void SetLogColorsEnabled(bool enabled);
 void SetLogOutputStream(FILE *stream);
 
+
 void Log(int category, int level, char const *classname, char const *funcname,
-         char const *format, ...);
+         char const *format, ...) DS2_ATTRIBUTE_PRINTF(5, 6);
 
 #ifdef __DS2_LOG_CLASS_NAME__
 #define DS2LOG(CAT, LVL, ...)                                                  \
