@@ -264,7 +264,7 @@ void ProcFS::ParseValues(FILE *fp, size_t maxsize, char sep, bool includeSep,
         lp++;
       }
 
-      while (*(lp + 1) == sep) {
+      while (*lp != '\0' && *(lp + 1) == sep) {
         lp++;
       }
 
