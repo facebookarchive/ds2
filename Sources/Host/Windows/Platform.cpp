@@ -56,14 +56,11 @@ ds2::CPUSubType Platform::GetCPUSubType() {
 }
 
 ds2::Endian Platform::GetEndian() {
-#if defined(__LITTLE_ENDIAN__) || (__BYTE_ORDER == __LITTLE_ENDIAN) ||         \
-    (BYTE_ORDER == LITTLE_ENDIAN)
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
   return kEndianLittle;
-#elif defined(__BIG_ENDIAN__) || (__BYTE_ORDER == __BIG_ENDIAN) ||             \
-    (BYTE_ORDER == BIG_ENDIAN)
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
   return kEndianBig;
-#elif defined(__PDP_ENDIAN__) || (__BYTE_ORDER == __PDP_ENDIAN) ||             \
-    (BYTE_ORDER == PDP_ENDIAN)
+#elif __BYTE_ORDER__ == __ORDER_PDP_ENDIAN__
   return kEndianPDP;
 #else
   return kEndianUnknown;

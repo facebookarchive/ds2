@@ -111,7 +111,7 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
                                           std::string &opcode) const {
   switch (type) {
   case 2: // udf #1
-#if defined(__BIG_ENDIAN__)
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     opcode += '\xde';
     opcode += '\x01';
 #else
@@ -120,7 +120,7 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
 #endif
     break;
   case 3: // udf.w #0
-#if defined(__BIG_ENDIAN__)
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     opcode += '\xa0';
     opcode += '\x00';
     opcode += '\xf7';
@@ -133,7 +133,7 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
 #endif
     break;
   case 4: // udf #16
-#if defined(__BIG_ENDIAN__)
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     opcode += '\xe7';
     opcode += '\xf0';
     opcode += '\x01';
