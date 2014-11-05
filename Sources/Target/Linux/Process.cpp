@@ -149,12 +149,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
   int status, signal;
   struct rusage rusage;
   ProcessInfo info;
-  ErrorCode error;
   ThreadId tid;
-
-  error = getInfo(info);
-  if (error != kSuccess)
-    return error;
 
   // We have at least one thread when we start waiting on a process.
   assert(!_threads.empty());
@@ -181,6 +176,12 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       //
       DS2LOG(Target, Debug, "creating new thread tid=%d", tid);
       new Thread(this, tid);
+
+      if (getInfo(info) != kSuccess) {
+        DS2LOG(Target, Error, "couldn't get process info for pid %d", _pid);
+        goto continue_waiting;
+      }
+
       ptrace().resume(ProcessThreadId(_pid, tid), info, 0);
       goto continue_waiting;
     } else {
@@ -209,6 +210,11 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
         // This thread has been stopped because it called
         // clone(2). Just resume it.
         //
+        if (getInfo(info) != kSuccess) {
+          DS2LOG(Target, Error, "couldn't get process info for pid %d", _pid);
+          goto continue_waiting;
+        }
+
         ptrace().resume(ProcessThreadId(_pid, tid), info);
         goto continue_waiting;
       }
@@ -241,6 +247,11 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       break;
 
     case TrapInfo::kEventStop:
+      if (getInfo(info) != kSuccess) {
+        DS2LOG(Target, Error, "couldn't get process info for pid %d", _pid);
+        goto continue_waiting;
+      }
+
       signal = _currentThread->_trap.signal;
 
       if (signal == SIGSTOP || signal == SIGCHLD || signal == SIGRTMIN) {

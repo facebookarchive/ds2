@@ -233,6 +233,11 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
 void Thread::updateState() { updateState(false); }
 
 void Thread::updateState(bool force) {
+  if (!process()->isAlive()) {
+    _state = kTerminated;
+    return;
+  }
+
   ProcFS::Stat stat;
   if (!ProcFS::ReadStat(_process->pid(), tid(), stat)) {
     stat.task_cpu = 0;

@@ -175,9 +175,8 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
     break;
   }
 
-  stop.threadName = Platform::GetThreadName(stop.ptid.pid, stop.ptid.tid);
-
   if (readRegisters) {
+    stop.threadName = Platform::GetThreadName(stop.ptid.pid, stop.ptid.tid);
     ErrorCode error = thread->readCPUState(state);
     if (error != kSuccess)
       return error;
