@@ -297,6 +297,7 @@ void Session::Handle_A(ProtocolInterpreter::Handler const &,
 
   char *eptr = const_cast<char *>(args.c_str());
   char *end = eptr + args.length();
+
   while (eptr < end && *eptr != '\0') {
     if (!argmap.empty()) {
       if (*eptr++ != ',') {
@@ -305,7 +306,7 @@ void Session::Handle_A(ProtocolInterpreter::Handler const &,
       }
     }
 
-    uint32_t nbytes = std::strtoul(args.c_str(), &eptr, 10);
+    uint32_t nchars = std::strtoul(eptr, &eptr, 10);
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
@@ -317,11 +318,10 @@ void Session::Handle_A(ProtocolInterpreter::Handler const &,
     }
 
     std::string &s = argmap[argno];
-    for (size_t n = 0; n < nbytes; n += 2) {
+    for (size_t n = 0; n < nchars; n += 2) {
       s += static_cast<char>(HexToByte(eptr + n));
     }
-
-    eptr += nbytes * 2;
+    eptr += nchars;
   }
 
   StringCollection arguments;
