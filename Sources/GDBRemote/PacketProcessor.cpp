@@ -10,6 +10,7 @@
 
 #include "DebugServer2/GDBRemote/PacketProcessor.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
+#include "DebugServer2/Log.h"
 
 #include <cstdlib>
 
@@ -31,7 +32,14 @@ bool PacketProcessor::validate() {
   _buffer.erase(0, 1);
   _buffer.erase(csoff - 1);
 
-  return (Checksum(_buffer) == csum);
+  uint8_t our_csum = Checksum(_buffer);
+
+  if (csum != our_csum)
+    DS2LOG(Protocol, Warning,
+           "received packet %s with invalid checksum, should be %.2x, is %.2x",
+           _buffer.c_str(), our_csum, csum);
+
+  return csum == our_csum;
 }
 
 void PacketProcessor::process() {
