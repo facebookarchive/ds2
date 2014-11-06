@@ -31,7 +31,7 @@
 
 using ds2::GDBRemote::Session;
 
-Session::Session() : _compatMode(kCompatibilityModeGDB) {
+Session::Session(CompatibilityMode mode) : _compatMode(mode) {
 #define REGISTER_HANDLER_EQUALS_2(MESSAGE, HANDLER)                            \
   interpreter().registerHandler(ProtocolInterpreter::Handler::kModeEquals,     \
                                 MESSAGE, this, &Session::Handle_##HANDLER);

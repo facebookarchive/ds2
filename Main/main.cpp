@@ -44,6 +44,7 @@ using ds2::GDBRemote::SlaveSessionImpl;
 
 static uint16_t gDefaultPort = 12345;
 static bool gKeepAlive = false;
+static bool gLLDBCompat = false;
 
 static void PlatformMain(int argc, char **argv, int port) {
   Socket *server = new Socket;
@@ -66,7 +67,8 @@ static void PlatformMain(int argc, char **argv, int port) {
   do {
     Socket *client = server->accept();
 
-    Session session;
+    // Platform mode implies that we are talking to an LLDB remote.
+    Session session(ds2::GDBRemote::kCompatibilityModeLLDB);
     session.setDelegate(&impl);
     session.create(client);
 
@@ -80,7 +82,8 @@ static void PlatformMain(int argc, char **argv, int port) {
 static void RunDebugServer(Socket *server, SessionDelegate *impl) {
   Socket *client = server->accept();
 
-  Session session;
+  Session session(gLLDBCompat ? ds2::GDBRemote::kCompatibilityModeLLDB
+                              : ds2::GDBRemote::kCompatibilityModeGDB);
   QueueChannel *qchannel = new QueueChannel(client);
   SessionThread thread(qchannel, &session);
 
@@ -274,13 +277,15 @@ int main(int argc, char **argv) {
                  "run in slave mode (used from platform spawner)");
 #endif
 
-  // llgs-compat options. These are no-ops.
+  // llgs-compat options.
+  opts.addOption(ds2::OptParse::boolOption, "lldb-compat", 'l',
+                 "force ds2 to run in lldb compat mode");
   opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
-                 "use native registers", true);
+                 "use native registers (no-op)", true);
   opts.addOption(ds2::OptParse::boolOption, "setsid", 's',
-                 "make ds2 run in its own session", true);
+                 "make ds2 run in its own session (no-op)", true);
   opts.addOption(ds2::OptParse::stringOption, "lldb-command", 'c',
-                 "run lldb commands", true);
+                 "run lldb commands (no-op)", true);
 
   idx = opts.parse(argc, argv);
 
@@ -291,11 +296,13 @@ int main(int argc, char **argv) {
              opts.getString("log-output").c_str(), strerror(errno));
     } else {
 #if !defined(_WIN32)
+      //
       // Note(sas): When ds2 is spawned by the app, it will run with the
       // app's user/group ID, and will create its log file owned by the
       // app. By default, the permissions will be 0600 (rw-------) which
       // makes us unable to get the log files. chmod() them to be able to
       // access them.
+      //
       fchmod(fileno(stream), 0644);
 #endif
       ds2::SetLogColorsEnabled(false);
@@ -335,6 +342,13 @@ int main(int argc, char **argv) {
     mode = kRunModeSlave;
   }
 #endif
+
+  //
+  // This option forces ds2 to operate in lldb compatibilty mode. When not
+  // specified, we assume we are talking to a GDB remote until we detect
+  // otherwise.
+  //
+  gLLDBCompat = opts.getBool("lldb-compat");
 
   argc -= idx, argv += idx;
 

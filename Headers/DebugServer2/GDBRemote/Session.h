@@ -25,7 +25,7 @@ protected:
   CompatibilityMode _compatMode;
 
 public:
-  Session();
+  Session(CompatibilityMode mode);
 
 public:
   virtual CompatibilityMode mode() const { return _compatMode; }
