@@ -34,13 +34,18 @@ enum {
 //
 // Log Level
 //
-enum { kLogLevelDebug, kLogLevelInfo, kLogLevelWarning, kLogLevelError };
+enum {
+  kLogLevelDebug,
+  kLogLevelInfo,
+  kLogLevelWarning,
+  kLogLevelError,
+  kLogLevelFatal
+};
 
 void SetLogMask(uint64_t mask);
 void SetLogLevel(uint32_t level);
 void SetLogColorsEnabled(bool enabled);
 void SetLogOutputStream(FILE *stream);
-
 
 void Log(int category, int level, char const *classname, char const *funcname,
          char const *format, ...) DS2_ATTRIBUTE_PRINTF(5, 6);

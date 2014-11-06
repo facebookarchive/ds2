@@ -66,6 +66,10 @@ void vLog(int category, int level, char const *classname, char const *funcname,
   char const *color = nullptr;
   char const *label = nullptr;
   switch (level) {
+  case kLogLevelFatal:
+    color = "\x1b[1;31m";
+    label = "FATAL  ";
+    break;
   case kLogLevelError:
     color = "\x1b[1;31m";
     label = "ERROR  ";
@@ -98,6 +102,9 @@ void vLog(int category, int level, char const *classname, char const *funcname,
 
   fputs(ss.str().c_str(), sOutputStream);
   fflush(sOutputStream);
+
+  if (level == kLogLevelFatal)
+    exit(EXIT_FAILURE);
 }
 
 void Log(int category, int level, char const *classname, char const *funcname,
