@@ -633,6 +633,28 @@ ErrorCode DebugSessionImpl::onDeallocateMemory(Session &,
 }
 
 ErrorCode
+DebugSessionImpl::onSetProgramArguments(Session &,
+                                        StringCollection const &args) {
+  for (auto const &arg : args) {
+    DS2LOG(PlatformSession, Debug, "arg=%s", arg.c_str());
+  }
+
+  std::string path = args[0];
+  StringCollection remaining_args(&args[1], &args[args.size()]);
+  _process = ds2::Target::Process::Create(path, remaining_args);
+  if (_process == nullptr)
+    return kErrorUnknown;
+
+  DS2LOG(DebugSession, Debug, "created process %p", _process);
+
+  return kSuccess;
+}
+
+ErrorCode DebugSessionImpl::onQueryLaunchSuccess(Session &, ProcessId) {
+  return kSuccess;
+}
+
+ErrorCode
 DebugSessionImpl::onResume(Session &session,
                            ThreadResumeAction::Collection const &actions,
                            StopCode &stop) {

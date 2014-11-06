@@ -102,6 +102,11 @@ protected:
                                        Address const &address);
 
 protected:
+  virtual ErrorCode onSetProgramArguments(Session &session,
+                                          StringCollection const &args);
+  virtual ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid);
+
+protected:
   virtual ErrorCode onResume(Session &session,
                              ThreadResumeAction::Collection const &actions,
                              StopCode &stop);

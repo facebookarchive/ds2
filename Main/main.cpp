@@ -125,21 +125,23 @@ static void DebugMain(int argc, char **argv, int attachPid, int port) {
          "localhost");
 
   ds2::Target::Process *process = nullptr;
-  if (attachPid < 0) {
-    process = ds2::Target::Process::Create(argc, argv);
-  } else {
-    process = ds2::Target::Process::Attach(attachPid);
-  }
-  if (process == nullptr) {
-    DS2LOG(Main, Error, "cannot execute '%s'", argv[0]);
-    exit(EXIT_FAILURE);
+  if (attachPid > 0 || argc > 0) {
+    if (attachPid < 0) {
+      process = ds2::Target::Process::Create(argc, argv);
+    } else {
+      process = ds2::Target::Process::Attach(attachPid);
+    }
+    if (process == nullptr) {
+      DS2LOG(Main, Error, "cannot execute '%s'", argv[0]);
+      exit(EXIT_FAILURE);
+    }
   }
 
   DebugSessionImpl *impl = new DebugSessionImpl(process);
 
   bool first = true;
   do {
-    if (!first && process->attached()) {
+    if (!first && process != nullptr && process->attached()) {
       process->attach(true);
     }
     first = false;
@@ -148,7 +150,8 @@ static void DebugMain(int argc, char **argv, int attachPid, int port) {
 
   delete impl;
 
-  process->detach();
+  if (process != nullptr)
+    process->detach();
 }
 
 #if !defined(_WIN32)
@@ -352,7 +355,13 @@ int main(int argc, char **argv) {
 
   argc -= idx, argv += idx;
 
-  if (mode == kRunModeNormal && argc == 0 && attachPid < 0) {
+  //
+  // We need a process to attach to or a command line so we can launch it,
+  // unless we are in lldb compat mode, which implies we can launch the debug
+  // server without any of those two things, and wait for an "A" command that
+  // specifies the command line to use to launch the inferior.
+  //
+  if (mode == kRunModeNormal && argc == 0 && attachPid < 0 && !gLLDBCompat) {
     opts.usageDie("either a program or target PID is required");
   }
 
