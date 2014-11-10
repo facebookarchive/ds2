@@ -13,14 +13,14 @@
 
 #include "DebugServer2/Types.h"
 
-#if defined(__arm__)
+#if defined(ARCH_ARM)
 #include "DebugServer2/Architecture/ARM/CPUState.h"
-#elif defined(__aarch64__)
+#elif defined(ARM_ARM64)
 #include "DebugServer2/Architecture/ARM/CPUState.h"
 #include "DebugServer2/Architecture/ARM64/CPUState.h"
-#elif defined(__i386__)
+#elif defined(ARCH_X86)
 #include "DebugServer2/Architecture/X86/CPUState.h"
-#elif defined(__x86_64__)
+#elif defined(ARCH_X86_64)
 #include "DebugServer2/Architecture/X86/CPUState.h"
 #include "DebugServer2/Architecture/X86_64/CPUState.h"
 #else
@@ -29,14 +29,13 @@
 
 namespace ds2 {
 namespace Architecture {
-
-#if defined(__arm__)
+#if defined(ARCH_ARM)
 using ARM::CPUState;
-#elif defined(__aarch64__)
+#elif defined(ARCH_ARM64)
 using ARM64::CPUState;
-#elif defined(__i386__)
+#elif defined(ARCH_X86)
 using X86::CPUState;
-#elif defined(__x86_64__)
+#elif defined(ARCH_X86_64)
 using X86_64::CPUState;
 #else
 #error "Architecture not supported."

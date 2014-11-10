@@ -11,29 +11,31 @@
 #ifndef __DebugServer2_Architecture_Registers_h
 #define __DebugServer2_Architecture_Registers_h
 
-#if defined(__arm__)
+#include "DebugServer2/Base.h"
+
+#if defined(ARCH_ARM)
 #include "DebugServer2/Architecture/ARM/Registers.h"
-#elif defined(__aarch64__)
+#elif defined(ARCH_ARM64)
 #include "DebugServer2/Architecture/ARM/Registers.h"
 #include "DebugServer2/Architecture/ARM64/Registers.h"
-#elif defined(__i386__)
+#elif defined(ARCH_X86)
 #include "DebugServer2/Architecture/I386/Registers.h"
-#elif defined(__x86_64__)
+#elif defined(ARCH_X86_64)
 #include "DebugServer2/Architecture/I386/Registers.h"
 #include "DebugServer2/Architecture/X86_64/Registers.h"
-#elif defined(__mips__)
+#elif defined(ARCH_MIPS)
 #include "DebugServer2/Architecture/MIPS/Registers.h"
-#elif defined(__mips64__)
+#elif defined(ARCH_MIPS64)
 #include "DebugServer2/Architecture/MIPS/Registers.h"
 #include "DebugServer2/Architecture/MIPS64/Registers.h"
-#elif defined(__powerpc__)
+#elif defined(ARCH_PPC)
 #include "DebugServer2/Architecture/PowerPC/Registers.h"
-#elif defined(__powerpc64__)
+#elif defined(ARCH_PPC64)
 #include "DebugServer2/Architecture/PowerPC/Registers.h"
 #include "DebugServer2/Architecture/PowerPC64/Registers.h"
-#elif defined(__sparc__)
+#elif defined(ARCH_SPARC)
 #include "DebugServer2/Architecture/SPARC/Registers.h"
-#elif defined(__sparc64__)
+#elif defined(ARCH_SPARC64)
 #include "DebugServer2/Architecture/SPARC/Registers.h"
 #include "DebugServer2/Architecture/SPARC64/Registers.h"
 #else

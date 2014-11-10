@@ -17,40 +17,40 @@ using ds2::ELFSupport;
 bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
                                       CPUType &type, CPUSubType &subType) {
   switch (machineType) {
-#if defined(__i386__) || defined(__x86_64__)
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
   case EM_386:
     type = kCPUTypeX86;
     subType = kCPUSubTypeX86_ALL;
     break;
 
-#if defined(__x86_64__)
+#if defined(ARCH_X64)
   case EM_X86_64:
     type = kCPUTypeX86_64;
     subType = kCPUSubTypeX86_64_ALL;
     break;
 #endif
 
-#elif defined(__arm__) || defined(__aarch64__)
+#elif defined(ARCH_ARM) || defined(ARCH_ARM64)
   case EM_ARM:
     type = kCPUTypeARM;
     subType = kCPUSubTypeARM_ALL;
     break;
 
-#if defined(__aarch64__)
+#if defined(ARCH_ARM64)
   case EM_AARCH64:
     type = kCPUTypeARM64;
     subType = kCPUSubTypeARM64_ALL;
     break;
 #endif
 
-#elif defined(__mips__) || defined(__mips64__)
+#elif defined(ARCH_MIPS) || defined(ARCH_MIPS64)
   case EM_MIPS_RS3_LE:
     type = kCPUTypeMIPS;
     subType = kCPUSubTypeMIPS_ALL;
     break;
 
   case EM_MIPS:
-#if !defined(__mips64__)
+#if !defined(ARCH_MIPS64)
     if (!is64Bit)
 #endif
     {
@@ -59,26 +59,26 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
     }
     break;
 
-#elif defined(__powerpc__) || defined(__powerpc64__)
+#elif defined(ARCH_PPC) || defined(ARCH_PPC64)
   case EM_PPC:
     type = kCPUTypePOWERPC;
     subType = kCPUSubTypePOWERPC_ALL;
     break;
 
-#if defined(__powerpc64__)
+#if defined(ARCH_PPC64)
   case EM_PPC64:
     type = kCPUTypePOWERPC64;
     subType = kCPUSubTypePOWERPC_970;
     break;
 #endif
 
-#elif defined(__sparc__) || defined(__sparc64__)
+#elif defined(ARCH_SPARC) || defined(ARCH_SPARC64)
   case EM_SPARC:
     type = kCPUTypeSPARC;
     subType = kCPUSubTypeSPARC_ALL;
     break;
 
-#if defined(__sparc64__)
+#if defined(ARCH_SPARC64)
   case EM_SPARCV9:
   case EM_SPARC32PLUS:
     type = kCPUTypeSPARC64;
@@ -87,7 +87,7 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
 #endif
 
 #else
-#error "architecture not supported."
+#error "Architecture not supported."
 #endif
 
   default:

@@ -11,6 +11,8 @@
 #ifndef __DebugServer2_Architecture_RegistersDescriptors_h
 #define __DebugServer2_Architecture_RegistersDescriptors_h
 
+#include "DebugServer2/Base.h"
+
 #define USE_DESCRIPTORS(ARCH)                                                  \
   namespace ds2 {                                                              \
   namespace Architecture {                                                     \
@@ -19,28 +21,28 @@
   }                                                                            \
   }
 
-#if defined(__arm__)
+#if defined(ARCH_ARM)
 #include "DebugServer2/Architecture/ARM/RegistersDescriptors.h"
 USE_DESCRIPTORS(ARM);
-#elif defined(__aarch64__)
+#elif defined(ARCH_ARM64)
 #include "DebugServer2/Architecture/ARM64/RegistersDescriptors.h"
 USE_DESCRIPTORS(ARM64);
-#elif defined(__i386__)
+#elif defined(ARCH_X86)
 #include "DebugServer2/Architecture/X86/RegistersDescriptors.h"
 USE_DESCRIPTORS(X86);
-#elif defined(__x86_64__)
+#elif defined(ARCH_X86_64)
 #include "DebugServer2/Architecture/X86_64/RegistersDescriptors.h"
 USE_DESCRIPTORS(X86_64);
-#elif defined(__powerpc__)
+#elif defined(ARCH_PPC)
 #include "DebugServer2/Architecture/PowerPC/RegistersDescriptors.h"
 USE_DESCRIPTORS(PowerPC);
-#elif defined(__powerpc64__)
+#elif defined(ARCH_PPC64)
 #include "DebugServer2/Architecture/PowerPC64/RegistersDescriptors.h"
 USE_DESCRIPTORS(PowerPC64);
-#elif defined(__mips__)
+#elif defined(ARCH_MIPS)
 #include "DebugServer2/Architecture/MIPS/RegistersDescriptors.h"
 USE_DESCRIPTORS(MIPS);
-#elif defined(__mips64__)
+#elif defined(ARCH_MIPS64)
 #include "DebugServer2/Architecture/MIPS64/RegistersDescriptors.h"
 USE_DESCRIPTORS(MIPS64);
 #else

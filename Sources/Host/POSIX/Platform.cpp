@@ -8,6 +8,7 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/POSIX/Platform.h"
 
@@ -30,35 +31,35 @@ void Platform::Initialize() {
 }
 
 ds2::CPUType Platform::GetCPUType() {
-#if defined(__arm__) || defined(__aarc64__)
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
   return (sizeof(void *) == 8) ? kCPUTypeARM64 : kCPUTypeARM;
-#elif defined(__i386__) || defined(__x86_64__)
+#elif defined(ARCH_X86) || defined(ARCH_X86_64)
   return (sizeof(void *) == 8) ? kCPUTypeX86_64 : kCPUTypeI386;
-#elif defined(__powerpc__) || defined(__powerpc64__)
+#elif defined(ARCH_PPC) || defined(ARCH_PPC64)
   return (sizeof(void *) == 8) ? kCPUTypePOWERPC64 : kCPUTypePOWERPC;
-#elif defined(__mips__) || defined(__mips64__)
+#elif defined(ARCH_MIPS) || defined(ARCH_MIPS64)
   return (sizeof(void *) == 8) ? kCPUTypeMIPS64 : kCPUTypeMIPS;
-#elif defined(__sparc__) || defined(__sparc64__)
+#elif defined(ARCH_SPARC) || defined(ARCH_SPARC64)
   return (sizeof(void *) == 8) ? kCPUTypeSPARC64 : kCPUTypeSPARC;
-#elif defined(__hppa__) || defined(__hppa64__)
+#elif defined(ARCH_HPPA) || defined(ARCH_HPPA64)
   return (sizeof(void *) == 8) ? kCPUTypeHPPA64 : kCPUTypeHPPA;
-#elif defined(__alpha__)
+#elif defined(ARCH_ALPHA)
   return kCPUTypeALPHA;
-#elif defined(__i860__)
+#elif defined(ARCH_I860)
   return kCPUTypeI860;
-#elif defined(__m68k__)
+#elif defined(ARCH_M68K)
   return kCPUTypeMC680x0;
-#elif defined(__vax__)
+#elif defined(ARCH_VAX)
   return kCPUTypeVAX;
-#elif defined(__m88k__)
+#elif defined(ARCH_M88K)
   return kCPUTypeMC88000;
 #else
-#error "I don't know your architecture."
+#error "Architecture not supported."
 #endif
 }
 
 ds2::CPUSubType Platform::GetCPUSubType() {
-#if defined(__arm__)
+#if defined(ARCH_ARM)
 #if defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) ||                     \
     defined(__ARM_ARCH_7R__)
   return kCPUSubTypeARM_V7;

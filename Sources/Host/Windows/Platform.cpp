@@ -8,6 +8,7 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
 
 #include <stdio.h>
@@ -32,17 +33,17 @@ void Platform::Initialize() {
 }
 
 ds2::CPUType Platform::GetCPUType() {
-#if defined(__arm__) || defined(__aarc64__)
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
   return (sizeof(void *) == 8) ? kCPUTypeARM64 : kCPUTypeARM;
-#elif defined(__i386__) || defined(__x86_64__)
+#elif defined(ARCH_X86) || defined(ARCH_X86_64)
   return (sizeof(void *) == 8) ? kCPUTypeX86_64 : kCPUTypeI386;
 #else
-#error "I don't know your architecture."
+#error "Architecture not supported."
 #endif
 }
 
 ds2::CPUSubType Platform::GetCPUSubType() {
-#if defined(__arm__)
+#if defined(ARCH_ARM)
 #if defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) ||                     \
     defined(__ARM_ARCH_7R__)
   return kCPUSubTypeARM_V7;
