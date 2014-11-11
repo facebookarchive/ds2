@@ -53,10 +53,11 @@ void Log(int category, int level, char const *classname, char const *funcname,
 #ifdef __DS2_LOG_CLASS_NAME__
 #define DS2LOG(CAT, LVL, ...)                                                  \
   ds2::Log(ds2::kLog##CAT, ds2::kLogLevel##LVL, __DS2_LOG_CLASS_NAME__,        \
-           __func__, __VA_ARGS__)
+           __FUNCTION__, __VA_ARGS__)
 #else
 #define DS2LOG(CAT, LVL, ...)                                                  \
-  ds2::Log(ds2::kLog##CAT, ds2::kLogLevel##LVL, nullptr, __func__, __VA_ARGS__)
+  ds2::Log(ds2::kLog##CAT, ds2::kLogLevel##LVL, nullptr, __FUNCTION__,         \
+           __VA_ARGS__)
 #endif
 }
 
