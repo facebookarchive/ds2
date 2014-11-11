@@ -28,7 +28,7 @@ typedef SSIZE_T ssize_t;
 #include <cstring>
 
 template <typename TYPE, size_t SIZE>
-static inline constexpr size_t array_size(TYPE const (&)[SIZE]) {
+static inline size_t array_size(TYPE const (&)[SIZE]) {
   return SIZE;
 }
 
