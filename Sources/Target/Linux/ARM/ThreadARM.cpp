@@ -16,6 +16,8 @@
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Log.h"
 
+#include <cassert>
+
 using ds2::Target::Linux::Thread;
 using ds2::Target::Linux::Process;
 using ds2::ErrorCode;
@@ -24,44 +26,44 @@ namespace {
 
 static ErrorCode PrepareThumbSoftwareSingleStep(
     Process *process, uint32_t pc, ds2::Architecture::CPUState const &state,
-    uint32_t &size, bool &link, uint32_t &branchPC, uint32_t &nextPC) {
+    bool &link, uint32_t &nextPC, uint32_t &nextPCSize, uint32_t &branchPC,
+    uint32_t &branchPCSize) {
   ErrorCode error;
-  ds2::Architecture::ARM::BranchInfo info;
   uint32_t insns[2];
+
+  DS2LOG(Architecture, Debug, "process=%p", process);
 
   error = process->readMemory(pc, insns, sizeof(insns));
   if (error != ds2::kSuccess)
     return error;
 
-  if (!ds2::Architecture::ARM::GetThumbBranchInfo(insns, info))
-    return ds2::kErrorUnknown;
+  ds2::Architecture::ARM::BranchInfo info;
+  if (!ds2::Architecture::ARM::GetThumbBranchInfo(insns, info)) {
+    nextPC = pc + static_cast<uint8_t>(
+                      ds2::Architecture::ARM::GetThumbInstSize(insns[0]));
+    // Even if the next instruction is a 4-byte Thumb2 instruction, we are fine
+    // with a 2-byte breakpoint because we won't ever jump over that
+    // instruction.
+    nextPCSize = 2;
+    return ds2::kSuccess;
+  }
 
-  //
-  // It's a branch, shrug, setup target breakpoint.
-  //
   uint32_t address;
 
-  DS2LOG(Architecture, Debug,
-         "Thumb branch/IT found at %#lx (size=%zu,it=%s[%u])",
-         (unsigned long)pc, info.size, info.it ? "true" : "false",
+  DS2LOG(Architecture, Debug, "Thumb branch/IT found at %#lx (size=%zu,it=%s[%u])",
+         pc, info.size, info.it ? "true" : "false",
          info.it ? info.itCount : 0);
 
-  branchPC = pc;
-
   //
-  // If it's inside an IT block, we need to set the
-  // branch after the IT block.
+  // If it's inside an IT block, we need to set the branch after the IT block.
   //
   if (info.it) {
-    nextPC += 2;
-    branchPC += 2; // The branch is after the IT instruction
+    nextPC = pc + 2;
 
     //
-    // We need to read all the instructions in the IT block
-    // and skip past them.
+    // We need to read all the instructions in the IT block and skip past them.
     //
-    uint16_t
-        itinsns[4 * 2]; // there may be at most 4 instructions in the IT block
+    uint16_t itinsns[4 * 2]; // At most 4 instructions in the IT block.
 
     error = process->readMemory(nextPC, itinsns, sizeof(itinsns));
     if (error != ds2::kSuccess)
@@ -69,40 +71,40 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
 
     size_t skip = 0;
     for (size_t n = 0; n < info.itCount; n++) {
-      skip += static_cast<std::uint8_t>(
-          ds2::Architecture::ARM::GetThumbInstSize(itinsns[skip]));
+      skip += static_cast<uint8_t>(
+          ds2::Architecture::ARM::GetThumbInstSize(itinsns[skip / 2]));
     }
 
-    nextPC += (skip << 1);
-    branchPC += (skip << 1);
+    nextPC += skip;
+    // Even if the next instruction is a 4-byte Thumb2 instruction, we are fine
+    // with a 2-byte breakpoint because we won't ever jump over that
+    // instruction.
+    nextPCSize = 2;
+    return ds2::kSuccess;
   }
+  else
+    DS2LOG(Architecture, Debug, "not an IT block");
 
   link = (info.type == ds2::Architecture::ARM::kBranchTypeBL_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_r);
 
+  DS2LOG(Architecture, Debug, "link=%d", link);
   //
   // If it's a conditional branch, we need to move
   // the nextPC by the size of this instruction.
   //
-  if (link || info.type == ds2::Architecture::ARM::kBranchTypeBcc_i ||
-      info.type == ds2::Architecture::ARM::kBranchTypeCB_i) {
-    nextPC += info.size << 1;
-  } else if (!info.it) {
-    //
-    // In all other case we don't need to set the
-    // breakpoint on the following instruction.
-    //
-    nextPC = static_cast<uint32_t>(-1);
+  if (info.type == ds2::Architecture::ARM::kBranchTypeBcc_i ||
+      info.type == ds2::Architecture::ARM::kBranchTypeCB_i || link) {
+    nextPC = pc + static_cast<uint8_t>(ds2::Architecture::ARM::GetThumbInstSize(insns[0]));
+    nextPCSize = 2;
   }
 
-  size = 2;
   switch (info.type) {
   //
   // None means a conditional instruction.
   //
   case ds2::Architecture::ARM::kBranchTypeNone:
-    branchPC = static_cast<uint32_t>(-1);
     break;
 
   //
@@ -112,7 +114,8 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
   case ds2::Architecture::ARM::kBranchTypeBL_i:
   case ds2::Architecture::ARM::kBranchTypeBcc_i:
   case ds2::Architecture::ARM::kBranchTypeCB_i:
-    branchPC += info.disp;
+    branchPC = pc + info.disp;
+    branchPCSize = 2;
     break;
 
   //
@@ -152,14 +155,12 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
     break;
 
   //
-  // Switch to ARM has the added twist that the
-  // breakpoint to be set is of ARM type and the
-  // address shall be aligned.
+  // Simple branch with switch-back to ARM
   //
   case ds2::Architecture::ARM::kBranchTypeBLX_i:
-    branchPC += info.disp;
+    branchPC = pc + info.disp;
     branchPC = (branchPC + info.align - 1) & -info.align;
-    size = 4; // ARM branch
+    branchPCSize = 4;
     break;
 
   //
@@ -173,12 +174,25 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
     return ds2::kErrorUnsupported;
   }
 
+  //
+  // If we didn't set the breakpoint size in the switch earlier, it means we
+  // are dealing with an instruction that might or might not switch back to ARM
+  // mode. We need to check the value that we are loading in the register and
+  // determine the branch size based on that.
+  //
+  if (branchPCSize == 0) {
+    branchPCSize = (branchPC & 1) ? 2 : 4;
+    branchPC &= ~1ULL;
+  }
+
   return ds2::kSuccess;
 }
 
-static ErrorCode PrepareARMSoftwareSingleStep(
-    Process *process, uint32_t pc, ds2::Architecture::CPUState const &state,
-    uint32_t &size, bool &link, uint32_t &branchPC, uint32_t &nextPC) {
+static ErrorCode
+PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
+                             ds2::Architecture::CPUState const &state,
+                             bool &link, uint32_t &nextPC, uint32_t &nextPCSize,
+                             uint32_t &branchPC, uint32_t &branchPCSize) {
   ErrorCode error;
   uint32_t insn;
 
@@ -187,38 +201,30 @@ static ErrorCode PrepareARMSoftwareSingleStep(
     return error;
 
   ds2::Architecture::ARM::BranchInfo info;
-  if (!ds2::Architecture::ARM::GetARMBranchInfo(insn, info))
-    return ds2::kErrorUnknown;
+  if (!ds2::Architecture::ARM::GetARMBranchInfo(insn, info)) {
+    // We couldn't find a branch, the next instruction is standard ARM.
+    nextPC = pc + 4;
+    nextPCSize = 4;
+    return ds2::kSuccess;
+  }
 
-  //
-  // It's a branch, shrug, setup target breakpoint.
-  //
   uint32_t address;
 
-  DS2LOG(Architecture, Debug, "ARM branch found at %#lx",
-         (unsigned long)state.gp.pc);
-
-  branchPC = pc;
+  DS2LOG(Architecture, Debug, "ARM branch found at %#lx", pc);
 
   link = (info.type == ds2::Architecture::ARM::kBranchTypeBL_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_r);
 
   //
-  // If it's a conditional branch, we need to move
-  // the nextPC by the size of this instruction.
+  // If it's a conditional branch, we need to set nextPC to the next
+  // instruction. Otherwise, we leave nextPC to its undefined value.
   //
   if (info.cond != ds2::Architecture::ARM::kCondAL || link) {
-    nextPC += info.size << 1;
-  } else {
-    //
-    // In all other case we don't need to set the
-    // breakpoint on the following instruction.
-    //
-    nextPC = static_cast<uint32_t>(-1);
+    nextPC = pc + 4;
+    nextPCSize = 4;
   }
 
-  size = 4;
   switch (info.type) {
   //
   // Simple branches
@@ -226,7 +232,8 @@ static ErrorCode PrepareARMSoftwareSingleStep(
   case ds2::Architecture::ARM::kBranchTypeB_i:
   case ds2::Architecture::ARM::kBranchTypeBL_i:
   case ds2::Architecture::ARM::kBranchTypeBcc_i:
-    branchPC += info.disp;
+    branchPC = pc + info.disp;
+    branchPCSize = 4;
     break;
 
   //
@@ -270,16 +277,6 @@ static ErrorCode PrepareARMSoftwareSingleStep(
     error = process->readMemory(address, &branchPC, sizeof(branchPC));
     if (error != ds2::kSuccess)
       return error;
-
-    //
-    // We can switch to Thumb with an LDR pc. If
-    // that's the case, adjust the target and size.
-    //
-    if (branchPC & 1) {
-      branchPC &= ~1ULL;
-      size = 2;
-    }
-
     break;
 
   case ds2::Architecture::ARM::kBranchTypeLDM_pc:
@@ -291,12 +288,11 @@ static ErrorCode PrepareARMSoftwareSingleStep(
     break;
 
   //
-  // Switch to Thumb has the added twist that the
-  // breakpoint to be set is of Thumb type.
+  // Switch to Thumb has the added twist that the breakpoint to be set is of
+  // Thumb type.
   //
   case ds2::Architecture::ARM::kBranchTypeBLX_i:
-    branchPC += info.disp;
-    size = 2; // Thumb branch
+    branchPC = pc + info.disp;
     break;
 
   //
@@ -308,6 +304,17 @@ static ErrorCode PrepareARMSoftwareSingleStep(
 
   default:
     return ds2::kErrorUnsupported;
+  }
+
+  //
+  // We can switch to Thumb with an LDR pc. If that's the case, adjust the
+  // target and size.
+  //
+  if (branchPC & 1) {
+    branchPC &= ~1ULL;
+    branchPCSize = 2;
+  } else {
+    branchPCSize = 4;
   }
 
   return ds2::kSuccess;
@@ -324,52 +331,35 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   bool link = false;
   bool isThumb = (state.gp.cpsr & (1 << 5));
   uint32_t pc = address.valid() ? address.value() : state.pc();
-  uint32_t nextPC = pc;
+  uint32_t nextPC = static_cast<uint32_t>(-1);
+  uint32_t nextPCSize = 0;
   uint32_t branchPC = static_cast<uint32_t>(-1);
-  uint32_t size = 0;
+  uint32_t branchPCSize = 0;
 
-  //
-  // We need to read 8 bytes, because of IT block
-  //
   if (isThumb) {
-    error = PrepareThumbSoftwareSingleStep(process(), pc, state, size, link,
-                                           branchPC, nextPC);
+    error = PrepareThumbSoftwareSingleStep(process(), pc, state, link, nextPC,
+                                           nextPCSize, branchPC, branchPCSize);
   } else {
-    error = PrepareARMSoftwareSingleStep(process(), pc, state, size, link,
-                                         branchPC, nextPC);
+    error = PrepareARMSoftwareSingleStep(process(), pc, state, link, nextPC,
+                                         nextPCSize, branchPC, branchPCSize);
   }
 
-  DS2LOG(Architecture, Debug, "branchPC=%#lx[link=%s] nextPC=%#lx",
-         (unsigned long)branchPC, link ? "true" : "false",
-         (unsigned long)nextPC);
+  DS2LOG(Architecture, Debug,
+         "branchPC=%#lx[size=%d, link=%s] nextPC=%#lx[size=%d]", branchPC,
+         branchPCSize, link ? "true" : "false", nextPC, nextPCSize);
 
   if (branchPC != static_cast<uint32_t>(-1)) {
+    assert(branchPCSize != 0);
     error = process()->breakpointManager()->add(
-        branchPC, BreakpointManager::kTypeTemporaryOneShot, size);
+        branchPC, BreakpointManager::kTypeTemporaryOneShot, branchPCSize);
     if (error != kSuccess)
       return error;
   }
 
   if (nextPC != static_cast<uint32_t>(-1)) {
-    if ((nextPC & ~1) == pc) {
-      if (!isThumb) {
-        nextPC += 4;
-        size = 4;
-      } else {
-        uint32_t insn;
-
-        error = process()->readMemory(pc & ~1, &insn, sizeof(insn));
-        if (error != kSuccess)
-          return error;
-
-        auto inst_size = Architecture::ARM::GetThumbInstSize(insn);
-        nextPC += static_cast<std::uint8_t>(inst_size);
-        size = 2;
-      }
-    }
-
+    assert(nextPCSize != 0);
     error = process()->breakpointManager()->add(
-        nextPC, BreakpointManager::kTypeTemporaryOneShot, size);
+        nextPC, BreakpointManager::kTypeTemporaryOneShot, nextPCSize);
     if (error != kSuccess)
       return error;
   }
