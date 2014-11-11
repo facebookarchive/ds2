@@ -11,6 +11,8 @@
 #ifndef __DebugServer2_HexValues_h
 #define __DebugServer2_HexValues_h
 
+#include "DebugServer2/CompilerSupport.h"
+
 #include <cassert>
 #include <cstdint>
 #include <cstdio>
@@ -30,8 +32,7 @@ static inline uint8_t HexToNibble(char ch) {
     return ch - 'a' + 10;
   else if (ch >= 'A' && ch <= 'F')
     return ch - 'A' + 10;
-  else
-    __builtin_trap();
+  DS2_UNREACHABLE();
 }
 
 static inline uint8_t HexToByte(char const *chars) {
