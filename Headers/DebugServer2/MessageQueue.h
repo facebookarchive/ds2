@@ -13,9 +13,10 @@
 
 #include <DebugServer2/Base.h>
 
-#include <mutex>
 #include <condition_variable>
 #include <deque>
+#include <mutex>
+#include <string>
 
 namespace ds2 {
 

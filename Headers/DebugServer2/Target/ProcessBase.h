@@ -14,6 +14,9 @@
 #include "DebugServer2/Target/ProcessDecl.h"
 #include "DebugServer2/Target/ThreadBase.h"
 
+#include <functional>
+#include <set>
+
 namespace ds2 {
 
 class BreakpointManager;

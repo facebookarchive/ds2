@@ -13,6 +13,8 @@
 
 #include "DebugServer2/Architecture/RegistersDescriptors.h"
 
+#include <cstring>
+
 namespace ds2 {
 namespace Architecture {
 namespace ARM {

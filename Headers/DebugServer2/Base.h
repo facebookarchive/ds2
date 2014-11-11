@@ -14,16 +14,9 @@
 #ifdef _WIN32
 #include <WinSock2.h>
 typedef SSIZE_T ssize_t;
+#else
+#include <cstdlib>
 #endif
-
-#include <sys/types.h>
-#include <stdint.h>
-
-#include <set>
-#include <vector>
-#include <map>
-#include <string>
-#include <functional>
 
 #if defined(__alpha__) || defined(_M_ALPHA)
 #define ARCH_ALPHA
@@ -62,8 +55,6 @@ typedef SSIZE_T ssize_t;
 #else
 #error "Architecture not supported."
 #endif
-
-#include <cstring>
 
 template <typename TYPE, size_t SIZE>
 static inline size_t array_size(TYPE const (&)[SIZE]) {

@@ -13,9 +13,6 @@
 
 #include <sstream>
 
-#include <cstdarg>
-#include <cstdio>
-
 namespace {
 
 uint64_t sLogMask;

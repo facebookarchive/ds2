@@ -10,6 +10,8 @@
 
 #include "DebugServer2/Host/QueueChannel.h"
 
+#include <cstring>
+
 using ds2::Host::QueueChannel;
 
 QueueChannel::QueueChannel(Channel *remote) : _remote(remote) {}

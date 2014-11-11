@@ -10,11 +10,11 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::ProcessBase"
 
-#include "DebugServer2/Target/ProcessBase.h"
-#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Architecture/CPUState.h"
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Log.h"
+#include "DebugServer2/Target/ProcessBase.h"
+#include "DebugServer2/Target/Thread.h"
 
 using ds2::Target::ProcessBase;
 using ds2::ErrorCode;

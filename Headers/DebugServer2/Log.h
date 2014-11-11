@@ -14,6 +14,10 @@
 #include "DebugServer2/Base.h"
 #include "DebugServer2/CompilerSupport.h"
 
+#include <cstdarg>
+#include <cstdint>
+#include <cstdio>
+
 namespace ds2 {
 
 //

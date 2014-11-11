@@ -15,8 +15,9 @@
 #include "DebugServer2/SwapEndian.h"
 
 #include <cstdlib>
-#include <sstream>
+#include <cstring>
 #include <iomanip>
+#include <sstream>
 
 #if defined(__linux__)
 #define FORMAT_ID(ID) ID

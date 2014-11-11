@@ -14,6 +14,7 @@
 #include "DebugServer2/GDBRemote/SessionBase.h"
 #include "DebugServer2/GDBRemote/ProtocolInterpreter.h"
 
+#include <functional>
 #include <map>
 
 namespace ds2 {

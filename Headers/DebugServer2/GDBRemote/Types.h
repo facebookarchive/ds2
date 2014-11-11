@@ -15,6 +15,8 @@
 #include "DebugServer2/Architecture/RegisterLayout.h"
 #include "DebugServer2/Host/Base.h"
 
+#include <set>
+
 namespace ds2 {
 namespace GDBRemote {
 

@@ -15,6 +15,9 @@
 #include "DebugServer2/Constants.h"
 #include "DebugServer2/CPUTypes.h"
 
+#include <string>
+#include <vector>
+
 namespace ds2 {
 
 //

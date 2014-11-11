@@ -13,12 +13,13 @@
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Log.h"
 
-#include <sys/wait.h>
-#include <poll.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <libgen.h>
+#include <cstring>
 #include <errno.h>
+#include <fcntl.h>
+#include <libgen.h>
+#include <poll.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 using ds2::Host::ProcessSpawner;
 using ds2::ErrorCode;

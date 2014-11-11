@@ -13,6 +13,8 @@
 
 #include "DebugServer2/Host/POSIX/Platform.h"
 
+#include <functional>
+
 namespace ds2 {
 namespace Host {
 namespace Linux {

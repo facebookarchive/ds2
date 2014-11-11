@@ -18,6 +18,7 @@
 #include "DebugServer2/Log.h"
 
 #include <cstdlib>
+#include <cstring>
 #include <iomanip>
 #include <sstream>
 
@@ -981,10 +982,10 @@ void Session::Handle_P(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  ptidptr = strchr(eptr, ';');
+  ptidptr = std::strchr(eptr, ';');
 
   if (_compatMode != kCompatibilityModeLLDB || ptidptr == nullptr) {
-    ptidptr = strchr(eptr, '\0');
+    ptidptr = std::strchr(eptr, '\0');
   }
 
   value = HexToString(std::string(eptr, ptidptr - eptr));

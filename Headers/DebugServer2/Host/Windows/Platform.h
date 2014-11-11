@@ -15,6 +15,8 @@
 #error "You shall not include this file directly."
 #endif
 
+#include <functional>
+
 namespace ds2 {
 namespace Host {
 namespace Windows {

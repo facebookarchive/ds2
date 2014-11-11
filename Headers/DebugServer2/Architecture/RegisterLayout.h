@@ -14,6 +14,8 @@
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Types.h"
 
+#include <map>
+
 namespace ds2 {
 namespace Architecture {
 
