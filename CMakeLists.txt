@@ -133,6 +133,7 @@ set(SUPPORT_COMMON_SOURCES
 
 set(SUPPORT_POSIX_SOURCES
     Sources/ELFSupport.cpp
+    Sources/FaultHandler.cpp
     )
 
 set(SUPPORT_Linux_SOURCES
