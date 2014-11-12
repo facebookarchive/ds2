@@ -59,7 +59,7 @@ void SessionThread::onPacketData(std::string const &data, bool valid) {
     _channel->queue().clear();
     _session->interpreter().onPacketData(data, valid);
   } else {
-    if (!valid) {
+    if (_session->getAckMode() && !valid) {
       //
       // In case of invalid message, we forward to the session directly
       // so that it can act as necessary, calling onPacketData in another

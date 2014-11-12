@@ -1137,7 +1137,7 @@ void Session::Handle_QProgramSignals(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_QStartNoAckMode(ProtocolInterpreter::Handler const &,
                                      std::string const &) {
-  _ackmode = false;
+  setAckMode(false);
   sendOK();
 }
 

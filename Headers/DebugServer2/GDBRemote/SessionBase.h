@@ -60,6 +60,9 @@ protected:
   inline bool sendOK() { return send("OK"); }
   bool sendError(ErrorCode code);
 
+public:
+  inline bool getAckMode() { return _ackmode; }
+
 protected:
   inline void setAckMode(bool enabled) { _ackmode = enabled; }
 
