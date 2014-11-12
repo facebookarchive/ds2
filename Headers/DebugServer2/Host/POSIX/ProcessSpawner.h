@@ -63,7 +63,7 @@ public:
   bool setArguments(StringCollection const &args);
 
   template <typename... Args> inline bool setArguments(Args const &... args) {
-    static std::string const args_[] = {args...};
+    std::string args_[] = {args...};
     return setArguments(StringCollection(&args_[0], &args_[sizeof...(Args)]));
   }
 
