@@ -109,7 +109,7 @@ public:
   bool redirectErrorToDelegate(ProcessSpawnerDelegate *delegate);
 
 public:
-  ErrorCode run(bool wait);
+  ErrorCode run();
   ErrorCode wait();
   bool isRunning() const;
 

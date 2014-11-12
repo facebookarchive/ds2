@@ -235,7 +235,7 @@ bool ProcessSpawner::redirectErrorToDelegate(ProcessSpawnerDelegate *delegate) {
 #define RD 0
 #define WR 1
 
-ErrorCode ProcessSpawner::run(bool wait) {
+ErrorCode ProcessSpawner::run() {
   if (_pid != 0 || _executablePath.empty())
     return kErrorInvalidArgument;
 
@@ -362,9 +362,6 @@ ErrorCode ProcessSpawner::run(bool wait) {
     _delegateThread =
         std::move(std::thread(&ProcessSpawner::redirectionThread, this));
   }
-
-  if (wait)
-    return this->wait();
 
   return kSuccess;
 }

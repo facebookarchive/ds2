@@ -52,7 +52,7 @@ public:
   bool redirectErrorToDelegate(void *delegate) { return false; }
 
 public:
-  ErrorCode run(bool wait) { return ds2::kErrorUnsupported; }
+  ErrorCode run() { return ds2::kErrorUnsupported; }
   ErrorCode wait() { return ds2::kErrorUnsupported; }
   bool isRunning() const { return false; }
 

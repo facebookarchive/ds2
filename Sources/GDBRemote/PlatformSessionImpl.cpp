@@ -24,11 +24,7 @@ using ds2::Host::ProcessSpawner;
 using ds2::ErrorCode;
 
 PlatformSessionImpl::PlatformSessionImpl()
-    : DummySessionDelegateImpl(),
-      //
-      _processIndex(0),
-      //
-      _disableASLR(false) {}
+    : DummySessionDelegateImpl(), _processIndex(0), _disableASLR(false) {}
 
 ErrorCode PlatformSessionImpl::onQueryProcessList(Session &session,
                                                   ProcessInfoMatch const &match,
@@ -69,9 +65,13 @@ ErrorCode PlatformSessionImpl::onExecuteProgram(
   ps.redirectErrorToBuffer();
   ps.setWorkingDirectory(workingDirectory);
 
-  ErrorCode rc = ps.run(true);
-  if (rc != kSuccess)
-    return rc;
+  ErrorCode error;
+  error = ps.run();
+  if (error != kSuccess)
+    return error;
+  error = ps.wait();
+  if (error != kSuccess)
+    return error;
 
   result.status = ps.exitStatus();
   result.signal = ps.signalCode();
@@ -115,7 +115,11 @@ ErrorCode PlatformSessionImpl::onLaunchDebugServer(Session &session,
   ps.redirectInputToNull();
   ps.redirectOutputToBuffer();
 
-  ErrorCode error = ps.run(true);
+  ErrorCode error;
+  error = ps.run();
+  if (error != kSuccess)
+    return error;
+  error = ps.wait();
   if (error != kSuccess)
     return error;
 
