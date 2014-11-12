@@ -23,7 +23,7 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
     subType = kCPUSubTypeX86_ALL;
     break;
 
-#if defined(ARCH_X64)
+#if defined(ARCH_X86_64)
   case EM_X86_64:
     type = kCPUTypeX86_64;
     subType = kCPUSubTypeX86_64_ALL;
