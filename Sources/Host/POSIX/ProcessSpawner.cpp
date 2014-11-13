@@ -36,7 +36,7 @@ static inline void close_pipes(int fds[3][2]) {
 }
 
 ProcessSpawner::ProcessSpawner()
-    : _delegate(nullptr), _exitStatus(0), _signalCode(0), _pid(0) {}
+    : _exitStatus(0), _signalCode(0), _pid(0) {}
 
 bool ProcessSpawner::setExecutable(std::string const &path) {
   if (_pid != 0)
@@ -198,19 +198,8 @@ bool ProcessSpawner::redirectErrorToBuffer() {
 //
 // Delegate redirection
 //
-bool ProcessSpawner::redirectInputToDelegate(ProcessSpawnerDelegate *delegate) {
-  if (_pid != 0 || delegate == nullptr)
-    return false;
-
-  _descriptors[0].mode = kRedirectDelegate;
-  _descriptors[0].delegate = delegate;
-  _descriptors[0].fd = -1;
-  _descriptors[0].path.clear();
-  return true;
-}
-
 bool
-ProcessSpawner::redirectOutputToDelegate(ProcessSpawnerDelegate *delegate) {
+ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
   if (_pid != 0 || delegate == nullptr)
     return false;
 
@@ -221,7 +210,7 @@ ProcessSpawner::redirectOutputToDelegate(ProcessSpawnerDelegate *delegate) {
   return true;
 }
 
-bool ProcessSpawner::redirectErrorToDelegate(ProcessSpawnerDelegate *delegate) {
+bool ProcessSpawner::redirectErrorToDelegate(RedirectDelegate delegate) {
   if (_pid != 0 || delegate == nullptr)
     return false;
 
@@ -235,7 +224,7 @@ bool ProcessSpawner::redirectErrorToDelegate(ProcessSpawnerDelegate *delegate) {
 #define RD 0
 #define WR 1
 
-ErrorCode ProcessSpawner::run() {
+ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   if (_pid != 0 || _executablePath.empty())
     return kErrorInvalidArgument;
 
@@ -328,6 +317,8 @@ ErrorCode ProcessSpawner::run() {
         argv.push_back(const_cast<char *>(arg.c_str()));
       }
       argv.push_back(nullptr);
+      if (!preExecAction())
+        return kErrorUnknown;
       if (::execv(_executablePath.c_str(), &argv[0]) < 0) {
         DS2LOG(Main, Error, "cannot spawn executable %s, error=%s",
                _executablePath.c_str(), strerror(errno));
@@ -464,19 +455,8 @@ void ProcessSpawner::redirectionThread() {
             if (descriptor->mode == kRedirectBuffer) {
               _outputBuffer.insert(_outputBuffer.end(), &buf[0], &buf[nread]);
             } else {
-              descriptor->delegate->onProcessOutput(this, index, buf, nread);
+              descriptor->delegate(buf, nread);
             }
-            done = true;
-          }
-        }
-      } else if (pfds[n].events & POLLOUT) {
-        if (pfds[n].revents & POLLOUT) {
-          char buf[128];
-          size_t nread = 0;
-          descriptor->delegate->onProcessInput(this, index, buf, sizeof(buf),
-                                               nread);
-          if (nread > 0) {
-            ::write(pfds[n].fd, buf, sizeof(buf));
             done = true;
           }
         }

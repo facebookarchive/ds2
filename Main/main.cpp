@@ -126,34 +126,20 @@ static void DebugMain(int argc, char **argv, int attachPid, int port) {
            "localhost");
   }
 
-  ds2::Target::Process *process = nullptr;
-  if (attachPid > 0 || argc > 0) {
-    if (attachPid < 0) {
-      process = ds2::Target::Process::Create(argc, argv);
-    } else {
-      process = ds2::Target::Process::Attach(attachPid);
-    }
-    if (process == nullptr) {
-      DS2LOG(Main, Error, "cannot execute '%s'", argv[0]);
-      exit(EXIT_FAILURE);
-    }
-  }
-
-  DebugSessionImpl *impl = new DebugSessionImpl(process);
-
-  bool first = true;
   do {
-    if (!first && process != nullptr && process->attached()) {
-      process->attach(true);
-    }
-    first = false;
+    DebugSessionImpl *impl;
+
+    if (attachPid > 0)
+      impl = new DebugSessionImpl(attachPid);
+    else if (argc > 0)
+      impl = new DebugSessionImpl(argc, argv);
+    else
+      impl = new DebugSessionImpl();
+
     RunDebugServer(server, impl);
-  } while (gKeepAlive && process->isAlive());
 
-  delete impl;
-
-  if (process != nullptr)
-    process->detach();
+    delete impl;
+  } while (gKeepAlive);
 }
 
 #if !defined(_WIN32)

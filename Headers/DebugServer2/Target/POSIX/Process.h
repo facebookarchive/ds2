@@ -11,13 +11,13 @@
 #ifndef __DebugServer2_Target_POSIX_Process_h
 #define __DebugServer2_Target_POSIX_Process_h
 
-#include "DebugServer2/Target/ProcessBase.h"
 #include "DebugServer2/Host/POSIX/PTrace.h"
+#include "DebugServer2/Host/ProcessSpawner.h"
+#include "DebugServer2/Target/ProcessBase.h"
 
 namespace ds2 {
 namespace Target {
 namespace POSIX {
-
 class Process : public ds2::Target::ProcessBase {
 public:
   enum { kFlagNewProcess = 0, kFlagAttachedProcess = (1 << 0) };
@@ -60,10 +60,7 @@ public:
   virtual Host::POSIX::PTrace &ptrace() const = 0;
 
 public:
-  static ds2::Target::Process *Create(int argc, char **argv);
-  static ds2::Target::Process *
-  Create(std::string const &path,
-         StringCollection const &args = StringCollection());
+  static ds2::Target::Process *Create(Host::ProcessSpawner &spawner);
   static ds2::Target::Process *Attach(ProcessId pid);
 };
 }

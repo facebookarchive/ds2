@@ -11,12 +11,12 @@
 #ifndef __DebugServer2_Target_Windows_Process_h
 #define __DebugServer2_Target_Windows_Process_h
 
+#include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Target/ProcessBase.h"
 
 namespace ds2 {
 namespace Target {
 namespace Windows {
-
 class Process : public ds2::Target::ProcessBase {
 public:
   virtual ErrorCode initialize(ProcessId pid, uint32_t flags) {
@@ -74,12 +74,7 @@ public:
   virtual void ptrace() const;
 
 public:
-  static ds2::Target::Process *Create(int argc, char **argv) { return nullptr; }
-  static ds2::Target::Process *
-  Create(std::string const &path,
-         StringCollection const &args = StringCollection()) {
-    return nullptr;
-  }
+  static ds2::Target::Process *Create(Host::ProcessSpawner &spawner) { return nullptr; }
   static ds2::Target::Process *Attach(ProcessId pid) { return nullptr; }
 
 public:

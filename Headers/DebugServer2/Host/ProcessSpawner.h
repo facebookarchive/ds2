@@ -19,17 +19,4 @@
 #include "DebugServer2/Host/POSIX/ProcessSpawner.h"
 #endif
 
-namespace ds2 {
-namespace Host {
-
-class ProcessSpawnerDelegate {
-public:
-  virtual void onProcessOutput(ProcessSpawner *ps, int stdfd,
-                               void const *buffer, size_t length) = 0;
-  virtual void onProcessInput(ProcessSpawner *ps, int stdfd, void *buffer,
-                              size_t length, size_t &nread) = 0;
-};
-}
-}
-
 #endif // !__DebugServer2_Host_ProcessSpawner_h

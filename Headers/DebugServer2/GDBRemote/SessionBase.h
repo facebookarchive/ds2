@@ -51,7 +51,7 @@ public:
   bool receive(bool cooked);
   bool parse(std::string const &data);
 
-protected:
+public:
   bool send(std::string const &data, bool escaped = false);
 
 protected:

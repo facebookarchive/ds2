@@ -22,6 +22,7 @@
 #include <cerrno>
 
 using ds2::Target::POSIX::Process;
+using ds2::Host::ProcessSpawner;
 using ds2::ErrorCode;
 
 Process::Process() : Target::ProcessBase() {}
@@ -117,55 +118,22 @@ ds2::Target::Process *Process::Attach(ProcessId pid) {
   return process;
 }
 
-ds2::Target::Process *Process::Create(int argc, char **argv) {
-  if (argc < 1 || argv == nullptr)
-    return nullptr;
-
-  std::vector<std::string> args(&argv[1], &argv[argc]);
-  return Create(argv[0], args);
-}
-
-ds2::Target::Process *Process::Create(std::string const &path,
-                                      StringCollection const &args) {
+ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   pid_t pid;
-  std::vector<char *> argv;
-
-  argv.push_back(const_cast<char *>(path.c_str()));
-  for (auto const &arg : args) {
-    argv.push_back(const_cast<char *>(arg.c_str()));
-  }
-  argv.push_back(nullptr);
 
   //
   // Create the process.
   //
   Target::Process *process = new Target::Process;
 
-  pid = ::fork();
-  if (pid < 0) {
-    delete process;
-    return nullptr;
-  }
+  spawner.run([process](){ return process->ptrace().traceMe(true) == kSuccess; });
 
-  if (pid == 0) {
-    ErrorCode rc = process->ptrace().traceMe(true);
-    if (rc == kSuccess) {
-      if (::execv(path.c_str(), argv.data()) < 0) {
-        DS2LOG(Target, Error, "failed to execute %s, error=%s", path.c_str(),
-               strerror(errno));
-      }
-    } else {
-      DS2LOG(Target, Error, "failed to trace me, error=%s",
-             GetErrorCodeString(rc));
-    }
-    _exit(127);
-  }
+  pid = spawner.pid();
 
   //
   // Wait the process.
   //
   if (process->initialize(pid, 0) != kSuccess) {
-    ::kill(pid, SIGKILL);
     delete process;
     return nullptr;
   }
@@ -175,9 +143,8 @@ ds2::Target::Process *Process::Create(std::string const &path,
   //
   ErrorCode error = process->ptrace().traceThat(pid);
   if (error != kSuccess) {
-    ::kill(pid, SIGKILL);
     delete process;
-    process = nullptr;
+    return nullptr;
   }
 
   return process;

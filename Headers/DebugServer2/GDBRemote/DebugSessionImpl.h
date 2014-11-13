@@ -12,12 +12,12 @@
 #define __DebugServer2_GDBRemote_DebugSessionImpl_h
 
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
+#include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
 
 namespace ds2 {
 namespace GDBRemote {
-
 class DebugSessionImpl : public DummySessionDelegateImpl {
 protected:
   Target::Process *_process;
@@ -25,9 +25,14 @@ protected:
   std::vector<int> _programmedSignals;
   std::map<uint64_t, size_t> _allocations;
   size_t _threadIndex;
+  Host::ProcessSpawner _spawner;
+  Session *_resumeSession;
 
 public:
-  DebugSessionImpl(Target::Process *process = nullptr);
+  DebugSessionImpl(int argc, char **argv);
+  DebugSessionImpl(int attachPid);
+  DebugSessionImpl();
+  ~DebugSessionImpl();
 
 protected:
   virtual size_t getGPRSize() const;
@@ -131,6 +136,9 @@ protected:
   Target::Thread *findThread(ProcessThreadId const &ptid) const;
   ErrorCode queryStopCode(Session &session, ProcessThreadId const &ptid,
                           StopCode &stop) const;
+
+private:
+  ErrorCode spawnProcess(std::string const &path, StringCollection const &args);
 };
 }
 }

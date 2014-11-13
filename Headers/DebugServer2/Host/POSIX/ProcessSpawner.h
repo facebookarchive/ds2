@@ -13,12 +13,11 @@
 
 #include "DebugServer2/Types.h"
 
+#include <functional>
 #include <thread>
 
 namespace ds2 {
 namespace Host {
-
-class ProcessSpawnerDelegate;
 
 class ProcessSpawner {
 protected:
@@ -30,10 +29,12 @@ protected:
     kRedirectDelegate
   };
 
+  typedef std::function<void(void *buf, size_t size)> RedirectDelegate;
+
 protected:
   struct RedirectDescriptor {
     RedirectMode mode;
-    ProcessSpawnerDelegate *delegate;
+    RedirectDelegate delegate;
     std::string path;
     int fd;
 
@@ -44,7 +45,6 @@ protected:
   std::string _executablePath;
   StringCollection _arguments;
   std::string _workingDirectory;
-  ProcessSpawnerDelegate *_delegate;
   std::thread _delegateThread;
   RedirectDescriptor _descriptors[3];
   std::string _outputBuffer;
@@ -87,12 +87,11 @@ public:
   bool redirectErrorToBuffer();
 
 public:
-  bool redirectInputToDelegate(ProcessSpawnerDelegate *delegate);
-  bool redirectOutputToDelegate(ProcessSpawnerDelegate *delegate);
-  bool redirectErrorToDelegate(ProcessSpawnerDelegate *delegate);
+  bool redirectOutputToDelegate(RedirectDelegate delegate);
+  bool redirectErrorToDelegate(RedirectDelegate delegate);
 
 public:
-  ErrorCode run();
+  ErrorCode run(std::function<bool()> preExecAction = [](){ return true; });
   ErrorCode wait();
   bool isRunning() const;
 

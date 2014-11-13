@@ -11,10 +11,15 @@
 #ifndef __DebugServer2_Host_Windows_ProcessSpawner_h
 #define __DebugServer2_Host_Windows_ProcessSpawner_h
 
+#include <functional>
+
 namespace ds2 {
 namespace Host {
 
 class ProcessSpawner {
+protected:
+  typedef std::function<void(void *buf, size_t size)> RedirectDelegate;
+
 public:
   bool setExecutable(std::string const &path) { return false; }
   bool setWorkingDirectory(std::string const &path) { return false; }
@@ -47,9 +52,8 @@ public:
   bool redirectErrorToBuffer() { return false; }
 
 public:
-  bool redirectInputToDelegate(void *delegate) { return false; }
-  bool redirectOutputToDelegate(void *delegate) { return false; }
-  bool redirectErrorToDelegate(void *delegate) { return false; }
+  bool redirectOutputToDelegate(RedirectDelegate delegate) { return false; }
+  bool redirectErrorToDelegate(RedirectDelegate delegate) { return false; }
 
 public:
   ErrorCode run() { return ds2::kErrorUnsupported; }

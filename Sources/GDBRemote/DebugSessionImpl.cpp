@@ -10,10 +10,11 @@
 
 #define __DS2_LOG_CLASS_NAME__ "DebugSession"
 
+#include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/GDBRemote/DebugSessionImpl.h"
 #include "DebugServer2/GDBRemote/Session.h"
+#include "DebugServer2/HexValues.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Log.h"
 
 #include <sstream>
@@ -24,8 +25,22 @@ using ds2::Host::Platform;
 using ds2::Target::Thread;
 using ds2::ErrorCode;
 
-DebugSessionImpl::DebugSessionImpl(Target::Process *process)
-    : DummySessionDelegateImpl(), _process(process) {}
+DebugSessionImpl::DebugSessionImpl(int argc, char **argv)
+    : DummySessionDelegateImpl() {
+  DS2ASSERT(argc >= 1);
+  spawnProcess(argv[0], StringCollection(&argv[1], &argv[argc]));
+}
+
+DebugSessionImpl::DebugSessionImpl(int attachPid) : DummySessionDelegateImpl() {
+  _process = ds2::Target::Process::Attach(attachPid);
+  if (_process == nullptr)
+    DS2LOG(Main, Fatal, "cannot attach to pid %d", attachPid);
+}
+
+DebugSessionImpl::DebugSessionImpl()
+    : DummySessionDelegateImpl(), _process(nullptr) {}
+
+DebugSessionImpl::~DebugSessionImpl() { delete _process; }
 
 size_t DebugSessionImpl::getGPRSize() const {
   if (_process == nullptr)
@@ -640,17 +655,9 @@ ErrorCode DebugSessionImpl::onDeallocateMemory(Session &,
 ErrorCode
 DebugSessionImpl::onSetProgramArguments(Session &,
                                         StringCollection const &args) {
-  for (auto const &arg : args) {
-    DS2LOG(PlatformSession, Debug, "arg=%s", arg.c_str());
-  }
-
-  std::string path = args[0];
-  StringCollection remaining_args(&args[1], &args[args.size()]);
-  _process = ds2::Target::Process::Create(path, remaining_args);
+  spawnProcess(args[0], StringCollection(&args[1], &args[args.size()]));
   if (_process == nullptr)
     return kErrorUnknown;
-
-  DS2LOG(DebugSession, Debug, "created process %p", _process);
 
   return kSuccess;
 }
@@ -685,9 +692,12 @@ DebugSessionImpl::onResume(Session &session,
   bool hasGlobalAction = false;
   std::set<Thread *> excluded;
 
+  DS2ASSERT(_resumeSession == nullptr);
+  _resumeSession = &session;
+
   error = _process->beforeResume();
   if (error != kSuccess)
-    return error;
+    goto ret;
 
   //
   // First process all actions that specify a thread,
@@ -697,7 +707,8 @@ DebugSessionImpl::onResume(Session &session,
     if (action.ptid.any()) {
       if (hasGlobalAction) {
         DS2LOG(DebugSession, Error, "more than one global action specified");
-        return kErrorAlreadyExist;
+        error = kErrorAlreadyExist;
+        goto ret;
       }
 
       globalAction = action;
@@ -779,16 +790,20 @@ DebugSessionImpl::onResume(Session &session,
     //
     error = _process->wait();
     if (error != kSuccess)
-      return error;
+      goto ret;
   }
 
   error = _process->afterResume();
   if (error != kSuccess)
-    return error;
+    goto ret;
 
-  return queryStopCode(
+  error = queryStopCode(
       session,
       ProcessThreadId(_process->pid(), _process->currentThread()->tid()), stop);
+
+ret:
+  _resumeSession = nullptr;
+  return error;
 }
 
 ErrorCode DebugSessionImpl::onDetach(Session &, ProcessId, bool stopped) {
@@ -864,4 +879,44 @@ ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
     return kErrorUnsupported;
 
   return bpm->remove(address);
+}
+
+ErrorCode DebugSessionImpl::spawnProcess(std::string const &path,
+                                         StringCollection const &args) {
+  DS2LOG(DebugSession, Debug, "spawning process with args:");
+  DS2LOG(DebugSession, Debug, "  %s", path.c_str());
+  for (auto const &arg : args)
+    DS2LOG(DebugSession, Debug, "  %s", arg.c_str());
+
+  _spawner.setExecutable(path);
+  _spawner.setArguments(args);
+
+  auto outputDelegate = [this](void *buf, size_t size) {
+    DS2ASSERT(_resumeSession != nullptr);
+    std::string data;
+    //
+    // TODO(sas): this is crappy, we need to use a virtual terminal instead of
+    // a pipe so that the standard library can do whatever is right when
+    // outputting data.
+    //
+    for (size_t i = 0; i < size; ++i)
+      if (((char*)buf)[i] == '\n')
+        data += "\r\n";
+      else
+        data += ((char*)buf)[i];
+
+    data = StringToHex(data);
+    _resumeSession->send(std::string("O") + data);
+  };
+
+  _spawner.redirectOutputToDelegate(outputDelegate);
+  _spawner.redirectErrorToDelegate(outputDelegate);
+
+  _process = ds2::Target::Process::Create(_spawner);
+  if (_process == nullptr) {
+    DS2LOG(Main, Error, "cannot execute '%s'", path.c_str());
+    return kErrorUnknown;
+  }
+
+  return kSuccess;
 }
