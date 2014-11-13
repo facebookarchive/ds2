@@ -19,12 +19,6 @@ namespace GDBRemote {
 class SlaveSessionImpl : public DebugSessionImpl {
 public:
   SlaveSessionImpl();
-
-protected:
-  virtual ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
-                             StopCode &stop);
-  virtual ErrorCode onAttach(Session &session, std::string const &name,
-                             AttachMode mode, StopCode &stop);
 };
 }
 }

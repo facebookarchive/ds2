@@ -659,6 +659,23 @@ ErrorCode DebugSessionImpl::onQueryLaunchSuccess(Session &, ProcessId) {
   return kSuccess;
 }
 
+ErrorCode DebugSessionImpl::onAttach(Session &session, ProcessId pid,
+                                     AttachMode mode, StopCode &stop) {
+  if (_process != nullptr)
+    return kErrorAlreadyExist;
+
+  if (mode != kAttachNow)
+    return kErrorInvalidArgument;
+
+  DS2LOG(SlaveSession, Info, "attaching to pid %u", pid);
+  _process = Target::Process::Attach(pid);
+  DS2LOG(SlaveSession, Debug, "_process=%p", _process);
+  if (_process == nullptr)
+    return kErrorProcessNotFound;
+
+  return queryStopCode(session, pid, stop);
+}
+
 ErrorCode
 DebugSessionImpl::onResume(Session &session,
                            ThreadResumeAction::Collection const &actions,

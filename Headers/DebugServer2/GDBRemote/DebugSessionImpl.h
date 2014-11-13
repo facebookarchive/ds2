@@ -107,6 +107,10 @@ protected:
   virtual ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid);
 
 protected:
+  virtual ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
+                             StopCode &stop);
+
+protected:
   virtual ErrorCode onResume(Session &session,
                              ThreadResumeAction::Collection const &actions,
                              StopCode &stop);
