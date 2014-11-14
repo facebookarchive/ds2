@@ -48,9 +48,9 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
 
   uint32_t address;
 
-  DS2LOG(Architecture, Debug, "Thumb branch/IT found at %#lx (size=%zu,it=%s[%u])",
-         pc, info.size, info.it ? "true" : "false",
-         info.it ? info.itCount : 0);
+  DS2LOG(Architecture, Debug,
+         "Thumb branch/IT found at %#lx (size=%zu,it=%s[%u])", pc, info.size,
+         info.it ? "true" : "false", info.it ? info.itCount : 0);
 
   //
   // If it's inside an IT block, we need to set the branch after the IT block.
@@ -80,8 +80,6 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
     nextPCSize = 2;
     return ds2::kSuccess;
   }
-  else
-    DS2LOG(Architecture, Debug, "not an IT block");
 
   link = (info.type == ds2::Architecture::ARM::kBranchTypeBL_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_i ||
@@ -94,7 +92,8 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
   //
   if (info.type == ds2::Architecture::ARM::kBranchTypeBcc_i ||
       info.type == ds2::Architecture::ARM::kBranchTypeCB_i || link) {
-    nextPC = pc + static_cast<uint8_t>(ds2::Architecture::ARM::GetThumbInstSize(insns[0]));
+    nextPC = pc + static_cast<uint8_t>(
+                      ds2::Architecture::ARM::GetThumbInstSize(insns[0]));
     nextPCSize = 2;
   }
 

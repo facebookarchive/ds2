@@ -11,7 +11,6 @@
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Log.h"
 
-
 using ds2::BreakpointManager;
 using ds2::ErrorCode;
 

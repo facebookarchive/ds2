@@ -202,7 +202,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
         //
         DS2LOG(Target, Error, "thread %d stopped for no reason", tid);
 
-        // Fall-through.
+      // Fall-through.
 
       case TrapInfo::kReasonThreadNew:
         //

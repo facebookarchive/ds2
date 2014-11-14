@@ -24,8 +24,8 @@
 #endif
 
 #if __has_attribute(format) || __GNUC_PREREQ(3, 4)
-#define DS2_ATTRIBUTE_PRINTF(FORMAT, START) \
-    __attribute__((__format__(printf, FORMAT, START)))
+#define DS2_ATTRIBUTE_PRINTF(FORMAT, START)                                    \
+  __attribute__((__format__(printf, FORMAT, START)))
 #else
 #define DS2_ATTRIBUTE_PRINTF(FORMAT, START)
 #endif

@@ -446,7 +446,7 @@ public:
         GetSUBS_pc_lr(insn, info));
 
     if (info.it && !isBranch) {
-      info.size = static_cast <std::uint8_t> (GetThumbInstSize(*insn));
+      info.size = static_cast<std::uint8_t>(GetThumbInstSize(*insn));
     }
     return (info.it || isBranch);
   }

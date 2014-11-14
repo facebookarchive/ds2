@@ -47,7 +47,6 @@ static inline int tgkill(pid_t pid, pid_t tid, int signo) {
 #if !defined(__ANDROID__)
 static inline pid_t gettid() { return ::syscall(__NR_gettid); }
 #endif
-
 }
 
 #endif // !__DebugServer2_Host_Linux_ExtraSyscalls_h

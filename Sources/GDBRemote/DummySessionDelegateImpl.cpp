@@ -13,7 +13,6 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Log.h"
 
-
 using ds2::GDBRemote::DummySessionDelegateImpl;
 using ds2::Host::Platform;
 using ds2::ErrorCode;
