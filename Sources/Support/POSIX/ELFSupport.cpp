@@ -8,7 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/ELFSupport.h"
+#include "DebugServer2/Support/POSIX/ELFSupport.h"
 
 #include <elf.h>
 

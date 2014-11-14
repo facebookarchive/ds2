@@ -8,12 +8,12 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Host/Linux/ProcFS.h"
-#include "DebugServer2/Host/Linux/ExtraSyscalls.h"
-#include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/ELFSupport.h"
 #include "DebugServer2/HexValues.h"
+#include "DebugServer2/Host/Linux/ExtraSyscalls.h"
+#include "DebugServer2/Host/Linux/ProcFS.h"
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Log.h"
+#include "DebugServer2/Support/POSIX/ELFSupport.h"
 
 #include <cctype>
 #include <cerrno>

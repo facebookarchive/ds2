@@ -132,8 +132,8 @@ set(SUPPORT_COMMON_SOURCES
     )
 
 set(SUPPORT_POSIX_SOURCES
-    Sources/ELFSupport.cpp
-    Sources/FaultHandler.cpp
+    Sources/Support/POSIX/ELFSupport.cpp
+    Sources/Support/POSIX/FaultHandler.cpp
     )
 
 set(SUPPORT_Linux_SOURCES
