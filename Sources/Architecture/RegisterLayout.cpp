@@ -9,10 +9,10 @@
 //
 
 #include "DebugServer2/Architecture/RegisterLayout.h"
+#include "DebugServer2/Log.h"
 
 #include <cstring>
 #include <cstdlib>
-#include <cassert>
 #include <sstream>
 
 using ds2::Architecture::RegisterDef;
@@ -203,10 +203,9 @@ std::string GDBXMLGenerator::GetType(GDBEncoding const &enc,
       return "int" + Escape(bitsize);
     break;
   default:
-    break;
+    DS2ASSERT(0 && "invalid GDB encoding");
   }
-  assert(0 && "invalid GDB encoding");
-  abort();
+
   return std::string();
 }
 
@@ -223,10 +222,9 @@ std::string GDBXMLGenerator::GetVectorType(GDBEncoding const &enc,
       return "int" + Escape(elsize);
     break;
   default:
-    break;
+    DS2ASSERT(0 && "invalid encoding for GDB vector");
   }
-  assert(0 && "invalid encoding for GDB vector");
-  abort();
+
   return std::string();
 }
 
@@ -243,9 +241,7 @@ size_t GDBXMLGenerator::GetVectorCount(GDBEncoding const &enc, size_t vecsize,
   case ds2::Architecture::kGDBEncodingSizedInteger:
     break;
   default:
-    assert(0 && "invalid encoding for GDB vector");
-    abort();
-    return 0;
+    DS2ASSERT(0 && "invalid encoding for GDB vector");
   }
 
   return vecsize / elsize;
@@ -325,8 +321,7 @@ void GDBXMLGenerator::generateEntry(std::ostringstream &s,
   } else if (entry.Type == ds2::Architecture::kGDBFeatureTypeFlags) {
     generateFlags(s, reinterpret_cast<FlagSet const *>(entry.Data));
   } else {
-    assert(0 && "unknown GDB feature entry type");
-    abort();
+    DS2ASSERT(0 && "unknown GDB feature entry type");
   }
 }
 

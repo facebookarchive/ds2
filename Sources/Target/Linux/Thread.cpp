@@ -16,7 +16,6 @@
 #include "DebugServer2/Host/Linux/ProcFS.h"
 #include "DebugServer2/Log.h"
 
-#include <cassert>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
@@ -207,7 +206,7 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
     if (si.si_code == SI_TKILL && si.si_pid == getpid()) {
       // The only signal we are supposed to send to the inferior is a
       // SIGSTOP anyway.
-      assert(_trap.signal == SIGSTOP);
+      DS2ASSERT(_trap.signal == SIGSTOP);
       _trap.event = TrapInfo::kEventNone;
     } else if (si.si_code == SI_USER && si.si_pid == 0 &&
                _trap.signal == SIGSTOP) {

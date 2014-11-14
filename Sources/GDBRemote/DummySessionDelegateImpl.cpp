@@ -11,8 +11,8 @@
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Log.h"
 
-#include <cassert>
 
 using ds2::GDBRemote::DummySessionDelegateImpl;
 using ds2::Host::Platform;
@@ -21,7 +21,7 @@ using ds2::ErrorCode;
 DummySessionDelegateImpl::DummySessionDelegateImpl() : _secure(true) {}
 
 size_t DummySessionDelegateImpl::getGPRSize() const {
-  assert(!"this method shall be implemented by inheriting class");
+  DS2ASSERT(!"this method shall be implemented by inheriting class");
   return 0;
 }
 

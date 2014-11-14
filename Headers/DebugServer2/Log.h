@@ -63,6 +63,17 @@ void Log(int category, int level, char const *classname, char const *funcname,
   ds2::Log(ds2::kLog##CAT, ds2::kLogLevel##LVL, nullptr, __FUNCTION__,         \
            __VA_ARGS__)
 #endif
+
+#if !defined(NDEBUG)
+#define DS2ASSERT(COND)                                                        \
+  do {                                                                         \
+    if (!(COND))                                                               \
+      DS2LOG(Main, Fatal, "assertion `%s' failed at %s:%d", #COND, __FILE__,   \
+             __LINE__);                                                        \
+  } while (0)
+#else
+#define DS2ASSERT(COND) (void)0
+#endif
 }
 
 #endif // !__DebugServer2_Log_h

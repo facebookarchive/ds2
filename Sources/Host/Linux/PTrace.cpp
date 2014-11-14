@@ -16,7 +16,6 @@
 #include "DebugServer2/Log.h"
 
 #include <sys/ptrace.h>
-#include <cassert>
 #include <cerrno>
 #include <csignal>
 #include <cstdio>
@@ -49,7 +48,7 @@ ErrorCode PTrace::wait(ProcessThreadId const &ptid, bool hang, int *status) {
   ret = wait4(pid, &stat, __WALL | (hang ? 0 : WNOHANG), &ru);
   if (ret < 0)
     return kErrorProcessNotFound;
-  assert(!hang || ret == pid);
+  DS2ASSERT(!hang || ret == pid);
 
   if (status != nullptr) {
     *status = stat;

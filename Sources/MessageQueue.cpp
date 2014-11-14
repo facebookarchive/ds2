@@ -9,7 +9,6 @@
 //
 #include <DebugServer2/MessageQueue.h>
 
-#include <cassert>
 #include <chrono>
 
 using ds2::MessageQueue;

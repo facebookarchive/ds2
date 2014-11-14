@@ -16,8 +16,6 @@
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Log.h"
 
-#include <cassert>
-
 using ds2::Target::Linux::Thread;
 using ds2::Target::Linux::Process;
 using ds2::ErrorCode;
@@ -349,7 +347,7 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
          branchPCSize, link ? "true" : "false", nextPC, nextPCSize);
 
   if (branchPC != static_cast<uint32_t>(-1)) {
-    assert(branchPCSize != 0);
+    DS2ASSERT(branchPCSize != 0);
     error = process()->breakpointManager()->add(
         branchPC, BreakpointManager::kTypeTemporaryOneShot, branchPCSize);
     if (error != kSuccess)
@@ -357,7 +355,7 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   }
 
   if (nextPC != static_cast<uint32_t>(-1)) {
-    assert(nextPCSize != 0);
+    DS2ASSERT(nextPCSize != 0);
     error = process()->breakpointManager()->add(
         nextPC, BreakpointManager::kTypeTemporaryOneShot, nextPCSize);
     if (error != kSuccess)

@@ -16,7 +16,6 @@
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Log.h"
 
-#include <cassert>
 #include <cstdlib>
 
 #define super ds2::BreakpointManager
@@ -76,12 +75,12 @@ ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
 }
 
 ErrorCode SoftwareBreakpointManager::remove(Address const &address) {
-  assert(!(address.value() & 1));
+  DS2ASSERT(!(address.value() & 1));
   return super::remove(address);
 }
 
 bool SoftwareBreakpointManager::has(Address const &address) const {
-  assert(!(address.value() & 1));
+  DS2ASSERT(!(address.value() & 1));
   return super::has(address);
 }
 
@@ -147,7 +146,7 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
     break;
   default:
     DS2LOG(BPManager, Error, "invalid breakpoint type %d", type);
-    assert(0 && "invalid breakpoint type");
+    DS2ASSERT(0 && "invalid breakpoint type");
     break;
   }
 }

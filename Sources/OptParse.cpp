@@ -8,18 +8,18 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Log.h"
 #include "DebugServer2/OptParse.h"
 
 #include <algorithm>
-#include <cassert>
 #include <cstdlib>
 
 namespace ds2 {
 
 void OptParse::addOption(OptionType type, std::string const &name,
                          char shortName, std::string const &help, bool hidden) {
-  assert(_options.find(name) == _options.end());
-  assert(findShortOpt(shortName) == _options.end());
+  DS2ASSERT(_options.find(name) == _options.end());
+  DS2ASSERT(findShortOpt(shortName) == _options.end());
   _options[name] = {shortName, type, "", help, hidden};
 }
 
@@ -119,8 +119,8 @@ void OptParse::usageDie(std::string const &message) {
 }
 
 std::string const &OptParse::get(std::string const &name, OptionType type) {
-  assert(_options.find(name) != _options.end());
-  assert(_options[name].type == type);
+  DS2ASSERT(_options.find(name) != _options.end());
+  DS2ASSERT(_options[name].type == type);
   return _options[name].value;
 }
 

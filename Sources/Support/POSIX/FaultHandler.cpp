@@ -10,7 +10,6 @@
 
 #include "DebugServer2/Log.h"
 
-#include <cassert>
 #include <cstdio>
 #include <cerrno>
 #include <cstdlib>
@@ -49,9 +48,9 @@ private:
           {SEGV_MAPERR, "SEGV_MAPERR"}, {SEGV_ACCERR, "SEGV_ACCERR"},
          }},
     };
-    assert(SignalNames.find(si->si_signo) != SignalNames.end());
-    assert(SignalCodeNames[si->si_signo].find(si->si_code) !=
-           SignalCodeNames[si->si_signo].end());
+    DS2ASSERT(SignalNames.find(si->si_signo) != SignalNames.end());
+    DS2ASSERT(SignalCodeNames[si->si_signo].find(si->si_code) !=
+              SignalCodeNames[si->si_signo].end());
 
     DS2LOG(Main, Error, "received %s with code %s at address %p, crashing",
            SignalNames[si->si_signo],

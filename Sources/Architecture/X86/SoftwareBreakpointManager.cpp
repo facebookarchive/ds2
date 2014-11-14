@@ -16,7 +16,6 @@
 #include "DebugServer2/Log.h"
 
 #include <cstdlib>
-#include <cassert>
 
 #define super ds2::BreakpointManager
 
@@ -35,7 +34,7 @@ void SoftwareBreakpointManager::clear() {
 
 ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
                                          size_t size) {
-  assert(size == 0 || size == 1);
+  DS2ASSERT(size == 0 || size == 1);
   return super::add(address, type, size);
 }
 
@@ -63,7 +62,7 @@ bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
     uint64_t ex = state.pc();
 #endif
     thread->readCPUState(state);
-    assert(ex == state.pc());
+    DS2ASSERT(ex == state.pc());
 
     return true;
   }

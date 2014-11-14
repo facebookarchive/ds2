@@ -12,8 +12,8 @@
 #define __DebugServer2_HexValues_h
 
 #include "DebugServer2/CompilerSupport.h"
+#include "DebugServer2/Log.h"
 
-#include <cassert>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -50,7 +50,7 @@ static inline std::string StringToHex(std::string const &str) {
 
 static inline std::string HexToString(std::string const &str) {
   std::string result;
-  assert(str.size() % 2 == 0);
+  DS2ASSERT(str.size() % 2 == 0);
   for (size_t n = 0; n < str.size(); n += 2) {
     result +=
         static_cast<char>((HexToNibble(str[n]) << 4) | HexToNibble(str[n + 1]));

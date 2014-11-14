@@ -192,9 +192,9 @@ bool Session::ParseList(std::string const &string, char separator,
 //
 bool Session::parseAddress(ds2::Address &address, const char *ptr, char **eptr,
                            Endian endianness) const {
-  assert(ptr != nullptr);
-  assert(eptr != nullptr);
-  assert(endianness == kEndianBig || endianness == kEndianLittle); // No PDP.
+  DS2ASSERT(ptr != nullptr);
+  DS2ASSERT(eptr != nullptr);
+  DS2ASSERT(endianness == kEndianBig || endianness == kEndianLittle); // No PDP.
 
   uint64_t value = std::strtoull(ptr, eptr, 16);
   // If *eptr contains the original value of ptr, there was nothing read.
@@ -215,7 +215,7 @@ bool Session::parseAddress(ds2::Address &address, const char *ptr, char **eptr,
 
 std::string Session::formatAddress(Address const &address,
                                    Endian endianness) const {
-  assert(endianness == kEndianBig || endianness == kEndianLittle); // No PDP.
+  DS2ASSERT(endianness == kEndianBig || endianness == kEndianLittle); // No PDP.
 
   std::ostringstream ss;
   uint64_t value = address;

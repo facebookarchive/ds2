@@ -19,7 +19,6 @@
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Log.h"
 
-#include <cassert>
 #include <cerrno>
 #include <csignal>
 #include <cstdlib>
@@ -152,7 +151,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
   ThreadId tid;
 
   // We have at least one thread when we start waiting on a process.
-  assert(!_threads.empty());
+  DS2ASSERT(!_threads.empty());
 
   while (!_threads.empty()) {
     tid = blocking_wait4(-1, &status, __WALL | (hang ? 0 : WNOHANG), &rusage);
