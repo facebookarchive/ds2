@@ -114,7 +114,7 @@ bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
       }
     } else {
       tid = pid;
-      pid = kAllProcessId;
+      pid = kAnyProcessId;
     }
   } else if (mode == kCompatibilityModeLLDBThread) {
     if (std::strncmp(string.c_str(), "thread:", 7) == 0) {
