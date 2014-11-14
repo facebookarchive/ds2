@@ -424,7 +424,12 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
     if (error != kSuccess)
       return error;
 
-    buffer = buffer.substr(offset, length);
+    buffer = buffer.substr(offset);
+    if (buffer.length() > length) {
+      buffer.resize(length);
+      last = false;
+    }
+
     return kSuccess;
   } else if (object == "threads") {
     std::ostringstream ss;
