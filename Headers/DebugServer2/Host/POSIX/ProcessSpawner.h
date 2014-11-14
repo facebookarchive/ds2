@@ -41,23 +41,6 @@ protected:
   };
 
 protected:
-  friend class RedirectorThread;
-  class RedirectorThread {
-  protected:
-    std::thread _thread;
-    ProcessSpawner *_ps;
-
-  public:
-    RedirectorThread(ProcessSpawner *ps);
-
-  public:
-    void thread();
-
-  public:
-    int run();
-  };
-
-protected:
   std::string _executablePath;
   StringCollection _arguments;
   std::string _workingDirectory;
