@@ -24,6 +24,7 @@ protected:
   std::vector<ThreadId> _tids;
   std::vector<int> _programmedSignals;
   std::map<uint64_t, size_t> _allocations;
+  std::map<uint64_t, Architecture::CPUState> _savedRegisters;
   size_t _threadIndex;
   Host::ProcessSpawner _spawner;
   Session *_resumeSession;
@@ -86,6 +87,11 @@ protected:
   virtual ErrorCode onWriteGeneralRegisters(Session &session,
                                             ProcessThreadId const &ptid,
                                             std::vector<uint64_t> const &regs);
+
+  virtual ErrorCode onSaveRegisters(Session &session,
+                                    ProcessThreadId const &ptid, uint64_t &id);
+  virtual ErrorCode onRestoreRegisters(Session &session,
+                                       ProcessThreadId const &ptid, uint64_t id);
 
   virtual ErrorCode onReadRegisterValue(Session &session,
                                         ProcessThreadId const &ptid,

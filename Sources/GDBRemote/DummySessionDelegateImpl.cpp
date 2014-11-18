@@ -296,6 +296,17 @@ ErrorCode DummySessionDelegateImpl::onWriteRegisterValue(
   return kErrorUnsupported;
 }
 
+ErrorCode DummySessionDelegateImpl::onSaveRegisters(Session &session,
+                                                    ProcessThreadId const &ptid,
+                                                    uint64_t &id) {
+  return kErrorUnsupported;
+}
+
+ErrorCode DummySessionDelegateImpl::onRestoreRegisters(
+    Session &session, ProcessThreadId const &ptid, uint64_t id) {
+  return kErrorUnsupported;
+}
+
 ErrorCode DummySessionDelegateImpl::onReadMemory(Session &, Address const &,
                                                  size_t, std::string &) {
   return kErrorUnsupported;

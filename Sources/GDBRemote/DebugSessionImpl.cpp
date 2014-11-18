@@ -543,6 +543,45 @@ ErrorCode DebugSessionImpl::onWriteGeneralRegisters(
   return thread->writeCPUState(state);
 }
 
+ErrorCode DebugSessionImpl::onSaveRegisters(Session &session,
+                                            ProcessThreadId const &ptid,
+                                            uint64_t &id) {
+  static uint64_t counter = 1;
+
+  Thread *thread = findThread(ptid);
+  if (thread == nullptr)
+    return kErrorProcessNotFound;
+
+  Architecture::CPUState state;
+  ErrorCode error = thread->readCPUState(state);
+  if (error != kSuccess)
+    return error;
+
+  _savedRegisters[counter] = state;
+  id = counter++;
+  return kSuccess;
+}
+
+ErrorCode DebugSessionImpl::onRestoreRegisters(Session &session,
+                                               ProcessThreadId const &ptid,
+                                               uint64_t id) {
+  Thread *thread = findThread(ptid);
+  if (thread == nullptr)
+    return kErrorProcessNotFound;
+
+  auto it = _savedRegisters.find(id);
+  if (it == _savedRegisters.end())
+    return kErrorNotFound;
+
+  ErrorCode error = thread->writeCPUState(it->second);
+  if (error != kSuccess)
+    return error;
+
+  _savedRegisters.erase(it);
+
+  return kSuccess;
+}
+
 ErrorCode DebugSessionImpl::onReadRegisterValue(Session &session,
                                                 ProcessThreadId const &ptid,
                                                 uint32_t regno,

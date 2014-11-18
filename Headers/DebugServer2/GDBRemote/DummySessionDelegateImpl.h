@@ -144,6 +144,11 @@ protected: // Debugging Session
                                             ProcessThreadId const &ptid,
                                             std::vector<uint64_t> const &regs);
 
+  virtual ErrorCode onSaveRegisters(Session &session,
+                                    ProcessThreadId const &ptid, uint64_t &id);
+  virtual ErrorCode onRestoreRegisters(Session &session,
+                                       ProcessThreadId const &ptid, uint64_t id);
+
   virtual ErrorCode onReadRegisterValue(Session &session,
                                         ProcessThreadId const &ptid,
                                         uint32_t regno, std::string &value);

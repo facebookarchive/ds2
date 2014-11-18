@@ -100,6 +100,10 @@ private:
                                  std::string const &);
   void Handle_QSetWorkingDir(ProtocolInterpreter::Handler const &,
                              std::string const &);
+  void Handle_QRestoreRegisterState(ProtocolInterpreter::Handler const &,
+                                    std::string const &args);
+  void Handle_QSaveRegisterState(ProtocolInterpreter::Handler const &,
+                                 std::string const &args);
   void Handle_QStartNoAckMode(ProtocolInterpreter::Handler const &,
                               std::string const &);
   void Handle_QSyncThreadState(ProtocolInterpreter::Handler const &,

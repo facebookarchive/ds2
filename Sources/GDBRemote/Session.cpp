@@ -73,7 +73,6 @@ Session::Session(CompatibilityMode mode) : _compatMode(mode) {
   REGISTER_HANDLER_EQUALS_1(p);
   REGISTER_HANDLER_EQUALS_1(QAgent);
   REGISTER_HANDLER_EQUALS_1(QAllow);
-  REGISTER_HANDLER_EQUALS_1(Qbtrace);
   REGISTER_HANDLER_EQUALS_1(QDisableRandomization);
   REGISTER_HANDLER_EQUALS_1(QEnvironment);
   REGISTER_HANDLER_EQUALS_1(QEnvironmentHexEncoded);
@@ -82,6 +81,8 @@ Session::Session(CompatibilityMode mode) : _compatMode(mode) {
   REGISTER_HANDLER_EQUALS_1(QNonStop);
   REGISTER_HANDLER_EQUALS_1(QPassSignals);
   REGISTER_HANDLER_EQUALS_1(QProgramSignals);
+  REGISTER_HANDLER_EQUALS_1(QSaveRegisterState);
+  REGISTER_HANDLER_EQUALS_1(QRestoreRegisterState);
   REGISTER_HANDLER_EQUALS_1(QSetDisableASLR);
   REGISTER_HANDLER_EQUALS_1(QSetEnableAsyncProfiling);
   REGISTER_HANDLER_EQUALS_1(QSetLogging);
@@ -94,6 +95,7 @@ Session::Session(CompatibilityMode mode) : _compatMode(mode) {
   REGISTER_HANDLER_EQUALS_1(QStartNoAckMode);
   REGISTER_HANDLER_EQUALS_1(QSyncThreadState);
   REGISTER_HANDLER_EQUALS_1(QThreadSuffixSupported);
+  REGISTER_HANDLER_EQUALS_1(Qbtrace);
   REGISTER_HANDLER_EQUALS_1(qAttached);
   REGISTER_HANDLER_EQUALS_1(qC);
   REGISTER_HANDLER_EQUALS_1(qCRC);
@@ -1127,6 +1129,51 @@ void Session::Handle_QProgramSignals(ProtocolInterpreter::Handler const &,
   });
 
   sendError(_delegate->onProgramSignals(*this, signals));
+}
+
+//
+// Packet:        QSaveRegisterState [thread:XXXX]
+// Description:   Save all registers and return a non-zero unique
+//                integer ID that represents saved registers.
+// Compatibility: LLDB
+//
+void Session::Handle_QSaveRegisterState(ProtocolInterpreter::Handler const &,
+                                        std::string const &args) {
+  char const *eptr = args.c_str();
+  ProcessThreadId ptid;
+  uint64_t id;
+
+  ptid.parse(eptr, kCompatibilityModeLLDBThread);
+
+  ErrorCode error = _delegate->onSaveRegisters(*this, ptid, id);
+  if (error != kSuccess) {
+    sendError(error);
+    return;
+  }
+
+  std::ostringstream ss;
+  ss << id;
+  send(ss.str());
+}
+
+//
+// Packet:        QRestoreRegisterState saveId[;thread:XXXX]
+// Description:   Save all registers and return a non-zero unique
+//                integer ID that represents saved registers.
+// Compatibility: LLDB
+//
+void Session::Handle_QRestoreRegisterState(ProtocolInterpreter::Handler const &,
+                                           std::string const &args) {
+  char const *eptr = args.c_str();
+  ProcessThreadId ptid;
+  uint64_t id;
+
+  id = std::strtoull(eptr, const_cast<char **>(&eptr), 10);
+
+  if (*eptr++ == ';')
+    ptid.parse(eptr, kCompatibilityModeLLDBThread);
+
+  sendError(_delegate->onRestoreRegisters(*this, ptid, id));
 }
 
 //
