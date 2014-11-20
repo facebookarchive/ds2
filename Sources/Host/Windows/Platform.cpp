@@ -14,6 +14,10 @@
 #include <stdio.h>
 #include <windows.h>
 #include <lmcons.h>
+// When building this with clang, building in C++ mode will require the
+// declaration of IUnknown (which is a builtin type on MSVC).  Use the C
+// interfaces, as we only need the Path APIs.
+#define CINTERFACE
 #include <shlwapi.h>
 #include <psapi.h>
 #include <vector>
