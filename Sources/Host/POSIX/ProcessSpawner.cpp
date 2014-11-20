@@ -10,6 +10,9 @@
 
 #define __DS2_LOG_CLASS_NAME__ "ProcessSpawner"
 
+#if defined(__linux__)
+#include "DebugServer2/Host/Linux/ExtraSyscalls.h"
+#endif
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Log.h"
 
@@ -24,19 +27,42 @@
 using ds2::Host::ProcessSpawner;
 using ds2::ErrorCode;
 
-static inline void close_pipes(int fds[3][2]) {
-  for (size_t n = 0; n < 3; n++) {
-    if (fds[n][0] != -1) {
-      ::close(fds[n][0]);
-    }
-    if (fds[n][1] != -1) {
-      ::close(fds[n][1]);
-    }
-  }
+static bool open_terminal(int fds[2]) {
+  char const *slave;
+
+  fds[0] = ::posix_openpt(O_RDWR | O_NOCTTY);
+  if (fds[0] == -1)
+    goto error;
+
+  if (::grantpt(fds[0]) == -1)
+    goto error_fd0;
+
+  if (::unlockpt(fds[0]) == -1)
+    goto error_fd0;
+
+  slave = ::ptsname(fds[0]);
+  if (slave == nullptr)
+    goto error_fd0;
+
+  fds[1] = ::open(slave, O_RDWR);
+  if (fds[1] == -1)
+    goto error_fd0;
+
+  return true;
+
+error_fd0:
+  ::close(fds[0]);
+  fds[0] = -1;
+error:
+  return false;
 }
 
-ProcessSpawner::ProcessSpawner()
-    : _exitStatus(0), _signalCode(0), _pid(0) {}
+static inline void close_terminal(int fds[2]) {
+  ::close(fds[0]);
+  ::close(fds[1]);
+}
+
+ProcessSpawner::ProcessSpawner() : _exitStatus(0), _signalCode(0), _pid(0) {}
 
 bool ProcessSpawner::setExecutable(std::string const &path) {
   if (_pid != 0)
@@ -198,8 +224,7 @@ bool ProcessSpawner::redirectErrorToBuffer() {
 //
 // Delegate redirection
 //
-bool
-ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
+bool ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
   if (_pid != 0 || delegate == nullptr)
     return false;
 
@@ -232,6 +257,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   // If we have redirection, prepare pipes and handles.
   //
   int fds[3][2] = {{-1, -1}, {-1, -1}, {-1, -1}};
+  int term[2] = {-1, -1};
   bool startRedirectThread = false;
 
   for (size_t n = 0; n < 3; n++) {
@@ -265,17 +291,20 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
     // fall-through
     case kRedirectDelegate:
       startRedirectThread = true;
-      if (::pipe(fds[n]) < 0) {
-        close_pipes(fds);
-        return kErrorTooManyFiles;
+      if (term[0] == -1) {
+        if (!open_terminal(term)) {
+          return kErrorTooManyFiles;
+        }
       }
+      fds[n][RD] = term[RD];
+      fds[n][WR] = term[WR];
       break;
     }
   }
 
   _pid = ::fork();
   if (_pid < 0) {
-    close_pipes(fds);
+    close_terminal(term);
     return kErrorNoMemory;
   }
 

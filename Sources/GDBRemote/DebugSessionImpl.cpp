@@ -893,18 +893,7 @@ ErrorCode DebugSessionImpl::spawnProcess(std::string const &path,
 
   auto outputDelegate = [this](void *buf, size_t size) {
     DS2ASSERT(_resumeSession != nullptr);
-    std::string data;
-    //
-    // TODO(sas): this is crappy, we need to use a virtual terminal instead of
-    // a pipe so that the standard library can do whatever is right when
-    // outputting data.
-    //
-    for (size_t i = 0; i < size; ++i)
-      if (((char*)buf)[i] == '\n')
-        data += "\r\n";
-      else
-        data += ((char*)buf)[i];
-
+    std::string data(static_cast<char *>(buf), size);
     data = StringToHex(data);
     _resumeSession->send(std::string("O") + data);
   };

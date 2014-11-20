@@ -8,16 +8,18 @@
 // PATENTS file in the same directory.
 //
 
+#if defined(__linux__)
 #include "DebugServer2/Host/Linux/ExtraSyscalls.h"
+#endif
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
-
-using ds2::Host::POSIX::AsyncProcessWaiter;
 
 #if defined(__linux__)
 #define DEFAULT_WAIT_FLAGS (__WALL | __WCLONE)
 #else
 #define DEFAULT_WAIT_FLAGS (0)
 #endif
+
+using ds2::Host::POSIX::AsyncProcessWaiter;
 
 AsyncProcessWaiter::AsyncProcessWaiter() {}
 
