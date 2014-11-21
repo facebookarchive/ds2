@@ -413,11 +413,13 @@ std::string HostInfo::encode() const {
   return ss.str();
 }
 
-std::string ProcessInfo::encode(bool alternateVersion) const {
+std::string ProcessInfo::encode(CompatibilityMode mode, bool alternateVersion) const {
   std::ostringstream ss;
 
-  if (alternateVersion) {
-    std::string triple = GetArchName(cpuType, cpuSubType);
+  std::string triple;
+
+  if (mode == kCompatibilityModeLLDB || alternateVersion) {
+    triple = GetArchName(cpuType, cpuSubType);
     triple += '-';
     if (osVendor.empty()) {
       triple += "unknown";
@@ -430,7 +432,9 @@ std::string ProcessInfo::encode(bool alternateVersion) const {
     } else {
       triple += osType;
     }
+  }
 
+  if (alternateVersion) {
     ss << "pid:" << DEC << pid << ';';
     ss << "uid:" << DEC << FORMAT_ID(realUid) << ';';
     ss << "gid:" << DEC << FORMAT_ID(realUid) << ';';
@@ -450,11 +454,15 @@ std::string ProcessInfo::encode(bool alternateVersion) const {
     ss << "effective-uid:" << HEX0 << effectiveUid << ';';
     ss << "effective-gid:" << HEX0 << effectiveGid << ';';
 #endif
-    // TODO(sas): This should probably use CPU{,Sub}Type instead of
-    // nativeCPU{,Sub}Type.
-    ss << "cputype:" << HEX0 << nativeCPUType << ';';
-    if (nativeCPUSubType != 0) {
-      ss << "cpusubtype:" << HEX0 << nativeCPUSubType << ';';
+    if (mode == kCompatibilityModeLLDB) {
+      ss << "triple:" << StringToHex(triple) << ';';
+    } else {
+      // TODO(sas): This should probably use CPU{,Sub}Type instead of
+      // nativeCPU{,Sub}Type.
+      ss << "cputype:" << HEX0 << nativeCPUType << ';';
+      if (nativeCPUSubType != 0) {
+        ss << "cpusubtype:" << HEX0 << nativeCPUSubType << ';';
+      }
     }
     ss << "endian:";
     switch (endian) {

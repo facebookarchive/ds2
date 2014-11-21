@@ -1943,7 +1943,7 @@ void Session::Handle_qProcessInfo(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(info.encode());
+  send(info.encode(_compatMode));
 }
 
 //
@@ -1963,7 +1963,7 @@ void Session::Handle_qProcessInfoPID(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(info.encode(true));
+  send(info.encode(_compatMode, true));
 }
 
 //
@@ -2475,7 +2475,7 @@ void Session::Handle_qfProcessInfo(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(info.encode(true));
+  send(info.encode(_compatMode, true));
 }
 
 //
@@ -2493,7 +2493,7 @@ void Session::Handle_qsProcessInfo(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(info.encode(true));
+  send(info.encode(_compatMode, true));
 }
 
 //
