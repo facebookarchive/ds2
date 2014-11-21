@@ -11,16 +11,19 @@
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
 
-#include <stdio.h>
-#include <windows.h>
 #include <lmcons.h>
+#include <psapi.h>
 // When building this with clang, building in C++ mode will require the
 // declaration of IUnknown (which is a builtin type on MSVC).  Use the C
 // interfaces, as we only need the Path APIs.
 #define CINTERFACE
 #include <shlwapi.h>
-#include <psapi.h>
+#include <stdio.h>
 #include <vector>
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+#include <Winsock2.h>
 
 using ds2::Host::Windows::Platform;
 
