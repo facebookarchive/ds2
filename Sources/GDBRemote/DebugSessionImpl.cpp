@@ -26,19 +26,20 @@ using ds2::Target::Thread;
 using ds2::ErrorCode;
 
 DebugSessionImpl::DebugSessionImpl(int argc, char **argv)
-    : DummySessionDelegateImpl() {
+    : DummySessionDelegateImpl(), _resumeSession(nullptr) {
   DS2ASSERT(argc >= 1);
   spawnProcess(argv[0], StringCollection(&argv[1], &argv[argc]));
 }
 
-DebugSessionImpl::DebugSessionImpl(int attachPid) : DummySessionDelegateImpl() {
+DebugSessionImpl::DebugSessionImpl(int attachPid)
+    : DummySessionDelegateImpl(), _resumeSession(nullptr) {
   _process = ds2::Target::Process::Attach(attachPid);
   if (_process == nullptr)
     DS2LOG(Main, Fatal, "cannot attach to pid %d", attachPid);
 }
 
 DebugSessionImpl::DebugSessionImpl()
-    : DummySessionDelegateImpl(), _process(nullptr) {}
+    : DummySessionDelegateImpl(), _process(nullptr), _resumeSession(nullptr) {}
 
 DebugSessionImpl::~DebugSessionImpl() { delete _process; }
 
