@@ -54,6 +54,7 @@ protected:
 
 public:
   ProcessSpawner();
+  ~ProcessSpawner();
 
 public:
   bool setExecutable(std::string const &path);

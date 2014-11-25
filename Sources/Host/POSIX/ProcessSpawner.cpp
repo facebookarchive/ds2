@@ -64,6 +64,11 @@ static inline void close_terminal(int fds[2]) {
 
 ProcessSpawner::ProcessSpawner() : _exitStatus(0), _signalCode(0), _pid(0) {}
 
+ProcessSpawner::~ProcessSpawner() {
+  if (_delegateThread.joinable())
+    _delegateThread.join();
+}
+
 bool ProcessSpawner::setExecutable(std::string const &path) {
   if (_pid != 0)
     return false;
