@@ -56,7 +56,7 @@ void SessionThread::onPacketData(std::string const &data, bool valid) {
     // on the main thread due to restrictions imposed by the interaction
     // of Linux threading and ptrace(2) system call.
     //
-    _channel->queue().clear();
+    _channel->queue().clear(false);
     _session->interpreter().onPacketData(data, valid);
   } else {
     if (_session->getAckMode() && !valid) {

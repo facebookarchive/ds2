@@ -25,6 +25,7 @@ private:
   std::deque<std::string> _messages;
   std::condition_variable _ready;
   std::mutex _lock;
+  bool _terminated;
 
 public:
   MessageQueue();
@@ -40,7 +41,7 @@ public:
   bool wait(int ms = -1);
 
 public:
-  void clear(bool signal = false);
+  void clear(bool terminating);
 };
 }
 

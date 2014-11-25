@@ -7,6 +7,8 @@
 // source tree. An additional grant of patent rights can be found in the
 // PATENTS file in the same directory.
 //
+
+#include "DebugServer2/Log.h"
 #include <DebugServer2/MessageQueue.h>
 
 #include <chrono>
@@ -16,7 +18,7 @@ using ds2::MessageQueue;
 // FIXME(strager): This class does not handle spurious
 // wakeups!  See http://en.wikipedia.org/wiki/Spurious_wakeup
 
-MessageQueue::MessageQueue() {}
+MessageQueue::MessageQueue() : _terminated(false) {}
 
 void MessageQueue::put(std::string const &message) {
   std::lock_guard<std::mutex> guard(_lock);
@@ -29,6 +31,9 @@ std::string MessageQueue::get(int wait) {
 
   std::unique_lock<std::mutex> lock(_lock);
   if (_messages.empty()) {
+    if (_terminated)
+      return std::string();
+
     if (wait < 0) {
       _ready.wait(lock);
     } else {
@@ -49,6 +54,8 @@ bool MessageQueue::wait(int ms) {
   std::unique_lock<std::mutex> lock(_lock);
   if (!_messages.empty())
     return true;
+  if (_terminated)
+    return false;
   if (ms < 0) {
     _ready.wait(lock);
     return !_messages.empty();
@@ -58,10 +65,12 @@ bool MessageQueue::wait(int ms) {
   }
 }
 
-void MessageQueue::clear(bool signal) {
+void MessageQueue::clear(bool terminating) {
   std::lock_guard<std::mutex> guard(_lock);
   _messages.clear();
-  if (signal) {
+  if (terminating) {
+    DS2ASSERT(!_terminated);
+    _terminated = true;
     _ready.notify_one();
   }
 }

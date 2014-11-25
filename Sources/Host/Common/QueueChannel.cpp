@@ -20,8 +20,10 @@ QueueChannel::QueueChannel(Channel *remote) : _remote(remote) {}
 QueueChannel::~QueueChannel() { close(); }
 
 void QueueChannel::close() {
-  _remote = nullptr;
-  _queue.clear(true);
+  if (_remote != nullptr) {
+    _remote = nullptr;
+    _queue.clear(true);
+  }
 }
 
 bool QueueChannel::connected() const {
