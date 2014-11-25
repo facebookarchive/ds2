@@ -225,7 +225,7 @@ bool ProcessSpawner::redirectErrorToBuffer() {
 // Delegate redirection
 //
 bool ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
-  if (_pid != 0 || delegate == nullptr)
+  if (_pid != 0)
     return false;
 
   _descriptors[1].mode = kRedirectDelegate;
@@ -236,7 +236,7 @@ bool ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
 }
 
 bool ProcessSpawner::redirectErrorToDelegate(RedirectDelegate delegate) {
-  if (_pid != 0 || delegate == nullptr)
+  if (_pid != 0)
     return false;
 
   _descriptors[2].mode = kRedirectDelegate;
@@ -318,12 +318,21 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
           // do nothing
           break;
 
+        case kRedirectDelegate:
+          //
+          // We are using the same virtual terminal for all delegate
+          // redirections, so dup2() only, do not close. We will close when all
+          // FDs have been dup2()'d.
+          //
+          ::dup2(fds[n][WR], n);
+          break;
+
         default:
           if (n == 0) {
             if (fds[n][WR] != -1) {
               ::close(fds[n][WR]);
             }
-            ::dup2(fds[n][RD], 0);
+            ::dup2(fds[n][RD], n);
             ::close(fds[n][RD]);
           } else {
             if (fds[n][RD] != -1) {
@@ -335,6 +344,8 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
           break;
         }
       }
+
+      close_terminal(term);
 
       if (!_workingDirectory.empty()) {
         ::chdir(_workingDirectory.c_str());
@@ -356,17 +367,23 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
     ::_exit(127);
   }
 
+  ::close(term[WR]);
+
   for (size_t n = 0; n < 3; n++) {
     switch (_descriptors[n].mode) {
     case kRedirectConsole:
       // do nothing
       break;
 
+    case kRedirectDelegate:
+      _descriptors[n].fd = term[RD];
+      break;
+
     default:
       if (n == 0) {
         if (fds[n][RD] != -1) {
           ::close(fds[n][RD]);
-          _descriptors[0].fd = fds[n][WR];
+          _descriptors[n].fd = fds[n][WR];
         }
       } else {
         if (fds[n][WR] != -1) {
