@@ -31,6 +31,7 @@ struct parse_state_t;
 %error-verbose
 %parse-param {void *scanner} 
 %parse-param {struct parse_state_t *ps} 
+%lex-param {void *scanner}
 
 %union value {
 
