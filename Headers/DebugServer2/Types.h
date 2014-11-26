@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <unistd.h>
 
 namespace ds2 {
 
