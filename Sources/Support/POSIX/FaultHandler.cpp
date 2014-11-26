@@ -65,7 +65,7 @@ private:
 
     // Allocate our own signal stack so that fault handlers work even
     // when the stack pointer is busted.
-    ss.ss_sp = malloc(SIGSTKSZ);
+    ss.ss_sp = (char *)malloc(SIGSTKSZ);
     ss.ss_size = SIGSTKSZ;
     ss.ss_flags = 0;
 
