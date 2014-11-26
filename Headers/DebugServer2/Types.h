@@ -18,7 +18,9 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#if !defined(_WIN32)
 #include <unistd.h>
+#endif
 
 namespace ds2 {
 
@@ -26,7 +28,7 @@ namespace ds2 {
 // Basic Types
 //
 
-#ifdef _WIN32
+#if defined(_WIN32)
 typedef DWORD ProcessId;
 typedef DWORD ThreadId;
 typedef PSID UserId;
