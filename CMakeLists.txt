@@ -10,9 +10,9 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-project(DebugServer2)
+add_subdirectory(Tools)
 
-include(FindThreads)
+project(DebugServer2)
 
 if (NOT OS_NAME)
   set(OS_NAME ${CMAKE_SYSTEM_NAME})
@@ -157,7 +157,6 @@ set(DEBUGSERVER2_SOURCES
     )
 
 add_executable(ds2 ${DEBUGSERVER2_SOURCES})
-target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
 
 include_directories(Headers)
 include_directories(Main)
@@ -172,3 +171,6 @@ if (WIN32)
   # with our standard warnings set.
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare")
 endif ()
+
+include(FindThreads)
+target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
