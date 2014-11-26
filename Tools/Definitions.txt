@@ -1,0 +1,42 @@
+top level
+
+keyword:  "namespace"
+type:     string
+presence: required
+definition:
+defines the name of the C++ namespace generated,
+the resulting namespace will be ds2::Architecture::<namespace>.
+
+keyword:  "register-sets"
+type:     dictionary
+presence: required
+definition:
+defines the register sets for the architecture.
+
+keyword:  "flag-sets"
+type:     dictionary
+presence: optional
+definition:
+defines the flags of a special purpose register (like EFLAGS on x86),
+this is required for correct GDB XML generation.
+
+keyword:  "vector-sets"
+type:     dictionary
+presence: optional
+definition:
+defines the vector register sets, this is required for correct
+GDB XML generation.
+
+keyword:  "gdb-defs"
+type:     dictionary
+presence: required
+definition:
+defines the GDB register layout.
+
+keyword:  "lldb-defs"
+type:     array
+presence: required
+definition:
+defines the LLDB register layout.
+
+- "register-defs"
