@@ -63,6 +63,7 @@ static inline uint32_t __T2MOV16SetImmediate(uint32_t insn, uint16_t value) {
   return insn;
 }
 
+#if 0 // silence warning for unused function
 static inline uint16_t __T2MOV16GetImmediate(uint32_t insn) {
   uint16_t value;
   insn &= 0x70ff040f; // keep imm
@@ -72,6 +73,7 @@ static inline uint16_t __T2MOV16GetImmediate(uint32_t insn) {
   value |= (insn >> 20) & 0x0700;
   return value;
 }
+#endif
 
 static inline void T2MOVWTSetImmediate(uint64_t *insn, uint32_t value) {
   *insn = (((uint64_t)__T2MOV16SetImmediate(*insn >> 32, value >> 16) << 32) |
