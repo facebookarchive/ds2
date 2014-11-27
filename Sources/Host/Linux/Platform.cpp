@@ -20,8 +20,6 @@
 
 using ds2::Host::Linux::Platform;
 
-static inline char to_lower(char c) { return std::tolower(c); }
-
 char const *Platform::GetOSTypeName() { return "linux"; }
 
 char const *Platform::GetOSVendorName() {
@@ -43,7 +41,8 @@ char const *Platform::GetOSVendorName() {
       if (std::strcmp(key, "DISTRIB_ID") == 0) {
         vendor = value;
         // make the vendor lowercase
-        std::transform(vendor.begin(), vendor.end(), vendor.begin(), to_lower);
+        std::transform(vendor.begin(), vendor.end(), vendor.begin(),
+                       static_cast<int (*)(int)>(&std::tolower));
         return false; // break the loop
       }
       return true;
