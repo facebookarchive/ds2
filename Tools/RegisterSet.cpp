@@ -316,7 +316,7 @@ bool RegisterSet::finalize(Context &ctx) {
       }
 
       // (d)
-      size_t bitoff = reg->BitSize * reg->ParentElement;
+      ssize_t bitoff = reg->BitSize * reg->ParentElement;
       if (bitoff + reg->BitSize > preg->BitSize) {
         fprintf(stderr, "error: register '%s' references element #%zd "
                         "of register '%s' in register set '%s', but given the "

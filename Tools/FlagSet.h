@@ -20,7 +20,7 @@ public:
   typedef std::map<std::string, shared_ptr> name_map;
 
 private:
-  size_t _size;
+  ssize_t _size;
   std::string _name;
   std::string _GDBName;
   Flag::vector _flags;

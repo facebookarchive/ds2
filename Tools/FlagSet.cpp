@@ -112,7 +112,7 @@ bool FlagSet::parse(std::string const &name, JSDictionary const *d) {
       return false;
     }
 
-    for (size_t n = 0; n < length->value(); n++) {
+    for (ssize_t n = 0; n < length->value(); n++) {
       if (bits[n + start->value()]) {
         fprintf(stderr, "error: flag '%s' in flag set '%s' is "
                         "overlapping with other flags\n",
