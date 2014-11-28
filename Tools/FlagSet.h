@@ -14,6 +14,8 @@
 #include "JSObjects.h"
 #include "Definitions.h"
 
+#include <sys/types.h>
+
 class FlagSet {
 public:
   typedef std::shared_ptr<FlagSet> shared_ptr;

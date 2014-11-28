@@ -13,12 +13,12 @@
 
 #include "jsoncb.h"
 
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
-#include <map>
 
 class JSObject {
 public:
