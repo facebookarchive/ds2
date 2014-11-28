@@ -41,6 +41,6 @@ add_executable(regsgen2 EXCLUDE_FROM_ALL
 include_directories(${regsgen_SOURCE_DIR}/libjson)
 include_directories(${regsgen_BINARY_DIR})
 
-set(COMMON_FLAGS "-D_XOPEN_SOURCE=500")
+set(COMMON_FLAGS "-D_XOPEN_SOURCE=500 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 ${COMMON_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${COMMON_FLAGS}")
