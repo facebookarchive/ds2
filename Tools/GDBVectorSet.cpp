@@ -58,9 +58,7 @@ bool GDBVectorSet::parse(JSDictionary const *d) {
     }
 
     if (auto vd = d->value<JSDictionary>(vname)) {
-      auto name = vd->value<JSString>("name");
       auto encoding = vd->value<JSString>("encoding");
-      auto bitsize = vd->value<JSInteger>("bit-size");
       auto elsize = vd->value<JSInteger>("element-bit-size");
 
       if (encoding == nullptr) {
