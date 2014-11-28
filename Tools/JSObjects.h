@@ -39,6 +39,9 @@ protected:
   JSObject() {}
 
 public:
+  virtual ~JSObject() {}
+
+public:
   virtual Type type() const = 0;
 
 public:
