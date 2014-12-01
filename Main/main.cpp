@@ -46,6 +46,7 @@ static uint16_t gDefaultPort = 12345;
 static bool gKeepAlive = false;
 static bool gLLDBCompat = false;
 
+#if !defined(_WIN32)
 static void PlatformMain(int argc, char **argv, int port) {
   Socket *server = new Socket;
 
@@ -78,6 +79,7 @@ static void PlatformMain(int argc, char **argv, int port) {
 
   exit(EXIT_SUCCESS);
 }
+#endif
 
 static void RunDebugServer(Socket *server, SessionDelegate *impl) {
   Socket *client = server->accept();
