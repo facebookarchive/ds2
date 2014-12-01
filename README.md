@@ -26,13 +26,13 @@ make
 
 Compiling for Linux-ARM (which can be then used on android devices) is also
 possible. On Ubuntu 14.04, install `gcc-4.7-arm-linux-gnueabi` and
-`g++-4.7-arm-linux-gnueabi` and run the following commands:
+`g++-4.7-arm-linux-gnueabi` and use the provided toolchain file.
 
 ```sh
 cd ds2
 mkdir build
 cd build
-cmake -DOS_NAME=Linux -DARCH_NAME=ARM -DCMAKE_C_COMPILER="arm-linux-gnueabi-gcc-4.7" -DCMAKE_CXX_COMPILER="arm-linux-gnueabi-g++-4.7" ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Linux-ARM.cmake ..
 make
 ```
 

@@ -14,9 +14,7 @@ add_subdirectory(Tools)
 
 project(DebugServer2)
 
-if (NOT OS_NAME)
-  set(OS_NAME ${CMAKE_SYSTEM_NAME})
-endif ()
+set(OS_NAME ${CMAKE_SYSTEM_NAME})
 
 if (NOT ARCH_NAME)
   execute_process(COMMAND uname -m OUTPUT_VARIABLE ARCH_NAME)
