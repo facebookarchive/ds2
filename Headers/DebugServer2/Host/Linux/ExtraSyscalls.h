@@ -21,40 +21,37 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 
-extern "C" {
+#if !defined(HAVE_GETTID)
+static inline pid_t gettid() { return ::syscall(__NR_gettid); }
+#endif
 
-//
-// Some android versions do not have the following functions in their libc.
-//
-#if defined(__ANDROID__)
+#if !defined(HAVE_PERSONALITY)
 static inline int personality(unsigned long persona) {
   return ::syscall(__NR_personality, persona);
 }
+#endif
 
-static inline pid_t wait4(pid_t pid, int *stat_loc, int options,
-                          struct rusage *rusage) {
-  return ::syscall(__NR_wait4, pid, stat_loc, options, rusage);
-}
-
+#if !defined(HAVE_POSIX_OPENPT)
 static inline int posix_openpt(int flags) {
   return ::open("/dev/ptmx", flags);
 }
 #endif
 
-static inline int tkill(pid_t tid, int signo) {
-  return ::syscall(__NR_tkill, tid, signo);
-}
-
+// No glibc wrapper for tgkill
 static inline int tgkill(pid_t pid, pid_t tid, int signo) {
   return ::syscall(__NR_tgkill, pid, tid, signo);
 }
 
-//
-// Linux sysroot usually doesn't have a wrapper for gettid but android does.
-//
-#if !defined(__ANDROID__)
-static inline pid_t gettid() { return ::syscall(__NR_gettid); }
-#endif
+// No glibc wrapper for tkill
+static inline int tkill(pid_t tid, int signo) {
+  return ::syscall(__NR_tkill, tid, signo);
 }
+
+#if !defined(HAVE_WAIT4)
+static inline pid_t wait4(pid_t pid, int *stat_loc, int options,
+                          struct rusage *rusage) {
+  return ::syscall(__NR_wait4, pid, stat_loc, options, rusage);
+}
+#endif
 
 #endif // !__DebugServer2_Host_Linux_ExtraSyscalls_h

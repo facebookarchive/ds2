@@ -15,11 +15,11 @@
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/Log.h"
 
-#include <sys/ptrace.h>
 #include <cerrno>
 #include <csignal>
 #include <cstdio>
 #include <limits>
+#include <sys/ptrace.h>
 
 #define super ds2::Host::POSIX::PTrace
 
