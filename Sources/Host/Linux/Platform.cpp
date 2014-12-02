@@ -38,6 +38,9 @@ char const *Platform::GetOSVendorName() {
   if (fp != nullptr) {
     ProcFS::ParseKeyValue(fp, 1024, '=',
                           [&](char const *key, char const *value) -> bool {
+      if (key == nullptr)
+        return true;
+
       if (std::strcmp(key, "DISTRIB_ID") == 0) {
         vendor = value;
         // make the vendor lowercase
