@@ -30,8 +30,6 @@ elseif (ARCH_NAME MATCHES "AMD64")
   set(ARCH_NAME "X86_64")
 endif ()
 
-message("Building for target ${OS_NAME}-${ARCH_NAME}")
-
 set(ARCHITECTURE_COMMON_SOURCES
     Sources/Architecture/RegisterLayout.cpp
     )
