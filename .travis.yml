@@ -14,6 +14,6 @@ install:
 
 before_script:
   - mkdir -p build && cd build
-  - make -DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake" ..
+  - cmake -DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake" ..
 script:
   - make
