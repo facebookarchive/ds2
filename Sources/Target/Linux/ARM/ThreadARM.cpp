@@ -49,7 +49,7 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
   uint32_t address;
 
   DS2LOG(Architecture, Debug,
-         "Thumb branch/IT found at %#lx (size=%zu,it=%s[%u])", pc, info.size,
+         "Thumb branch/IT found at %#x (size=%zu,it=%s[%u])", pc, info.size,
          info.it ? "true" : "false", info.it ? info.itCount : 0);
 
   //
@@ -207,7 +207,7 @@ PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
 
   uint32_t address;
 
-  DS2LOG(Architecture, Debug, "ARM branch found at %#lx", pc);
+  DS2LOG(Architecture, Debug, "ARM branch found at %#x", pc);
 
   link = (info.type == ds2::Architecture::ARM::kBranchTypeBL_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_i ||
@@ -342,7 +342,7 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   }
 
   DS2LOG(Architecture, Debug,
-         "branchPC=%#lx[size=%d, link=%s] nextPC=%#lx[size=%d]", branchPC,
+         "branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]", branchPC,
          branchPCSize, link ? "true" : "false", nextPC, nextPCSize);
 
   if (branchPC != static_cast<uint32_t>(-1)) {
