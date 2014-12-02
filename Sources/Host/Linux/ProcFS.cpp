@@ -389,31 +389,31 @@ bool ProcFS::ReadStat(pid_t pid, pid_t tid, Stat &stat) {
       stat.tty_pgrp = std::strtol(value, nullptr, 0);
       break;
     case STAT_F_FLAGS:
-      stat.flags = std::strtoull(value, nullptr, 0);
+      stat.flags = strtoull(value, nullptr, 0);
       break;
     case STAT_F_MIN_FLT:
-      stat.min_flt = std::strtoull(value, nullptr, 0);
+      stat.min_flt = strtoull(value, nullptr, 0);
       break;
     case STAT_F_CMIN_FLT:
-      stat.cmin_flt = std::strtoull(value, nullptr, 0);
+      stat.cmin_flt = strtoull(value, nullptr, 0);
       break;
     case STAT_F_MAJ_FLT:
-      stat.maj_flt = std::strtoull(value, nullptr, 0);
+      stat.maj_flt = strtoull(value, nullptr, 0);
       break;
     case STAT_F_CMAJ_FLT:
-      stat.cmaj_flt = std::strtoull(value, nullptr, 0);
+      stat.cmaj_flt = strtoull(value, nullptr, 0);
       break;
     case STAT_F_UTIME:
-      stat.utime = std::strtoull(value, nullptr, 0);
+      stat.utime = strtoull(value, nullptr, 0);
       break;
     case STAT_F_STIME:
-      stat.stime = std::strtoull(value, nullptr, 0);
+      stat.stime = strtoull(value, nullptr, 0);
       break;
     case STAT_F_CUTIME:
-      stat.cutime = std::strtoull(value, nullptr, 0);
+      stat.cutime = strtoull(value, nullptr, 0);
       break;
     case STAT_F_CSTIME:
-      stat.cstime = std::strtoull(value, nullptr, 0);
+      stat.cstime = strtoull(value, nullptr, 0);
       break;
     case STAT_F_PRIORITY:
       stat.priority = std::strtol(value, nullptr, 0);
@@ -425,46 +425,46 @@ bool ProcFS::ReadStat(pid_t pid, pid_t tid, Stat &stat) {
       stat.num_threads = std::strtoul(value, nullptr, 0);
       break;
     case STAT_F_START_TIME:
-      stat.start_time = std::strtoull(value, nullptr, 0);
+      stat.start_time = strtoull(value, nullptr, 0);
       break;
     case STAT_F_VSIZE:
-      stat.vsize = std::strtoull(value, nullptr, 0);
+      stat.vsize = strtoull(value, nullptr, 0);
       break;
     case STAT_F_RSS:
-      stat.rss = std::strtoull(value, nullptr, 0);
+      stat.rss = strtoull(value, nullptr, 0);
       break;
     case STAT_F_RSSLIM:
-      stat.rsslim = std::strtoull(value, nullptr, 0);
+      stat.rsslim = strtoull(value, nullptr, 0);
       break;
     case STAT_F_START_CODE:
-      stat.start_code = std::strtoull(value, nullptr, 0);
+      stat.start_code = strtoull(value, nullptr, 0);
       break;
     case STAT_F_END_CODE:
-      stat.end_code = std::strtoull(value, nullptr, 0);
+      stat.end_code = strtoull(value, nullptr, 0);
       break;
     case STAT_F_START_STACK:
-      stat.start_stack = std::strtoull(value, nullptr, 0);
+      stat.start_stack = strtoull(value, nullptr, 0);
       break;
     case STAT_F_ESP:
-      stat.esp = std::strtoull(value, nullptr, 0);
+      stat.esp = strtoull(value, nullptr, 0);
       break;
     case STAT_F_EIP:
-      stat.eip = std::strtoull(value, nullptr, 0);
+      stat.eip = strtoull(value, nullptr, 0);
       break;
     case STAT_F_PENDING:
-      stat.pending = std::strtoull(value, nullptr, 0);
+      stat.pending = strtoull(value, nullptr, 0);
       break;
     case STAT_F_BLOCKED:
-      stat.blocked = std::strtoull(value, nullptr, 0);
+      stat.blocked = strtoull(value, nullptr, 0);
       break;
     case STAT_F_SIGIGN:
-      stat.sigign = std::strtoull(value, nullptr, 0);
+      stat.sigign = strtoull(value, nullptr, 0);
       break;
     case STAT_F_SIGCATCH:
-      stat.sigcatch = std::strtoull(value, nullptr, 0);
+      stat.sigcatch = strtoull(value, nullptr, 0);
       break;
     case STAT_F_WCHAN:
-      stat.wchan = std::strtoull(value, nullptr, 0);
+      stat.wchan = strtoull(value, nullptr, 0);
       break;
     case STAT_F_EXIT_SIGNAL:
       stat.exit_signal = std::strtoul(value, nullptr, 0);
@@ -479,22 +479,22 @@ bool ProcFS::ReadStat(pid_t pid, pid_t tid, Stat &stat) {
       stat.policy = std::strtoul(value, nullptr, 0);
       break;
     case STAT_F_BLKIO_TICKS:
-      stat.blkio_ticks = std::strtoull(value, nullptr, 0);
+      stat.blkio_ticks = strtoull(value, nullptr, 0);
       break;
     case STAT_F_GTIME:
-      stat.gtime = std::strtoull(value, nullptr, 0);
+      stat.gtime = strtoull(value, nullptr, 0);
       break;
     case STAT_F_CGTIME:
-      stat.cgtime = std::strtoull(value, nullptr, 0);
+      stat.cgtime = strtoull(value, nullptr, 0);
       break;
     case STAT_F_START_DATA:
-      stat.start_data = std::strtoull(value, nullptr, 0);
+      stat.start_data = strtoull(value, nullptr, 0);
       break;
     case STAT_F_END_DATA:
-      stat.end_data = std::strtoull(value, nullptr, 0);
+      stat.end_data = strtoull(value, nullptr, 0);
       break;
     case STAT_F_START_BRK:
-      stat.start_brk = std::strtoull(value, nullptr, 0);
+      stat.start_brk = strtoull(value, nullptr, 0);
       break;
     default:
       break;

@@ -198,7 +198,7 @@ bool Session::parseAddress(ds2::Address &address, const char *ptr, char **eptr,
   DS2ASSERT(eptr != nullptr);
   DS2ASSERT(endianness == kEndianBig || endianness == kEndianLittle); // No PDP.
 
-  uint64_t value = std::strtoull(ptr, eptr, 16);
+  uint64_t value = strtoull(ptr, eptr, 16);
   // If *eptr contains the original value of ptr, there was nothing read.
   if (ptr == *eptr)
     return false;
@@ -347,7 +347,7 @@ void Session::Handle_A(ProtocolInterpreter::Handler const &,
 void Session::Handle_B(ProtocolInterpreter::Handler const &,
                        std::string const &args) {
   char *eptr;
-  uint64_t address = std::strtoull(args.c_str(), &eptr, 16);
+  uint64_t address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
@@ -862,7 +862,7 @@ void Session::Handle__M(ProtocolInterpreter::Handler const &,
   uint64_t length;
   uint32_t protection = 0;
 
-  length = std::strtoull(args.c_str(), &eptr, 16);
+  length = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
@@ -902,7 +902,7 @@ void Session::Handle__M(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle__m(ProtocolInterpreter::Handler const &,
                         std::string const &args) {
-  uint64_t address = std::strtoull(args.c_str(), nullptr, 16);
+  uint64_t address = strtoull(args.c_str(), nullptr, 16);
   sendError(_delegate->onDeallocateMemory(*this, address));
 }
 
@@ -917,12 +917,12 @@ void Session::Handle_M(ProtocolInterpreter::Handler const &,
   uint64_t address;
   uint64_t length;
 
-  address = std::strtoull(args.c_str(), &eptr, 16);
+  address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
   }
-  length = std::strtoull(eptr, &eptr, 16);
+  length = strtoull(eptr, &eptr, 16);
   if (*eptr++ != ':') {
     sendError(kErrorInvalidArgument);
     return;
@@ -949,12 +949,12 @@ void Session::Handle_m(ProtocolInterpreter::Handler const &,
   std::string data;
   char *eptr;
 
-  address = std::strtoull(args.c_str(), &eptr, 16);
+  address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument); // Uhoh
     return;
   }
-  length = std::strtoull(eptr, nullptr, 16);
+  length = strtoull(eptr, nullptr, 16);
 
   ErrorCode error = _delegate->onReadMemory(*this, address, length, data);
   if (error != kSuccess) {
@@ -1168,7 +1168,7 @@ void Session::Handle_QRestoreRegisterState(ProtocolInterpreter::Handler const &,
   ProcessThreadId ptid;
   uint64_t id;
 
-  id = std::strtoull(eptr, const_cast<char **>(&eptr), 10);
+  id = strtoull(eptr, const_cast<char **>(&eptr), 10);
 
   if (*eptr++ == ';')
     ptid.parse(eptr, kCompatibilityModeLLDBThread);
@@ -1456,7 +1456,7 @@ Session::Handle_QThreadSuffixSupported(ProtocolInterpreter::Handler const &,
 void Session::Handle_qAttached(ProtocolInterpreter::Handler const &,
                                std::string const &args) {
   bool attached = false;
-  ProcessId pid = std::strtoull(args.c_str(), nullptr, 16);
+  ProcessId pid = strtoull(args.c_str(), nullptr, 16);
   ErrorCode error = _delegate->onQueryAttached(*this, pid, attached);
   if (error != kSuccess) {
     sendError(error);
@@ -1503,12 +1503,12 @@ void Session::Handle_qCRC(ProtocolInterpreter::Handler const &,
   std::string data;
   char *eptr;
 
-  address = std::strtoull(args.c_str(), &eptr, 16);
+  address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument); // Uhoh
     return;
   }
-  length = std::strtoull(eptr, nullptr, 16);
+  length = strtoull(eptr, nullptr, 16);
 
   uint32_t crc;
   ErrorCode error = _delegate->onComputeCRC(*this, address, length, crc);
@@ -1622,12 +1622,12 @@ void Session::Handle_qGetTLSAddr(ProtocolInterpreter::Handler const &,
   }
 
   char *eptr;
-  uint64_t offset = std::strtoull(&args[comma], &eptr, 16);
+  uint64_t offset = strtoull(&args[comma], &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
   }
-  uint64_t linkMap = std::strtoull(eptr, &eptr, 16);
+  uint64_t linkMap = strtoull(eptr, &eptr, 16);
 
   Address address;
   ErrorCode error =
@@ -1787,7 +1787,7 @@ void Session::Handle_qLaunchSuccess(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_qMemoryRegionInfo(ProtocolInterpreter::Handler const &,
                                        std::string const &args) {
-  uint64_t address = std::strtoull(args.c_str(), nullptr, 16);
+  uint64_t address = strtoull(args.c_str(), nullptr, 16);
   MemoryRegionInfo info;
   ErrorCode error = _delegate->onQueryMemoryRegionInfo(*this, address, info);
   if (error != kSuccess) {
@@ -2017,12 +2017,12 @@ void Session::Handle_qSearch(ProtocolInterpreter::Handler const &,
   }
 
   char *eptr;
-  uint64_t address = std::strtoull(&args[7], &eptr, 16);
+  uint64_t address = strtoull(&args[7], &eptr, 16);
   if (*eptr++ != ';') {
     sendError(kErrorInvalidArgument);
     return;
   }
-  uint64_t length = std::strtoull(eptr, &eptr, 16);
+  uint64_t length = strtoull(eptr, &eptr, 16);
   if (*eptr++ != ';') {
     sendError(kErrorInvalidArgument);
     return;
@@ -2218,7 +2218,7 @@ void Session::Handle_qSymbol(ProtocolInterpreter::Handler const &,
 void Session::Handle_qThreadStopInfo(ProtocolInterpreter::Handler const &,
                                      std::string const &args) {
   ProcessThreadId ptid;
-  ptid.tid = std::strtoull(args.c_str(), nullptr, 16);
+  ptid.tid = strtoull(args.c_str(), nullptr, 16);
 
   StopCode stop;
   ErrorCode error = _delegate->onQueryThreadStopInfo(*this, ptid, true, stop);
@@ -2372,9 +2372,9 @@ void Session::Handle_qXfer(ProtocolInterpreter::Handler const &,
     }
     data_start = offset_end + 1;
 
-    uint64_t offset = std::strtoull(
-        args.substr(offset_start, offset_end - offset_start).c_str(), nullptr,
-        16);
+    uint64_t offset =
+        strtoull(args.substr(offset_start, offset_end - offset_start).c_str(),
+                 nullptr, 16);
 
     size_t nwritten = 0;
 
@@ -2400,12 +2400,12 @@ void Session::Handle_qXfer(ProtocolInterpreter::Handler const &,
     length_start = offset_end + 1;
     length_end = args.length();
 
-    uint64_t offset = std::strtoull(
-        args.substr(offset_start, offset_end - offset_start).c_str(), nullptr,
-        16);
-    uint64_t length = std::strtoull(
-        args.substr(length_start, length_end - length_start).c_str(), nullptr,
-        16);
+    uint64_t offset =
+        strtoull(args.substr(offset_start, offset_end - offset_start).c_str(),
+                 nullptr, 16);
+    uint64_t length =
+        strtoull(args.substr(length_start, length_end - length_start).c_str(),
+                 nullptr, 16);
     bool last = true;
     std::string buffer;
 
@@ -2710,7 +2710,7 @@ void Session::Handle_T(ProtocolInterpreter::Handler const &,
 void Session::Handle_t(ProtocolInterpreter::Handler const &,
                        std::string const &args) {
   char *eptr;
-  uint64_t address = std::strtoull(args.c_str(), &eptr, 16);
+  uint64_t address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ':') {
     sendError(kErrorInvalidArgument);
     return;
@@ -2995,12 +2995,12 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       sendError(kErrorInvalidArgument);
       return;
     }
-    uint64_t count = std::strtoull(eptr, &eptr, 16);
+    uint64_t count = strtoull(eptr, &eptr, 16);
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
     }
-    uint64_t offset = std::strtoull(eptr, &eptr, 16);
+    uint64_t offset = strtoull(eptr, &eptr, 16);
 
     std::string buffer;
     ErrorCode error = _delegate->onFileRead(*this, fd, count, offset, buffer);
@@ -3021,7 +3021,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       sendError(kErrorInvalidArgument);
       return;
     }
-    uint64_t offset = std::strtoull(eptr, &eptr, 16);
+    uint64_t offset = strtoull(eptr, &eptr, 16);
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
@@ -3127,12 +3127,12 @@ void Session::Handle_vFlashErase(ProtocolInterpreter::Handler const &,
   uint64_t length;
   char *eptr;
 
-  address = std::strtoull(args.c_str(), &eptr, 16);
+  address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument); // Uhoh
     return;
   }
-  length = std::strtoull(eptr, nullptr, 16);
+  length = strtoull(eptr, nullptr, 16);
 
   sendError(_delegate->onFlashErase(*this, address, length));
 }
@@ -3148,12 +3148,12 @@ void Session::Handle_vFlashWrite(ProtocolInterpreter::Handler const &,
   uint64_t address;
   uint64_t length;
 
-  address = std::strtoull(args.c_str(), &eptr, 16);
+  address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
   }
-  length = std::strtoull(eptr, &eptr, 16);
+  length = strtoull(eptr, &eptr, 16);
   if (*eptr++ != ':') {
     sendError(kErrorInvalidArgument);
     return;
@@ -3270,12 +3270,12 @@ void Session::Handle_X(ProtocolInterpreter::Handler const &,
   uint64_t address;
   uint64_t length;
 
-  address = std::strtoull(args.c_str(), &eptr, 16);
+  address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
   }
-  length = std::strtoull(eptr, &eptr, 16);
+  length = strtoull(eptr, &eptr, 16);
   if (*eptr++ != ':') {
     sendError(kErrorInvalidArgument);
     return;
@@ -3306,12 +3306,12 @@ void Session::Handle_x(ProtocolInterpreter::Handler const &,
   uint64_t length;
   std::string data;
 
-  address = std::strtoull(args.c_str(), &eptr, 16);
+  address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
   }
-  length = std::strtoull(eptr, &eptr, 16);
+  length = strtoull(eptr, &eptr, 16);
 
   if (address == 0 && length == 0) {
     sendOK();
@@ -3344,7 +3344,7 @@ void Session::Handle_Z(ProtocolInterpreter::Handler const &,
     sendError(kErrorInvalidArgument);
     return;
   }
-  address = std::strtoull(eptr, &eptr, 16);
+  address = strtoull(eptr, &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
@@ -3376,7 +3376,7 @@ void Session::Handle_z(ProtocolInterpreter::Handler const &,
     sendError(kErrorInvalidArgument);
     return;
   }
-  address = std::strtoull(eptr, &eptr, 16);
+  address = strtoull(eptr, &eptr, 16);
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;

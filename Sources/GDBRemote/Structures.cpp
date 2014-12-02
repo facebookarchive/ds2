@@ -90,11 +90,11 @@ bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
       mode == kCompatibilityModeGDBMultiprocess) {
     if (string[0] == 'p') {
       char *eptr;
-      pid = std::strtoull(string.c_str() + 1, &eptr, 16);
+      pid = strtoull(string.c_str() + 1, &eptr, 16);
       if (errno != 0)
         return false;
       if (*eptr++ == '.') {
-        tid = std::strtoull(eptr, nullptr, 16);
+        tid = strtoull(eptr, nullptr, 16);
         if (errno != 0)
           return false;
       }
@@ -103,12 +103,12 @@ bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
     }
   } else if (mode == kCompatibilityModeLLDB) {
     char *eptr;
-    pid = std::strtoull(string.c_str(), &eptr, 16);
+    pid = strtoull(string.c_str(), &eptr, 16);
     if (errno != 0)
       return false;
     if (*eptr++ == ';') {
       if (std::strncmp(eptr, "thread:", 7) == 0) {
-        tid = std::strtoull(eptr + 7, nullptr, 16);
+        tid = strtoull(eptr + 7, nullptr, 16);
         if (errno != 0)
           return false;
       }
@@ -118,7 +118,7 @@ bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
     }
   } else if (mode == kCompatibilityModeLLDBThread) {
     if (std::strncmp(string.c_str(), "thread:", 7) == 0) {
-      tid = std::strtoull(string.c_str() + 7, nullptr, 16);
+      tid = strtoull(string.c_str() + 7, nullptr, 16);
       if (errno != 0)
         return false;
     }
@@ -413,7 +413,8 @@ std::string HostInfo::encode() const {
   return ss.str();
 }
 
-std::string ProcessInfo::encode(CompatibilityMode mode, bool alternateVersion) const {
+std::string ProcessInfo::encode(CompatibilityMode mode,
+                                bool alternateVersion) const {
   std::ostringstream ss;
 
   std::string triple;
