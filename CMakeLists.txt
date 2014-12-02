@@ -179,5 +179,11 @@ foreach (FUNC gettid personality posix_openpt wait4)
   endif ()
 endforeach ()
 
+include(CheckIncludeFile)
+CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
+if (HAVE_SYS_PERSONALITY_H)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_SYS_PERSONALITY_H")
+endif ()
+
 include(FindThreads)
 target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})

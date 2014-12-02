@@ -12,11 +12,12 @@
 #define __DebugServer2_Host_Linux_ExtraSyscalls_h
 
 #include <fcntl.h>
-#if defined(__ANDROID__)
+// Older android native sysroots don't have sys/personality.h.
+#if defined(HAVE_SYS_PERSONALITY_H)
+#include <sys/personality.h>
+#else
 #include <linux/personality.h>
 #undef personality
-#else
-#include <sys/personality.h>
 #endif
 #include <sys/syscall.h>
 #include <unistd.h>
