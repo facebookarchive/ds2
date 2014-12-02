@@ -24,9 +24,9 @@ make
 
 ### Cross compiling for Linux-ARM
 
-Compiling for Linux-ARM (which can be then used on android devices) is also
-possible. On Ubuntu 14.04, install `gcc-4.7-arm-linux-gnueabi` and
-`g++-4.7-arm-linux-gnueabi` and use the provided toolchain file.
+Compiling for Linux-ARM is also possible. On Ubuntu 14.04, install
+`gcc-4.7-arm-linux-gnueabi` and `g++-4.7-arm-linux-gnueabi` and use the
+provided toolchain file.
 
 ```sh
 cd ds2
@@ -36,10 +36,30 @@ cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Linux-ARM.cmake ..
 make
 ```
 
-This will generate a binary that you can drop on your device to start
-debugging. Adding `-DSTATIC=1` to the CMake line will generate a static binary
-instead, which might be useful if some of the libraries ds2 depends on are not
-present on the remote device.
+This will generate a binary that you can copy to your device to start
+debugging.
+
+### Cross compiling for Android
+
+For Android native debugging, it is possible to build ds2 with a toolchain from
+the Android NDK. A script is provided to generate the toolchain, and a CMake
+toolchain file can then be used to generate the build system.
+`Support/Scripts/prepare-android-toolchain.sh` will download a working version
+of the NDK, extract it, and install the toolchain to
+`/tmp/android-ndk-arm-toolchain` which can then be used for the build.
+
+```sh
+cd ds2
+./Support/Scripts/prepare-android-toolchain.sh arm
+mkdir build
+cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
+make
+```
+
+Builds of ds2 targetting Android generate a static binary by default. The final
+build product can be copied over to the remote device and used with minimal
+dependencies.
 
 ## Running ds2
 
