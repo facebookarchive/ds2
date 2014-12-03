@@ -7,13 +7,21 @@ env:
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo add-apt-repository -y ppa:linaro-maintainers/toolchain
+  - if [ "$TARGET" = "Linux-ARM" ]; then sudo add-apt-repository -y ppa:linaro-maintainers/toolchain; fi
+  - if [ "$TARGET" = "Linux-X86_64" ]; then sudo add-apt-repository -y ppa:andykimpe/cmake; fi
   - sudo apt-get update
 install:
-  - sudo apt-get install -y g++-arm-linux-gnueabi g++-4.8-multilib
+  - sudo apt-get install -y g++-4.8-multilib
+  - if [ "$TARGET" = "Linux-ARM" ]; then sudo apt-get install -y g++-arm-linux-gnueabi; fi
+  # On Linux-X86_64, we run the llgs test suite. This requires a recent enough
+  # cmake (for the LLVM cmake step), and an install of lldb (for the tests to
+  # be able to use the lldb python library without us building it).
+  - if [ "$TARGET" = "Linux-X86_64" ]; then sudo apt-get install -y cmake lldb-3.3; fi
 
 before_script:
   - mkdir -p build && cd build
   - cmake -DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake" ..
 script:
   - make
+  # The llgs test suite works only on Linux-X86_64 for now.
+  - if [ "$TARGET" = "Linux-X86_64" ]; then ../Support/Testing/run-llgs-tests.sh; fi
