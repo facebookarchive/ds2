@@ -124,6 +124,7 @@ static void DebugMain(int argc, char **argv, int attachPid, int port) {
     // expects to read this string to determine that llgs is started and ready
     // to accept connections.
     //
+    printf("ds2\n");
     printf("Listening to port %d for a connection from %s...\n", port,
            "localhost");
   }

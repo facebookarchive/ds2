@@ -31,7 +31,7 @@ index ac0a392..416f47d 100644
          self.init_llgs_test()
          self.buildDwarf()
 diff --git a/test/tools/lldb-gdbserver/gdbremote_testcase.py b/test/tools/lldb-gdbserver/gdbremote_testcase.py
-index fdd133c..914f472 100644
+index fdd133c..a293e4e 100644
 --- a/test/tools/lldb-gdbserver/gdbremote_testcase.py
 +++ b/test/tools/lldb-gdbserver/gdbremote_testcase.py
 @@ -133,7 +133,7 @@ class GdbRemoteTestCaseBase(TestBase):
@@ -69,7 +69,7 @@ index fdd133c..914f472 100644
          server = pexpect.spawn(commandline, logfile=logfile)
          self.assertIsNotNone(server)
 -        server.expect(r"(debugserver|lldb-gdbserver)", timeout=10)
-+        #server.expect(r"(debugserver|lldb-gdbserver)", timeout=10)
++        server.expect(r"(debugserver|lldb-gdbserver|ds2)", timeout=10)
  
          # If we're receiving the stub's listening port from the named pipe, do that here.
          if self.named_pipe:
