@@ -28,6 +28,7 @@ protected:
   size_t _threadIndex;
   Host::ProcessSpawner _spawner;
   Session *_resumeSession;
+  std::string _consoleBuffer;
 
 public:
   DebugSessionImpl(int argc, char **argv);

@@ -933,9 +933,17 @@ ErrorCode DebugSessionImpl::spawnProcess(std::string const &path,
 
   auto outputDelegate = [this](void *buf, size_t size) {
     DS2ASSERT(_resumeSession != nullptr);
-    std::string data(static_cast<char *>(buf), size);
-    data = StringToHex(data);
-    _resumeSession->send(std::string("O") + data);
+
+    const char *cbuf = static_cast<char *>(buf);
+    for (size_t i = 0; i < size; ++i) {
+      this->_consoleBuffer += cbuf[i];
+      if (cbuf[i] == '\n') {
+        std::string data = "O";
+        data += StringToHex(this->_consoleBuffer);
+        _consoleBuffer.clear();
+        this->_resumeSession->send(data);
+      }
+    }
   };
 
   _spawner.redirectOutputToDelegate(outputDelegate);
