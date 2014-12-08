@@ -77,7 +77,7 @@ ds2::Endian Platform::GetEndian() {
 
 size_t Platform::GetPointerSize() { return sizeof(void *); }
 
-const char *Platform::GetHostName() {
+const char *Platform::GetHostName(bool fqdn) {
   static char hostname[255] = {'\0'};
 
   if (hostname[0] == '\0') {
@@ -87,6 +87,10 @@ const char *Platform::GetHostName() {
     if (rc == SOCKET_ERROR) {
       hostname[0] = '\0';
       return nullptr;
+    }
+
+    if (fqdn) {
+      // TODO(sas): Get FQDN here.
     }
   }
 

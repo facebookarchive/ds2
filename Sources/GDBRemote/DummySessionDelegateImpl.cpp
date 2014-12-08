@@ -108,7 +108,7 @@ ErrorCode DummySessionDelegateImpl::onQueryHostInfo(Session &, HostInfo &info) {
 
   info.endian = Platform::GetEndian();
   info.pointerSize = Platform::GetPointerSize();
-  info.hostName = Platform::GetHostName();
+  info.hostName = Platform::GetHostName(/*fqdn=*/true);
 
   return kSuccess;
 }

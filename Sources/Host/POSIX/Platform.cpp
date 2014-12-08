@@ -14,8 +14,10 @@
 
 #include <grp.h>
 #include <limits.h>
+#include <netdb.h>
 #include <pwd.h>
 #include <unistd.h>
+#include <cstring>
 
 // TODO HAVE_ENDIAN_H, HAVE_SYS_ENDIAN_H
 #if defined(__linux__)
@@ -82,13 +84,37 @@ char const *Platform::GetOSBuild() { return nullptr; }
 
 char const *Platform::GetOSKernelPath() { return nullptr; }
 
-char const *Platform::GetHostName() {
-  static const int kHostNameMax = 255;
-  static char sHostName[kHostNameMax + 1] = {'\0'};
-  if (sHostName[0] == '\0') {
-    ::gethostname(sHostName, kHostNameMax);
+char const *Platform::GetHostName(bool fqdn) {
+  static std::string sHostName;
+
+  if (sHostName.empty()) {
+    constexpr int kHostNameMax = 255;
+    char hostName[kHostNameMax + 1];
+    struct addrinfo hints, *info;
+    int rc;
+
+    rc = ::gethostname(hostName, kHostNameMax);
+    if (rc != 0)
+      goto end;
+
+    sHostName = hostName;
+
+    if (fqdn) {
+      ::memset(&hints, 0, sizeof hints);
+      hints.ai_family = AF_UNSPEC;
+      hints.ai_socktype = SOCK_STREAM;
+      hints.ai_flags = AI_CANONNAME;
+
+      rc = getaddrinfo(hostName, "http", &hints, &info);
+      if (rc != 0)
+        goto end;
+
+      sHostName = info->ai_canonname;
+    }
   }
-  return sHostName;
+
+end:
+  return sHostName.c_str();
 }
 
 ds2::Endian Platform::GetEndian() {

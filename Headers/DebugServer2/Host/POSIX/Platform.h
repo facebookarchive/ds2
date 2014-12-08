@@ -34,7 +34,7 @@ public:
   static size_t GetPointerSize();
 
 public:
-  static char const *GetHostName();
+  static char const *GetHostName(bool fqdn = false);
 
 public:
   static char const *GetOSTypeName();
