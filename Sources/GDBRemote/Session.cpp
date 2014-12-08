@@ -81,8 +81,8 @@ Session::Session(CompatibilityMode mode) : _compatMode(mode) {
   REGISTER_HANDLER_EQUALS_1(QNonStop);
   REGISTER_HANDLER_EQUALS_1(QPassSignals);
   REGISTER_HANDLER_EQUALS_1(QProgramSignals);
-  REGISTER_HANDLER_EQUALS_1(QSaveRegisterState);
   REGISTER_HANDLER_EQUALS_1(QRestoreRegisterState);
+  REGISTER_HANDLER_EQUALS_1(QSaveRegisterState);
   REGISTER_HANDLER_EQUALS_1(QSetDisableASLR);
   REGISTER_HANDLER_EQUALS_1(QSetEnableAsyncProfiling);
   REGISTER_HANDLER_EQUALS_1(QSetLogging);
@@ -104,6 +104,7 @@ Session::Session(CompatibilityMode mode) : _compatMode(mode) {
   REGISTER_HANDLER_EQUALS_1(qGetProfileData);
   REGISTER_HANDLER_EQUALS_1(qGetTIBAddr);
   REGISTER_HANDLER_EQUALS_1(qGetTLSAddr);
+  REGISTER_HANDLER_EQUALS_1(qGetWorkingDir);
   REGISTER_HANDLER_EQUALS_1(qGroupName);
   REGISTER_HANDLER_EQUALS_1(qHostInfo);
   REGISTER_HANDLER_EQUALS_1(qKillSpawnedProcess);
@@ -1638,6 +1639,27 @@ void Session::Handle_qGetTLSAddr(ProtocolInterpreter::Handler const &,
   }
 
   send(formatAddress(address, kEndianBig));
+}
+
+//
+// Packet:        qGetWorkingDir
+// Description:   Get the current working directory
+// Compatibility: LLDB
+void Session::Handle_qGetWorkingDir(ProtocolInterpreter::Handler const &,
+                                    std::string const &args) {
+  if (args.size() != 0) {
+    sendError(kErrorInvalidArgument);
+    return;
+  }
+
+  std::string workingDir;
+  ErrorCode error = _delegate->onQueryWorkingDirectory(*this, workingDir);
+  if (error != kSuccess) {
+    sendError(error);
+    return;
+  }
+
+  send(workingDir);
 }
 
 //

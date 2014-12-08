@@ -49,6 +49,7 @@ public:
 
 public:
   static bool IsFilePresent(std::string const &path);
+  static char const *GetWorkingDirectory();
 
 public:
   static ProcessId GetCurrentProcessId();

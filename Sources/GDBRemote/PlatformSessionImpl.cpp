@@ -24,7 +24,8 @@ using ds2::Host::ProcessSpawner;
 using ds2::ErrorCode;
 
 PlatformSessionImpl::PlatformSessionImpl()
-    : DummySessionDelegateImpl(), _processIndex(0), _disableASLR(false) {}
+    : DummySessionDelegateImpl(), _processIndex(0), _disableASLR(false),
+      _workingDirectory(Platform::GetWorkingDirectory()) {}
 
 ErrorCode PlatformSessionImpl::onQueryProcessList(Session &session,
                                                   ProcessInfoMatch const &match,
@@ -102,6 +103,13 @@ ErrorCode PlatformSessionImpl::onQueryGroupName(Session &, GroupId const &gid,
     return kErrorNotFound;
   else
     return kSuccess;
+}
+
+ErrorCode
+PlatformSessionImpl::onQueryWorkingDirectory(Session &,
+                                             std::string &workingDir) {
+  workingDir = _workingDirectory;
+  return kSuccess;
 }
 
 ErrorCode PlatformSessionImpl::onLaunchDebugServer(Session &session,

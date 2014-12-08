@@ -541,6 +541,12 @@ ErrorCode DummySessionDelegateImpl::onQueryGroupName(Session &, GroupId const &,
   return kErrorUnsupported;
 }
 
+ErrorCode
+DummySessionDelegateImpl::onQueryWorkingDirectory(Session &,
+                                                  std::string &woringDir) {
+  return kErrorUnsupported;
+}
+
 void DummySessionDelegateImpl::onReset(Session &) {}
 
 ErrorCode DummySessionDelegateImpl::onFlashErase(Session &, Address const &,

@@ -173,6 +173,8 @@ bool Platform::IsFilePresent(std::string const &path) {
   return ::PathFileExistsA(path.c_str());
 }
 
+char const *Platform::GetWorkingDirectory() { return nullptr; }
+
 ds2::ProcessId Platform::GetCurrentProcessId() {
   return ::GetCurrentProcessId();
 }

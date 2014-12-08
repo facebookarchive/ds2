@@ -287,6 +287,8 @@ protected: // Platform Session
                                     std::string &name) = 0;
   virtual ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
                                      std::string &name) = 0;
+  virtual ErrorCode onQueryWorkingDirectory(Session &session,
+                                            std::string &workingDir) = 0;
 
 protected: // System Session
   virtual void onReset(Session &session) = 0;

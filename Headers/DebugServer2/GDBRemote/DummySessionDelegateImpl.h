@@ -147,7 +147,8 @@ protected: // Debugging Session
   virtual ErrorCode onSaveRegisters(Session &session,
                                     ProcessThreadId const &ptid, uint64_t &id);
   virtual ErrorCode onRestoreRegisters(Session &session,
-                                       ProcessThreadId const &ptid, uint64_t id);
+                                       ProcessThreadId const &ptid,
+                                       uint64_t id);
 
   virtual ErrorCode onReadRegisterValue(Session &session,
                                         ProcessThreadId const &ptid,
@@ -276,6 +277,8 @@ protected: // Platform Session
                                     std::string &name);
   virtual ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
                                      std::string &name);
+  virtual ErrorCode onQueryWorkingDirectory(Session &session,
+                                            std::string &workingDir);
 
 protected: // System Session
   virtual void onReset(Session &session);

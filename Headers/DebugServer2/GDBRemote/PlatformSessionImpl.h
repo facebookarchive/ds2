@@ -54,6 +54,8 @@ protected:
                                     std::string &name);
   virtual ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
                                      std::string &name);
+  virtual ErrorCode onQueryWorkingDirectory(Session &session,
+                                            std::string &workingDir);
 
 protected:
   virtual ErrorCode onLaunchDebugServer(Session &session,

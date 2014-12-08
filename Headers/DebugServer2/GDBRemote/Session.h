@@ -124,6 +124,8 @@ private:
                           std::string const &);
   void Handle_qGetTIBAddr(ProtocolInterpreter::Handler const &,
                           std::string const &);
+  void Handle_qGetWorkingDir(ProtocolInterpreter::Handler const &,
+                             std::string const &);
   void Handle_qGroupName(ProtocolInterpreter::Handler const &,
                          std::string const &);
   void Handle_qHostInfo(ProtocolInterpreter::Handler const &,

@@ -12,10 +12,10 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/POSIX/Platform.h"
 
-#include <limits.h>
-#include <unistd.h>
-#include <pwd.h>
 #include <grp.h>
+#include <limits.h>
+#include <pwd.h>
+#include <unistd.h>
 
 // TODO HAVE_ENDIAN_H, HAVE_SYS_ENDIAN_H
 #if defined(__linux__)
@@ -128,6 +128,11 @@ bool Platform::IsFilePresent(std::string const &path) {
     return false;
 
   return (::access(path.c_str(), F_OK) == 0);
+}
+
+char const *Platform::GetWorkingDirectory() {
+  static char buf[PATH_MAX];
+  return ::getcwd(buf, sizeof buf);
 }
 
 ds2::ProcessId Platform::GetCurrentProcessId() { return ::getpid(); }
