@@ -438,7 +438,7 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
   if (alternateVersion) {
     ss << "pid:" << DEC << pid << ';';
     ss << "uid:" << DEC << FORMAT_ID(realUid) << ';';
-    ss << "gid:" << DEC << FORMAT_ID(realUid) << ';';
+    ss << "gid:" << DEC << FORMAT_ID(realGid) << ';';
 #if !defined(_WIN32)
     ss << "ppid:" << DEC << parentPid << ';';
     ss << "euid:" << DEC << effectiveUid << ';';
@@ -449,7 +449,7 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
   } else {
     ss << "pid:" << HEX0 << pid << ';';
     ss << "real-uid:" << HEX0 << FORMAT_ID(realUid) << ';';
-    ss << "real-gid:" << HEX0 << FORMAT_ID(realUid) << ';';
+    ss << "real-gid:" << HEX0 << FORMAT_ID(realGid) << ';';
 #if !defined(_WIN32)
     ss << "parent-pid:" << HEX0 << parentPid << ';';
     ss << "effective-uid:" << HEX0 << effectiveUid << ';';
