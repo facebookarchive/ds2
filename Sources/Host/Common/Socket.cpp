@@ -10,7 +10,7 @@
 
 #include "DebugServer2/Host/Socket.h"
 
-#ifdef _WIN32
+#if defined(_WIN32)
 #define sock_errno WSAGetLastError()
 #define EAGAIN WSAEWOULDBLOCK
 #include <Winsock2.h>
@@ -47,6 +47,12 @@ bool Socket::create() {
   if (_handle < 0) {
     _lastError = sock_errno;
   }
+
+#if !defined(_WIN32)
+  int flags = ::fcntl(_handle, F_GETFD) | FD_CLOEXEC;
+  ::fcntl(_handle, F_SETFD, flags);
+#endif
+
   return valid();
 }
 
@@ -54,7 +60,7 @@ void Socket::close() {
   if (!valid())
     return;
 
-#ifdef _WIN32
+#if defined(_WIN32)
   ::closesocket(_handle);
 #else
   ::close(_handle);
@@ -116,6 +122,11 @@ Socket *Socket::accept() {
     return nullptr;
   }
 
+#if !defined(_WIN32)
+  int flags = ::fcntl(handle, F_GETFD) | FD_CLOEXEC;
+  ::fcntl(handle, F_SETFD, flags);
+#endif
+
   Socket *client = new Socket(handle);
   client->setNonBlocking();
   return client;
@@ -125,7 +136,7 @@ bool Socket::setNonBlocking() {
   if (!connected())
     return false;
 
-#ifdef _WIN32
+#if defined(_WIN32)
   u_long set = 1;
   if (::ioctlsocket(_handle, FIONBIO, &set) == SOCKET_ERROR) {
     _lastError = sock_errno;
@@ -182,7 +193,7 @@ bool Socket::wait(int ms) {
   if (!valid())
     return false;
 
-#ifdef _WIN32
+#if defined(_WIN32)
   fd_set fds;
   struct timeval tv, *ptv;
   if (ms < 0) {
@@ -207,7 +218,7 @@ bool Socket::wait(int ms) {
 }
 
 std::string Socket::error() const {
-#ifdef _WIN32
+#if defined(_WIN32)
   // 128 bytes is enough for "error " + "0x00000000"
   char buf[128];
   snprintf(buf, sizeof(buf), "error %#x", _lastError);
