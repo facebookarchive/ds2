@@ -1659,7 +1659,7 @@ void Session::Handle_qGetWorkingDir(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(workingDir);
+  send(StringToHex(workingDir));
 }
 
 //
