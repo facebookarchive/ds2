@@ -23,9 +23,11 @@ FILE *sOutputStream = stderr;
 
 namespace ds2 {
 
-void SetLogMask(uint64_t mask) { sLogMask = mask; }
+uint32_t GetLogLevel() { return sLogLevel; }
 
 void SetLogLevel(uint32_t level) { sLogLevel = level; }
+
+void SetLogMask(uint64_t mask) { sLogMask = mask; }
 
 void SetLogColorsEnabled(bool enabled) { sColorsEnabled = enabled; }
 

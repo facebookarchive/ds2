@@ -46,8 +46,9 @@ enum {
   kLogLevelFatal
 };
 
-void SetLogMask(uint64_t mask);
+uint32_t GetLogLevel();
 void SetLogLevel(uint32_t level);
+void SetLogMask(uint64_t mask);
 void SetLogColorsEnabled(bool enabled);
 void SetLogOutputStream(FILE *stream);
 

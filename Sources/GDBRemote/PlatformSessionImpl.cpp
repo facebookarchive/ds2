@@ -117,9 +117,13 @@ ErrorCode PlatformSessionImpl::onLaunchDebugServer(Session &session,
                                                    uint16_t &port,
                                                    ProcessId &pid) {
   ProcessSpawner ps;
+  StringCollection args;
 
   ps.setExecutable(Platform::GetSelfExecutablePath());
-  ps.setArguments("--slave");
+  args.push_back("--slave");
+  if (GetLogLevel() == kLogLevelDebug)
+    args.push_back("--debug-remote");
+  ps.setArguments(args);
   ps.redirectInputToNull();
   ps.redirectOutputToBuffer();
 
