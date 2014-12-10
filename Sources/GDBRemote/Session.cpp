@@ -2990,10 +2990,6 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
         *this, HexToString(args.substr(op_end, comma - op_end)), flags, mode,
         fd);
     if (error != kSuccess) {
-      if (error >= kErrorUnknown) {
-        sendError(error);
-        return;
-      }
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
       ss << 'F' << 0 << ';' << std::hex << fd;
@@ -3002,10 +2998,6 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     int fd = std::strtol(&args[op_end], nullptr, 16);
     error = _delegate->onFileClose(*this, fd);
     if (error != kSuccess) {
-      if (error >= kErrorUnknown) {
-        sendError(error);
-        return;
-      }
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
       ss << 'F' << 0;
@@ -3027,10 +3019,6 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     std::string buffer;
     ErrorCode error = _delegate->onFileRead(*this, fd, count, offset, buffer);
     if (error != kSuccess) {
-      if (error >= kErrorUnknown) {
-        sendError(error);
-        return;
-      }
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
       ss << 'F' << 0 << ';' << Escape(buffer);
@@ -3054,10 +3042,6 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     ErrorCode error = _delegate->onFileWrite(
         *this, fd, offset, std::string(eptr, length), nwritten);
     if (error != kSuccess) {
-      if (error >= kErrorUnknown) {
-        sendError(error);
-        return;
-      }
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
       ss << 'F' << 0 << ';' << std::hex << nwritten;
@@ -3065,10 +3049,6 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
   } else if (op == "unlink") {
     error = _delegate->onFileRemove(*this, HexToString(&args[op_end]));
     if (error != kSuccess) {
-      if (error >= kErrorUnknown) {
-        sendError(error);
-        return;
-      }
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
       ss << 'F' << 0;
@@ -3078,30 +3058,18 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     error =
         _delegate->onFileReadLink(*this, HexToString(&args[op_end]), resolved);
     if (error != kSuccess) {
-      if (error >= kErrorUnknown) {
-        sendError(error);
-        return;
-      }
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
       ss << 'F' << 0 << ';' << StringToHex(resolved);
     }
   } else if (op == "exists") {
     error = _delegate->onFileExists(*this, HexToString(&args[op_end]));
-    if (error >= kErrorUnknown) {
-      sendError(error);
-      return;
-    }
     // F,<bool>
     ss << 'F' << ',' << (error != kSuccess ? 0 : 1);
   } else if (op == "MD5") {
     uint8_t digest[16];
     error =
         _delegate->onFileComputeMD5(*this, HexToString(&args[op_end]), digest);
-    if (error >= kErrorUnknown) {
-      sendError(error);
-      return;
-    }
     ss << 'F' << ',';
     // F,<value> or F,x if not found
     if (error != kSuccess) {
@@ -3115,10 +3083,6 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     uint64_t size;
     error = _delegate->onFileGetSize(*this, HexToString(&args[op_end]), size);
     // Fsize or Exx if error.
-    if (error != kSuccess) {
-      sendError(error);
-      return;
-    }
     ss << 'F' << std::hex << size;
   } else {
     sendError(kErrorUnsupported);
