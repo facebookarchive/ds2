@@ -330,6 +330,10 @@ int main(int argc, char **argv) {
 #if !defined(_WIN32)
   if (opts.getBool("platform")) {
     mode = kRunModePlatform;
+    //
+    // The platform spawner should stay alive by default.
+    //
+    gKeepAlive = true;
   }
 
   if (opts.getBool("slave")) {
