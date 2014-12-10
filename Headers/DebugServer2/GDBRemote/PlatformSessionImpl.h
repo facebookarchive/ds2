@@ -47,6 +47,10 @@ protected:
                                      std::string const &workingDirectory,
                                      ProgramResult &result);
 
+  virtual ErrorCode onFileOpen(Session &session, std::string const &path,
+                               uint32_t flags, uint32_t mode, int &fd);
+  virtual ErrorCode onFileClose(Session &session, int fd);
+
   virtual ErrorCode onFileExists(Session &session, std::string const &path);
 
 protected:

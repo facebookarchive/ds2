@@ -15,6 +15,8 @@
 #error "You shall not include this file directly."
 #endif
 
+#include <string>
+
 namespace ds2 {
 namespace Host {
 namespace POSIX {
@@ -48,6 +50,8 @@ public:
   static bool GetGroupName(GroupId const &gid, std::string &name);
 
 public:
+  static int OpenFile(std::string const &path, uint32_t flags, uint32_t mode);
+  static bool CloseFile(int fd);
   static bool IsFilePresent(std::string const &path);
   static char const *GetWorkingDirectory();
 

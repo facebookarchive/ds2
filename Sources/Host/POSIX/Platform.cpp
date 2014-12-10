@@ -8,16 +8,18 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Log.h"
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/POSIX/Platform.h"
 
+#include <cstring>
+#include <fcntl.h>
 #include <grp.h>
 #include <limits.h>
 #include <netdb.h>
 #include <pwd.h>
 #include <unistd.h>
-#include <cstring>
 
 // TODO HAVE_ENDIAN_H, HAVE_SYS_ENDIAN_H
 #if defined(__linux__)
@@ -147,6 +149,16 @@ bool Platform::GetGroupName(GroupId const &gid, std::string &name) {
 
   name = grp->gr_name;
   return true;
+}
+
+int Platform::OpenFile(std::string const &path, uint32_t flags, uint32_t mode)
+{
+  return ::open(path.c_str(), flags, mode);
+}
+
+bool Platform::CloseFile(int fd)
+{
+  return close(fd);
 }
 
 bool Platform::IsFilePresent(std::string const &path) {
