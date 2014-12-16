@@ -173,6 +173,12 @@ bool Platform::GetGroupName(UserId const &gid, std::string &name) {
   return GetUserName(gid, name);
 }
 
+int Platform::OpenFile(std::string const &path, uint32_t flags, uint32_t mode) {
+  return -1;
+}
+
+bool Platform::CloseFile(int fd) { return false; }
+
 bool Platform::IsFilePresent(std::string const &path) {
   return ::PathFileExistsA(path.c_str());
 }
