@@ -49,7 +49,7 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
   uint32_t address;
 
   DS2LOG(Architecture, Debug,
-         "Thumb branch/IT found at %#x (size=%zu,it=%s[%u])", pc, info.size,
+         "Thumb branch/IT found at %#x (it=%s[%u])", pc,
          info.it ? "true" : "false", info.it ? info.itCount : 0);
 
   //

@@ -59,7 +59,6 @@ public:
     if ((_insn & 0x0e000000) == 0x0a000000) {
       uint32_t h = 0;
 
-      info.size = 2;
       info.cond = static_cast<BranchCond>(_insn >> 28);
       if (info.cond == kCondNV) {
         info.cond = kCondAL;
@@ -88,7 +87,6 @@ public:
   //
   inline bool getBX(BranchInfo &info) const {
     if ((_insn & 0x0fffffd0) == 0x012fff10) { // BX/BLX
-      info.size = 2;
       info.cond = static_cast<BranchCond>(_insn >> 28);
       info.type = (_insn & 0x20) != 0 ? kBranchTypeBLX_r : kBranchTypeBX_r;
       info.mode = kBranchDispNormal;
@@ -131,7 +129,6 @@ public:
     }
 
     if (form != 0) {
-      info.size = 2;
       info.cond = static_cast<BranchCond>(_insn >> 28);
       info.reg1 = (_insn >> 16) & 0xf;
       if (form == 1) {
@@ -209,7 +206,6 @@ public:
     // LDR pc, [<Rn>, #+/-<imm12>]!
     //
     if ((_insn & 0x0e50f000) == 0x0410f000) {
-      info.size = 2;
       info.type = kBranchTypeLDR_pc;
       info.cond = static_cast<BranchCond>(_insn >> 28);
       info.mode = kBranchDispNormal;
@@ -231,7 +227,6 @@ public:
     // LDR pc, [PC, #-0]
     //
     if ((_insn & 0x0f7ff000) == 0x051ff000) {
-      info.size = 2;
       info.type = kBranchTypeLDR_pc;
       info.cond = static_cast<BranchCond>(_insn >> 28);
       info.mode = kBranchDispNormal;
@@ -249,7 +244,6 @@ public:
     // LDR pc, [<Rn>],+/-<Rm>{, <shift>}
     //
     if ((_insn & 0x0e50f010) == 0x0610f000) {
-      info.size = 2;
       info.type = kBranchTypeLDR_pc;
       info.cond = static_cast<BranchCond>(_insn >> 28);
       info.reg1 = (_insn >> 16) & 0xf;
@@ -280,7 +274,6 @@ public:
         (_insn & 0x0fd08000) == 0x09108000) { // LDMDB
       uint32_t w = (_insn >> 21) & 1;
       uint32_t rn = (_insn >> 16) & 0xf;
-      info.size = 2;
       info.cond = static_cast<BranchCond>(_insn >> 28);
       info.type = ((_insn & 0x0fd00000) == 0x08900000 && w && rn == 13)
                       ? kBranchTypePOP_pc
@@ -347,7 +340,6 @@ static char const *const RegNames[] = {"R0", "R1", "R2", "R3", "R4", "R5",
 
 void PrintBranchInfo(BranchInfo const &info, uint32_t pc) {
   printf("PC %#x\n", pc);
-  printf("\tSize:%zu\n", info.size * 2);
   printf("\tType:%u [%s]\n", info.type, TypeNames[info.type]);
   printf("\tMode:%u [%s]\n", info.mode, DispNames[info.mode]);
   printf("\tCond:%u [%s]\n", info.cond, CondNames[info.cond]);

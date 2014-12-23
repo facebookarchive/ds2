@@ -132,7 +132,6 @@ struct BranchInfo {
   int32_t reg2;
   int32_t disp;
   size_t align;
-  size_t size;
 };
 
 bool GetARMBranchInfo(uint32_t insn, BranchInfo &info);

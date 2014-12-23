@@ -64,7 +64,6 @@ public:
   // IT <cond>
   //
   static inline bool GetIT(uint16_t insn, BranchInfo &info) {
-    info.size = 0;
     info.align = 1;
     info.it = (insn & 0xff00) == 0xbf00 && (insn & 0x00ff) != 0x0000;
     info.itCount = 0;
@@ -82,7 +81,6 @@ public:
   //
   static inline bool GetB_N(uint16_t insn, BranchInfo &info) {
     if ((insn & 0xf800) == 0xe000) {
-      info.size = 1;
       info.type = kBranchTypeB_i;
       info.mode = kBranchDispNormal;
       info.reg1 = -1;
@@ -101,7 +99,6 @@ public:
   //
   static inline bool GetBcc_N(uint16_t insn, BranchInfo &info) {
     if ((insn & 0xf000) == 0xd000 && (insn & 0x0f00) < 0x0e00) {
-      info.size = 1;
       info.type = kBranchTypeBcc_i;
       info.cond = static_cast<BranchCond>((insn >> 8) & 0xf);
       info.mode = kBranchDispNormal;
@@ -121,7 +118,6 @@ public:
   //
   static inline bool GetBX(uint16_t insn, BranchInfo &info) {
     if ((insn & 0xff80) == 0x4700) {
-      info.size = 1;
       info.type = kBranchTypeBX_r;
       info.mode = kBranchDispNormal;
       info.reg1 = (insn >> 3) & 0xf;
@@ -137,7 +133,6 @@ public:
   //
   static inline bool GetBLX_r(uint16_t insn, BranchInfo &info) {
     if ((insn & 0xff80) == 0x4780) {
-      info.size = 1;
       info.type = kBranchTypeBLX_r;
       info.mode = kBranchDispNormal;
       info.reg1 = (insn >> 3) & 0xf;
@@ -154,7 +149,6 @@ public:
   static inline bool GetMOV_pc(uint16_t insn, BranchInfo &info) {
     // MOV pc, <reg>
     if ((insn & 0xff87) == 0x4687) {
-      info.size = 1;
       info.type = kBranchTypeMOV_pc;
       info.mode = kBranchDispNormal;
       info.reg1 = (insn >> 3) & 0xf;
@@ -170,7 +164,6 @@ public:
   //
   static inline bool GetPOP_pc(uint16_t insn, BranchInfo &info) {
     if ((insn & 0xff00) == 0xbd00) {
-      info.size = 1;
       info.type = kBranchTypePOP_pc;
       info.mode = kBranchDispNormal;
       info.reg1 = 13; // Stack Pointer | TODO: Generate register names
@@ -186,7 +179,6 @@ public:
   //
   static inline bool GetB_W(uint16_t const *insn, BranchInfo &info) {
     if ((insn[0] & 0xf800) == 0xf000 && (insn[1] & 0xd000) == 0x9000) {
-      info.size = 2;
       info.type = kBranchTypeB_i;
       info.mode = kBranchDispNormal;
       info.reg1 = -1;
@@ -215,7 +207,6 @@ public:
   static inline bool GetBcc_W(uint16_t const *insn, BranchInfo &info) {
     if ((insn[0] & 0xf800) == 0xf000 && (insn[0] & 0x0380) != 0x0380 &&
         (insn[1] & 0xd000) == 0x8000) {
-      info.size = 2;
       info.type = kBranchTypeBcc_i;
       info.mode = kBranchDispNormal;
       info.reg1 = -1;
@@ -244,7 +235,6 @@ public:
   //
   static inline bool GetBL(uint16_t const *insn, BranchInfo &info) {
     if ((insn[0] & 0xf800) == 0xf000 && (insn[1] & 0xd000) == 0xd000) {
-      info.size = 2;
       info.type = kBranchTypeBL_i;
       info.mode = kBranchDispNormal;
       info.reg1 = -1;
@@ -272,7 +262,6 @@ public:
   //
   static inline bool GetBLX_i(uint16_t const *insn, BranchInfo &info) {
     if ((insn[0] & 0xf800) == 0xf000 && (insn[1] & 0xd000) == 0xc000) {
-      info.size = 2;
       info.type = kBranchTypeBLX_i;
       info.mode = kBranchDispNormal;
       info.reg1 = -1;
@@ -301,7 +290,6 @@ public:
   //
   static inline bool GetCBZ(uint16_t insn, BranchInfo &info) {
     if ((insn & 0xf500) == 0xb100) {
-      info.size = 1;
       info.type = kBranchTypeCB_i;
       info.mode = kBranchDispNormal;
       info.reg1 = -1;
@@ -321,7 +309,6 @@ public:
   static inline bool GetLDR_pc(uint16_t const *insn, BranchInfo &info) {
     // LDR.W pc, [Rn{, #<imm12>}]
     if ((insn[0] & 0xfff0) == 0xf8d0 && (insn[1] & 0xf000) == 0xf000) {
-      info.size = 2;
       info.type = kBranchTypeLDR_pc;
       info.mode = kBranchDispNormal;
       info.reg1 = insn[0] & 0xf;
@@ -333,7 +320,6 @@ public:
     // LDR.W pc, <label>
     // LDR.W pc, [pc, #-0]
     if ((insn[0] & 0xff7f) == 0xf85f && (insn[1] & 0xf000) == 0xf000) {
-      info.size = 2;
       info.type = kBranchTypeLDR_pc;
       info.mode = kBranchDispNormal;
       info.reg1 = 15; // Program Counter
@@ -348,7 +334,6 @@ public:
 
     // LDR.W pc, [Rn, Rm{, LSL #<imm2>}]
     if ((insn[0] & 0xfff0) == 0xf850 && (insn[1] & 0xffc0) == 0xf000) {
-      info.size = 2;
       info.type = kBranchTypeLDR_pc;
       info.reg1 = insn[0] & 0xf;
       info.reg2 = insn[1] & 0xf;
@@ -365,7 +350,6 @@ public:
     // LDR.W pc, [Rn] #+/-<imm8>
     // LDR.W pc, [Rn, #+/-<imm8>]!
     if ((insn[0] & 0xfff0) == 0xf850 && (insn[1] & 0xf800) == 0xf800) {
-      info.size = 2;
       info.type = kBranchTypeLDR_pc;
       info.mode = kBranchDispNormal;
       info.reg1 = insn[0] & 0xf;
@@ -391,7 +375,6 @@ public:
     if ((insn[0] & 0xffd0) == 0xe890 && (insn[1] & 0x8000) == 0x8000) {
       uint32_t rn = insn[0] & 0xf;
       uint32_t w = (insn[0] >> 5) & 1;
-      info.size = 2;
       info.type = (w && rn == 13) ? kBranchTypePOP_pc : kBranchTypeLDM_pc;
       info.mode = kBranchDispNormal;
       info.reg1 = rn;
@@ -412,7 +395,6 @@ public:
   //
   static inline bool GetSUBS_pc_lr(uint16_t const *insn, BranchInfo &info) {
     if (insn[0] == 0xf3de && (insn[1] & 0xff00) == 0x8f00) {
-      info.size = 2;
       info.type = kBranchTypeSUB_pc;
       info.mode = kBranchDispNormal;
       info.reg1 = insn[0] & 0xf;
@@ -445,9 +427,6 @@ public:
         GetCBZ(*insn, info) || GetLDR_pc(insn, info) || GetLDM_pc(insn, info) ||
         GetSUBS_pc_lr(insn, info));
 
-    if (info.it && !isBranch) {
-      info.size = static_cast<std::uint8_t>(GetThumbInstSize(*insn));
-    }
     return (info.it || isBranch);
   }
 };
@@ -489,7 +468,6 @@ static char const *const RegNames[] = {"R0", "R1", "R2", "R3", "R4", "R5",
 
 void PrintBranchInfo(BranchInfo const &info, uint32_t pc) {
   printf("PC %#x\n", pc);
-  printf("\tSize:%zu\n", info.size * 2);
   printf("\tIT:%s\n", info.it ? "YES" : "NO");
   printf("\tType:%u [%s]\n", info.type, TypeNames[info.type]);
   printf("\tMode:%u [%s]\n", info.mode, DispNames[info.mode]);
