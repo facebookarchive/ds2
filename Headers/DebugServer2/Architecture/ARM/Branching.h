@@ -57,6 +57,8 @@ enum BranchType {
   kBranchTypeLDM_pc,
   kBranchTypePOP_pc,
   kBranchTypeSUB_pc,
+  kBranchTypeTBB,
+  kBranchTypeTBH,
 
   //
   // ARM (legacy)

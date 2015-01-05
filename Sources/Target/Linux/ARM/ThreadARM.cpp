@@ -46,10 +46,7 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
     return ds2::kSuccess;
   }
 
-  uint32_t address;
-
-  DS2LOG(Architecture, Debug,
-         "Thumb branch/IT found at %#x (it=%s[%u])", pc,
+  DS2LOG(Architecture, Debug, "Thumb branch/IT found at %#x (it=%s[%u])", pc,
          info.it ? "true" : "false", info.it ? info.itCount : 0);
 
   //
@@ -74,9 +71,11 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
     }
 
     nextPC += skip;
+    //
     // Even if the next instruction is a 4-byte Thumb2 instruction, we are fine
     // with a 2-byte breakpoint because we won't ever jump over that
     // instruction.
+    //
     nextPCSize = 2;
     return ds2::kSuccess;
   }
@@ -96,6 +95,9 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
                       ds2::Architecture::ARM::GetThumbInstSize(insns[0]));
     nextPCSize = 2;
   }
+
+  uint32_t address;
+  int16_t offset;
 
   switch (info.type) {
   //
@@ -165,6 +167,22 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
   //
   case ds2::Architecture::ARM::kBranchTypeSUB_pc:
     branchPC = state.gp.regs[info.reg1] - info.disp;
+    break;
+
+  case ds2::Architecture::ARM::kBranchTypeTBB:
+  case ds2::Architecture::ARM::kBranchTypeTBH:
+    address = state.gp.regs[info.reg1];
+    if (info.reg1 == 15) // Instruction Pointer | TODO: Generate register names
+      address += 4;
+    address += state.gp.regs[info.reg2] << info.disp;
+    offset = 0;
+    error = process->readMemory(
+        address, &offset,
+        info.type == ds2::Architecture::ARM::kBranchTypeTBB ? 1 : 2);
+    if (error != ds2::kSuccess)
+      return error;
+    branchPC = pc + 4 + offset * 2;
+    branchPCSize = 2;
     break;
 
   default:
@@ -342,8 +360,8 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   }
 
   DS2LOG(Architecture, Debug,
-         "branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]", branchPC,
-         branchPCSize, link ? "true" : "false", nextPC, nextPCSize);
+         "PC=%#x, branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]", pc,
+         branchPC, branchPCSize, link ? "true" : "false", nextPC, nextPCSize);
 
   if (branchPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(branchPCSize != 0);

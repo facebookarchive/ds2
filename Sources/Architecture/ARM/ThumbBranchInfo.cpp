@@ -405,6 +405,36 @@ public:
     return false;
   }
 
+  //
+  // TBB [Rn, Rm]
+  //
+  static inline bool GetTBB(uint16_t const *insn, BranchInfo &info) {
+    if ((insn[0] & 0xfff0) == 0xe8d0 && (insn[1] & 0xfff0) == 0xf000) {
+      info.type = kBranchTypeTBB;
+      info.mode = kBranchDispNormal;
+      info.reg1 = insn[0] & 0xf;
+      info.reg2 = insn[1] & 0xf;
+      info.disp = 0;
+      return true;
+    }
+    return false;
+  }
+
+  //
+  // TBH [Rn, Rm, LSL #1]
+  //
+  static inline bool GetTBH(uint16_t const *insn, BranchInfo &info) {
+    if ((insn[0] & 0xfff0) == 0xe8d0 && (insn[1] & 0xfff0) == 0xf010) {
+      info.type = kBranchTypeTBH;
+      info.mode = kBranchDispNormal;
+      info.reg1 = insn[0] & 0xf;
+      info.reg2 = insn[1] & 0xf;
+      info.disp = 1;
+      return true;
+    }
+    return false;
+  }
+
   bool getBranchInfo(BranchInfo &info) const {
     uint16_t const *insn = _insn.i16;
 
@@ -425,7 +455,7 @@ public:
         // Thumb-2
         GetB_W(insn, info) || GetBcc_W(insn, info) || GetBLX_i(insn, info) ||
         GetCBZ(*insn, info) || GetLDR_pc(insn, info) || GetLDM_pc(insn, info) ||
-        GetSUBS_pc_lr(insn, info));
+        GetSUBS_pc_lr(insn, info) || GetTBB(insn, info) || GetTBH(insn, info));
 
     return (info.it || isBranch);
   }
