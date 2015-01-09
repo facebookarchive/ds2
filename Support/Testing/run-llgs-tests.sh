@@ -49,7 +49,7 @@ clone "$LLVM_REPO" llvm
 clone "$CLANG_REPO" llvm/tools/clang
 clone "$LLDB_REPO" llvm/tools/lldb
 
-for p in "Hacks-to-use-ds2-instead-of-llgs" "Fixes-to-dotest.py"; do
+for p in "Hacks-to-use-ds2-instead-of-llgs"; do
     echo "Applying $p.patch"
     patch -d "llvm/tools/lldb" -p1 <"$(dirname "$0")/$p.patch"
 done
