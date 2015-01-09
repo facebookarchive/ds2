@@ -16,7 +16,7 @@ install:
   # On Linux-X86_64, we run the llgs test suite. This requires a recent enough
   # cmake (for the LLVM cmake step), and an install of lldb (for the tests to
   # be able to use the lldb python library without us building it).
-  - if [ "$TARGET" = "Linux-X86_64" ]; then sudo apt-get install -y cmake lldb-3.3; fi
+  - if [ "$TARGET" = "Linux-X86_64" ]; then sudo apt-get install -y cmake swig lldb-3.3; fi
 
 before_script:
   - mkdir -p build && cd build
