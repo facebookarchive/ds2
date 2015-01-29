@@ -22,6 +22,11 @@
 #include <sys/syscall.h>
 #include <unistd.h>
 
+#if defined(ARCH_X86) && defined(__ANDROID__)
+#include <sys/user.h>
+typedef struct user_fxsr_struct user_fpxregs_struct;
+#endif
+
 #if !defined(HAVE_GETTID)
 static inline pid_t gettid() { return ::syscall(__NR_gettid); }
 #endif

@@ -67,7 +67,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
   //
   // Read GPRs
   //
-  struct user_regs_struct gprs;
+  user_regs_struct gprs;
   if (wrapPtrace(PTRACE_GETREGS, pid, nullptr, &gprs) < 0)
     return TranslateErrno();
 
@@ -92,7 +92,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
   //
   // Read X87 and SSE state
   //
-  struct user_fpxregs_struct fxrs;
+  user_fpxregs_struct fxrs;
   if (wrapPtrace(PTRACE_GETFPXREGS, pid, nullptr, &fxrs) == 0) {
     // X87 State
     state.x87.fstw = fxrs.swd;
@@ -122,7 +122,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
     //
     // Try reading only X87
     //
-    struct user_fpregs_struct fprs;
+    user_fpregs_struct fprs;
     if (wrapPtrace(PTRACE_GETFPREGS, pid, nullptr, &fprs) == 0) {
       state.x87.fstw = fprs.swd;
       state.x87.fctw = fprs.cwd;
@@ -166,7 +166,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   //
   // Read GPRs
   //
-  struct user_regs_struct gprs;
+  user_regs_struct gprs;
   std::memset(&gprs, 0, sizeof(gprs));
   gprs.eax = state.gp.eax;
   gprs.ecx = state.gp.ecx;
@@ -192,7 +192,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   //
   // Write X87 and SSE state
   //
-  struct user_fpxregs_struct fxrs;
+  user_fpxregs_struct fxrs;
 
   // X87 State
   fxrs.swd = state.x87.fstw;
@@ -222,7 +222,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
     //
     // Try writing only X87
     //
-    struct user_fpregs_struct fprs;
+    user_fpregs_struct fprs;
     fprs.swd = state.x87.fstw;
     fprs.cwd = state.x87.fctw;
     fprs.twd = state.x87.ftag;

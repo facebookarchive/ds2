@@ -51,7 +51,7 @@ void PTrace::doneCPUState() { delete _privateData; }
 //
 
 static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
-                                   struct user_regs_struct const &user) {
+                                   user_regs_struct const &user) {
   state.gp.eax = user.rax;
   state.gp.ecx = user.rcx;
   state.gp.edx = user.rdx;
@@ -72,7 +72,7 @@ static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
 }
 
 static inline void
-state32_to_user(struct user_regs_struct &user,
+state32_to_user(user_regs_struct &user,
                 ds2::Architecture::X86_64::CPUState32 const &state) {
   user.rax = state.gp.eax;
   user.rcx = state.gp.ecx;
@@ -94,7 +94,7 @@ state32_to_user(struct user_regs_struct &user,
 }
 
 static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
-                                   struct user_fpregs_struct const &user) {
+                                   user_fpregs_struct const &user) {
   //
   // X87 State
   //
@@ -125,7 +125,7 @@ static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
 }
 
 static inline void
-state32_to_user(struct user_fpregs_struct &user,
+state32_to_user(user_fpregs_struct &user,
                 ds2::Architecture::X86_64::CPUState32 const &state) {
   //
   // X87 State
@@ -160,7 +160,7 @@ state32_to_user(struct user_fpregs_struct &user,
 //
 
 static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
-                                   struct user_regs_struct const &user) {
+                                   user_regs_struct const &user) {
   state.gp.rax = user.rax;
   state.gp.rcx = user.rcx;
   state.gp.rdx = user.rdx;
@@ -191,7 +191,7 @@ static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
 }
 
 static inline void
-state64_to_user(struct user_regs_struct &user,
+state64_to_user(user_regs_struct &user,
                 ds2::Architecture::X86_64::CPUState64 const &state) {
   user.rax = state.gp.rax;
   user.rcx = state.gp.rcx;
@@ -223,7 +223,7 @@ state64_to_user(struct user_regs_struct &user,
 }
 
 static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
-                                   struct user_fpregs_struct const &user) {
+                                   user_fpregs_struct const &user) {
   //
   // X87 State
   //
@@ -252,7 +252,7 @@ static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
 }
 
 static inline void
-state64_to_user(struct user_fpregs_struct &user,
+state64_to_user(user_fpregs_struct &user,
                 ds2::Architecture::X86_64::CPUState64 const &state) {
   //
   // X87 State
@@ -303,7 +303,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
   //
   // Read GPRs
   //
-  struct user_regs_struct gprs;
+  user_regs_struct gprs;
   if (wrapPtrace(PTRACE_GETREGS, pid, nullptr, &gprs) < 0)
     return TranslateErrno();
 
@@ -318,7 +318,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
   //
   // Read X87 and SSE state
   //
-  struct user_fpregs_struct fprs;
+  user_fpregs_struct fprs;
   if (wrapPtrace(PTRACE_GETFPREGS, pid, nullptr, &fprs) == 0) {
     if (pinfo.pointerSize == sizeof(uint32_t)) {
       user_to_state32(state.state32, fprs);
@@ -357,7 +357,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   //
   // Write GPRs
   //
-  struct user_regs_struct gprs;
+  user_regs_struct gprs;
   if (state.is32) {
     state32_to_user(gprs, state.state32);
   } else {
@@ -370,7 +370,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   //
   // Write X87 and SSE state
   //
-  struct user_fpregs_struct fprs;
+  user_fpregs_struct fprs;
   if (state.is32) {
     state32_to_user(fprs, state.state32);
   } else {
