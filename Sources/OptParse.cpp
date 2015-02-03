@@ -20,7 +20,7 @@ void OptParse::addOption(OptionType type, std::string const &name,
                          char shortName, std::string const &help, bool hidden) {
   DS2ASSERT(_options.find(name) == _options.end());
   DS2ASSERT(findShortOpt(shortName) == _options.end());
-  _options[name] = {shortName, type, "", help, hidden};
+  _options[name] = {shortName, type, {false, "", {}}, help, hidden};
 }
 
 int OptParse::parse(int argc, char **argv) {
@@ -41,11 +41,18 @@ int OptParse::parse(int argc, char **argv) {
       auto it = _options.find(argv[idx] + 2);
       CHECK(it != _options.end());
 
-      if (it->second.type == boolOption) {
-        it->second.value = "true";
-      } else {
+      switch (it->second.type) {
+      case boolOption:
+        it->second.boolValue = true;
+        break;
+      case stringOption:
         CHECK(idx + 1 < argc);
-        it->second.value = argv[++idx];
+        it->second.stringValue = argv[++idx];
+        break;
+      case vectorOption:
+        CHECK(idx + 1 < argc);
+        it->second.vectorValue.push_back(argv[++idx]);
+        break;
       }
     } else if (argv[idx][0] == '-') {
       // Short option.
@@ -53,14 +60,24 @@ int OptParse::parse(int argc, char **argv) {
       for (int optidx = 1; argv[idx][optidx] != '\0'; ++optidx) {
         auto it = findShortOpt(argv[idx][optidx]);
         CHECK(it != _options.end());
-        if (it->second.type == boolOption) {
-          it->second.value = "true";
-        } else {
+        switch (it->second.type) {
+        case boolOption:
+          it->second.boolValue = true;
+          break;
+        case stringOption:
           if (argv[idx][optidx + 1] != '\0') {
-            it->second.value = argv[idx] + optidx + 1;
+            it->second.stringValue = argv[idx] + optidx + 1;
           } else {
             CHECK(idx + 1 < argc);
-            it->second.value = argv[++idx];
+            it->second.stringValue = argv[++idx];
+          }
+          break;
+        case vectorOption:
+          if (argv[idx][optidx + 1] != '\0') {
+            it->second.vectorValue.push_back(argv[idx] + optidx + 1);
+          } else {
+            CHECK(idx + 1 < argc);
+            it->second.vectorValue.push_back(argv[++idx]);
           }
           break;
         }
@@ -78,11 +95,15 @@ int OptParse::parse(int argc, char **argv) {
 }
 
 bool OptParse::getBool(std::string const &name) {
-  return !get(name, boolOption).empty();
+  return get(name, boolOption).boolValue;
 }
 
 std::string const &OptParse::getString(std::string const &name) {
-  return get(name, stringOption);
+  return get(name, stringOption).stringValue;
+}
+
+std::vector<std::string> const &OptParse::getVector(std::string const &name) {
+  return get(name, vectorOption).vectorValue;
 }
 
 void OptParse::usageDie(std::string const &message) {
@@ -118,10 +139,11 @@ void OptParse::usageDie(std::string const &message) {
   exit(EXIT_FAILURE);
 }
 
-std::string const &OptParse::get(std::string const &name, OptionType type) {
+OptParse::OptionStorage const &OptParse::get(std::string const &name,
+                                             OptionType type) {
   DS2ASSERT(_options.find(name) != _options.end());
   DS2ASSERT(_options[name].type == type);
-  return _options[name].value;
+  return _options[name];
 }
 
 std::map<std::string, OptParse::OptionStorage>::iterator

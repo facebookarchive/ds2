@@ -13,6 +13,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 namespace ds2 {
 
@@ -21,6 +22,7 @@ public:
   enum OptionType {
     boolOption,
     stringOption,
+    vectorOption,
   };
 
 public:
@@ -33,6 +35,7 @@ public:
 public:
   bool getBool(std::string const &name);
   std::string const &getString(std::string const &name);
+  std::vector<std::string> const &getVector(std::string const &name);
 
 public:
   void usageDie(std::string const &message = std::string());
@@ -41,7 +44,11 @@ private:
   struct OptionStorage {
     char shortName;
     OptionType type;
-    std::string value;
+    struct {
+      bool boolValue;
+      std::string stringValue;
+      std::vector<std::string> vectorValue;
+    };
     std::string help;
     bool hidden;
   };
@@ -51,7 +58,7 @@ private:
   OptionCollection _options;
 
   OptionCollection::iterator findShortOpt(char shortOption);
-  std::string const &get(std::string const &name, OptionType type);
+  OptionStorage const &get(std::string const &name, OptionType type);
 };
 }
 
