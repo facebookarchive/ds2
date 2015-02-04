@@ -17,6 +17,7 @@
 #include <cstdarg>
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 
 namespace ds2 {
 
@@ -68,9 +69,11 @@ void Log(int category, int level, char const *classname, char const *funcname,
 #if !defined(NDEBUG)
 #define DS2ASSERT(COND)                                                        \
   do {                                                                         \
-    if (!(COND))                                                               \
-      DS2LOG(Main, Fatal, "assertion `%s' failed at %s:%d", #COND, __FILE__,   \
+    if (!(COND)) {                                                             \
+      DS2LOG(Main, Error, "assertion `%s' failed at %s:%d", #COND, __FILE__,   \
              __LINE__);                                                        \
+      abort();                                                                 \
+    }                                                                          \
   } while (0)
 #else
 #define DS2ASSERT(COND) (void)0
