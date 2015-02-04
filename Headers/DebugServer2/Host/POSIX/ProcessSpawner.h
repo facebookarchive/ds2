@@ -92,7 +92,7 @@ public:
   bool redirectErrorToDelegate(RedirectDelegate delegate);
 
 public:
-  ErrorCode run(std::function<bool()> preExecAction = [](){ return true; });
+  ErrorCode run(std::function<bool()> preExecAction = []() { return true; });
   ErrorCode wait();
   bool isRunning() const;
 

@@ -82,7 +82,8 @@ ErrorCode PlatformSessionImpl::onExecuteProgram(
 }
 
 ErrorCode PlatformSessionImpl::onFileOpen(Session &, std::string const &path,
-                                          uint32_t flags, uint32_t mode, int &fd) {
+                                          uint32_t flags, uint32_t mode,
+                                          int &fd) {
   if ((fd = Platform::OpenFile(path, flags, mode)) < 0)
     return kErrorUnknown;
   else

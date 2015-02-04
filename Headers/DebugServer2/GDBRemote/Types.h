@@ -169,7 +169,8 @@ struct HostInfo : ds2::HostInfo {
 
 struct ProcessInfo : public ds2::ProcessInfo {
   ProcessInfo() : ds2::ProcessInfo() {}
-  std::string encode(CompatibilityMode mode, bool alternateVersion = false) const;
+  std::string encode(CompatibilityMode mode,
+                     bool alternateVersion = false) const;
 };
 
 struct ProcessInfoMatch : ProcessInfo {

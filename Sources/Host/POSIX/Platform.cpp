@@ -151,15 +151,11 @@ bool Platform::GetGroupName(GroupId const &gid, std::string &name) {
   return true;
 }
 
-int Platform::OpenFile(std::string const &path, uint32_t flags, uint32_t mode)
-{
+int Platform::OpenFile(std::string const &path, uint32_t flags, uint32_t mode) {
   return ::open(path.c_str(), flags, mode);
 }
 
-bool Platform::CloseFile(int fd)
-{
-  return close(fd);
-}
+bool Platform::CloseFile(int fd) { return close(fd); }
 
 bool Platform::IsFilePresent(std::string const &path) {
   if (path.empty())

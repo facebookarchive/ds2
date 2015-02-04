@@ -126,7 +126,8 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   //
   Target::Process *process = new Target::Process;
 
-  spawner.run([process](){ return process->ptrace().traceMe(true) == kSuccess; });
+  spawner.run(
+      [process]() { return process->ptrace().traceMe(true) == kSuccess; });
 
   pid = spawner.pid();
 

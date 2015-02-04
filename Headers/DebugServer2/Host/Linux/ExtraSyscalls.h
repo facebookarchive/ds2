@@ -38,9 +38,7 @@ static inline int personality(unsigned long persona) {
 #endif
 
 #if !defined(HAVE_POSIX_OPENPT)
-static inline int posix_openpt(int flags) {
-  return ::open("/dev/ptmx", flags);
-}
+static inline int posix_openpt(int flags) { return ::open("/dev/ptmx", flags); }
 #endif
 
 // No glibc wrapper for tgkill

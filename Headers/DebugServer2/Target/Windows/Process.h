@@ -74,7 +74,9 @@ public:
   virtual void ptrace() const;
 
 public:
-  static ds2::Target::Process *Create(Host::ProcessSpawner &spawner) { return nullptr; }
+  static ds2::Target::Process *Create(Host::ProcessSpawner &spawner) {
+    return nullptr;
+  }
   static ds2::Target::Process *Attach(ProcessId pid) { return nullptr; }
 
 public:
