@@ -25,10 +25,11 @@ using ds2::Host::Platform;
 using ds2::Target::Thread;
 using ds2::ErrorCode;
 
-DebugSessionImpl::DebugSessionImpl(int argc, char **argv)
+DebugSessionImpl::DebugSessionImpl(StringCollection const &args,
+                                   StringCollection const &env)
     : DummySessionDelegateImpl(), _resumeSession(nullptr) {
-  DS2ASSERT(argc >= 1);
-  spawnProcess(argv[0], StringCollection(&argv[1], &argv[argc]));
+  DS2ASSERT(args.size() >= 1);
+  spawnProcess(args, env);
 }
 
 DebugSessionImpl::DebugSessionImpl(int attachPid)
@@ -695,7 +696,7 @@ ErrorCode DebugSessionImpl::onDeallocateMemory(Session &,
 ErrorCode
 DebugSessionImpl::onSetProgramArguments(Session &,
                                         StringCollection const &args) {
-  spawnProcess(args[0], StringCollection(&args[1], &args[args.size()]));
+  spawnProcess(args, {});
   if (_process == nullptr)
     return kErrorUnknown;
 
@@ -921,15 +922,18 @@ ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
   return bpm->remove(address);
 }
 
-ErrorCode DebugSessionImpl::spawnProcess(std::string const &path,
-                                         StringCollection const &args) {
+ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
+                                         StringCollection const &env) {
   DS2LOG(DebugSession, Debug, "spawning process with args:");
-  DS2LOG(DebugSession, Debug, "  %s", path.c_str());
   for (auto const &arg : args)
     DS2LOG(DebugSession, Debug, "  %s", arg.c_str());
+  DS2LOG(DebugSession, Debug, "and with environment:");
+  for (auto const &val : env)
+    DS2LOG(DebugSession, Debug, "  %s", val.c_str());
 
-  _spawner.setExecutable(path);
-  _spawner.setArguments(args);
+  _spawner.setExecutable(args[0]);
+  _spawner.setArguments(StringCollection(&args[1], &args[args.size()]));
+  _spawner.setEnvironment(env);
 
   auto outputDelegate = [this](void *buf, size_t size) {
     DS2ASSERT(_resumeSession != nullptr);
@@ -951,7 +955,7 @@ ErrorCode DebugSessionImpl::spawnProcess(std::string const &path,
 
   _process = ds2::Target::Process::Create(_spawner);
   if (_process == nullptr) {
-    DS2LOG(Main, Error, "cannot execute '%s'", path.c_str());
+    DS2LOG(Main, Error, "cannot execute '%s'", args[0].c_str());
     return kErrorUnknown;
   }
 

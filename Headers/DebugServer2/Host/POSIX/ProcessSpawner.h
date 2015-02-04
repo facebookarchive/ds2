@@ -44,6 +44,7 @@ protected:
 protected:
   std::string _executablePath;
   StringCollection _arguments;
+  StringCollection _environment;
   std::string _workingDirectory;
   std::thread _delegateThread;
   RedirectDescriptor _descriptors[3];
@@ -67,6 +68,9 @@ public:
     std::string args_[] = {args...};
     return setArguments(StringCollection(&args_[0], &args_[sizeof...(Args)]));
   }
+
+public:
+  bool setEnvironment(StringCollection const &args);
 
 public:
   bool redirectInputToConsole();

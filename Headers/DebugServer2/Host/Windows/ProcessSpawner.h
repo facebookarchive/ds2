@@ -33,6 +33,9 @@ public:
   }
 
 public:
+  bool setEnvironment(StringCollection const &args) { return false; }
+
+public:
   bool redirectInputToConsole() { return false; }
   bool redirectOutputToConsole() { return false; }
   bool redirectErrorToConsole() { return false; }
