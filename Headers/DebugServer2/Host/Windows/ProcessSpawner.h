@@ -56,8 +56,8 @@ public:
   bool redirectErrorToDelegate(RedirectDelegate delegate) { return false; }
 
 public:
-  ErrorCode run() { return ds2::kErrorUnsupported; }
-  ErrorCode wait() { return ds2::kErrorUnsupported; }
+  ErrorCode run() { return kErrorUnsupported; }
+  ErrorCode wait() { return kErrorUnsupported; }
   bool isRunning() const { return false; }
 
 public:
