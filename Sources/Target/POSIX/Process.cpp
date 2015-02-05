@@ -104,21 +104,24 @@ ds2::Target::Process *Process::Attach(ProcessId pid) {
   ErrorCode error = process->ptrace().attach(pid);
   if (error != kSuccess) {
     DS2LOG(Target, Error, "ptrace attach failed: %s", strerror(errno));
-    delete process;
-    return nullptr;
+    goto fail;
   }
 
   error = process->initialize(pid, kFlagAttachedProcess);
   if (error != kSuccess) {
     process->ptrace().detach(pid);
-    delete process;
-    return nullptr;
+    goto fail;
   }
 
   return process;
+
+fail:
+  delete process;
+  return nullptr;
 }
 
 ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
+  ErrorCode error;
   pid_t pid;
 
   //
@@ -126,29 +129,32 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   //
   Target::Process *process = new Target::Process;
 
-  spawner.run(
+  error = spawner.run(
       [process]() { return process->ptrace().traceMe(true) == kSuccess; });
+  if (error != kSuccess)
+    goto fail;
 
   pid = spawner.pid();
 
   //
   // Wait the process.
   //
-  if (process->initialize(pid, 0) != kSuccess) {
-    delete process;
-    return nullptr;
-  }
+  error = process->initialize(pid, 0);
+  if (error != kSuccess)
+    goto fail;
 
   //
   // Give a chance to the ptracer to set any specific options.
   //
-  ErrorCode error = process->ptrace().traceThat(pid);
-  if (error != kSuccess) {
-    delete process;
-    return nullptr;
-  }
+  error = process->ptrace().traceThat(pid);
+  if (error != kSuccess)
+    goto fail;
 
   return process;
+
+fail:
+  delete process;
+  return nullptr;
 }
 
 void Process::resetSignalPass() {
