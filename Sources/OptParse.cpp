@@ -30,6 +30,7 @@ int OptParse::parse(int argc, char **argv) {
       usageDie();                                                              \
     }                                                                          \
   } while (0)
+
   int idx;
 
   // Skip argv[0] which contains the program name.
@@ -57,7 +58,7 @@ int OptParse::parse(int argc, char **argv) {
     } else if (argv[idx][0] == '-') {
       // Short option.
       CHECK(argv[idx][1] != '\0');
-      for (int optidx = 1; argv[idx][optidx] != '\0'; ++optidx) {
+      for (int optidx = 1; optidx > 0 && argv[idx][optidx] != '\0'; ++optidx) {
         auto it = findShortOpt(argv[idx][optidx]);
         CHECK(it != _options.end());
         switch (it->second.type) {
@@ -70,6 +71,7 @@ int OptParse::parse(int argc, char **argv) {
           } else {
             CHECK(idx + 1 < argc);
             it->second.stringValue = argv[++idx];
+            optidx = -1;
           }
           break;
         case vectorOption:
@@ -78,6 +80,7 @@ int OptParse::parse(int argc, char **argv) {
           } else {
             CHECK(idx + 1 < argc);
             it->second.vectorValue.push_back(argv[++idx]);
+            optidx = -1;
           }
           break;
         }
