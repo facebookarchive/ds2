@@ -78,6 +78,7 @@ set(HOST_Linux_SOURCES
 
 set(HOST_Windows_SOURCES
     Sources/Host/Windows/Platform.cpp
+    Sources/Host/Windows/ProcessSpawner.cpp
     )
 
 set(TARGET_COMMON_SOURCES
@@ -97,6 +98,10 @@ set(TARGET_Linux_SOURCES
     Sources/Target/Linux/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Linux/${ARCH_NAME}/Process${ARCH_NAME}.cpp
     Sources/Target/Linux/Thread.cpp
+    )
+
+set(TARGET_Windows_SOURCES
+    Sources/Target/Windows/Process.cpp
     )
 
 set(GDB_SOURCES

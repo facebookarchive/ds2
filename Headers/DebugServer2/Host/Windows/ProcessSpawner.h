@@ -11,6 +11,8 @@
 #ifndef __DebugServer2_Host_Windows_ProcessSpawner_h
 #define __DebugServer2_Host_Windows_ProcessSpawner_h
 
+#include "DebugServer2/Types.h"
+
 #include <functional>
 
 namespace ds2 {
@@ -18,22 +20,29 @@ namespace Host {
 
 class ProcessSpawner {
 protected:
+  std::string _executablePath;
+  StringCollection _arguments;
+  StringCollection _environment;
+  std::string _workingDirectory;
+  ProcessId _pid;
+
+protected:
   typedef std::function<void(void *buf, size_t size)> RedirectDelegate;
 
 public:
-  bool setExecutable(std::string const &path) { return false; }
-  bool setWorkingDirectory(std::string const &path) { return false; }
+  bool setExecutable(std::string const &path);
+  bool setWorkingDirectory(std::string const &path);
 
 public:
-  bool setArguments(StringCollection const &args) { return false; }
+  bool setArguments(StringCollection const &args);
 
   template <typename... Args> inline bool setArguments(Args const &... args) {
-    static std::string const args_[] = {args...};
+    std::string args_[] = {args...};
     return setArguments(StringCollection(&args_[0], &args_[sizeof...(Args)]));
   }
 
 public:
-  bool setEnvironment(StringCollection const &args) { return false; }
+  bool setEnvironment(StringCollection const &args);
 
 public:
   bool redirectInputToConsole() { return false; }
@@ -59,7 +68,7 @@ public:
   bool redirectErrorToDelegate(RedirectDelegate delegate) { return false; }
 
 public:
-  ErrorCode run() { return kErrorUnsupported; }
+  ErrorCode run(std::function<bool()> preExecAction = []() { return true; });
   ErrorCode wait() { return kErrorUnsupported; }
   bool isRunning() const { return false; }
 
