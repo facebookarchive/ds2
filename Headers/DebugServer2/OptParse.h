@@ -48,7 +48,7 @@ private:
       bool boolValue;
       std::string stringValue;
       std::vector<std::string> vectorValue;
-    };
+    } values;
     std::string help;
     bool hidden;
   };

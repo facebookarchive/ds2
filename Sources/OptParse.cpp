@@ -44,15 +44,15 @@ int OptParse::parse(int argc, char **argv) {
 
       switch (it->second.type) {
       case boolOption:
-        it->second.boolValue = true;
+        it->second.values.boolValue = true;
         break;
       case stringOption:
         CHECK(idx + 1 < argc);
-        it->second.stringValue = argv[++idx];
+        it->second.values.stringValue = argv[++idx];
         break;
       case vectorOption:
         CHECK(idx + 1 < argc);
-        it->second.vectorValue.push_back(argv[++idx]);
+        it->second.values.vectorValue.push_back(argv[++idx]);
         break;
       }
     } else if (argv[idx][0] == '-') {
@@ -63,23 +63,23 @@ int OptParse::parse(int argc, char **argv) {
         CHECK(it != _options.end());
         switch (it->second.type) {
         case boolOption:
-          it->second.boolValue = true;
+          it->second.values.boolValue = true;
           break;
         case stringOption:
           if (argv[idx][optidx + 1] != '\0') {
-            it->second.stringValue = argv[idx] + optidx + 1;
+            it->second.values.stringValue = argv[idx] + optidx + 1;
           } else {
             CHECK(idx + 1 < argc);
-            it->second.stringValue = argv[++idx];
+            it->second.values.stringValue = argv[++idx];
             optidx = -1;
           }
           break;
         case vectorOption:
           if (argv[idx][optidx + 1] != '\0') {
-            it->second.vectorValue.push_back(argv[idx] + optidx + 1);
+            it->second.values.vectorValue.push_back(argv[idx] + optidx + 1);
           } else {
             CHECK(idx + 1 < argc);
-            it->second.vectorValue.push_back(argv[++idx]);
+            it->second.values.vectorValue.push_back(argv[++idx]);
             optidx = -1;
           }
           break;
@@ -98,15 +98,15 @@ int OptParse::parse(int argc, char **argv) {
 }
 
 bool OptParse::getBool(std::string const &name) {
-  return get(name, boolOption).boolValue;
+  return get(name, boolOption).values.boolValue;
 }
 
 std::string const &OptParse::getString(std::string const &name) {
-  return get(name, stringOption).stringValue;
+  return get(name, stringOption).values.stringValue;
 }
 
 std::vector<std::string> const &OptParse::getVector(std::string const &name) {
-  return get(name, vectorOption).vectorValue;
+  return get(name, vectorOption).values.vectorValue;
 }
 
 void OptParse::usageDie(std::string const &message) {
