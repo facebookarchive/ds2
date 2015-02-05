@@ -23,7 +23,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
-#include <Winsock2.h>
+#include <winsock2.h>
 
 using ds2::Host::Windows::Platform;
 

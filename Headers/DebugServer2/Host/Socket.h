@@ -14,7 +14,7 @@
 #include "DebugServer2/Host/Channel.h"
 
 #if defined(_WIN32)
-#include <Winsock2.h>
+#include <winsock2.h>
 #endif
 
 namespace ds2 {

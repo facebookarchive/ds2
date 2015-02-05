@@ -12,9 +12,11 @@
 
 #if defined(_WIN32)
 #define sock_errno WSAGetLastError()
+#if !defined(__MINGW32__)
 #define EAGAIN WSAEWOULDBLOCK
-#include <Winsock2.h>
-#include <Ws2tcpip.h>
+#endif
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>

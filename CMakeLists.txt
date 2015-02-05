@@ -166,6 +166,7 @@ if (WIN32)
   # Some constructs from Windows API headers won't compile properly
   # with our standard warnings set.
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare")
+  target_link_libraries(ds2 psapi shlwapi ws2_32)
 endif ()
 
 include(CheckFunctionExists)

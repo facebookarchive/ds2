@@ -14,8 +14,10 @@
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
-#include <Windows.h>
+#include <windows.h>
+#if !defined(__MINGW32__)
 typedef SSIZE_T ssize_t;
+#endif
 #else
 #include <cstdlib>
 #endif
