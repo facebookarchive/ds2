@@ -278,11 +278,11 @@ void Platform::EnumerateProcesses(
   processes.resize(32);
 
   do {
-    int rc;
-
     processes.resize(2 * processes.size());
-    rc = EnumProcesses(processes.data(), processes.size() * sizeof(DWORD),
-                       &bytesReturned);
+    int rc = EnumProcesses(processes.data(), processes.size() * sizeof(DWORD),
+                           &bytesReturned);
+    if (!rc)
+      return;
   } while (bytesReturned == processes.size() * sizeof(DWORD));
   processes.resize(bytesReturned / sizeof(DWORD));
 
