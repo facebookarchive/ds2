@@ -21,7 +21,9 @@
 #include <stdio.h>
 #include <vector>
 #define WIN32_LEAN_AND_MEAN
+#if !defined(NOMINMAX)
 #define NOMINMAX
+#endif
 #include <windows.h>
 #include <winsock2.h>
 

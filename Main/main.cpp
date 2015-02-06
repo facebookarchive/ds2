@@ -206,16 +206,20 @@ static void ListProcesses() {
     std::string user;
     if (!Platform::GetUserName(info.realUid, user)) {
       char buf[128];
+#if defined(_WIN32)
+      snprintf(buf, sizeof(buf), "<NONE>");
+#else
       snprintf(buf, sizeof(buf), "%u", info.realUid);
+#endif
       user = buf;
     }
 
-    size_t lastsep;
     std::string path = info.name;
+    size_t lastsep =
 #if defined(_WIN32)
-    lastsep = path.rfind('\\');
+        path.rfind('\\');
 #else
-                                 lastsep = path.rfind('/');
+        path.rfind('/');
 #endif
     if (lastsep != std::string::npos) {
       path = path.substr(lastsep + 1);
