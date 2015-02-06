@@ -24,7 +24,12 @@ protected:
   StringCollection _arguments;
   EnvironmentBlock _environment;
   std::string _workingDirectory;
+  HANDLE _processHandle;
   ProcessId _pid;
+
+public:
+  ProcessSpawner();
+  ~ProcessSpawner();
 
 protected:
   typedef std::function<void(void *buf, size_t size)> RedirectDelegate;

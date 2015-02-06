@@ -13,8 +13,14 @@
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Log.h"
 
+#include <windows.h>
+
 using ds2::Host::ProcessSpawner;
 using ds2::ErrorCode;
+
+ProcessSpawner::ProcessSpawner() : _processHandle(0), _pid(0) {}
+
+ProcessSpawner::~ProcessSpawner() {}
 
 bool ProcessSpawner::setExecutable(std::string const &path) {
   if (_pid != 0)
@@ -81,11 +87,16 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   memset(&si, 0, sizeof si);
   si.cb = sizeof si;
 
-  auto result = CreateProcess(
-      nullptr, commandLine.data(), nullptr, nullptr, false, 0,
-      environment.data(),
+  // Note(sas): Not sure if we want DEBUG_ONLY_THIS_PROCESS here. Will need to
+  // check back later.
+  BOOL result = CreateProcess(
+      nullptr, commandLine.data(), nullptr, nullptr, false,
+      DEBUG_PROCESS | DEBUG_ONLY_THIS_PROCESS, environment.data(),
       _workingDirectory.empty() ? nullptr : _workingDirectory.c_str(), &si,
       &pi);
+
+  _processHandle = pi.hProcess;
+  _pid = pi.dwProcessId;
 
   return result ? kSuccess : kErrorUnknown;
 }
