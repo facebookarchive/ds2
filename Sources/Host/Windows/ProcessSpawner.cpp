@@ -32,7 +32,7 @@ bool ProcessSpawner::setArguments(StringCollection const &args) {
   return true;
 }
 
-bool ProcessSpawner::setEnvironment(StringCollection const &env) {
+bool ProcessSpawner::setEnvironment(EnvironmentBlock const &env) {
   if (_pid != 0)
     return false;
 
@@ -50,6 +50,7 @@ bool ProcessSpawner::setWorkingDirectory(std::string const &path) {
 
 ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   std::vector<char> commandLine;
+  std::vector<char> environment;
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
 
@@ -69,11 +70,20 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   }
   commandLine.push_back('\0');
 
+  for (auto const &env : _environment) {
+    environment.insert(environment.end(), env.first.begin(), env.first.end());
+    environment.push_back('=');
+    environment.insert(environment.end(), env.second.begin(), env.second.end());
+    environment.push_back('\0');
+  }
+  environment.push_back('\0');
+
   memset(&si, 0, sizeof si);
   si.cb = sizeof si;
 
   auto result = CreateProcess(
-      nullptr, commandLine.data(), nullptr, nullptr, false, 0, /*env=*/nullptr,
+      nullptr, commandLine.data(), nullptr, nullptr, false, 0,
+      environment.data(),
       _workingDirectory.empty() ? nullptr : _workingDirectory.c_str(), &si,
       &pi);
 

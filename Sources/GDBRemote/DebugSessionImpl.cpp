@@ -26,7 +26,7 @@ using ds2::Target::Thread;
 using ds2::ErrorCode;
 
 DebugSessionImpl::DebugSessionImpl(StringCollection const &args,
-                                   StringCollection const &env)
+                                   EnvironmentBlock const &env)
     : DummySessionDelegateImpl(), _resumeSession(nullptr) {
   DS2ASSERT(args.size() >= 1);
   spawnProcess(args, env);
@@ -923,13 +923,14 @@ ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
 }
 
 ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
-                                         StringCollection const &env) {
+                                         EnvironmentBlock const &env) {
   DS2LOG(DebugSession, Debug, "spawning process with args:");
   for (auto const &arg : args)
     DS2LOG(DebugSession, Debug, "  %s", arg.c_str());
   DS2LOG(DebugSession, Debug, "and with environment:");
   for (auto const &val : env)
-    DS2LOG(DebugSession, Debug, "  %s", val.c_str());
+    DS2LOG(DebugSession, Debug, "  %s=%s", val.first.c_str(),
+           val.second.c_str());
 
   _spawner.setExecutable(args[0]);
   _spawner.setArguments(StringCollection(&args[1], &args[args.size()]));

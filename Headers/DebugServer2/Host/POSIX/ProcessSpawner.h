@@ -44,7 +44,7 @@ protected:
 protected:
   std::string _executablePath;
   StringCollection _arguments;
-  StringCollection _environment;
+  EnvironmentBlock _environment;
   std::string _workingDirectory;
   std::thread _delegateThread;
   RedirectDescriptor _descriptors[3];
@@ -70,7 +70,7 @@ public:
   }
 
 public:
-  bool setEnvironment(StringCollection const &args);
+  bool setEnvironment(EnvironmentBlock const &args);
 
 public:
   bool redirectInputToConsole();

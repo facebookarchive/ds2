@@ -69,6 +69,7 @@ public:
 
 public:
   static const char *GetSelfExecutablePath();
+  static bool GetCurrentEnvironment(EnvironmentBlock &env);
 };
 }
 }

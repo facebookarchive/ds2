@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Log.h"
 
 #include <lmcons.h>
 #include <psapi.h>
@@ -318,4 +319,25 @@ const char *Platform::GetSelfExecutablePath() {
   }
 
   return filenameStr;
+}
+
+bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
+  char *envStrings = GetEnvironmentStringsA();
+  char *oldEnvStrings = envStrings;
+  if (envStrings == nullptr)
+    return false;
+
+  while (*envStrings != '\0') {
+    char *equal = strchr(envStrings, '=');
+    DS2ASSERT(equal != nullptr);
+    // Some environment values can start with '=' for MS-DOS compatibility.
+    // Ignore these values.
+    if (equal != envStrings)
+      env[std::string(envStrings, equal)] = equal + 1;
+    envStrings += strlen(envStrings) + 1;
+  }
+
+  FreeEnvironmentStringsA(oldEnvStrings);
+
+  return true;
 }

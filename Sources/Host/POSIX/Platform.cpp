@@ -8,10 +8,10 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Log.h"
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/POSIX/Platform.h"
+#include "DebugServer2/Log.h"
 
 #include <cstring>
 #include <fcntl.h>
@@ -170,3 +170,13 @@ char const *Platform::GetWorkingDirectory() {
 }
 
 ds2::ProcessId Platform::GetCurrentProcessId() { return ::getpid(); }
+
+bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
+  for (int i = 0; environ[i] != nullptr; ++i) {
+    char *equal = strchr(environ[i], '=');
+    DS2ASSERT(equal != nullptr && equal != environ[i]);
+    env[std::string(environ[i], equal)] = equal + 1;
+  }
+
+  return true;
+}

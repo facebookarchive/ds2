@@ -15,6 +15,7 @@
 #include "DebugServer2/Constants.h"
 #include "DebugServer2/CPUTypes.h"
 
+#include <map>
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -74,6 +75,7 @@ struct ProcessThreadId {
 //
 
 typedef std::vector<std::string> StringCollection;
+typedef std::map<std::string, std::string> EnvironmentBlock;
 
 //
 // Repesents the stop information of a process.

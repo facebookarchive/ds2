@@ -22,7 +22,7 @@ class ProcessSpawner {
 protected:
   std::string _executablePath;
   StringCollection _arguments;
-  StringCollection _environment;
+  EnvironmentBlock _environment;
   std::string _workingDirectory;
   ProcessId _pid;
 
@@ -42,7 +42,7 @@ public:
   }
 
 public:
-  bool setEnvironment(StringCollection const &args);
+  bool setEnvironment(EnvironmentBlock const &args);
 
 public:
   bool redirectInputToConsole() { return false; }

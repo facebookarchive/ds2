@@ -57,6 +57,7 @@ public:
 
 public:
   static ProcessId GetCurrentProcessId();
+  static bool GetCurrentEnvironment(EnvironmentBlock &env);
 };
 }
 }

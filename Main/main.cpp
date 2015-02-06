@@ -104,7 +104,7 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
 }
 
 static void DebugMain(ds2::StringCollection const &args,
-                      ds2::StringCollection const &env, int attachPid,
+                      ds2::EnvironmentBlock const &env, int attachPid,
                       int port) {
   Socket *server = new Socket;
 
@@ -388,33 +388,21 @@ int main(int argc, char **argv) {
 
   default: {
     ds2::StringCollection args(&argv[0], &argv[argc]);
-    ds2::StringCollection env;
+    ds2::EnvironmentBlock env;
 
-    std::set<std::string> skipKeys;
+    Platform::GetCurrentEnvironment(env);
 
     for (auto const &e : opts.getVector("set-env")) {
       char const *arg = e.c_str();
       char const *equal = strchr(arg, '=');
       if (equal == nullptr || equal == arg)
         DS2LOG(Main, Fatal, "invalid environment value: %s", arg);
-
-      skipKeys.insert(std::string(arg, equal));
-    }
-    for (auto const &e : opts.getVector("unset-env"))
-      skipKeys.insert(e);
-
-#if !defined(_WIN32)
-    for (int i = 0; environ[i] != nullptr; ++i) {
-      char *equal = strchr(environ[i], '=');
-      DS2ASSERT(equal != nullptr && equal != environ[i]);
-
-      if (skipKeys.find(std::string(environ[i], equal)) == skipKeys.end())
-        env.push_back(environ[i]);
+      env[std::string(arg, equal)] = equal + 1;
     }
 
-    for (auto const &key : opts.getVector("set-env"))
-      env.push_back(key);
-#endif
+    for (auto const &e : opts.getVector("unset-env")) {
+      env.erase(e);
+    }
 
     DebugMain(args, env, attachPid, port);
   } break;

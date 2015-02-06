@@ -85,7 +85,7 @@ bool ProcessSpawner::setArguments(StringCollection const &args) {
   return true;
 }
 
-bool ProcessSpawner::setEnvironment(StringCollection const &env) {
+bool ProcessSpawner::setEnvironment(EnvironmentBlock const &env) {
   if (_pid != 0)
     return false;
 
@@ -366,18 +366,20 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
 
       std::vector<char *> args;
       args.push_back(::basename(const_cast<char *>(&_executablePath[0])));
-      for (auto const &e : _arguments) {
+      for (auto const &e : _arguments)
         args.push_back(const_cast<char *>(e.c_str()));
-      }
       args.push_back(nullptr);
-      std::vector<char *> env;
-      for (auto const &e : _environment) {
-        env.push_back(const_cast<char *>(e.c_str()));
-      }
-      env.push_back(nullptr);
+
+      std::vector<char *> environment;
+      for (auto const &env : _environment)
+        environment.push_back(const_cast<char *>(
+            (new std::string(env.first + '=' + env.second))->c_str()));
+      environment.push_back(nullptr);
+
       if (!preExecAction())
         return kErrorUnknown;
-      if (::execve(_executablePath.c_str(), &args[0], &env[0]) < 0) {
+
+      if (::execve(_executablePath.c_str(), &args[0], &environment[0]) < 0) {
         DS2LOG(Main, Error, "cannot spawn executable %s, error=%s",
                _executablePath.c_str(), strerror(errno));
       }

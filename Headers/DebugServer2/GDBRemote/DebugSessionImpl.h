@@ -31,7 +31,7 @@ protected:
   std::string _consoleBuffer;
 
 public:
-  DebugSessionImpl(StringCollection const &args, StringCollection const &env);
+  DebugSessionImpl(StringCollection const &args, EnvironmentBlock const &env);
   DebugSessionImpl(int attachPid);
   DebugSessionImpl();
   ~DebugSessionImpl();
@@ -147,7 +147,7 @@ protected:
 
 private:
   ErrorCode spawnProcess(StringCollection const &args,
-                         StringCollection const &env);
+                         EnvironmentBlock const &env);
 };
 }
 }
