@@ -8,6 +8,8 @@
 ## PATENTS file in the same directory.
 ##
 
+cmake_minimum_required(VERSION 2.8)
+
 project(regsgen)
 
 find_package(BISON)
@@ -22,7 +24,7 @@ BISON_TARGET(JSON_PARSER
              COMPILE_FLAGS --no-lines)
 ADD_FLEX_BISON_DEPENDENCY(JSON_SCANNER JSON_PARSER)
 
-add_executable(regsgen2 EXCLUDE_FROM_ALL
+add_executable(regsgen2
                ${BISON_JSON_PARSER_OUTPUTS}
                ${FLEX_JSON_SCANNER_OUTPUTS}
                FlagSet.cpp
