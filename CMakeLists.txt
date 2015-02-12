@@ -162,17 +162,30 @@ add_executable(ds2 ${DEBUGSERVER2_SOURCES})
 include_directories(Headers)
 include_directories(Main)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter")
-if (STATIC)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+  set(GCC_FLAGS 1)
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  set(MSVC_FLAGS 1)
+  message("Using MSVC flags")
+endif ()
+
+if (GCC_FLAGS)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter")
+  if (STATIC)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+  endif ()
+elseif (MSVC_FLAGS)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /wd4100 /wd4127 /wd4996")
 endif ()
 
 if (WIN32)
-  # Some constructs from Windows API headers won't compile properly
-  # with our standard warnings set.
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare")
-  # FIXME(sas): Silence some warnings because of mismatched types on Windows.
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-type-limits")
+  if (GCC_FLAGS)
+    # Some constructs from Windows API headers won't compile properly with our
+    # standard warnings set.
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare")
+    # FIXME(sas): Silence some warnings because of mismatched types on Windows.
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-type-limits")
+  endif ()
   target_link_libraries(ds2 psapi shlwapi ws2_32)
 endif ()
 
