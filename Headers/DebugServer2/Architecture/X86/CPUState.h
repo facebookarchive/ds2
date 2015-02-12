@@ -153,22 +153,22 @@ public:
   }
 
   inline void setGPState(std::vector<uint64_t> const &regs) {
-    gp.eax = regs[0];
-    gp.ebx = regs[1];
-    gp.ecx = regs[2];
-    gp.edx = regs[3];
-    gp.esi = regs[4];
-    gp.edi = regs[5];
-    gp.ebp = regs[6];
-    gp.esp = regs[7];
-    gp.eip = regs[8];
-    gp.eflags = regs[9];
-    gp.cs = regs[10];
-    gp.ss = regs[11];
-    gp.ds = regs[12];
-    gp.es = regs[13];
-    gp.fs = regs[14];
-    gp.gs = regs[15];
+    gp.eax = static_cast<uint32_t>(regs[0]);
+    gp.ebx = static_cast<uint32_t>(regs[1]);
+    gp.ecx = static_cast<uint32_t>(regs[2]);
+    gp.edx = static_cast<uint32_t>(regs[3]);
+    gp.esi = static_cast<uint32_t>(regs[4]);
+    gp.edi = static_cast<uint32_t>(regs[5]);
+    gp.ebp = static_cast<uint32_t>(regs[6]);
+    gp.esp = static_cast<uint32_t>(regs[7]);
+    gp.eip = static_cast<uint32_t>(regs[8]);
+    gp.eflags = static_cast<uint32_t>(regs[9]);
+    gp.cs = static_cast<uint32_t>(regs[10]);
+    gp.ss = static_cast<uint32_t>(regs[11]);
+    gp.ds = static_cast<uint32_t>(regs[12]);
+    gp.es = static_cast<uint32_t>(regs[13]);
+    gp.fs = static_cast<uint32_t>(regs[14]);
+    gp.gs = static_cast<uint32_t>(regs[15]);
   }
 
 public:

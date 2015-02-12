@@ -43,7 +43,7 @@ void vLog(int category, int level, char const *classname, char const *funcname,
   if (sLogLevel > level)
     return;
 
-  if ((sLogMask & (1 << category)) == 0)
+  if ((sLogMask & (1ULL << category)) == 0)
     return;
 
   std::stringstream ss;

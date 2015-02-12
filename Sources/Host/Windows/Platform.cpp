@@ -30,6 +30,10 @@
 #include <windows.h>
 #include <winsock2.h>
 
+// Note(sas): This is used to disable deprecation warnings for GetVersion(). We
+// can remove this when we get rid of calls to this function.
+#pragma warning(disable : 4996)
+
 namespace ds2 {
 namespace Host {
 
@@ -151,8 +155,8 @@ char const *Platform::GetOSKernelPath() {
       return nullptr;
     }
 
-    ::strncpy(kernelPath + rc, "\\System32\\ntoskrnl.exe",
-              sizeof(kernelPath) - rc);
+    ::strncpy_s(kernelPath + rc, sizeof(kernelPath) - rc,
+                "\\System32\\ntoskrnl.exe", _TRUNCATE);
     kernelPath[sizeof(kernelPath) - 1] = '\0';
   }
 
@@ -186,7 +190,9 @@ int Platform::OpenFile(std::string const &path, uint32_t flags, uint32_t mode) {
 bool Platform::CloseFile(int fd) { return false; }
 
 bool Platform::IsFilePresent(std::string const &path) {
-  return ::PathFileExistsA(path.c_str());
+  // BOOL and bool are not the same type on windows. Specify `== TRUE` to
+  // silence a warning.
+  return ::PathFileExistsA(path.c_str()) == TRUE;
 }
 
 char const *Platform::GetWorkingDirectory() { return nullptr; }

@@ -167,7 +167,7 @@ public:
 //
 // Constant for invalid native CPU (sub)type.
 //
-static uint32_t const kInvalidCPUType = -2U;
+static uint32_t const kInvalidCPUType = static_cast<uint32_t>(-2);
 
 //
 // Architecture Flags

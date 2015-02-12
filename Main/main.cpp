@@ -248,7 +248,13 @@ int main(int argc, char **argv) {
   ds2::SetLogLevel(ds2::kLogLevelWarning);
   ds2::SetLogMask(~0U);
 
-  enum RunMode { kRunModeNormal, kRunModePlatform, kRunModeSlave };
+  enum RunMode {
+    kRunModeNormal,
+#if !defined(_WIN32)
+    kRunModePlatform,
+    kRunModeSlave,
+#endif
+  };
 
   int attachPid = -1;
   int port = -1;
@@ -390,7 +396,7 @@ int main(int argc, char **argv) {
     break;
 #endif
 
-  default: {
+  case kRunModeNormal: {
     ds2::StringCollection args(&argv[0], &argv[argc]);
     ds2::EnvironmentBlock env;
 

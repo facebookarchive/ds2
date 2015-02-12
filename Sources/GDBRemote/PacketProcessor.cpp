@@ -28,7 +28,8 @@ bool PacketProcessor::validate() {
     return true;
 
   size_t csoff = _buffer.find('#');
-  uint8_t csum = std::strtoul(&_buffer[csoff + 1], nullptr, 16);
+  uint8_t csum =
+      static_cast<uint8_t>(std::strtoul(&_buffer[csoff + 1], nullptr, 16));
 
   _buffer.erase(0, 1);
   _buffer.erase(csoff - 1);
