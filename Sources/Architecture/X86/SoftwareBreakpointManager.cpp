@@ -19,8 +19,9 @@
 
 #define super ds2::BreakpointManager
 
-using ds2::Architecture::X86::SoftwareBreakpointManager;
-using ds2::ErrorCode;
+namespace ds2 {
+namespace Architecture {
+namespace X86 {
 
 SoftwareBreakpointManager::SoftwareBreakpointManager(Target::Process *process)
     : super(process) {}
@@ -110,4 +111,7 @@ void SoftwareBreakpointManager::disableLocation(Site const &site) {
          (unsigned long)site.address.value());
 
   _insns.erase(site.address);
+}
+}
+}
 }

@@ -16,8 +16,8 @@
 #include "DebugServer2/Target/ProcessBase.h"
 #include "DebugServer2/Target/Thread.h"
 
-using ds2::Target::ProcessBase;
-using ds2::ErrorCode;
+namespace ds2 {
+namespace Target {
 
 ProcessBase::ProcessBase()
     : _flags(0), _pid(kAnyProcessId), _loadBase(), _entryPoint(),
@@ -214,4 +214,6 @@ void ProcessBase::prepareForDetach() {
   if (bpm != nullptr) {
     bpm->clear();
   }
+}
+}
 }

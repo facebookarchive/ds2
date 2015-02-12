@@ -10,7 +10,8 @@
 
 #include "DebugServer2/Host/Channel.h"
 
-using ds2::Host::Channel;
+namespace ds2 {
+namespace Host {
 
 Channel::~Channel() {}
 
@@ -40,4 +41,6 @@ bool Channel::receive(std::string &buffer) {
   }
   buffer.resize(total);
   return !buffer.empty();
+}
+}
 }

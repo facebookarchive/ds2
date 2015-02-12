@@ -19,12 +19,14 @@
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
-
-#include <libgen.h>
 #include <elf.h>
+#include <libgen.h>
 
-using ds2::Host::Linux::ProcFS;
 using ds2::CPUType;
+
+namespace ds2 {
+namespace Host {
+namespace Linux {
 
 //
 // The fields of the /proc/uptime file.
@@ -844,4 +846,7 @@ bool ProcFS::EnumerateThreads(pid_t pid, std::function<void(pid_t)> const &cb) {
   closedir(dir);
 
   return true;
+}
+}
+}
 }

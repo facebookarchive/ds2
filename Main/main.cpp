@@ -24,14 +24,13 @@
 #include <cstdio>
 #include <cstdlib>
 #include <fcntl.h>
+#include <iomanip>
+#include <set>
+#include <sstream>
 #if !defined(_WIN32)
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
-
-#include <set>
-#include <sstream>
-#include <iomanip>
 
 using ds2::Host::Socket;
 using ds2::Host::QueueChannel;

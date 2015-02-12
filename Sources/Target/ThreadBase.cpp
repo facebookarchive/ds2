@@ -11,8 +11,8 @@
 #include "DebugServer2/Target/ThreadBase.h"
 #include "DebugServer2/Target/Process.h"
 
-using ds2::Target::ThreadBase;
-using ds2::ErrorCode;
+namespace ds2 {
+namespace Target {
 
 ThreadBase::ThreadBase(Process *process, ThreadId tid)
     : _process(process), _tid(tid), _state(kInvalid) {
@@ -26,3 +26,5 @@ ErrorCode ThreadBase::prepareSoftwareSingleStep(Address const &) {
 }
 
 void ThreadBase::updateState() {}
+}
+}

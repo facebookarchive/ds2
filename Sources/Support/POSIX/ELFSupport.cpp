@@ -12,7 +12,7 @@
 
 #include <elf.h>
 
-using ds2::ELFSupport;
+namespace ds2 {
 
 bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
                                       CPUType &type, CPUSubType &subType) {
@@ -95,4 +95,5 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
   }
 
   return true;
+}
 }

@@ -18,9 +18,6 @@
 #include <sys/user.h>
 #include <elf.h>
 
-using ds2::Host::Linux::PTrace;
-using ds2::ErrorCode;
-
 namespace ds2 {
 namespace Host {
 namespace Linux {
@@ -33,9 +30,6 @@ struct PTracePrivateData {
   PTracePrivateData()
       : breakpointCount(0), watchpointCount(0), maxWatchpointSize(0) {}
 };
-}
-}
-}
 
 void PTrace::initCPUState(ProcessId pid) {
   if (_privateData != nullptr)
@@ -380,4 +374,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   wrapPtrace(PTRACE_SETFPREGS, pid, nullptr, &fprs);
 
   return kSuccess;
+}
+}
+}
 }

@@ -30,7 +30,8 @@
 #error "Target not supported."
 #endif
 
-using ds2::GDBRemote::Session;
+namespace ds2 {
+namespace GDBRemote {
 
 Session::Session(CompatibilityMode mode) : _compatMode(mode) {
 #define REGISTER_HANDLER_EQUALS_2(MESSAGE, HANDLER)                            \
@@ -3370,4 +3371,6 @@ void Session::Handle_z(ProtocolInterpreter::Handler const &,
   kind = std::strtoul(eptr, &eptr, 16);
 
   sendError(_delegate->onRemoveBreakpoint(*this, type, address, kind));
+}
+}
 }

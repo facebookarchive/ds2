@@ -15,8 +15,8 @@
 
 #include <windows.h>
 
-using ds2::Host::ProcessSpawner;
-using ds2::ErrorCode;
+namespace ds2 {
+namespace Host {
 
 ProcessSpawner::ProcessSpawner() : _processHandle(0), _pid(0) {}
 
@@ -99,4 +99,6 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   _pid = pi.dwProcessId;
 
   return result ? kSuccess : kErrorUnknown;
+}
+}
 }

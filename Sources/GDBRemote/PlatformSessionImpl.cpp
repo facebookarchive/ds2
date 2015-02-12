@@ -18,10 +18,11 @@
 
 #include <sstream>
 
-using ds2::GDBRemote::PlatformSessionImpl;
 using ds2::Host::Platform;
 using ds2::Host::ProcessSpawner;
-using ds2::ErrorCode;
+
+namespace ds2 {
+namespace GDBRemote {
 
 PlatformSessionImpl::PlatformSessionImpl()
     : DummySessionDelegateImpl(), _processIndex(0), _disableASLR(false),
@@ -241,4 +242,6 @@ PlatformSessionImpl::onSetProgramArguments(Session &,
 
 ErrorCode PlatformSessionImpl::onQueryLaunchSuccess(Session &, ProcessId) {
   return kSuccess;
+}
+}
 }

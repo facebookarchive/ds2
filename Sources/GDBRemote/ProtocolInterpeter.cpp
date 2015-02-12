@@ -21,10 +21,12 @@
 #include <iomanip>
 #include <algorithm>
 
-using ds2::GDBRemote::ProtocolInterpreter;
 using ds2::Host::Platform;
 
-static std::string Escape(std::string const &s) {
+namespace ds2 {
+namespace GDBRemote {
+
+static std::string EscapeForTerm(std::string const &s) {
   std::ostringstream ss;
   for (size_t n = 0; n < s.length(); n++) {
     unsigned c = static_cast<unsigned>(s[n] & 0xff);
@@ -41,7 +43,7 @@ static std::string Escape(std::string const &s) {
 ProtocolInterpreter::ProtocolInterpreter() : _session(nullptr) {}
 
 void ProtocolInterpreter::onPacketData(std::string const &data, bool valid) {
-  DS2LOG(Remote, Debug, "getpkt(\"%s\")", ::Escape(&data[0]).c_str());
+  DS2LOG(Remote, Debug, "getpkt(\"%s\")", EscapeForTerm(&data[0]).c_str());
 
   if (_session == nullptr)
     return;
@@ -226,4 +228,6 @@ int ProtocolInterpreter::Handler::compare(std::string const &command) const {
   } else {
     return this->command.compare(command.substr(0, this->command.length()));
   }
+}
+}
 }

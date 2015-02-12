@@ -11,8 +11,7 @@
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Log.h"
 
-using ds2::BreakpointManager;
-using ds2::ErrorCode;
+namespace ds2 {
 
 BreakpointManager::BreakpointManager(Target::Process *process)
     : _enabled(false), _process(process) {}
@@ -144,4 +143,5 @@ bool BreakpointManager::hit(Address const &address) {
     _sites.erase(it);
 
   return true;
+}
 }

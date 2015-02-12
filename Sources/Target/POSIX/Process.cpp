@@ -21,9 +21,11 @@
 #include <csignal>
 #include <cerrno>
 
-using ds2::Target::POSIX::Process;
 using ds2::Host::ProcessSpawner;
-using ds2::ErrorCode;
+
+namespace ds2 {
+namespace Target {
+namespace POSIX {
 
 Process::Process() : Target::ProcessBase() {}
 
@@ -179,4 +181,7 @@ void Process::setSignalPass(int signo, bool set) {
   } else {
     _passthruSignals.erase(signo);
   }
+}
+}
+}
 }

@@ -22,9 +22,11 @@
 
 #define super ds2::Target::POSIX::Thread
 
-using ds2::Target::Linux::Thread;
 using ds2::Host::Linux::ProcFS;
-using ds2::ErrorCode;
+
+namespace ds2 {
+namespace Target {
+namespace Linux {
 
 Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {
   //
@@ -267,4 +269,7 @@ void Thread::updateState(bool force) {
     _state = kInvalid;
     break;
   }
+}
+}
+}
 }

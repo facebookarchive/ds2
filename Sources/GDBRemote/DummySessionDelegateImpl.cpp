@@ -13,9 +13,10 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Log.h"
 
-using ds2::GDBRemote::DummySessionDelegateImpl;
 using ds2::Host::Platform;
-using ds2::ErrorCode;
+
+namespace ds2 {
+namespace GDBRemote {
 
 DummySessionDelegateImpl::DummySessionDelegateImpl() : _secure(true) {}
 
@@ -561,4 +562,6 @@ ErrorCode DummySessionDelegateImpl::onFlashWrite(Session &, Address const &,
 
 ErrorCode DummySessionDelegateImpl::onFlashDone(Session &) {
   return kErrorUnsupported;
+}
+}
 }

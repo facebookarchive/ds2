@@ -16,9 +16,11 @@
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Log.h"
 
-using ds2::Target::Linux::Thread;
 using ds2::Target::Linux::Process;
-using ds2::ErrorCode;
+
+namespace ds2 {
+namespace Target {
+namespace Linux {
 
 namespace {
 
@@ -380,4 +382,7 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   }
 
   return kSuccess;
+}
+}
+}
 }

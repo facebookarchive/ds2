@@ -20,10 +20,11 @@
 #include <sstream>
 #include <iomanip>
 
-using ds2::GDBRemote::DebugSessionImpl;
 using ds2::Host::Platform;
 using ds2::Target::Thread;
-using ds2::ErrorCode;
+
+namespace ds2 {
+namespace GDBRemote {
 
 DebugSessionImpl::DebugSessionImpl(StringCollection const &args,
                                    EnvironmentBlock const &env)
@@ -961,4 +962,6 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
   }
 
   return kSuccess;
+}
+}
 }

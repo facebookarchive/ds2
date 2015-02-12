@@ -13,10 +13,10 @@
 
 #include <chrono>
 
-using ds2::MessageQueue;
-
 // FIXME(strager): This class does not handle spurious
 // wakeups!  See http://en.wikipedia.org/wiki/Spurious_wakeup
+
+namespace ds2 {
 
 MessageQueue::MessageQueue() : _terminated(false) {}
 
@@ -73,4 +73,5 @@ void MessageQueue::clear(bool terminating) {
     _terminated = true;
     _ready.notify_one();
   }
+}
 }

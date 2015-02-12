@@ -24,8 +24,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-using ds2::Host::ProcessSpawner;
-using ds2::ErrorCode;
+namespace ds2 {
+namespace Host {
 
 static bool open_terminal(int fds[2]) {
   char const *slave;
@@ -539,4 +539,6 @@ void ProcessSpawner::redirectionThread() {
       _descriptors[n].fd = -1;
     }
   }
+}
+}
 }

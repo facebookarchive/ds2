@@ -15,8 +15,9 @@
 
 #define super ds2::Target::ThreadBase
 
-using ds2::Target::POSIX::Thread;
-using ds2::ErrorCode;
+namespace ds2 {
+namespace Target {
+namespace POSIX {
 
 Thread::Thread(ds2::Target::Process *process, ThreadId tid)
     : super(process, tid) {}
@@ -57,4 +58,7 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
   }
 
   return error;
+}
+}
+}
 }

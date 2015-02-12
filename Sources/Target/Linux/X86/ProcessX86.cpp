@@ -18,13 +18,12 @@
 #include <sys/mman.h>
 #include <cstdlib>
 
-using ds2::Target::Linux::Process;
 using ds2::Architecture::GDBDescriptor;
 using ds2::Architecture::LLDBDescriptor;
-using ds2::BreakpointManager;
-using ds2::WatchpointManager;
-using ds2::ErrorCode;
-using ds2::U8Vector;
+
+namespace ds2 {
+namespace Target {
+namespace Linux {
 
 static uint8_t const gMmapCode[] = {
     0xb8, 0x00, 0x00, 0x00, 0x00, // 00: movl $sysno, %eax
@@ -149,4 +148,7 @@ GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
 
 LLDBDescriptor const *Process::getLLDBRegistersDescriptor() const {
   return &Architecture::X86::LLDB;
+}
+}
+}
 }

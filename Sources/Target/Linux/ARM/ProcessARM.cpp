@@ -22,13 +22,12 @@
 // TODO: Identify ARMv7 at runtime.
 //
 
-using ds2::Target::Linux::Process;
 using ds2::Architecture::GDBDescriptor;
 using ds2::Architecture::LLDBDescriptor;
-using ds2::BreakpointManager;
-using ds2::WatchpointManager;
-using ds2::ErrorCode;
-using ds2::U8Vector;
+
+namespace ds2 {
+namespace Target {
+namespace Linux {
 
 namespace {
 
@@ -365,4 +364,7 @@ GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
 
 LLDBDescriptor const *Process::getLLDBRegistersDescriptor() const {
   return &Architecture::ARM::LLDB;
+}
+}
+}
 }

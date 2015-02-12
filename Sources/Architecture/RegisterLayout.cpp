@@ -15,18 +15,17 @@
 #include <cstdlib>
 #include <sstream>
 
-using ds2::Architecture::RegisterDef;
-using ds2::Architecture::GDBVectorDef;
-using ds2::Architecture::GDBVectorUnion;
-using ds2::Architecture::GDBVectorUnionField;
-using ds2::Architecture::FlagSet;
 using ds2::Architecture::FlagDef;
+using ds2::Architecture::FlagSet;
 using ds2::Architecture::GDBDescriptor;
 using ds2::Architecture::GDBEncoding;
 using ds2::Architecture::GDBFeature;
 using ds2::Architecture::GDBFeatureEntry;
-
+using ds2::Architecture::GDBVectorDef;
+using ds2::Architecture::GDBVectorUnion;
+using ds2::Architecture::GDBVectorUnionField;
 using ds2::Architecture::LLDBRegisterSet;
+using ds2::Architecture::RegisterDef;
 
 namespace {
 

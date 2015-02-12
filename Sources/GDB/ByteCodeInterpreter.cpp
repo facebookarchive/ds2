@@ -12,7 +12,8 @@
 
 #include <cstdio>
 
-using ds2::GDB::ByteCodeInterpreter;
+namespace ds2 {
+namespace GDB {
 
 namespace {
 
@@ -557,4 +558,6 @@ int ByteCodeInterpreter::printf(size_t nargs, std::string const &format) {
     return kErrorStackUnderflow; // function
 
   return kSuccess;
+}
+}
 }

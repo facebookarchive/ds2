@@ -18,7 +18,9 @@
 #include <cstring>
 #include <algorithm>
 
-using ds2::Host::Linux::Platform;
+namespace ds2 {
+namespace Host {
+namespace Linux {
 
 char const *Platform::GetOSTypeName() { return "linux"; }
 
@@ -111,4 +113,7 @@ const char *Platform::GetSelfExecutablePath() {
   }
 
   return path;
+}
+}
+}
 }

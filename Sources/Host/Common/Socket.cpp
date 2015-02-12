@@ -31,7 +31,8 @@
 
 #include <cstring>
 
-using ds2::Host::Socket;
+namespace ds2 {
+namespace Host {
 
 Socket::Socket()
     : _handle(INVALID_SOCKET), _state(kStateInvalid), _lastError(0) {}
@@ -249,4 +250,6 @@ uint16_t Socket::port() const {
     break;
   }
   return 0;
+}
+}
 }

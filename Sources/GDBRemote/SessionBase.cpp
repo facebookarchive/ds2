@@ -20,8 +20,10 @@
 #include <iomanip>
 #include <sstream>
 
-using ds2::GDBRemote::SessionBase;
 using ds2::Host::Platform;
+
+namespace ds2 {
+namespace GDBRemote {
 
 SessionBase::SessionBase()
     : _channel(nullptr), _delegate(nullptr), _ackmode(true) {
@@ -162,3 +164,5 @@ bool SessionBase::sendError(ErrorCode code) {
 using ds2::GDBRemote::SessionDelegate;
 
 SessionDelegate::~SessionDelegate() {}
+}
+}

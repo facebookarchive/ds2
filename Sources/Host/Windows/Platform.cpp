@@ -11,6 +11,7 @@
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Log.h"
+#include "DebugServer2/Types.h"
 
 #include <lmcons.h>
 #include <psapi.h>
@@ -28,7 +29,8 @@
 #include <windows.h>
 #include <winsock2.h>
 
-using ds2::Host::Windows::Platform;
+namespace ds2 {
+namespace Host {
 
 void Platform::Initialize() {
   // Disable buffering on standard streams. When running on Windows,
@@ -112,9 +114,9 @@ char const *Platform::GetOSVersion() {
 
     version = ::GetVersion();
 
-    ::_snprintf(versionStr, sizeof(versionStr), "%d.%d",
-                (DWORD)(LOBYTE(LOWORD(version))),
-                (DWORD)(HIBYTE(LOWORD(version))));
+    ::snprintf(versionStr, sizeof(versionStr), "%d.%d",
+               (DWORD)(LOBYTE(LOWORD(version))),
+               (DWORD)(HIBYTE(LOWORD(version))));
   }
 
   return versionStr;
@@ -129,7 +131,7 @@ char const *Platform::GetOSBuild() {
     version = ::GetVersion();
 
     if (version < 0x80000000) {
-      ::_snprintf(buildStr, sizeof(buildStr), "%d", (DWORD)(HIWORD(version)));
+      ::snprintf(buildStr, sizeof(buildStr), "%d", (DWORD)(HIWORD(version)));
     }
   }
 
@@ -340,4 +342,6 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
   FreeEnvironmentStringsA(oldEnvStrings);
 
   return true;
+}
+}
 }

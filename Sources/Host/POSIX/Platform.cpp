@@ -28,7 +28,9 @@
 #include <sys/endian.h>
 #endif
 
-using ds2::Host::POSIX::Platform;
+namespace ds2 {
+namespace Host {
+namespace POSIX {
 
 void Platform::Initialize() {
   // Nothing to do here.
@@ -179,4 +181,7 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
   }
 
   return true;
+}
+}
+}
 }

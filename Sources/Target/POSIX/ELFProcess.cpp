@@ -16,10 +16,9 @@
 #include <limits>
 #include <link.h>
 
-using ds2::Target::POSIX::ELFProcess;
-using ds2::ELFSupport;
-using ds2::ErrorCode;
-using ds2::Address;
+namespace ds2 {
+namespace Target {
+namespace POSIX {
 
 namespace {
 
@@ -501,4 +500,7 @@ ErrorCode ELFProcess::enumerateSharedLibraries(
   } else {
     return EnumerateLinkMap<uint32_t>(this, address, cb);
   }
+}
+}
+}
 }

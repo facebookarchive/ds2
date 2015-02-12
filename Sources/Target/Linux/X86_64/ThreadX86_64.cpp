@@ -9,12 +9,14 @@
 //
 
 #include "DebugServer2/Target/Thread.h"
-#include "DebugServer2/Target/Process.h"
 
-using ds2::Target::Linux::Thread;
-using ds2::Target::Linux::Process;
-using ds2::ErrorCode;
+namespace ds2 {
+namespace Target {
+namespace Linux {
 
 ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   return kSuccess;
+}
+}
+}
 }
