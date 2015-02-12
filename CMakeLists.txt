@@ -109,7 +109,7 @@ set(GDB_SOURCES
 set(GDBREMOTE_SOURCES
     Sources/GDBRemote/Structures.cpp
     Sources/GDBRemote/PacketProcessor.cpp
-    Sources/GDBRemote/ProtocolInterpeter.cpp
+    Sources/GDBRemote/ProtocolInterpreter.cpp
     Sources/GDBRemote/ProtocolHelpers.cpp
 
     Sources/GDBRemote/SessionBase.cpp
