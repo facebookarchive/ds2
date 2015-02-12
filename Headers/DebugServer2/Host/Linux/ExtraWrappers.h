@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_Linux_ExtraSyscalls_h
-#define __DebugServer2_Host_Linux_ExtraSyscalls_h
+#ifndef __DebugServer2_Host_Linux_ExtraWrappers_h
+#define __DebugServer2_Host_Linux_ExtraWrappers_h
 
 #include <fcntl.h>
 // Older android native sysroots don't have sys/personality.h.
@@ -58,4 +58,11 @@ static inline pid_t wait4(pid_t pid, int *stat_loc, int options,
 }
 #endif
 
-#endif // !__DebugServer2_Host_Linux_ExtraSyscalls_h
+// We use ds2_snprintf and ds2_vsnprintf in ds2 code to make sure we don't use
+// the bogus vsnprintf provided in the MSVC runtime. The following two defines
+// allow us to avoid #ifdef conditionals accross the code.
+// See Headers/DebugServer2/Host/Windows/ExtraWrappers.h.
+#define ds2_snprintf snprintf
+#define ds2_vsnprintf vsnprintf
+
+#endif // !__DebugServer2_Host_Linux_ExtraWrappers_h

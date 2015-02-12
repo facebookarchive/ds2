@@ -9,7 +9,7 @@
 //
 
 #if defined(__linux__)
-#include "DebugServer2/Host/Linux/ExtraSyscalls.h"
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #endif
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 

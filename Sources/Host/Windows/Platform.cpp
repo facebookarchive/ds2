@@ -12,6 +12,7 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Log.h"
 #include "DebugServer2/Types.h"
+#include "DebugServer2/Host/Windows/ExtraWrappers.h"
 
 #include <lmcons.h>
 #include <psapi.h>
@@ -114,7 +115,7 @@ char const *Platform::GetOSVersion() {
 
     version = ::GetVersion();
 
-    ::snprintf(versionStr, sizeof(versionStr), "%d.%d",
+    ::ds2_snprintf(versionStr, sizeof(versionStr), "%d.%d",
                (DWORD)(LOBYTE(LOWORD(version))),
                (DWORD)(HIBYTE(LOWORD(version))));
   }
@@ -131,7 +132,7 @@ char const *Platform::GetOSBuild() {
     version = ::GetVersion();
 
     if (version < 0x80000000) {
-      ::snprintf(buildStr, sizeof(buildStr), "%d", (DWORD)(HIWORD(version)));
+      ::ds2_snprintf(buildStr, sizeof(buildStr), "%d", (DWORD)(HIWORD(version)));
     }
   }
 

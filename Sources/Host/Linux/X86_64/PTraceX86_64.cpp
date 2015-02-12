@@ -9,7 +9,7 @@
 //
 
 #include "DebugServer2/Host/Linux/PTrace.h"
-#include "DebugServer2/Host/Linux/ExtraSyscalls.h"
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 
 #define super ds2::Host::POSIX::PTrace
 

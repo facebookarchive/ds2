@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
 
 #include <sys/utsname.h>
@@ -78,7 +79,7 @@ char const *Platform::GetOSBuild() {
     //
     // Linux version is returned as #BUILDNO ...
     //
-    snprintf(sBuild, sizeof(sBuild), "%lu",
+    ds2_snprintf(sBuild, sizeof(sBuild), "%lu",
              std::strtoul(version + 1, nullptr, 10));
   }
   return sBuild;

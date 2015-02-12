@@ -9,6 +9,9 @@
 //
 
 #include "DebugServer2/Host/Socket.h"
+#if defined(_WIN32)
+#include "DebugServer2/Host/Windows/ExtraWrappers.h"
+#endif
 
 #if defined(_WIN32)
 #define sock_errno WSAGetLastError()
@@ -224,7 +227,7 @@ std::string Socket::error() const {
 #if defined(_WIN32)
   // 128 bytes is enough for "error " + "0x00000000"
   char buf[128];
-  snprintf(buf, sizeof(buf), "error %#x", _lastError);
+  ds2_snprintf(buf, sizeof(buf), "error %#x", _lastError);
   return std::string(buf);
 #else
   return strerror(_lastError);

@@ -8,16 +8,21 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Host/Socket.h"
-#include "DebugServer2/Host/QueueChannel.h"
-#include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/GDBRemote/PlatformSessionImpl.h"
-#include "DebugServer2/GDBRemote/DebugSessionImpl.h"
-#include "DebugServer2/GDBRemote/SlaveSessionImpl.h"
-#include "DebugServer2/GDBRemote/ProtocolHelpers.h"
 #include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/GDBRemote/DebugSessionImpl.h"
+#include "DebugServer2/GDBRemote/PlatformSessionImpl.h"
+#include "DebugServer2/GDBRemote/ProtocolHelpers.h"
+#include "DebugServer2/GDBRemote/SlaveSessionImpl.h"
+#include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Host/QueueChannel.h"
+#include "DebugServer2/Host/Socket.h"
 #include "DebugServer2/Log.h"
 #include "DebugServer2/OptParse.h"
+#if defined(__linux__)
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
+#elif defined(_WIN32)
+#include "DebugServer2/Host/Windows/ExtraWrappers.h"
+#endif
 
 #include "SessionThread.h"
 
@@ -206,9 +211,9 @@ static void ListProcesses() {
     if (!Platform::GetUserName(info.realUid, user)) {
       char buf[128];
 #if defined(_WIN32)
-      snprintf(buf, sizeof(buf), "<NONE>");
+      ds2_snprintf(buf, sizeof(buf), "<NONE>");
 #else
-      snprintf(buf, sizeof(buf), "%u", info.realUid);
+      ds2_snprintf(buf, sizeof(buf), "%u", info.realUid);
 #endif
       user = buf;
     }

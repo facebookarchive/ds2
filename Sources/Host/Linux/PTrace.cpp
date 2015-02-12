@@ -11,7 +11,7 @@
 #define __DS2_LOG_CLASS_NAME__ "PTrace"
 
 #include "DebugServer2/Host/Linux/PTrace.h"
-#include "DebugServer2/Host/Linux/ExtraSyscalls.h"
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/Log.h"
 
