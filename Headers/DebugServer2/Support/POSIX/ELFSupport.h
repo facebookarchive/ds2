@@ -14,6 +14,7 @@
 #include "DebugServer2/Types.h"
 
 namespace ds2 {
+namespace Support {
 
 class ELFSupport {
 public:
@@ -26,6 +27,7 @@ public:
   static bool MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
                                    CPUType &type, CPUSubType &subType);
 };
+}
 }
 
 #endif // !__DebugServer2_Support_POSIX_ELFSupport_h

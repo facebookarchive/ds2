@@ -16,6 +16,8 @@
 #include <limits>
 #include <link.h>
 
+using ds2::Support::ELFSupport;
+
 namespace ds2 {
 namespace Target {
 namespace POSIX {

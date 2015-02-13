@@ -13,6 +13,7 @@
 #include <elf.h>
 
 namespace ds2 {
+namespace Support {
 
 bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
                                       CPUType &type, CPUSubType &subType) {
@@ -95,5 +96,6 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
   }
 
   return true;
+}
 }
 }

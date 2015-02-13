@@ -23,6 +23,7 @@
 #include <libgen.h>
 
 using ds2::CPUType;
+using ds2::Support::ELFSupport;
 
 namespace ds2 {
 namespace Host {
