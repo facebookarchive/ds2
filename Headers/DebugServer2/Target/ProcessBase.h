@@ -75,7 +75,7 @@ protected:
   virtual ErrorCode initialize(ProcessId pid, uint32_t flags);
 
 public:
-  virtual ErrorCode getInfo(ProcessInfo &info) = 0;
+  virtual ErrorCode getInfo(ProcessInfo &info);
 
 public: // ELF only
   virtual ErrorCode getAuxiliaryVector(std::string &auxv);

@@ -28,10 +28,10 @@
 #include <sys/ptrace.h>
 #include <sys/wait.h>
 
-#define super ds2::Target::POSIX::ELFProcess
-
 using ds2::Host::Linux::PTrace;
 using ds2::Host::Linux::ProcFS;
+
+#define super ds2::Target::POSIX::ELFProcess
 
 namespace ds2 {
 namespace Target {

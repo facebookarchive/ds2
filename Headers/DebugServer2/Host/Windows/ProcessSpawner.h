@@ -78,7 +78,7 @@ public:
   bool isRunning() const { return false; }
 
 public:
-  inline ProcessId pid() const { return 0; }
+  inline ProcessId pid() const { return _pid; }
   inline int exitStatus() const { return 0; }
   inline int signalCode() const { return 0; }
 

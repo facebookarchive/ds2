@@ -218,15 +218,6 @@ ErrorCode EnumerateLinkMap(
 //
 bool ELFProcess::isELFProcess() const { return true; }
 
-ErrorCode ELFProcess::getInfo(ProcessInfo &info) {
-  ErrorCode error = updateInfo();
-  if (error == kSuccess || error == kErrorAlreadyExist) {
-    info = _info;
-    error = kSuccess;
-  }
-  return error;
-}
-
 ErrorCode ELFProcess::getAuxiliaryVector(std::string &auxv) {
   ErrorCode error = updateAuxiliaryVector();
   if (error == kSuccess || error == kErrorAlreadyExist) {

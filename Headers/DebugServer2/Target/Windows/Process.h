@@ -17,6 +17,7 @@
 namespace ds2 {
 namespace Target {
 namespace Windows {
+
 class Process : public Target::ProcessBase {
 protected:
   Process();
@@ -26,9 +27,6 @@ public:
 
 public:
   virtual ErrorCode initialize(ProcessId pid, uint32_t flags);
-
-public:
-  virtual ErrorCode getInfo(ProcessInfo &info) { return kErrorUnsupported; }
 
 public:
   virtual ErrorCode attach(bool reattach = false) { return kErrorUnsupported; }
@@ -64,7 +62,7 @@ public:
   }
 
 public:
-  virtual ErrorCode updateInfo() { return kErrorUnsupported; }
+  virtual ErrorCode updateInfo();
 
 public:
   virtual BreakpointManager *breakpointManager() const { return nullptr; }

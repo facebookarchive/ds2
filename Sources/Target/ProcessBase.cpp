@@ -31,6 +31,16 @@ ProcessBase::~ProcessBase() {
   _currentThread = nullptr;
 }
 
+ErrorCode ProcessBase::getInfo(ProcessInfo &info) {
+  ErrorCode error = updateInfo();
+  if (error == kSuccess || error == kErrorAlreadyExist) {
+    info = _info;
+    error = kSuccess;
+  }
+  return error;
+}
+
+
 //
 // This is a utility function for detach.
 //

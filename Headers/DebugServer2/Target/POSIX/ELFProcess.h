@@ -24,9 +24,6 @@ protected:
   Address _sharedLibraryInfoAddress;
 
 public:
-  virtual ErrorCode getInfo(ProcessInfo &info);
-
-public:
   virtual ErrorCode getAuxiliaryVector(std::string &auxv);
   virtual uint64_t getAuxiliaryVectorValue(uint64_t type);
 
