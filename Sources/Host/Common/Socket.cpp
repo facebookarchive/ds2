@@ -14,12 +14,10 @@
 #endif
 
 #if defined(_WIN32)
-#define sock_errno WSAGetLastError()
-#if !defined(__MINGW32__)
-#define EAGAIN WSAEWOULDBLOCK
-#endif
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#define SOCK_ERRNO WSAGetLastError()
+#define SOCK_WOULDBLOCK WSAEWOULDBLOCK
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -29,7 +27,8 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <poll.h>
-#define sock_errno errno
+#define SOCK_ERRNO errno
+#define SOCK_WOULDBLOCK EAGAIN
 #endif
 
 #include <cstring>
@@ -51,7 +50,7 @@ bool Socket::create() {
 
   _handle = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (_handle < 0) {
-    _lastError = sock_errno;
+    _lastError = SOCK_ERRNO;
   }
 
 #if !defined(_WIN32)
@@ -100,12 +99,12 @@ bool Socket::listen(char const *address, uint16_t port) {
 
   if (::bind(_handle, reinterpret_cast<struct sockaddr *>(&sin), sizeof(sin)) <
       0) {
-    _lastError = sock_errno;
+    _lastError = SOCK_ERRNO;
     return false;
   }
 
   if (::listen(_handle, 1) < 0) {
-    _lastError = sock_errno;
+    _lastError = SOCK_ERRNO;
     return false;
   }
 
@@ -124,7 +123,7 @@ Socket *Socket::accept() {
   handle =
       ::accept(_handle, reinterpret_cast<struct sockaddr *>(&sin), &sinlen);
   if (handle == INVALID_SOCKET) {
-    _lastError = sock_errno;
+    _lastError = SOCK_ERRNO;
     return nullptr;
   }
 
@@ -145,13 +144,13 @@ bool Socket::setNonBlocking() {
 #if defined(_WIN32)
   u_long set = 1;
   if (::ioctlsocket(_handle, FIONBIO, &set) == SOCKET_ERROR) {
-    _lastError = sock_errno;
+    _lastError = SOCK_ERRNO;
     return false;
   }
 #else
   int flags = ::fcntl(_handle, F_GETFL, 0) | O_NONBLOCK;
   if (::fcntl(_handle, F_SETFL, flags) < 0) {
-    _lastError = sock_errno;
+    _lastError = SOCK_ERRNO;
     return false;
   }
 #endif
@@ -165,8 +164,8 @@ ssize_t Socket::send(void const *buffer, size_t length) {
   ssize_t nsent =
       ::send(_handle, reinterpret_cast<const char *>(buffer), length, 0);
   if (nsent < 0) {
-    int err = sock_errno;
-    if (err != EAGAIN) {
+    int err = SOCK_ERRNO;
+    if (err != SOCK_WOULDBLOCK) {
       close();
       _lastError = err;
     }
@@ -184,8 +183,8 @@ ssize_t Socket::receive(void *buffer, size_t length) {
 
   ssize_t nrecvd = ::recv(_handle, reinterpret_cast<char *>(buffer), length, 0);
   if (nrecvd <= 0) {
-    int err = sock_errno;
-    if (err != EAGAIN) {
+    int err = SOCK_ERRNO;
+    if (err != SOCK_WOULDBLOCK) {
       close();
       _lastError = err;
     }
