@@ -348,7 +348,7 @@ void PrintBranchInfo(BranchInfo const &info, uint32_t pc) {
   printf("\tReg2:%d [%s%s]\n", info.reg2,
          info.reg2 < 0 ? "" : (info.subt ? "-" : "+"),
          info.reg2 < 0 ? "<NONE>" : RegNames[info.reg2]);
-  printf("\tAlign:%zu\n", info.align);
+  printf("\tAlign:%u\n", (unsigned)info.align);
   printf("\tDisp:%d [%#x]\n", info.disp,
          (pc + info.disp + info.align - 1) & -info.align);
 }

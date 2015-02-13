@@ -547,7 +547,7 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
 
 int ByteCodeInterpreter::printf(size_t nargs, std::string const &format) {
   // TODO complete me!
-  std::printf("nargs=%zu format='%s'\n", nargs, format.c_str());
+  std::printf("nargs=%u format='%s'\n", (unsigned)nargs, format.c_str());
   while (nargs-- != 0) {
     if (!pop())
       return kErrorStackUnderflow;
