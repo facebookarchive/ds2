@@ -934,7 +934,7 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
            val.second.c_str());
 
   _spawner.setExecutable(args[0]);
-  _spawner.setArguments(StringCollection(&args[1], &args[args.size()]));
+  _spawner.setArguments(StringCollection(args.begin() + 1, args.end()));
   _spawner.setEnvironment(env);
 
   auto outputDelegate = [this](void *buf, size_t size) {
