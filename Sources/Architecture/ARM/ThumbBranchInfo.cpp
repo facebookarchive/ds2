@@ -384,7 +384,8 @@ public:
       for (uint16_t regs = insn[1]; regs != 0; regs >>= 1) {
         info.disp += (regs & 1);
       }
-      info.disp <<= 2;
+      // PC should be stored at address (reg1 + (bit_count - 1) * 4)
+      info.disp = (info.disp - 1) * 4;
       return true;
     }
     return false;
