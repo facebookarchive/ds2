@@ -16,6 +16,7 @@
 #endif
 
 #include <functional>
+#include <string>
 
 namespace ds2 {
 namespace Host {
@@ -70,6 +71,10 @@ public:
 public:
   static const char *GetSelfExecutablePath();
   static bool GetCurrentEnvironment(EnvironmentBlock &env);
+
+public:
+  static std::wstring NarrowToWideString(std::string const &s);
+  static std::string WideToNarrowString(std::wstring const &s);
 };
 }
 }

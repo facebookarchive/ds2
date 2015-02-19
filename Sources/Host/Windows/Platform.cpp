@@ -27,6 +27,7 @@
 #if !defined(NOMINMAX)
 #define NOMINMAX
 #endif
+#include <stringapiset.h>
 #include <windows.h>
 #include <winsock2.h>
 
@@ -120,8 +121,8 @@ char const *Platform::GetOSVersion() {
     version = ::GetVersion();
 
     ::ds2_snprintf(versionStr, sizeof(versionStr), "%d.%d",
-               (DWORD)(LOBYTE(LOWORD(version))),
-               (DWORD)(HIBYTE(LOWORD(version))));
+                   (DWORD)(LOBYTE(LOWORD(version))),
+                   (DWORD)(HIBYTE(LOWORD(version))));
   }
 
   return versionStr;
@@ -136,7 +137,8 @@ char const *Platform::GetOSBuild() {
     version = ::GetVersion();
 
     if (version < 0x80000000) {
-      ::ds2_snprintf(buildStr, sizeof(buildStr), "%d", (DWORD)(HIWORD(version)));
+      ::ds2_snprintf(buildStr, sizeof(buildStr), "%d",
+                     (DWORD)(HIWORD(version)));
     }
   }
 
@@ -144,38 +146,37 @@ char const *Platform::GetOSBuild() {
 }
 
 char const *Platform::GetOSKernelPath() {
-  static char kernelPath[MAX_PATH] = {'\0'};
+  static std::string kernelPath;
 
-  if (kernelPath[0] == '\0') {
+  if (kernelPath.size() == 0) {
+    WCHAR wideKernelPath[MAX_PATH];
     UINT rc;
 
-    rc = ::GetWindowsDirectoryA(kernelPath, sizeof(kernelPath));
-    if (rc == 0 || rc >= sizeof(kernelPath)) {
-      kernelPath[0] = '\0';
-      return nullptr;
-    }
+    rc = ::GetWindowsDirectoryW(wideKernelPath, sizeof(wideKernelPath));
+    if (rc == 0 || rc >= sizeof(wideKernelPath))
+      goto error;
 
-    ::strncpy_s(kernelPath + rc, sizeof(kernelPath) - rc,
-                "\\System32\\ntoskrnl.exe", _TRUNCATE);
-    kernelPath[sizeof(kernelPath) - 1] = '\0';
+    kernelPath = WideToNarrowString(wideKernelPath);
+    kernelPath.append("\\System32\\ntoskrnl.exe");
   }
 
-  return kernelPath;
+error:
+  return kernelPath.c_str();
 }
 
 bool Platform::GetUserName(UserId const &uid, std::string &name) {
-  char nameStr[UNLEN];
-  char domainStr[UNLEN]; // unused
+  WCHAR nameStr[UNLEN];
+  WCHAR domainStr[UNLEN]; // unused
   DWORD size = UNLEN;
   SID_NAME_USE nameUse; // unused
   int rc;
 
-  rc = ::LookupAccountSidA(nullptr, uid, nameStr, &size, domainStr, &size,
+  rc = ::LookupAccountSidW(nullptr, uid, nameStr, &size, domainStr, &size,
                            &nameUse);
   if (rc == 0)
     return false;
 
-  name = nameStr;
+  name = WideToNarrowString(nameStr);
   return true;
 }
 
@@ -192,7 +193,7 @@ bool Platform::CloseFile(int fd) { return false; }
 bool Platform::IsFilePresent(std::string const &path) {
   // BOOL and bool are not the same type on windows. Specify `== TRUE` to
   // silence a warning.
-  return ::PathFileExistsA(path.c_str()) == TRUE;
+  return ::PathFileExistsW(NarrowToWideString(path).c_str()) == TRUE;
 }
 
 char const *Platform::GetWorkingDirectory() { return nullptr; }
@@ -218,19 +219,19 @@ bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
   {
     HMODULE firstModuleHandle;
     DWORD bytesNeeded;
-    char processName[MAX_PATH];
+    WCHAR processName[MAX_PATH];
 
     rc = EnumProcessModules(processHandle, &firstModuleHandle,
                             sizeof(firstModuleHandle), &bytesNeeded);
     if (!rc)
       goto error;
 
-    rc = GetModuleBaseNameA(processHandle, firstModuleHandle, processName,
+    rc = GetModuleBaseNameW(processHandle, firstModuleHandle, processName,
                             sizeof(processName));
     if (!rc)
       goto error;
 
-    info.name = processName;
+    info.name = WideToNarrowString(processName);
   }
 
   // Get process user ID.
@@ -315,40 +316,71 @@ std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
 }
 
 const char *Platform::GetSelfExecutablePath() {
-  static char filenameStr[MAX_PATH] = {'\0'};
+  static std::string filename;
 
-  if (filenameStr[0] == '\0') {
+  if (filename.size() == 0) {
+    WCHAR filenameStr[MAX_PATH];
     DWORD rc;
 
-    rc = ::GetModuleFileNameA(nullptr, filenameStr, sizeof(filenameStr));
-    if (rc == 0 || rc >= sizeof(filenameStr)) {
-      filenameStr[0] = '\0';
-      return nullptr;
-    }
+    rc = ::GetModuleFileNameW(nullptr, filenameStr, sizeof(filenameStr));
+    if (rc == 0 || rc >= sizeof(filenameStr))
+      goto error;
+
+    filename = WideToNarrowString(filenameStr);
   }
 
-  return filenameStr;
+error:
+  return filename.c_str();
 }
 
 bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
-  char *envStrings = GetEnvironmentStringsA();
-  char *oldEnvStrings = envStrings;
+  WCHAR *envStrings = GetEnvironmentStringsW();
+  WCHAR *oldEnvStrings = envStrings;
   if (envStrings == nullptr)
     return false;
 
-  while (*envStrings != '\0') {
-    char *equal = strchr(envStrings, '=');
-    DS2ASSERT(equal != nullptr);
+  while (*envStrings) {
+    std::string envStr;
+    envStr = WideToNarrowString(envStrings);
+
+    size_t equal = envStr.find('=');
+    DS2ASSERT(equal != std::string::npos);
+
     // Some environment values can start with '=' for MS-DOS compatibility.
     // Ignore these values.
-    if (equal != envStrings)
-      env[std::string(envStrings, equal)] = equal + 1;
-    envStrings += strlen(envStrings) + 1;
+    if (equal != 0)
+      env[envStr.substr(0, equal)] = envStr.substr(equal + 1);
+
+    envStrings += wcslen(envStrings) + 1;
   }
 
-  FreeEnvironmentStringsA(oldEnvStrings);
+  FreeEnvironmentStringsW(oldEnvStrings);
 
   return true;
+}
+
+std::wstring Platform::NarrowToWideString(std::string const &s) {
+  std::vector<wchar_t> res;
+  int size;
+
+  size = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, nullptr, 0);
+  DS2ASSERT(size != 0);
+  res.resize(size);
+  MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, res.data(), size);
+  return res.data();
+}
+
+std::string Platform::WideToNarrowString(std::wstring const &s) {
+  std::vector<char> res;
+  int size;
+
+  size = WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, nullptr, 0, nullptr,
+                             nullptr);
+  DS2ASSERT(size != 0);
+  res.resize(size);
+  WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, res.data(), size, nullptr,
+                      nullptr);
+  return res.data();
 }
 }
 }

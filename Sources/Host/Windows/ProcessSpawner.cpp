@@ -11,9 +11,12 @@
 #define __DS2_LOG_CLASS_NAME__ "ProcessSpawner"
 
 #include "DebugServer2/Host/ProcessSpawner.h"
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Log.h"
 
 #include <windows.h>
+
+using ds2::Host::Windows::Platform;
 
 namespace ds2 {
 namespace Host {
@@ -55,45 +58,53 @@ bool ProcessSpawner::setWorkingDirectory(std::string const &path) {
 }
 
 ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
-  std::vector<char> commandLine;
-  std::vector<char> environment;
-  STARTUPINFO si;
+  std::vector<WCHAR> commandLine;
+  std::vector<WCHAR> environment;
+  STARTUPINFOW si;
   PROCESS_INFORMATION pi;
 
-  commandLine.push_back('"');
-  commandLine.insert(commandLine.end(), _executablePath.begin(),
-                     _executablePath.end());
-  commandLine.push_back('"');
+  commandLine.push_back(L'"');
+  std::wstring wideExecutablePath =
+      Platform::NarrowToWideString(_executablePath);
+  commandLine.insert(commandLine.end(), wideExecutablePath.begin(),
+                     wideExecutablePath.end());
+  commandLine.push_back(L'"');
   for (auto const &arg : _arguments) {
-    commandLine.push_back(' ');
-    commandLine.push_back('"');
-    for (auto const &ch : arg) {
-      if (ch == '"')
-        commandLine.push_back('\\');
+    commandLine.push_back(L' ');
+    commandLine.push_back(L'"');
+    std::wstring wideArg = Platform::NarrowToWideString(arg);
+    for (auto const &ch : wideArg) {
+      if (ch == L'"')
+        commandLine.push_back(L'\\');
       commandLine.push_back(ch);
     }
-    commandLine.push_back('"');
+    commandLine.push_back(L'"');
   }
-  commandLine.push_back('\0');
+  commandLine.push_back(L'\0');
 
   for (auto const &env : _environment) {
-    environment.insert(environment.end(), env.first.begin(), env.first.end());
-    environment.push_back('=');
-    environment.insert(environment.end(), env.second.begin(), env.second.end());
-    environment.push_back('\0');
+    std::wstring wideKey = Platform::NarrowToWideString(env.first);
+    std::wstring wideValue = Platform::NarrowToWideString(env.second);
+    environment.insert(environment.end(), wideKey.begin(), wideKey.end());
+    environment.push_back(L'=');
+    environment.insert(environment.end(), wideValue.begin(), wideValue.end());
+    environment.push_back(L'\0');
   }
-  environment.push_back('\0');
+  environment.push_back(L'\0');
 
   memset(&si, 0, sizeof si);
   si.cb = sizeof si;
 
   // Note(sas): Not sure if we want DEBUG_ONLY_THIS_PROCESS here. Will need to
   // check back later.
-  BOOL result = CreateProcess(
+  std::wstring wideWorkingDirectory =
+      Platform::NarrowToWideString(_workingDirectory);
+  BOOL result = CreateProcessW(
       nullptr, commandLine.data(), nullptr, nullptr, false,
-      DEBUG_PROCESS | DEBUG_ONLY_THIS_PROCESS, environment.data(),
-      _workingDirectory.empty() ? nullptr : _workingDirectory.c_str(), &si,
-      &pi);
+      DEBUG_PROCESS | DEBUG_ONLY_THIS_PROCESS | CREATE_UNICODE_ENVIRONMENT,
+      environment.data(),
+      wideWorkingDirectory.empty() ? nullptr : wideWorkingDirectory.c_str(),
+      &si, &pi);
 
   _processHandle = pi.hProcess;
   _pid = pi.dwProcessId;
