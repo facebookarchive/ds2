@@ -49,7 +49,7 @@ bool Socket::create() {
     return false;
 
   _handle = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  if (_handle < 0) {
+  if (_handle == INVALID_SOCKET) {
     _lastError = SOCK_ERRNO;
   }
 

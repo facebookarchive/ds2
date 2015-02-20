@@ -59,9 +59,21 @@ struct ProcessThreadId {
   ProcessThreadId(ProcessId _pid = kAnyProcessId, ThreadId _tid = kAnyThreadId)
       : pid(_pid), tid(_tid) {}
 
-  inline bool valid() const { return (pid > 0 || tid > 0); }
+  inline bool validPid() const {
+    return pid != kAllProcessId && pid != kAnyProcessId;
+  }
 
-  inline bool any() const { return (pid <= 0 && tid <= 0); }
+  inline bool validTid() const {
+    return tid != kAllThreadId && pid != kAnyThreadId;
+  }
+
+  inline bool valid() const {
+    return validPid() || validTid();
+  }
+
+  inline bool any() const {
+    return !validPid() && !validTid();
+  }
 
   inline void clear() {
     pid = kAnyProcessId;
