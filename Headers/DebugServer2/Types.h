@@ -56,10 +56,8 @@ struct ProcessThreadId {
   ProcessId pid;
   ThreadId tid;
 
-  ProcessThreadId(ProcessId pid = kAnyProcessId, ThreadId tid = kAnyThreadId) {
-    ProcessThreadId::pid = pid;
-    ProcessThreadId::tid = tid;
-  }
+  ProcessThreadId(ProcessId _pid = kAnyProcessId, ThreadId _tid = kAnyThreadId)
+      : pid(_pid), tid(_tid) {}
 
   inline bool valid() const { return (pid > 0 || tid > 0); }
 
