@@ -202,6 +202,8 @@ static void ListProcesses() {
 
   Platform::EnumerateProcesses(true, ds2::UserId(),
                                [&](ds2::ProcessInfo const &info) {
+    std::string pid = std::to_string(info.pid);
+
     std::string user;
     if (!Platform::GetUserName(info.realUid, user)) {
 #if defined(_WIN32)
@@ -222,7 +224,7 @@ static void ListProcesses() {
       path = path.substr(lastsep + 1);
     }
 
-    printf("%-6u %-10.10s %-7.7s %s\n", info.pid, user.c_str(),
+    printf("%-6s %-10.10s %-7.7s %s\n", pid.c_str(), user.c_str(),
            ds2::GetArchName(info.cpuType, info.cpuSubType), path.c_str());
   });
 
