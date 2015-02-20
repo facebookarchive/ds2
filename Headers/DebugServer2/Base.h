@@ -12,7 +12,8 @@
 #define __DebugServer2_Base_h
 
 #if defined(_WIN32)
-#include <windows.h>
+#include <winsock2.h>
+#include <windef.h>
 #if !defined(__MINGW32__)
 typedef SSIZE_T ssize_t;
 #endif
