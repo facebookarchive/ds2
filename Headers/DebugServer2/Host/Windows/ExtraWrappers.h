@@ -20,7 +20,8 @@
 // semantics as the linux one, which means we have to provide wrappers for
 // both.
 
-static inline int ds2_vsnprintf(char *str, size_t size, char const *format, va_list ap) {
+static inline int ds2_vsnprintf(char *str, size_t size, char const *format,
+                                va_list ap) {
   int res;
   res = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
   if (res == -1)
@@ -28,7 +29,8 @@ static inline int ds2_vsnprintf(char *str, size_t size, char const *format, va_l
   return res;
 }
 
-static inline int ds2_snprintf(char *str, size_t size, char const *format, ...) {
+static inline int ds2_snprintf(char *str, size_t size, char const *format,
+                               ...) {
   int res;
   va_list ap;
   va_start(ap, format);

@@ -80,7 +80,7 @@ char const *Platform::GetOSBuild() {
     // Linux version is returned as #BUILDNO ...
     //
     ds2_snprintf(sBuild, sizeof(sBuild), "%lu",
-             std::strtoul(version + 1, nullptr, 10));
+                 std::strtoul(version + 1, nullptr, 10));
   }
   return sBuild;
 }

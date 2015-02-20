@@ -55,7 +55,8 @@ void vLog(int category, int level, char const *classname, char const *funcname,
     va_list ap_copy;
     va_copy(ap_copy, ap);
     buffer.resize(required_bytes + 1);
-    required_bytes = ds2_vsnprintf(buffer.data(), buffer.size(), format, ap_copy);
+    required_bytes =
+        ds2_vsnprintf(buffer.data(), buffer.size(), format, ap_copy);
     va_end(ap_copy);
   } while (required_bytes >= buffer.size());
 
