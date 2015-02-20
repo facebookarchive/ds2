@@ -16,18 +16,10 @@
 
 #include <lmcons.h>
 #include <psapi.h>
-// When building this with clang, building in C++ mode will require the
-// declaration of IUnknown (which is a builtin type on MSVC).  Use the C
-// interfaces, as we only need the Path APIs.
-#define CINTERFACE
 #include <shlwapi.h>
 #include <stdio.h>
-#include <vector>
-#define WIN32_LEAN_AND_MEAN
-#if !defined(NOMINMAX)
-#define NOMINMAX
-#endif
 #include <stringapiset.h>
+#include <vector>
 #include <windows.h>
 #include <winsock2.h>
 

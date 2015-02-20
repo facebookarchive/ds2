@@ -19,14 +19,14 @@
 #define SOCK_ERRNO WSAGetLastError()
 #define SOCK_WOULDBLOCK WSAEWOULDBLOCK
 #else
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <poll.h>
+#include <sys/socket.h>
+#include <unistd.h>
 #define SOCK_ERRNO errno
 #define SOCK_WOULDBLOCK EAGAIN
 #endif

@@ -11,9 +11,7 @@
 #ifndef __DebugServer2_Base_h
 #define __DebugServer2_Base_h
 
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
+#if defined(_WIN32)
 #include <windows.h>
 #if !defined(__MINGW32__)
 typedef SSIZE_T ssize_t;
