@@ -18,11 +18,6 @@
 #include "DebugServer2/Host/Socket.h"
 #include "DebugServer2/Log.h"
 #include "DebugServer2/OptParse.h"
-#if defined(__linux__)
-#include "DebugServer2/Host/Linux/ExtraWrappers.h"
-#elif defined(_WIN32)
-#include "DebugServer2/Host/Windows/ExtraWrappers.h"
-#endif
 
 #include "SessionThread.h"
 
@@ -209,13 +204,11 @@ static void ListProcesses() {
                                [&](ds2::ProcessInfo const &info) {
     std::string user;
     if (!Platform::GetUserName(info.realUid, user)) {
-      char buf[128];
 #if defined(_WIN32)
-      ds2_snprintf(buf, sizeof(buf), "<NONE>");
+      user = "<NONE>";
 #else
-      ds2_snprintf(buf, sizeof(buf), "%u", info.realUid);
+      user = std::to_string(info.realUid);
 #endif
-      user = buf;
     }
 
     std::string path = info.name;
