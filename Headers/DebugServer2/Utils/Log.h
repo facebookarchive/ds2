@@ -8,11 +8,11 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Log_h
-#define __DebugServer2_Log_h
+#ifndef __DebugServer2_Utils_Log_h
+#define __DebugServer2_Utils_Log_h
 
 #include "DebugServer2/Base.h"
-#include "DebugServer2/CompilerSupport.h"
+#include "DebugServer2/Utils/CompilerSupport.h"
 
 #include <cstdarg>
 #include <cstdint>
@@ -80,4 +80,4 @@ void Log(int category, int level, char const *classname, char const *funcname,
 #endif
 }
 
-#endif // !__DebugServer2_Log_h
+#endif // !__DebugServer2_Utils_Log_h

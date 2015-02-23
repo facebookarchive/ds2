@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Log.h"
-#include "DebugServer2/OptParse.h"
+#include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/OptParse.h"
 
 #include <algorithm>
 #include <cstdlib>

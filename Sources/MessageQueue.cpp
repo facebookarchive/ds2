@@ -8,7 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 #include <DebugServer2/MessageQueue.h>
 
 #include <chrono>

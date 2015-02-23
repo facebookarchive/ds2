@@ -8,11 +8,11 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/GDBRemote/Types.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
-#include "DebugServer2/HexValues.h"
-#include "DebugServer2/Log.h"
-#include "DebugServer2/SwapEndian.h"
+#include "DebugServer2/GDBRemote/Types.h"
+#include "DebugServer2/Utils/HexValues.h"
+#include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/SwapEndian.h"
 
 #include <cstdlib>
 #include <cstring>

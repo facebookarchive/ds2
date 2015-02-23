@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_SwapEndian_h
-#define __DebugServer2_SwapEndian_h
+#ifndef __DebugServer2_Utils_SwapEndian_h
+#define __DebugServer2_Utils_SwapEndian_h
 
 namespace ds2 {
 
@@ -25,4 +25,4 @@ static inline uint64_t Swap64(uint64_t x) {
 }
 }
 
-#endif // !__DebugServer2_SwapEndian_h
+#endif // !__DebugServer2_Utils_SwapEndian_h

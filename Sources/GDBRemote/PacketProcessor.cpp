@@ -10,7 +10,7 @@
 
 #include "DebugServer2/GDBRemote/PacketProcessor.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <cstdlib>
 

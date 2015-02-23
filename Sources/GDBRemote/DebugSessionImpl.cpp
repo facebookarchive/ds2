@@ -13,9 +13,9 @@
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/GDBRemote/DebugSessionImpl.h"
 #include "DebugServer2/GDBRemote/Session.h"
-#include "DebugServer2/HexValues.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/HexValues.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <sstream>
 #include <iomanip>

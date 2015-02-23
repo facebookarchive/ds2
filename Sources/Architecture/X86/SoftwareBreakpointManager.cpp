@@ -13,7 +13,7 @@
 #include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <cstdlib>
 

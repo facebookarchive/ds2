@@ -14,7 +14,7 @@
 #include "DebugServer2/Target/Linux/Thread.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
 #include <cstdio>

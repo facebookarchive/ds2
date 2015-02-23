@@ -14,7 +14,7 @@
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
 #include "DebugServer2/BreakpointManager.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 using ds2::Target::Linux::Process;
 

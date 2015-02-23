@@ -8,18 +8,18 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_HexValues_h
-#define __DebugServer2_HexValues_h
+#ifndef __DebugServer2_Utils_HexValues_h
+#define __DebugServer2_Utils_HexValues_h
 
-#include "DebugServer2/CompilerSupport.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/CompilerSupport.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 
-namespace {
+namespace ds2 {
 
 static inline char NibbleToHex(uint8_t byte) {
   return "0123456789abcdef"[byte & 0xf];
@@ -59,4 +59,4 @@ static inline std::string HexToString(std::string const &str) {
 }
 }
 
-#endif // !__DebugServer2_HexValues_h
+#endif // !__DebugServer2_Utils_HexValues_h

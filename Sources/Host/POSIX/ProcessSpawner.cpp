@@ -14,7 +14,7 @@
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #endif
 #include "DebugServer2/Host/ProcessSpawner.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <cstring>
 #include <errno.h>

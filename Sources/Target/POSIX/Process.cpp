@@ -14,7 +14,7 @@
 #include "DebugServer2/Target/POSIX/Process.h"
 #include "DebugServer2/Host/POSIX/PTrace.h"
 #include "DebugServer2/BreakpointManager.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <sys/wait.h>
 #include <unistd.h>

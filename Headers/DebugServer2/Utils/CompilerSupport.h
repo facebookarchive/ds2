@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_CompilerSupport_h
-#define __DebugServer2_CompilerSupport_h
+#ifndef __DebugServer2_Utils_CompilerSupport_h
+#define __DebugServer2_Utils_CompilerSupport_h
 
 #if !defined(__has_attribute)
 #define __has_attribute(ATTR) 0
@@ -39,4 +39,4 @@
 #define DS2_UNREACHABLE() abort()
 #endif
 
-#endif // !__DebugServer2_CompilerSupport_h
+#endif // !__DebugServer2_Utils_CompilerSupport_h

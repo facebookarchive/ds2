@@ -8,7 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Host/Platform.h"
 #if defined(__linux__)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"

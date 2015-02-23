@@ -14,7 +14,7 @@
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <cstring>
 #include <sstream>

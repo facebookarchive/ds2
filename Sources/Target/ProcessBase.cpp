@@ -12,7 +12,7 @@
 
 #include "DebugServer2/Architecture/CPUState.h"
 #include "DebugServer2/BreakpointManager.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Target/ProcessBase.h"
 #include "DebugServer2/Target/Thread.h"
 

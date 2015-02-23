@@ -9,7 +9,7 @@
 //
 
 #include "DebugServer2/BreakpointManager.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 namespace ds2 {
 

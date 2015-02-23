@@ -12,7 +12,7 @@
 
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <windows.h>
 

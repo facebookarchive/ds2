@@ -125,9 +125,9 @@ set(SUPPORT_COMMON_SOURCES
     Sources/BreakpointManager.cpp
     Sources/CPUTypes.cpp
     Sources/ErrorCodes.cpp
-    Sources/Log.cpp
-    Sources/OptParse.cpp
     Sources/MessageQueue.cpp
+    Sources/Utils/Log.cpp
+    Sources/Utils/OptParse.cpp
     )
 
 set(SUPPORT_POSIX_SOURCES

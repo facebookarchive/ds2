@@ -9,7 +9,7 @@
 //
 
 #include "DebugServer2/Architecture/RegisterLayout.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <cstring>
 #include <cstdlib>

@@ -12,7 +12,7 @@
 
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Windows/Process.h"
-#include "DebugServer2/Log.h"
+#include "DebugServer2/Utils/Log.h"
 
 using ds2::Host::ProcessSpawner;
 

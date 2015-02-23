@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_OptParse_h
-#define __DebugServer2_OptParse_h
+#ifndef __DebugServer2_Utils_OptParse_h
+#define __DebugServer2_Utils_OptParse_h
 
 #include <map>
 #include <string>
@@ -62,4 +62,4 @@ private:
 };
 }
 
-#endif // !__DebugServer2_OptParse_h
+#endif // !__DebugServer2_Utils_OptParse_h
