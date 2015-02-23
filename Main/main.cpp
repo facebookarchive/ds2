@@ -18,6 +18,7 @@
 #include "DebugServer2/Host/Socket.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/OptParse.h"
+#include "DebugServer2/Utils/String.h"
 
 #include "SessionThread.h"
 
@@ -26,7 +27,7 @@
 #include <fcntl.h>
 #include <iomanip>
 #include <set>
-#include <sstream>
+#include <string>
 #if !defined(_WIN32)
 #include <sys/stat.h>
 #include <unistd.h>
@@ -202,14 +203,14 @@ static void ListProcesses() {
 
   Platform::EnumerateProcesses(true, ds2::UserId(),
                                [&](ds2::ProcessInfo const &info) {
-    std::string pid = std::to_string(info.pid);
+    std::string pid = ds2::ToString(info.pid);
 
     std::string user;
     if (!Platform::GetUserName(info.realUid, user)) {
-#if defined(_WIN32)
-      user = "<NONE>";
+#if !defined(_WIN32)
+      user = ds2::ToString(info.realUid);
 #else
-      user = std::to_string(info.realUid);
+      user = "<NONE>";
 #endif
     }
 
