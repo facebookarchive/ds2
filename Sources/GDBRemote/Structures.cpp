@@ -456,8 +456,9 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
     if (mode == kCompatibilityModeLLDB) {
       ss << "triple:" << StringToHex(triple) << ';';
     } else {
-      // TODO(sas): This should probably use CPU{,Sub}Type instead of
-      // nativeCPU{,Sub}Type.
+      // CPU{,Sub}Type contains an `enum CPUType`, and nativeCPU{,Sub}Type
+      // contains the actual value that will be sent on the wire (e.g.: for ELF
+      // processes it would contain values from the ELF header).
       ss << "cputype:" << HEX0 << nativeCPUType << ';';
       if (nativeCPUSubType != 0) {
         ss << "cpusubtype:" << HEX0 << nativeCPUSubType << ';';
