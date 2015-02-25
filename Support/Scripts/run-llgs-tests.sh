@@ -17,41 +17,18 @@ LLVM_REPO="http://llvm.org/git/llvm.git"
 CLANG_REPO="http://llvm.org/git/clang.git"
 LLDB_REPO="http://llvm.org/git/lldb.git"
 
-set -eu
+source "$(dirname "$0")/common.sh"
 
-die() {
-    echo "error:" "$@" >&2
-    exit 1
-}
+[ "$(uname)" == "Linux" ] || die "The lldb-gdbserver test suite requires a Linux host environment."
+[ -x "./ds2" ]            || die "Unable to find a ds2 binary in the current directory."
 
-if [ "$(uname)" != "Linux" ]; then
-    die "The lldb-gdbserver test suite requires a Linux host environment."
-fi
-
-if [ ! -x "./ds2" ]; then
-    die "Unable to find a ds2 binary in the current directory."
-fi
-
-clone() {
-    if [ ! -e "$2" ]; then
-        git clone --depth 1 "$1" "$2"
-    elif [ -d "$2/.git" ]; then
-        cd "$2"
-        git reset --hard
-        git pull --rebase
-        cd "$OLDPWD"
-    else
-        die "'$2' exists and is not a git repository."
-    fi
-}
-
-clone "$LLVM_REPO" llvm
-clone "$CLANG_REPO" llvm/tools/clang
-clone "$LLDB_REPO" llvm/tools/lldb
+git_clone "$LLVM_REPO"  llvm
+git_clone "$CLANG_REPO" llvm/tools/clang
+git_clone "$LLDB_REPO"  llvm/tools/lldb
 
 for p in "Hacks-to-use-ds2-instead-of-llgs"; do
-    echo "Applying $p.patch"
-    patch -d "llvm/tools/lldb" -p1 <"$(dirname "$0")/$p.patch"
+  echo "Applying $p.patch"
+  patch -d "llvm/tools/lldb" -p1 <"$(dirname "$0")/../Testing/$p.patch"
 done
 
 rm -rf llvm/build

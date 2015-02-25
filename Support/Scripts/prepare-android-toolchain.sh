@@ -9,8 +9,7 @@
 ## PATENTS file in the same directory.
 ##
 
-set -eu
-die() { echo "error:" "$@" >&2; exit 1; }
+source "$(dirname "$0")/common.sh"
 
 [ $# -eq 1 ] || die "usage: $0 [ arm | x86 ]"
 
@@ -21,34 +20,40 @@ case "$(uname)" in
 esac
 
 case "$1" in
-  "arm")  toolchain_arch="arm"; toolchain_subarch="armeabi"; toolchain_triple="arm-linux-androideabi";;
-  "x86")  toolchain_arch="x86"; toolchain_subarch="x86"; toolchain_triple="x86_64-linux-android";;
+  "arm")  toolchain_arch="arm"; toolchain_subarch="armeabi";  toolchain_triple="arm-linux-androideabi";;
+  "x86")  toolchain_arch="x86"; toolchain_subarch="x86";      toolchain_triple="x86_64-linux-android";;
   *)      die "Unknown architecture '$1'.";;
 esac
 
+aosp_platform="android-21"
 toolchain_version="4.8"
 toolchain_path="/tmp/aosp-toolchain/${toolchain_triple}-${toolchain_version}"
-aosp_platform="android-21"
+aosp_ndk_path="/tmp/aosp-toolchain/aosp-ndk"
 
 aosp_prebuilt_clone() {
-  git clone --depth=1 "https://android.googlesource.com/platform/prebuilts/$1" "$2"
+  git_clone "https://android.googlesource.com/platform/prebuilts/$1" "$2"
 }
 
-[ -d "${toolchain_path}" ] && die "${toolchain_path} already exists."
-mkdir -p "$(dirname "${toolchain_path}")"
-aosp_prebuilt_clone "gcc/${host}/${toolchain_arch}/${toolchain_triple}-${toolchain_version}" "${toolchain_path}"
+clobber_dir() {
+  if [ -e "$2" ]; then
+    rm -rf "$2"
+  fi
 
-aosp_ndk_path="${toolchain_path}/aosp-ndk"
+  mkdir -p "$(dirname "$2")"
+  cp -R "$1" "$2"
+}
+
+mkdir -p "$(dirname "${toolchain_path}")"
+
+aosp_prebuilt_clone "gcc/${host}/${toolchain_arch}/${toolchain_triple}-${toolchain_version}" "${toolchain_path}"
 aosp_prebuilt_clone "ndk" "${aosp_ndk_path}"
 
 # Copy sysroot.
-cp -R "${aosp_ndk_path}/9/platforms/android-21/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
+clobber_dir "${aosp_ndk_path}/9/platforms/android-21/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
 
 # Copy C++ stuff
-mkdir -p "${toolchain_path}/include/c++"
-cp -R "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/include" "${toolchain_path}/include/c++/${toolchain_version}"
-mkdir -p "${toolchain_path}/include/c++/${toolchain_version}/${toolchain_triple}"
-cp -R "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/${toolchain_subarch}/libgnustl_static.a" "${toolchain_path}/${toolchain_triple}/lib/libstdc++.a"
-cp -R "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/${toolchain_subarch}/libgnustl_shared.so" "${toolchain_path}/${toolchain_triple}/lib/libgnustl_shared.so"
-cp -R "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/${toolchain_subarch}/libsupc++.a" "${toolchain_path}/${toolchain_triple}/lib/libsupc++.a"
-cp -R "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/${toolchain_subarch}/include/bits" "${toolchain_path}/include/c++/${toolchain_version}/${toolchain_triple}/bits"
+clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/include" "${toolchain_path}/include/c++/${toolchain_version}"
+clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/${toolchain_subarch}/libgnustl_static.a" "${toolchain_path}/${toolchain_triple}/lib/libstdc++.a"
+clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/${toolchain_subarch}/libgnustl_shared.so" "${toolchain_path}/${toolchain_triple}/lib/libgnustl_shared.so"
+clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/${toolchain_subarch}/libsupc++.a" "${toolchain_path}/${toolchain_triple}/lib/libsupc++.a"
+clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/${toolchain_subarch}/include/bits" "${toolchain_path}/include/c++/${toolchain_version}/${toolchain_triple}/bits"
