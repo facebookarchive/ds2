@@ -16,6 +16,8 @@
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <climits>
+#include <cstdlib>
 #include <cstring>
 #include <errno.h>
 #include <fcntl.h>
@@ -28,7 +30,7 @@ namespace ds2 {
 namespace Host {
 
 static bool open_terminal(int fds[2]) {
-  char const *slave;
+  char slave[PATH_MAX];
 
   fds[0] = ::posix_openpt(O_RDWR | O_NOCTTY);
   if (fds[0] == -1)
@@ -40,8 +42,7 @@ static bool open_terminal(int fds[2]) {
   if (::unlockpt(fds[0]) == -1)
     goto error_fd0;
 
-  slave = ::ptsname(fds[0]);
-  if (slave == nullptr)
+  if (::ptsname_r(fds[0], slave, sizeof(slave)) != 0)
     goto error_fd0;
 
   fds[1] = ::open(slave, O_RDWR);
