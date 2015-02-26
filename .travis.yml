@@ -7,6 +7,11 @@ env:
   - TARGET="Linux-X86_64"
   - TARGET="Linux-X86_64" LLGS_TESTS="1"
 
+matrix:
+  allow_failures:
+    - env: TARGET="Linux-X86_64" LLGS_TESTS="1"
+  fast_finish: true
+
 before_install:
   - [ "$TARGET" = "Linux-ARM" ]     && sudo add-apt-repository -y ppa:linaro-maintainers/toolchain
   - [ "$TARGET" = "Linux-X86" ]     && sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
