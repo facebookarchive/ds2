@@ -13,21 +13,21 @@ matrix:
   fast_finish: true
 
 before_install:
-  - [ "$TARGET" = "Linux-ARM" ]     && sudo add-apt-repository -y ppa:linaro-maintainers/toolchain
-  - [ "$TARGET" = "Linux-X86" ]     && sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - [ "$TARGET" = "Linux-X86_64" ]  && sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - [ "$LLGS_TESTS" = "1" ]         && sudo add-apt-repository -y ppa:andykimpe/cmake
+  - if [ "$TARGET" = "Linux-ARM" ];     then sudo add-apt-repository -y ppa:linaro-maintainers/toolchain; fi
+  - if [ "$TARGET" = "Linux-X86" ];     then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;      fi
+  - if [ "$TARGET" = "Linux-X86_64" ];  then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;      fi
+  - if [ "$LLGS_TESTS" = "1" ];         then sudo add-apt-repository -y ppa:andykimpe/cmake;              fi
   - sudo apt-get update
 
 install:
-  - [ "$TARGET" = "Android-ARM" ]   && ./Support/Scripts/prepare-android-toolchain.sh "arm"
-  - [ "$TARGET" = "Linux-ARM" ]     && sudo apt-get install -y g++-arm-linux-gnueabi
-  - [ "$TARGET" = "Linux-X86" ]     && sudo apt-get install -y g++-4.8-multilib
-  - [ "$TARGET" = "Linux-X86_64" ]  && sudo apt-get install -y g++-4.8
+  - if [ "$TARGET" = "Android-ARM" ];   then ./Support/Scripts/prepare-android-toolchain.sh "arm";        fi
+  - if [ "$TARGET" = "Linux-ARM" ];     then sudo apt-get install -y g++-arm-linux-gnueabi;               fi
+  - if [ "$TARGET" = "Linux-X86" ];     then sudo apt-get install -y g++-4.8-multilib;                    fi
+  - if [ "$TARGET" = "Linux-X86_64" ];  then sudo apt-get install -y g++-4.8;                             fi
   # Running LLGS tests requires a recent enough cmake (for the LLVM cmake
   # step), and an install of lldb (for the tests to be able to use the lldb
   # python library without us building it).
-  - [ "$LLGS_TESTS" = "1" ]         && sudo apt-get install -y cmake swig lldb-3.3
+  - if [ "$LLGS_TESTS" = "1" ];         then sudo apt-get install -y cmake swig lldb-3.3;                 fi
 
 before_script:
   - mkdir -p build && cd build
