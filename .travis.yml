@@ -30,4 +30,4 @@ before_script:
 script:
   - cmake -DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake" ..
   - make
-  - if [ "$LLGS_TESTS" = "1" ] && ../Support/Testing/run-llgs-tests.sh
+  - if [ "$LLGS_TESTS" = "1" ]; then ../Support/Testing/run-llgs-tests.sh; fi
