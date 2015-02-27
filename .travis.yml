@@ -8,8 +8,6 @@ env:
   - TARGET="Linux-X86_64" LLGS_TESTS="1"
 
 matrix:
-  allow_failures:
-    - env: TARGET="Linux-X86_64" LLGS_TESTS="1"
   fast_finish: true
 
 before_install:
