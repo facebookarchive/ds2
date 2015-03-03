@@ -2,6 +2,7 @@ language: cpp
 
 env:
   - TARGET="Android-ARM"
+  - TARGET="Android-X86_64"
   - TARGET="Linux-ARM"
   - TARGET="Linux-X86"
   - TARGET="Linux-X86_64"
@@ -18,10 +19,11 @@ before_install:
   - sudo apt-get update
 
 install:
-  - if [ "$TARGET" = "Android-ARM" ];   then ./Support/Scripts/prepare-android-toolchain.sh "arm";        fi
-  - if [ "$TARGET" = "Linux-ARM" ];     then sudo apt-get install -y g++-arm-linux-gnueabi;               fi
-  - if [ "$TARGET" = "Linux-X86" ];     then sudo apt-get install -y g++-4.8-multilib;                    fi
-  - if [ "$TARGET" = "Linux-X86_64" ];  then sudo apt-get install -y g++-4.8;                             fi
+  - if [ "$TARGET" = "Android-ARM" ];     then ./Support/Scripts/prepare-android-toolchain.sh "arm";      fi
+  - if [ "$TARGET" = "Android-X86_64" ];  then ./Support/Scripts/prepare-android-toolchain.sh "x86_64";   fi
+  - if [ "$TARGET" = "Linux-ARM" ];       then sudo apt-get install -y g++-arm-linux-gnueabi;             fi
+  - if [ "$TARGET" = "Linux-X86" ];       then sudo apt-get install -y g++-4.8-multilib;                  fi
+  - if [ "$TARGET" = "Linux-X86_64" ];    then sudo apt-get install -y g++-4.8;                           fi
   # Running LLGS tests requires an install of lldb (for the tests to be able to
   # use the lldb python library without us building it).
   - if [ "$LLGS_TESTS" = "1" ];         then sudo apt-get install -y swig lldb-3.3;                       fi
