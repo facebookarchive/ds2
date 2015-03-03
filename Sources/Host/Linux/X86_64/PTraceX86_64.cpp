@@ -11,12 +11,16 @@
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 
-#define super ds2::Host::POSIX::PTrace
-
 #include <sys/ptrace.h>
 #include <sys/uio.h>
 #include <sys/user.h>
 #include <elf.h>
+
+#define super ds2::Host::POSIX::PTrace
+
+#if defined(__ANDROID__)
+#define mxcr_mask mxcsr_mask
+#endif
 
 namespace ds2 {
 namespace Host {
