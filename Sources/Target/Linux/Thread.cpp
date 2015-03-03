@@ -223,7 +223,8 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
       if ((si.si_code == SI_USER || si.si_code == SI_TKILL) &&
           si.si_pid != tid()) {
         DS2LOG(Target, Warning,
-               "tid %d received a signal from an external source", tid());
+               "tid %d received a signal from an external source (sender=%d)",
+               tid(), si.si_pid);
       }
     }
   }
