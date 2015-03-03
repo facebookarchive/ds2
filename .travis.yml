@@ -2,6 +2,7 @@ language: cpp
 
 env:
   - TARGET="Android-ARM"
+  - TARGET="Android-X86"
   - TARGET="Android-X86_64"
   - TARGET="Linux-ARM"
   - TARGET="Linux-X86"
@@ -20,7 +21,8 @@ before_install:
 
 install:
   - if [ "$TARGET" = "Android-ARM" ];     then ./Support/Scripts/prepare-android-toolchain.sh "arm";      fi
-  - if [ "$TARGET" = "Android-X86_64" ];  then ./Support/Scripts/prepare-android-toolchain.sh "x86_64";   fi
+  - if [ "$TARGET" = "Android-X86" ];     then ./Support/Scripts/prepare-android-toolchain.sh "x86";      fi
+  - if [ "$TARGET" = "Android-X86_64" ];  then ./Support/Scripts/prepare-android-toolchain.sh "x86";      fi
   - if [ "$TARGET" = "Linux-ARM" ];       then sudo apt-get install -y g++-arm-linux-gnueabi;             fi
   - if [ "$TARGET" = "Linux-X86" ];       then sudo apt-get install -y g++-4.8-multilib;                  fi
   - if [ "$TARGET" = "Linux-X86_64" ];    then sudo apt-get install -y g++-4.8;                           fi
