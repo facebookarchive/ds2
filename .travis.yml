@@ -1,13 +1,20 @@
 language: cpp
 
 env:
-  - TARGET="Android-ARM"
-  - TARGET="Android-X86"
-  - TARGET="Android-X86_64"
-  - TARGET="Linux-ARM"
-  - TARGET="Linux-X86"
-  - TARGET="Linux-X86_64"
-  - TARGET="Linux-X86_64" LLGS_TESTS="1"
+  - BUILD_TYPE="Debug"    TARGET="Android-ARM"
+  - BUILD_TYPE="Debug"    TARGET="Android-X86"
+  - BUILD_TYPE="Debug"    TARGET="Android-X86_64"
+  - BUILD_TYPE="Debug"    TARGET="Linux-ARM"
+  - BUILD_TYPE="Debug"    TARGET="Linux-X86"
+  - BUILD_TYPE="Debug"    TARGET="Linux-X86_64"
+  - BUILD_TYPE="Debug"    TARGET="Linux-X86_64"   LLGS_TESTS="1"
+  - BUILD_TYPE="Release"  TARGET="Android-ARM"
+  - BUILD_TYPE="Release"  TARGET="Android-X86"
+  - BUILD_TYPE="Release"  TARGET="Android-X86_64"
+  - BUILD_TYPE="Release"  TARGET="Linux-ARM"
+  - BUILD_TYPE="Release"  TARGET="Linux-X86"
+  - BUILD_TYPE="Release"  TARGET="Linux-X86_64"
+  - BUILD_TYPE="Release"  TARGET="Linux-X86_64"   LLGS_TESTS="1"
 
 matrix:
   fast_finish: true
@@ -28,13 +35,13 @@ install:
   - if [ "$TARGET" = "Linux-X86_64" ];    then sudo apt-get install -y g++-4.8;                           fi
   # Running LLGS tests requires an install of lldb (for the tests to be able to
   # use the lldb python library without us building it).
-  - if [ "$LLGS_TESTS" = "1" ];         then sudo apt-get install -y swig lldb-3.3;                       fi
+  - if [ "$LLGS_TESTS" = "1" ];           then sudo apt-get install -y swig lldb-3.3;                     fi
   - sudo apt-get install -y cmake
 
 before_script:
   - mkdir -p build && cd build
 
 script:
-  - cmake -DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake" ..
+  - cmake -DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake" -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" ..
   - make
   - if [ "$LLGS_TESTS" = "1" ]; then ../Support/Scripts/run-llgs-tests.sh; fi
