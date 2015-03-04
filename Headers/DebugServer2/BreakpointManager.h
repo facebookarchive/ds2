@@ -17,10 +17,10 @@ namespace ds2 {
 
 class BreakpointManager {
 public:
-  enum Type {
-    kTypePermanent = 0,
-    kTypeTemporaryOneShot = (1 << 0),
-    kTypeTemporaryUntilHit = (1 << 1),
+  enum Type : unsigned int {
+    kTypePermanent = (1 << 0),
+    kTypeTemporaryOneShot = (1 << 1),
+    kTypeTemporaryUntilHit = (1 << 2),
   };
 
 public:

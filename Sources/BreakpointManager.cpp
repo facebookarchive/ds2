@@ -29,25 +29,15 @@ ErrorCode BreakpointManager::add(Address const &address, Type type,
 
   auto it = _sites.find(address);
   if (it != _sites.end()) {
-    //
-    // Upgrade only to Permanent from Temporary
-    // or from OneShot to UntilHit.
-    //
-    if ((type == kTypePermanent && type != it->second.type) ||
-        (type == kTypeTemporaryUntilHit &&
-         it->second.type == kTypeTemporaryOneShot)) {
-      it->second.type = type;
-    } else if (it->second.type == kTypePermanent) {
-      //
-      // Increment reference only if it's permanent and hasn't
-      // been newly promoted to it.
-      //
-      it->second.refs++;
-    }
+    it->second.type = static_cast<Type>(it->second.type | type);
+    if (type == kTypePermanent)
+      ++it->second.refs;
   } else {
     Site &site = _sites[address];
 
-    site.refs = 1;
+    site.refs = 0;
+    if (type == kTypePermanent)
+      ++site.refs;
     site.address = address;
     site.type = type;
     site.size = size;
@@ -71,17 +61,36 @@ ErrorCode BreakpointManager::remove(Address const &address) {
   if (it == _sites.end())
     return kErrorNotFound;
 
-  if (--it->second.refs == 0) {
-    //
-    // If the breakpoint manager is already in enabled state, disable
-    // the newly removed breakpoint too.
-    //
-    if (_enabled)
-      disableLocation(it->second);
+  // If we have some sort of temporary breakpoint, just remove it.
+  if (!(it->second.type & kTypePermanent))
+    goto do_remove;
 
-    _sites.erase(it);
-  }
+  // If we have a premanent breakpoint, refs should be non-null. If refs is
+  // still non-null after the decrement, do not remove the breakpoint and
+  // return.
+  DS2ASSERT(it->second.refs > 0);
+  if (--it->second.refs > 0)
+    return kSuccess;
 
+  // If we had a breakpoint that was *only* of type kTypePermanent and refs is
+  // now 0, we need to remove it.
+  if (it->second.type == kTypePermanent)
+    goto do_remove;
+
+  // Otherwise, we had multiple breakpoint types; unset kTypePermanent and
+  // return.
+  it->second.type = static_cast<Type>(it->second.type & ~kTypePermanent);
+  return kSuccess;
+
+do_remove:
+  DS2ASSERT(it->second.refs == 0);
+  //
+  // If the breakpoint manager is already in enabled state, disable
+  // the newly removed breakpoint too.
+  //
+  if (_enabled)
+    disableLocation(it->second);
+  _sites.erase(it);
   return kSuccess;
 }
 
@@ -123,10 +132,14 @@ void BreakpointManager::disable() {
   //
   auto it = _sites.begin();
   while (it != _sites.end()) {
-    if (it->second.type == kTypeTemporaryOneShot) {
+    it->second.type =
+        static_cast<Type>(it->second.type & ~kTypeTemporaryOneShot);
+    if (!it->second.type) {
+      // refs should always be 0 unless we have a kTypePermanent breakpoint.
+      DS2ASSERT(it->second.refs == 0);
       _sites.erase(it++);
     } else {
-      ++it;
+      it++;
     }
   }
 }
@@ -139,8 +152,13 @@ bool BreakpointManager::hit(Address const &address) {
   if (it == _sites.end())
     return false;
 
-  if (it->second.type != kTypePermanent && --it->second.refs == 0)
+  it->second.type =
+      static_cast<Type>(it->second.type & ~kTypeTemporaryUntilHit);
+  if (!it->second.type) {
+    // refs should always be 0 unless we have a kTypePermanent breakpoint.
+    DS2ASSERT(it->second.refs == 0);
     _sites.erase(it);
+  }
 
   return true;
 }
