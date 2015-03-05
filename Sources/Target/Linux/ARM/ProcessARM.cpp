@@ -8,8 +8,9 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
+#include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Utils/Log.h"
 
 //
 // Include system header files for constants.
@@ -75,34 +76,43 @@ static inline uint16_t __T2MOV16GetImmediate(uint32_t insn) {
 #endif
 
 static inline void T2MOVWTSetImmediate(uint64_t *insn, uint32_t value) {
+  // Make sure insn is aligned to a 32-bit address.
+  DS2ASSERT((uintptr_t)insn % 4 == 0);
   *insn = (((uint64_t)__T2MOV16SetImmediate(*insn >> 32, value >> 16) << 32) |
            __T2MOV16SetImmediate(*insn, value & 0xffff));
 }
 
+// We add the first "nop" to make the "movw; movt" pairs aligned to 32-bit word
+// addresses, so that we can safely apply reinpterpret_cast<uint64_t *> for
+// them and enable aggressive compiler optimizations (e.g., in release build,
+// llvm will use vldr to load 64-bit double-words to VFP registers directly, in
+// T2MOVWTSetImmediate() above).
 static uint16_t const gT2MmapCode[] = {
-    0x2000,         // 00[00]: movs   r0, #0
-    0xf240, 0x0100, // 02[01]: movw   r1, #XXXX
-    0xf2c0, 0x0100, // 06[03]: movt   r1, #XXXX
-    0xf240, 0x0200, // 0a[05]: movw   r2, #XXXX
-    0xf2c0, 0x0200, // 0e[07]: movt   r2, #XXXX
-    0xf240, 0x0300, // 12[09]: movw   r3, #XXXX
-    0xf2c0, 0x0300, // 16[0b]: movt   r3, #XXXX
-    0xf05f, 0x34ff, // 1a[0d]: movs.w r4, #-1
-    0x2500,         // 1e[0f]: movs   r5, #0
-    0x2700,         // 20[10]: movs   r7, #XX
-    0xdf00,         // 22[11]: svc    0
-    0xde01,         // 24[12]: udf    #1
+    0xbf00,         // 00[00]: nop
+    0x2000,         // 02[01]: movs   r0, #0
+    0xf240, 0x0100, // 04[02]: movw   r1, #XXXX
+    0xf2c0, 0x0100, // 08[04]: movt   r1, #XXXX
+    0xf240, 0x0200, // 0c[06]: movw   r2, #XXXX
+    0xf2c0, 0x0200, // 10[08]: movt   r2, #XXXX
+    0xf240, 0x0300, // 14[0a]: movw   r3, #XXXX
+    0xf2c0, 0x0300, // 18[0c]: movt   r3, #XXXX
+    0xf05f, 0x34ff, // 1c[0e]: movs.w r4, #-1
+    0x2500,         // 20[10]: movs   r5, #0
+    0x2700,         // 22[11]: movs   r7, #XX
+    0xdf00,         // 24[12]: svc    0
+    0xde01,         // 26[13]: udf    #1
 };
 
 static uint16_t const gT2MunmapCode[] = {
-    0x2000,         // 00[00]: movs   r0, #0
-    0xf240, 0x0100, // 02[01]: movw   r1, #XXXX
-    0xf2c0, 0x0100, // 06[03]: movt   r1, #XXXX
-    0xf240, 0x0200, // 0a[05]: movw   r2, #XXXX
-    0xf2c0, 0x0200, // 0e[07]: movt   r2, #XXXX
-    0x2700,         // 12[09]: movs   r7, #XX
-    0xdf00,         // 14[0a]: svc    0
-    0xde01,         // 16[0b]: udf    #1
+    0xbf00,         // 00[00]: nop
+    0x2000,         // 02[01]: movs   r0, #0
+    0xf240, 0x0100, // 04[02]: movw   r1, #XXXX
+    0xf2c0, 0x0100, // 08[04]: movt   r1, #XXXX
+    0xf240, 0x0200, // 0c[06]: movw   r2, #XXXX
+    0xf2c0, 0x0200, // 10[08]: movt   r2, #XXXX
+    0x2700,         // 14[0a]: movs   r7, #XX
+    0xdf00,         // 16[0b]: svc    0
+    0xde01,         // 18[0c]: udf    #1
 };
 
 static void T2PrepareMmapCode(size_t size, uint32_t protection,
@@ -110,11 +120,11 @@ static void T2PrepareMmapCode(size_t size, uint32_t protection,
   InitCodeVector(codestr, gT2MmapCode);
 
   uint16_t *code = reinterpret_cast<uint16_t *>(&codestr[0]);
-  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x01), size);
-  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x05), protection);
-  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x09),
+  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x02), size);
+  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x06), protection);
+  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x0a),
                       MAP_ANON | MAP_PRIVATE);
-  T1MOV8SetImmediate(code + 0x10, __NR_mmap2);
+  T1MOV8SetImmediate(code + 0x11, __NR_mmap2);
 }
 
 static void T2PrepareMunmapCode(uint32_t address, size_t size,
@@ -122,9 +132,9 @@ static void T2PrepareMunmapCode(uint32_t address, size_t size,
   InitCodeVector(codestr, gT2MunmapCode);
 
   uint16_t *code = reinterpret_cast<uint16_t *>(&codestr[0]);
-  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x01), address);
-  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x05), size);
-  T1MOV8SetImmediate(code + 0x09, __NR_munmap);
+  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x02), address);
+  T2MOVWTSetImmediate(reinterpret_cast<uint64_t *>(code + 0x06), size);
+  T1MOV8SetImmediate(code + 0x0a, __NR_munmap);
 }
 #else
 //
