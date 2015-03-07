@@ -1,7 +1,7 @@
-diff --git a/test/tools/lldb-gdbserver/TestGdbRemoteRegisterState.py b/test/tools/lldb-gdbserver/TestGdbRemoteRegisterState.py
+diff --git a/test/tools/lldb-server/TestGdbRemoteRegisterState.py b/test/tools/lldb-server/TestGdbRemoteRegisterState.py
 index 895f73a..4e3f68d 100644
---- a/test/tools/lldb-gdbserver/TestGdbRemoteRegisterState.py
-+++ b/test/tools/lldb-gdbserver/TestGdbRemoteRegisterState.py
+--- a/test/tools/lldb-server/TestGdbRemoteRegisterState.py
++++ b/test/tools/lldb-server/TestGdbRemoteRegisterState.py
 @@ -100,6 +100,7 @@ class TestGdbRemoteRegisterState(gdbremote_testcase.GdbRemoteTestCaseBase):
  
      @llgs_test
@@ -18,10 +18,10 @@ index 895f73a..4e3f68d 100644
      def test_grp_register_save_restore_works_no_suffix_llgs_dwarf(self):
          USE_THREAD_SUFFIX = False
          self.init_llgs_test()
-diff --git a/test/tools/lldb-gdbserver/TestGdbRemoteThreadsInStopReply.py b/test/tools/lldb-gdbserver/TestGdbRemoteThreadsInStopReply.py
+diff --git a/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py b/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py
 index ac0a392..416f47d 100644
---- a/test/tools/lldb-gdbserver/TestGdbRemoteThreadsInStopReply.py
-+++ b/test/tools/lldb-gdbserver/TestGdbRemoteThreadsInStopReply.py
+--- a/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py
++++ b/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py
 @@ -125,6 +125,7 @@ class TestGdbRemoteThreadsInStopReply(gdbremote_testcase.GdbRemoteTestCaseBase):
  
      @llgs_test
@@ -30,19 +30,19 @@ index ac0a392..416f47d 100644
      def test_no_QListThreadsInStopReply_supplies_no_threads_llgs_dwarf(self):
          self.init_llgs_test()
          self.buildDwarf()
-diff --git a/test/tools/lldb-gdbserver/gdbremote_testcase.py b/test/tools/lldb-gdbserver/gdbremote_testcase.py
+diff --git a/test/tools/lldb-server/gdbremote_testcase.py b/test/tools/lldb-server/gdbremote_testcase.py
 index d2dc805..cdffd24 100644
---- a/test/tools/lldb-gdbserver/gdbremote_testcase.py
-+++ b/test/tools/lldb-gdbserver/gdbremote_testcase.py
+--- a/test/tools/lldb-server/gdbremote_testcase.py
++++ b/test/tools/lldb-server/gdbremote_testcase.py
 @@ -133,17 +133,17 @@ class GdbRemoteTestCaseBase(TestBase):
  
          return stub_port
  
 -    def init_llgs_test(self, use_named_pipe=True):
 +    def init_llgs_test(self, use_named_pipe=False):
-         self.debug_monitor_exe = get_lldb_gdbserver_exe()
+         self.debug_monitor_exe = get_lldb_server_exe()
          if not self.debug_monitor_exe:
-             self.skipTest("lldb_gdbserver exe not found")
+             self.skipTest("lldb-server exe not found")
          dname = os.path.join(os.environ["LLDB_TEST"],
                               os.environ["LLDB_SESSION_DIRNAME"])
 -        self.debug_monitor_extra_args = " gdbserver -c 'log enable -T -f {}/process-{}.log lldb break process thread' -c 'log enable -T -f {}/packets-{}.log gdb-remote packets'".format(dname, self.id(), dname, self.id())
@@ -71,8 +71,8 @@ index d2dc805..cdffd24 100644
          # Start the server.
          server = pexpect.spawn(commandline, logfile=logfile)
          self.assertIsNotNone(server)
--        server.expect(r"(debugserver|lldb-gdbserver)", timeout=10)
-+        server.expect(r"(debugserver|lldb-gdbserver|ds2)", timeout=10)
+-        server.expect(r"(debugserver|lldb-server)", timeout=10)
++        server.expect(r"(debugserver|lldb-server|ds2)", timeout=10)
  
          # If we're receiving the stub's listening port from the named pipe, do that here.
          if self.named_pipe:
