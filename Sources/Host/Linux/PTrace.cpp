@@ -384,6 +384,32 @@ ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
 
   return kSuccess;
 }
+
+ErrorCode PTrace::readRegisterSet(ProcessThreadId const &ptid, int regSetCode,
+                                  void *buffer, size_t length) {
+  struct iovec iov = {buffer, length};
+
+  if (wrapPtrace(PTRACE_GETREGSET, ptid.validTid() ? ptid.tid : ptid.pid,
+                 regSetCode, &iov) < 0)
+    return TranslateErrno();
+
+  // On return, the kernel modifies iov.len to return the number of bytes read.
+  // This should be exactly equal to the number of bytes requested.
+  DS2ASSERT(iov.iov_len == length);
+
+  return kSuccess;
+}
+
+ErrorCode PTrace::writeRegisterSet(ProcessThreadId const &ptid, int regSetCode,
+                                   void const *buffer, size_t length) {
+  struct iovec iov = {&buffer, length};
+
+  if (wrapPtrace(PTRACE_SETREGSET, ptid.validTid() ? ptid.tid : ptid.pid,
+                 regSetCode, &iov) < 0)
+    return TranslateErrno();
+
+  return kSuccess;
+}
 }
 }
 }
