@@ -74,9 +74,17 @@ public:
   virtual ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si);
 
 protected:
+  virtual ErrorCode readRegisterSet(ProcessThreadId const &ptid, int regSetCode,
+                                    void *buffer, size_t length);
+  virtual ErrorCode writeRegisterSet(ProcessThreadId const &ptid,
+                                     int regSetCode, void const *buffer,
+                                     size_t length);
+
+protected:
   void initCPUState(ProcessId pid);
   void doneCPUState();
 
+protected:
   template <typename CommandType, typename AddrType, typename DataType>
   long wrapPtrace(CommandType request, pid_t pid, AddrType addr,
                   DataType data) {
