@@ -11,10 +11,8 @@
 #ifndef __DebugServer2_Architecture_ARM64_CPUState_h
 #define __DebugServer2_Architecture_ARM64_CPUState_h
 
-//
-// Include the A32 variant
-//
-#include "DebugServer2/Architecture/ARM/CPUState.h"
+#include "DebugServer2/Architecture/ARM/CPUState.h" // Include the A32 variant
+#include "DebugServer2/Architecture/ARM64/RegistersDescriptors.h"
 
 namespace ds2 {
 namespace Architecture {
@@ -74,28 +72,30 @@ struct CPUState {
     CPUState64 state64;
   };
 
+  CPUState() : state64() {}
+
   //
   // Accessors
   //
-  inline uint64_t pc() const { return a32 ? state32.gp.pc : state64.gp.pc; }
+  inline uint64_t pc() const { return isA32 ? state32.gp.pc : state64.gp.pc; }
   inline void setPC(uint64_t pc) {
-    if (a32)
+    if (isA32)
       state32.gp.pc = pc;
     else
       state64.gp.pc = pc;
   }
 
-  inline uint64_t sp() const { return a32 ? state32.gp.sp : state64.gp.sp; }
+  inline uint64_t sp() const { return isA32 ? state32.gp.sp : state64.gp.sp; }
   inline void setSP(uint64_t sp) {
-    if (a32)
+    if (isA32)
       state32.gp.sp = sp;
     else
       state64.gp.sp = sp;
   }
 
-  inline uint64_t retval() const { return a32 ? state32.gp.r0 : state64.gp.r0; }
+  inline uint64_t retval() const { return isA32 ? state32.gp.r0 : state64.gp.x0; }
 
-  inline bool isThumb() const { return a32 ? state32.isThumb() : false; }
+  inline bool isThumb() const { return isA32 ? state32.isThumb() : false; }
 };
 }
 }
