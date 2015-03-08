@@ -10,8 +10,8 @@
 
 #define __DS2_LOG_CLASS_NAME__ "SoftwareBreakpointManager"
 
-#include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
+#include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
@@ -46,10 +46,11 @@ ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
     if (address.value() & 1) {
       isThumb = true;
     } else {
-      // TODO: add a nicer way to get the thumb bit.
-      CPUState state;
+      ds2::Architecture::CPUState state;
       ErrorCode error = _process->currentThread()->readCPUState(state);
-      isThumb = ((error == kSuccess) && (state.gp.cpsr & (1 << 5)));
+      if (error != kSuccess)
+        return error;
+      isThumb = state.isThumb();
     }
 
     if (isThumb) {
@@ -102,7 +103,7 @@ void SoftwareBreakpointManager::enumerate(
 }
 
 bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
-  CPUState state;
+  ds2::Architecture::CPUState state;
   thread->readCPUState(state);
   return super::hit(state.pc());
 }
