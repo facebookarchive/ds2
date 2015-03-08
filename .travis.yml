@@ -2,6 +2,7 @@ language: cpp
 
 env:
   - BUILD_TYPE="Debug"    TARGET="Android-ARM"
+  - BUILD_TYPE="Debug"    TARGET="Android-ARM64"
   - BUILD_TYPE="Debug"    TARGET="Android-X86"
   - BUILD_TYPE="Debug"    TARGET="Android-X86_64"
   - BUILD_TYPE="Debug"    TARGET="Linux-ARM"
@@ -9,6 +10,7 @@ env:
   - BUILD_TYPE="Debug"    TARGET="Linux-X86_64"
   - BUILD_TYPE="Debug"    TARGET="Linux-X86_64"   LLGS_TESTS="1"
   - BUILD_TYPE="Release"  TARGET="Android-ARM"
+  - BUILD_TYPE="Release"  TARGET="Android-ARM64"
   - BUILD_TYPE="Release"  TARGET="Android-X86"
   - BUILD_TYPE="Release"  TARGET="Android-X86_64"
   - BUILD_TYPE="Release"  TARGET="Linux-ARM"
@@ -28,6 +30,7 @@ before_install:
 
 install:
   - if [ "$TARGET" = "Android-ARM" ];     then ./Support/Scripts/prepare-android-toolchain.sh "arm";      fi
+  - if [ "$TARGET" = "Android-ARM64" ];   then ./Support/Scripts/prepare-android-toolchain.sh "aarch64";  fi
   - if [ "$TARGET" = "Android-X86" ];     then ./Support/Scripts/prepare-android-toolchain.sh "x86";      fi
   - if [ "$TARGET" = "Android-X86_64" ];  then ./Support/Scripts/prepare-android-toolchain.sh "x86";      fi
   - if [ "$TARGET" = "Linux-ARM" ];       then sudo apt-get install -y g++-arm-linux-gnueabi;             fi
