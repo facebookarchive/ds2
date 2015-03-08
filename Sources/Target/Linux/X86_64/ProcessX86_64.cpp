@@ -8,10 +8,9 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
+#include "DebugServer2/Target/Process.h"
 
-// Include system header files for constants.
 #include <cstdlib>
 #include <sys/mman.h>
 #include <sys/syscall.h>
