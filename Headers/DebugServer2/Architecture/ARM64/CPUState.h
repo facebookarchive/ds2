@@ -35,11 +35,11 @@ typedef ds2::Architecture::ARM::CPUState CPUState32;
 //
 struct CPUState64 {
   union {
-    uint64_t regs[32 + 1];
+    uint64_t regs[32 + 1 + 1];
     struct {
       uint64_t x0, x1, x2, r3, x4, x5, x6, r7, x8, x9, x10, r11, x12, x13, x14,
-          r15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, sp,
-          ip, lr, pc, cpsr;
+          r15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28,
+          fp, lr, sp, pc, cpsr;
     };
   } gp;
 
@@ -57,6 +57,76 @@ struct CPUState64 {
 
   inline uint64_t sp() const { return gp.sp; }
   inline void setSP(uint64_t sp) { gp.sp = sp; }
+
+  inline uint64_t retval() const { return gp.x0; }
+
+public:
+  inline void getGPState(GPRegisterValueVector &regs) const {
+    regs.clear();
+    for (size_t n = 0; n < array_size(gp.regs); n++) {
+      regs.push_back(GPRegisterValue{sizeof(gp.regs[n]), gp.regs[n]});
+    }
+  }
+
+  inline void setGPState(std::vector<uint64_t> const &regs) {
+    for (size_t n = 0; n < regs.size() && n < array_size(gp.regs); n++) {
+      gp.regs[n] = regs[n];
+    }
+  }
+
+public:
+  inline void getStopGPState(GPRegisterStopMap &regs, bool forLLDB) const {
+    if (forLLDB) {
+      for (size_t n = 0; n < 33; n++) {
+        regs[n + reg_lldb_r0] = GPRegisterValue{sizeof(gp.regs[n]), gp.regs[n]};
+      }
+      regs[reg_lldb_cpsr] = GPRegisterValue{sizeof(gp.cpsr), gp.cpsr};
+    } else {
+      // GDB can live with non-zero registers
+      for (size_t n = 0; n < 33; n++) {
+        if (n >= 13) {
+          regs[n + reg_gdb_r0] =
+              GPRegisterValue{sizeof(gp.regs[n]), gp.regs[n]};
+        }
+      }
+      regs[reg_gdb_cpsr] = GPRegisterValue{sizeof(gp.cpsr), gp.cpsr};
+    }
+  }
+
+public:
+  inline bool getLLDBRegisterPtr(int regno, void **ptr, size_t *length) const {
+    if (regno >= reg_lldb_r0 && regno <= reg_lldb_r31) {
+      *ptr = const_cast<uint64_t *>(&gp.regs[regno - reg_lldb_r0]);
+      *length = sizeof(gp.regs[0]);
+    } else if (regno == reg_lldb_pc) {
+      *ptr = const_cast<uint64_t *>(&gp.pc);
+      *length = sizeof(gp.pc);
+    } else if (regno == reg_lldb_cpsr) {
+      *ptr = const_cast<uint64_t *>(&gp.cpsr);
+      *length = sizeof(gp.cpsr);
+    } else {
+      return false;
+    }
+
+    return true;
+  }
+
+  inline bool getGDBRegisterPtr(int regno, void **ptr, size_t *length) const {
+    if (regno >= reg_gdb_r0 && regno <= reg_gdb_r31) {
+      *ptr = const_cast<uint64_t *>(&gp.regs[regno - reg_gdb_r0]);
+      *length = sizeof(gp.regs[0]);
+    } else if (regno == reg_gdb_pc) {
+      *ptr = const_cast<uint64_t *>(&gp.pc);
+      *length = sizeof(gp.pc);
+    } else if (regno == reg_gdb_cpsr) {
+      *ptr = const_cast<uint64_t *>(&gp.cpsr);
+      *length = sizeof(gp.cpsr);
+    } else {
+      return false;
+    }
+
+    return true;
+  }
 };
 
 //
@@ -77,25 +147,74 @@ struct CPUState {
   //
   // Accessors
   //
-  inline uint64_t pc() const { return isA32 ? state32.gp.pc : state64.gp.pc; }
+  inline uint64_t pc() const {
+    return isA32 ? static_cast<uint64_t>(state32.pc()) : state64.pc();
+  }
   inline void setPC(uint64_t pc) {
     if (isA32)
-      state32.gp.pc = pc;
+      state32.setPC(pc);
     else
-      state64.gp.pc = pc;
+      state64.setPC(pc);
   }
 
-  inline uint64_t sp() const { return isA32 ? state32.gp.sp : state64.gp.sp; }
+  inline uint64_t sp() const {
+    return isA32 ? static_cast<uint64_t>(state32.sp()) : state64.sp();
+  }
   inline void setSP(uint64_t sp) {
     if (isA32)
-      state32.gp.sp = sp;
+      state32.setSP(sp);
     else
-      state64.gp.sp = sp;
+      state64.setSP(sp);
   }
 
-  inline uint64_t retval() const { return isA32 ? state32.gp.r0 : state64.gp.x0; }
+  inline uint64_t retval() const {
+    return isA32 ? static_cast<uint64_t>(state32.retval()) : state64.retval();
+  }
 
   inline bool isThumb() const { return isA32 ? state32.isThumb() : false; }
+
+public:
+  inline void getGPState(GPRegisterValueVector &regs) const {
+    if (isA32) {
+      state32.getGPState(regs);
+    } else {
+      state64.getGPState(regs);
+    }
+  }
+
+  inline void setGPState(std::vector<uint64_t> const &regs) {
+    if (isA32) {
+      state32.setGPState(regs);
+    } else {
+      state64.setGPState(regs);
+    }
+  }
+
+public:
+  inline void getStopGPState(GPRegisterStopMap &regs, bool forLLDB) const {
+    if (isA32) {
+      state32.getStopGPState(regs, forLLDB);
+    } else {
+      state64.getStopGPState(regs, forLLDB);
+    }
+  }
+
+public:
+  inline bool getLLDBRegisterPtr(int regno, void **ptr, size_t *length) const {
+    if (isA32) {
+      return state32.getLLDBRegisterPtr(regno, ptr, length);
+    } else {
+      return state64.getLLDBRegisterPtr(regno, ptr, length);
+    }
+  }
+
+  inline bool getGDBRegisterPtr(int regno, void **ptr, size_t *length) const {
+    if (isA32) {
+      return state32.getGDBRegisterPtr(regno, ptr, length);
+    } else {
+      return state64.getGDBRegisterPtr(regno, ptr, length);
+    }
+  }
 };
 }
 }
