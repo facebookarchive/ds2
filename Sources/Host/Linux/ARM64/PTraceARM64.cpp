@@ -88,6 +88,8 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &p
   // Initialize the CPU state, just in case.
   initCPUState(pid);
 
+  state.isA32 = pinfo.pointerSize == sizeof(uint32_t);
+
   // Read GPRs.
   struct user_pt_regs gprs;
   error = readRegisterSet(ptid, NT_PRSTATUS, &gprs, sizeof(gprs));
