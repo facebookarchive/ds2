@@ -111,6 +111,7 @@ bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
 void SoftwareBreakpointManager::getOpcode(uint32_t type,
                                           std::string &opcode) const {
   switch (type) {
+#if defined(ARCH_ARM)
   case 2: // udf #1
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     opcode += '\xde';
@@ -146,6 +147,21 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
     opcode += '\xe7';
 #endif
     break;
+#elif defined(ARCH_ARM64)
+  case 4:
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+    opcode += '\xd4';
+    opcode += '\x20';
+    opcode += '\x20';
+    opcode += '\x00';
+#else
+    opcode += '\x00';
+    opcode += '\x20';
+    opcode += '\x20';
+    opcode += '\xd4';
+#endif
+    break;
+#endif
   default:
     DS2LOG(BPManager, Error, "invalid breakpoint type %d", type);
     DS2ASSERT(0 && "invalid breakpoint type");
