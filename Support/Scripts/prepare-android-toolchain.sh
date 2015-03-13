@@ -11,7 +11,7 @@
 
 source "$(dirname "$0")/common.sh"
 
-[ $# -eq 1 ] || die "usage: $0 [ aarch64 | arm | x86 ]"
+[ $# -ge 1 ] && [ $# -le 2 ] || die "usage: $0 ARCH [VERSION]"
 
 case "$(uname)" in
   "Linux")  host="linux-x86";;
@@ -19,15 +19,20 @@ case "$(uname)" in
   *)        die "This script works only on Linux and Mac OS X.";;
 esac
 
-case "$1" in
+case "${1}" in
   "aarch64")  toolchain_arch="aarch64"; toolchain_triple="aarch64-linux-android";;
   "arm")      toolchain_arch="arm";     toolchain_triple="arm-linux-androideabi";;
   "x86")      toolchain_arch="x86_64";  toolchain_triple="x86_64-linux-android";;
-  *)          die "Unknown architecture '$1'." ;;
+  *)          die "Unknown architecture '${1}'." ;;
+esac
+
+case "${2:-default}" in
+  "4.8"|"4.9")  toolchain_version="${2}";;
+  "default")    toolchain_version="4.8";;
+  *)            die "Unusupported toolchain version '${2}'.";;
 esac
 
 aosp_platform="android-21"
-toolchain_version="4.8"
 toolchain_path="/tmp/aosp-toolchain/${toolchain_triple}-${toolchain_version}"
 aosp_ndk_path="/tmp/aosp-toolchain/aosp-ndk"
 
