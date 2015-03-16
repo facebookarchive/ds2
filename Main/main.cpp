@@ -300,8 +300,6 @@ int main(int argc, char **argv) {
                  "use native registers (no-op)", true);
   opts.addOption(ds2::OptParse::boolOption, "setsid", 's',
                  "make ds2 run in its own session (no-op)", true);
-  opts.addOption(ds2::OptParse::stringOption, "lldb-command", 'c',
-                 "run lldb commands (no-op)", true);
 
   idx = opts.parse(argc, argv);
 
