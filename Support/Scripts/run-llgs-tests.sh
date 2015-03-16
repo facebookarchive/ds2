@@ -13,9 +13,9 @@
 # against ds2. It requires a few hacks in the testing infra to adapt to the
 # differences between ds2 and lldb-gdbserver.
 
-LLVM_REPO="http://llvm.org/git/llvm.git"
-CLANG_REPO="http://llvm.org/git/clang.git"
-LLDB_REPO="http://llvm.org/git/lldb.git"
+LLVM_REPO="https://github.com/llvm-mirror/llvm.git"
+CLANG_REPO="https://github.com/llvm-mirror/clang.git"
+LLDB_REPO="https://github.com/llvm-mirror/lldb.git"
 
 source "$(dirname "$0")/common.sh"
 
