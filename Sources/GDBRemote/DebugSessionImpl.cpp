@@ -30,20 +30,27 @@ DebugSessionImpl::DebugSessionImpl(StringCollection const &args,
                                    EnvironmentBlock const &env)
     : DummySessionDelegateImpl(), _resumeSession(nullptr) {
   DS2ASSERT(args.size() >= 1);
+  _resumeSessionLock.lock();
   spawnProcess(args, env);
 }
 
 DebugSessionImpl::DebugSessionImpl(int attachPid)
     : DummySessionDelegateImpl(), _resumeSession(nullptr) {
+  _resumeSessionLock.lock();
   _process = ds2::Target::Process::Attach(attachPid);
   if (_process == nullptr)
     DS2LOG(Main, Fatal, "cannot attach to pid %d", attachPid);
 }
 
 DebugSessionImpl::DebugSessionImpl()
-    : DummySessionDelegateImpl(), _process(nullptr), _resumeSession(nullptr) {}
+    : DummySessionDelegateImpl(), _process(nullptr), _resumeSession(nullptr) {
+  _resumeSessionLock.lock();
+}
 
-DebugSessionImpl::~DebugSessionImpl() { delete _process; }
+DebugSessionImpl::~DebugSessionImpl() {
+  _resumeSessionLock.unlock();
+  delete _process;
+}
 
 size_t DebugSessionImpl::getGPRSize() const {
   if (_process == nullptr)
@@ -736,6 +743,7 @@ DebugSessionImpl::onResume(Session &session,
 
   DS2ASSERT(_resumeSession == nullptr);
   _resumeSession = &session;
+  _resumeSessionLock.unlock();
 
   error = _process->beforeResume();
   if (error != kSuccess)
@@ -844,6 +852,7 @@ DebugSessionImpl::onResume(Session &session,
       ProcessThreadId(_process->pid(), _process->currentThread()->tid()), stop);
 
 ret:
+  _resumeSessionLock.lock();
   _resumeSession = nullptr;
   return error;
 }
@@ -938,16 +947,17 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
   _spawner.setEnvironment(env);
 
   auto outputDelegate = [this](void *buf, size_t size) {
-    DS2ASSERT(_resumeSession != nullptr);
-
     const char *cbuf = static_cast<char *>(buf);
     for (size_t i = 0; i < size; ++i) {
       this->_consoleBuffer += cbuf[i];
       if (cbuf[i] == '\n') {
+        _resumeSessionLock.lock();
+        DS2ASSERT(_resumeSession != nullptr);
         std::string data = "O";
         data += StringToHex(this->_consoleBuffer);
         _consoleBuffer.clear();
         this->_resumeSession->send(data);
+        _resumeSessionLock.unlock();
       }
     }
   };

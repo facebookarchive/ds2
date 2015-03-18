@@ -16,6 +16,8 @@
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
 
+#include <mutex>
+
 namespace ds2 {
 namespace GDBRemote {
 class DebugSessionImpl : public DummySessionDelegateImpl {
@@ -27,6 +29,9 @@ protected:
   std::map<uint64_t, Architecture::CPUState> _savedRegisters;
   size_t _threadIndex;
   Host::ProcessSpawner _spawner;
+
+protected:
+  std::mutex _resumeSessionLock;
   Session *_resumeSession;
   std::string _consoleBuffer;
 
