@@ -105,7 +105,7 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
 
 static void DebugMain(ds2::StringCollection const &args,
                       ds2::EnvironmentBlock const &env, int attachPid,
-                      int port) {
+                      int port, std::string const &namedPipePath) {
   Socket *server = new Socket;
 
   if (!server->create()) {
@@ -119,17 +119,19 @@ static void DebugMain(ds2::StringCollection const &args,
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Main, Info, "listening on port %d", port);
+  DS2LOG(Main, Info, "listening on port %d", server->port());
 
-  if (gLLDBCompat) {
-    //
-    // This is required for compatibility with llgs. The testing framework
-    // expects to read this string to determine that llgs is started and ready
-    // to accept connections.
-    //
-    printf("ds2\n");
-    printf("Listening to port %d for a connection from %s...\n", port,
-           "localhost");
+  if (!namedPipePath.empty()) {
+    std::string portStr = ds2::ToString(server->port());
+    FILE *namedPipe = fopen(namedPipePath.c_str(), "a");
+    if (namedPipe == nullptr) {
+      DS2LOG(Main, Error, "unable to open %s: %s", namedPipePath.c_str(),
+             strerror(errno));
+    } else {
+      // Write the null terminator to the file. This follows the llgs behavior.
+      fwrite(portStr.c_str(), 1, portStr.length() + 1, namedPipe);
+      fclose(namedPipe);
+    }
   }
 
   do {
@@ -254,6 +256,7 @@ int main(int argc, char **argv) {
 
   int attachPid = -1;
   int port = -1;
+  std::string namedPipePath;
   RunMode mode = kRunModeNormal;
 
   // Configuration options.
@@ -291,6 +294,8 @@ int main(int argc, char **argv) {
   // llgs-compat options.
   opts.addOption(ds2::OptParse::boolOption, "lldb-compat", 'l',
                  "force ds2 to run in lldb compat mode");
+  opts.addOption(ds2::OptParse::stringOption, "named-pipe", 'N',
+                 "determine a port dynamically and write back to FIFO");
   opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
                  "use native registers (no-op)", true);
   opts.addOption(ds2::OptParse::boolOption, "setsid", 's',
@@ -358,12 +363,15 @@ int main(int argc, char **argv) {
   }
 #endif
 
-  //
   // This option forces ds2 to operate in lldb compatibilty mode. When not
   // specified, we assume we are talking to a GDB remote until we detect
   // otherwise.
-  //
   gLLDBCompat = opts.getBool("lldb-compat");
+
+  // This is used for llgs testing. We determine a port number dynamically and
+  // write it back to the FIFO passed as argument for the test harness to use
+  // it.
+  namedPipePath = opts.getString("named-pipe");
 
   argc -= idx, argv += idx;
 
@@ -378,7 +386,12 @@ int main(int argc, char **argv) {
   }
 
   if (port < 0) {
-    port = gDefaultPort;
+    // If we have a named pipe, set the port to 0 to indicate that we should
+    // dynamically allocate it and write it back to the FIFO.
+    if (namedPipePath.empty())
+      port = gDefaultPort;
+    else
+      port = 0;
   }
 
   switch (mode) {
@@ -410,7 +423,7 @@ int main(int argc, char **argv) {
       env.erase(e);
     }
 
-    DebugMain(args, env, attachPid, port);
+    DebugMain(args, env, attachPid, port, namedPipePath);
   } break;
   }
 
