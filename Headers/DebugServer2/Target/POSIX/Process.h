@@ -19,9 +19,6 @@ namespace ds2 {
 namespace Target {
 namespace POSIX {
 class Process : public ds2::Target::ProcessBase {
-public:
-  enum { kFlagNewProcess = 0, kFlagAttachedProcess = (1 << 0) };
-
 protected:
   std::set<int> _passthruSignals;
 

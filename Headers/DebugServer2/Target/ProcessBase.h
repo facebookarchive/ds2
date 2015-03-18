@@ -25,8 +25,8 @@ class WatchpointManager;
 namespace Target {
 
 class ProcessBase {
-protected:
-  enum { kFlagAttached = (1 << 0) };
+public:
+  enum { kFlagNewProcess = 0, kFlagAttachedProcess = (1 << 0) };
 
 protected:
   uint32_t _flags;
@@ -59,7 +59,7 @@ public:
   inline ProcessId pid() const { return _pid; }
 
 public:
-  inline bool attached() const { return (_flags & kFlagAttached) != 0; }
+  inline bool attached() const { return (_flags & kFlagAttachedProcess) != 0; }
 
 public:
   inline Address const &loadBase() const { return _loadBase; }
