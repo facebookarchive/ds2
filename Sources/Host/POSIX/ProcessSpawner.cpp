@@ -366,7 +366,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       }
 
       std::vector<char *> args;
-      args.push_back(::basename(const_cast<char *>(&_executablePath[0])));
+      args.push_back(const_cast<char *>(_executablePath.c_str()));
       for (auto const &e : _arguments)
         args.push_back(const_cast<char *>(e.c_str()));
       args.push_back(nullptr);
