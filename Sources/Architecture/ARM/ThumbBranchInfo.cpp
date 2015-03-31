@@ -294,7 +294,7 @@ public:
       info.mode = kBranchDispNormal;
       info.reg1 = -1;
       info.reg2 = -1;
-      info.disp = (((insn >> 9) & 1) << 5) | ((insn >> 3) & 0x1f) << 1;
+      info.disp = ((((insn >> 9) & 1) << 5) | ((insn >> 3) & 0x1f)) << 1;
       // add 4 because the displacement is supposed to point AFTER
       // the branch instruction plus 2 bytes for the pipeline.
       info.disp += 4;
