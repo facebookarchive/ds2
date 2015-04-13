@@ -60,6 +60,7 @@ ErrorCode ProcessBase::initialize(ProcessId pid, uint32_t flags) {
   if (_pid != kAnyProcessId)
     return kErrorAlreadyExist;
 
+  fprintf(stderr, "initialize()\n");
   _pid = pid;
   _flags = flags;
 
@@ -67,6 +68,7 @@ ErrorCode ProcessBase::initialize(ProcessId pid, uint32_t flags) {
   // Update process information immediatly.
   //
   ErrorCode error = updateInfo();
+  fprintf(stderr, "initialize error=%d\n", error);
   if (error != kSuccess) {
     _pid = kAnyProcessId;
     _flags = 0;

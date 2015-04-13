@@ -12,6 +12,8 @@
 #include "DebugServer2/Host/Platform.h"
 #if defined(__linux__)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
+#elif defined(__FreeBSD__)
+#include "DebugServer2/Host/FreeBSD/ExtraWrappers.h"
 #elif defined(_WIN32)
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #endif

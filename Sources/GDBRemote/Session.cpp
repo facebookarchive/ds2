@@ -24,6 +24,8 @@
 
 #if defined(__linux__)
 #define UNPACK_ID(STR) std::strtoul(STR, nullptr, 10)
+#elif defined(__FreeBSD__)
+#define UNPACK_ID(STR) std::strtoul(STR, nullptr, 10)
 #elif defined(_WIN32)
 #define UNPACK_ID(STR) 0
 #else
