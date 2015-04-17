@@ -30,6 +30,8 @@ bool ProcStat::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
     struct kinfo_proc *kip;
 
     kip = kinfo_getproc(pid);
+    if (kip == nullptr)
+        return false;
 
     info.pid = pid;
     info.parentPid = kip->ki_ppid;
@@ -61,7 +63,6 @@ bool ProcStat::GetThreadState(pid_t pid, pid_t tid, int &state, int &cpu) {
         if (kip[i].ki_tid == tid || kip[i].ki_pid == tid) {
             state = kip[i].ki_stat;
             cpu = kip[i].ki_lastcpu;
-            fprintf(stderr, "tid %d state=%d\n", tid, kip[i].ki_stat);
             procstat_freeprocs(pstat, kip);
             procstat_close(pstat);
             return true;
@@ -154,9 +155,8 @@ void ProcStat::EnumerateThreads(pid_t pid, std::function<void(pid_t tid)> const 
     pstat = procstat_open_sysctl();
     kip = procstat_getprocs(pstat, KERN_PROC_PID | KERN_PROC_INC_THREAD, pid, &count);
 
-    for (i = 0; i < count; i++) {
+    for (i = 0; i < count; i++)
         cb(kip[i].ki_tid);
-    }
 
     procstat_freeprocs(pstat, kip);
     procstat_close(pstat);
@@ -165,6 +165,7 @@ void ProcStat::EnumerateThreads(pid_t pid, std::function<void(pid_t tid)> const 
 std::string ProcStat::GetThreadName(ProcessId pid, ThreadId tid) {
     struct procstat *pstat;
     struct kinfo_proc *kip;
+    std::string result;
     unsigned int count, i;
 
 
@@ -173,9 +174,10 @@ std::string ProcStat::GetThreadName(ProcessId pid, ThreadId tid) {
 
     for (i = 0; i < count; i++) {
         if (kip[i].ki_tid == tid) {
+            result = kip[i].ki_tdname;
             procstat_freeprocs(pstat, kip);
             procstat_close(pstat);
-            return std::string(kip[i].ki_tdname);
+            return result;
         }
     }
 

@@ -40,13 +40,9 @@ public:
 
 public:
   virtual ErrorCode terminate();
-  virtual bool isAlive() const;
 
 public:
   virtual ErrorCode suspend();
-  virtual ErrorCode
-  resume(int signal = 0,
-         std::set<Thread *> const &excluded = std::set<Thread *>());
 
 public:
   virtual ErrorCode getMemoryRegionInfo(Address const &address,

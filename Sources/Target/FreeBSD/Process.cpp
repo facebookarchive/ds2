@@ -65,8 +65,7 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
 ErrorCode Process::attach(bool reattach) { return attach(reattach ? 0 : -1); }
 
 ErrorCode Process::attach(int waitStatus) {
-
-  fprintf(stderr, "Process::attach(waitStatus=%d)\n", waitStatus);
+  struct ptrace_lwpinfo lwpinfo;
 
   if (waitStatus <= 0) {
     ErrorCode error = ptrace().attach(_pid);
@@ -111,9 +110,11 @@ ErrorCode Process::attach(int waitStatus) {
         Thread *thread = new Thread(this, tid);
         if (ptrace().attach(tid) == kSuccess) {
           int status;
+
           ptrace().wait(tid, true, &status);
+          _ptrace.getLwpInfo(tid, &lwpinfo);
           ptrace().traceThat(tid);
-          thread->updateTrapInfo(status);
+          thread->updateTrapInfo(status, &lwpinfo);
         }
       });
     }
@@ -122,208 +123,176 @@ ErrorCode Process::attach(int waitStatus) {
   //
   // Create the main thread, ourselves.
   //
-  _currentThread = new Thread(this, _pid);
-  _currentThread->updateTrapInfo(waitStatus);
+  _ptrace.getLwpInfo(_pid, &lwpinfo);
+  _currentThread = new Thread(this, lwpinfo.pl_lwpid);
+  _currentThread->updateTrapInfo(waitStatus, &lwpinfo);
+
 
   return kSuccess;
 }
 
-static pid_t blocking_wait4(pid_t pid, int *status, int flags,
-                            struct rusage *ru) {
-  pid_t ret;
-  sigset_t block_mask, org_mask, wake_mask;
-
-  sigemptyset(&wake_mask);
-  sigfillset(&block_mask);
-
-  // Block all signals while waiting.
-  sigprocmask(SIG_BLOCK, &block_mask, &org_mask);
-
-  for (;;) {
-    ret = wait4(pid, status, flags, ru);
-    if (ret > 0 || (ret == -1 && errno != ECHILD))
-      break;
-
-    //if ((flags & (__WCLONE | WNOHANG)) == __WCLONE) {
-    //  sigsuspend(&wake_mask);
-    //}
-  }
-
-  sigprocmask(SIG_SETMASK, &org_mask, nullptr);
-
-  return ret;
-}
-
 ErrorCode Process::wait(int *rstatus, bool hang) {
   int status, signal;
+  struct ptrace_lwpinfo lwpinfo;
   struct rusage rusage;
   ProcessInfo info;
-  ThreadId tid;
+  ErrorCode err;
+  pid_t tid;
 
   // We have at least one thread when we start waiting on a process.
   DS2ASSERT(!_threads.empty());
 
-  while (!_threads.empty()) {
-    tid = blocking_wait4(-1, &status, P_ALL | (hang ? 0 : WNOHANG), &rusage);
-    DS2LOG(Target, Debug, "wait tid=%d status=%#x", tid, status);
+continue_waiting:
+  err = super::wait(&status, hang);
+  if (err != kSuccess)
+    return err;
 
-    if (tid <= 0)
-      return kErrorProcessNotFound;
+  _ptrace.getLwpInfo(_pid, &lwpinfo);
 
-    auto threadIt = _threads.find(tid);
+  fprintf(stderr, "stopped, status=%d\n", status);
+  fprintf(stderr, "lwpinfo id=%d\n", lwpinfo.pl_lwpid);
+  fprintf(stderr, "lwpinfo siginfo si_code=%d\n", lwpinfo.pl_siginfo.si_code);
+  fprintf(stderr, "lwpinfo flags=0x%08x\n", lwpinfo.pl_flags);
 
-    if (threadIt == _threads.end()) {
-      //
-      // A new thread has appeared that we didn't know about. Create the
-      // Thread object (this call has side effects that save the Thread in
-      // the Process therefore we don't need to retain the pointer),
-      // resume the thread and just continue waiting.
-      //
-      // There's no need to call traceThat() on the newly created thread
-      // here because the ptrace flags are inherited when new threads
-      // are created.
-      //
-      DS2LOG(Target, Debug, "creating new thread tid=%d", tid);
-      new Thread(this, tid);
+  tid = lwpinfo.pl_lwpid;
+  auto threadIt = _threads.find(tid);
 
-      if (getInfo(info) != kSuccess) {
-        DS2LOG(Target, Error, "couldn't get process info for pid %d", _pid);
-        goto continue_waiting;
-      }
+  DS2ASSERT(threadIt != _threads.end());
+  _currentThread = threadIt->second;
+  _currentThread->updateTrapInfo(status, &lwpinfo);
 
-      ptrace().resume(ProcessThreadId(_pid, tid), info, 0);
+  switch (_currentThread->_trap.event) {
+  case TrapInfo::kEventNone:
+    switch (_currentThread->_trap.reason) {
+    case TrapInfo::kReasonNone:
+      ptrace().resume(ProcessThreadId(_pid, tid), info);
       goto continue_waiting;
-    } else {
-      _currentThread = threadIt->second;
+    case TrapInfo::kReasonThreadExit:
+      //
+      // We should never have threads stopped for no reason
+      // here, except when creating a thread. If we do, we can
+      // print an error message and keep running as a
+      // best-effort solution.
+      //
+      DS2LOG(Target, Error, "thread %d stopped for no reason", tid);
+
+    // Fall-through.
+
+    case TrapInfo::kReasonThreadNew:
+      // Rescan threads
+      ProcStat::EnumerateThreads(_pid, [&](pid_t tid) {
+          //
+          // Attach the thread to the debugger and wait
+          //
+          auto threadIt = _threads.find(tid);
+          if (threadIt != _threads.end())
+            return;
+
+          Thread *thread = new Thread(this, tid);
+          if (ptrace().attach(tid) == kSuccess) {
+            int status;
+
+            ptrace().wait(tid, true, &status);
+            _ptrace.getLwpInfo(tid, &lwpinfo);
+            ptrace().traceThat(tid);
+            thread->updateTrapInfo(status, &lwpinfo);
+          }
+      });
+
+
+      ptrace().resume(ProcessThreadId(_pid, tid), info);
+      goto continue_waiting;
     }
 
-    _currentThread->updateTrapInfo(status);
+  case TrapInfo::kEventExit:
+  case TrapInfo::kEventKill:
+  case TrapInfo::kEventCoreDump:
+    DS2LOG(Target, Debug, "thread %d is exiting", tid);
 
-    switch (_currentThread->_trap.event) {
-    case TrapInfo::kEventNone:
-      switch (_currentThread->_trap.reason) {
-      case TrapInfo::kReasonNone:
-      case TrapInfo::kReasonThreadExit:
-        //
-        // We should never have threads stopped for no reason
-        // here, except when creating a thread. If we do, we can
-        // print an error message and keep running as a
-        // best-effort solution.
-        //
-        DS2LOG(Target, Error, "thread %d stopped for no reason", tid);
-
-      // Fall-through.
-
-      case TrapInfo::kReasonThreadNew:
-        //
-        // This thread has been stopped because it called
-        // clone(2). Just resume it.
-        //
-        if (getInfo(info) != kSuccess) {
-          DS2LOG(Target, Error, "couldn't get process info for pid %d", _pid);
-          goto continue_waiting;
-        }
-
-        ptrace().resume(ProcessThreadId(_pid, tid), info);
-        goto continue_waiting;
-      }
-
-    case TrapInfo::kEventExit:
-    case TrapInfo::kEventKill:
-    case TrapInfo::kEventCoreDump:
-      DS2LOG(Target, Debug, "thread %d is exiting", tid);
-
-      //
-      // Killing the main thread?
-      //
-      // Note(sas): This might be buggy; the main thread exiting
-      // doesn't mean that the process is dying.
-      //
-      if (tid == _pid && _threads.size() == 1) {
-        DS2LOG(Target, Debug, "last thread is exiting");
-        break;
-      }
-
-      //
-      // Remove and release the thread associated with this pid.
-      //
-      removeThread(tid);
-      goto continue_waiting;
-
-    case TrapInfo::kEventTrap:
-      DS2LOG(Target, Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
-             strsignal(WSTOPSIG(status)));
+    //
+    // Killing the main thread?
+    //
+    // Note(sas): This might be buggy; the main thread exiting
+    // doesn't mean that the process is dying.
+    //
+    if (tid == _pid && _threads.size() == 1) {
+      DS2LOG(Target, Debug, "last thread is exiting");
       break;
-
-    case TrapInfo::kEventStop:
-      if (getInfo(info) != kSuccess) {
-        DS2LOG(Target, Error, "couldn't get process info for pid %d", _pid);
-        goto continue_waiting;
-      }
-
-      signal = _currentThread->_trap.signal;
-
-      if (signal == SIGSTOP || signal == SIGCHLD || signal == SIGRTMIN) {
-        //
-        // Silently ignore SIGSTOP, SIGCHLD and SIGRTMIN (this
-        // last one used for thread cancellation) and continue.
-        //
-        // Note(oba): The SIGRTMIN defines expands to a glibc
-        // call, this due to the fact the POSIX standard does
-        // not mandate that SIGRT* defines to be user-land
-        // constants.
-        //
-        // Note(sas): This is probably partially dead code as
-        // ptrace().step() doesn't work on ARM.
-        //
-        // Note(sas): Single-step detection should be higher up, not
-        // only for SIGSTOP, SIGCHLD and SIGRTMIN, but for every
-        // signal that we choose to ignore.
-        //
-        bool stepping = (_currentThread->state() == Thread::kStepped);
-
-        if (signal == SIGSTOP) {
-          signal = 0;
-        } else {
-          DS2LOG(Target, Debug,
-                 "%s due to special signal, tid=%d status=%#x signal=%s",
-                 stepping ? "stepping" : "resuming", tid, status,
-                 strsignal(signal));
-        }
-
-        ErrorCode error;
-        if (stepping) {
-          error = ptrace().step(ProcessThreadId(_pid, tid), info, signal);
-        } else {
-          error = ptrace().resume(ProcessThreadId(_pid, tid), info, signal);
-        }
-
-        if (error != kSuccess) {
-          DS2LOG(Target, Warning, "cannot resume thread %d error=%d", tid,
-                 error);
-        }
-
-        goto continue_waiting;
-      } else if (_passthruSignals.find(signal) != _passthruSignals.end()) {
-        ptrace().resume(ProcessThreadId(_pid, tid), info, signal);
-        goto continue_waiting;
-      } else {
-        //
-        // This is a signal that we want to transmit back to the
-        // debugger.
-        //
-        break;
-      }
     }
 
+    //
+    // Remove and release the thread associated with this pid.
+    //
+    removeThread(tid);
+    goto continue_waiting;
+
+  case TrapInfo::kEventTrap:
+    DS2LOG(Target, Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
+           strsignal(WSTOPSIG(status)));
     break;
 
-  continue_waiting:
-    _currentThread = nullptr;
-    continue;
+  case TrapInfo::kEventStop:
+    if (getInfo(info) != kSuccess) {
+      DS2LOG(Target, Error, "couldn't get process info for pid %d", _pid);
+      goto continue_waiting;
+    }
+
+    signal = _currentThread->_trap.signal;
+
+    if (signal == SIGSTOP || signal == SIGCHLD || signal == SIGRTMIN) {
+      //
+      // Silently ignore SIGSTOP, SIGCHLD and SIGRTMIN (this
+      // last one used for thread cancellation) and continue.
+      //
+      // Note(oba): The SIGRTMIN defines expands to a glibc
+      // call, this due to the fact the POSIX standard does
+      // not mandate that SIGRT* defines to be user-land
+      // constants.
+      //
+      // Note(sas): This is probably partially dead code as
+      // ptrace().step() doesn't work on ARM.
+      //
+      // Note(sas): Single-step detection should be higher up, not
+      // only for SIGSTOP, SIGCHLD and SIGRTMIN, but for every
+      // signal that we choose to ignore.
+      //
+      bool stepping = (_currentThread->state() == Thread::kStepped);
+
+      if (signal == SIGSTOP) {
+        signal = 0;
+      } else {
+        DS2LOG(Target, Debug,
+               "%s due to special signal, tid=%d status=%#x signal=%s",
+               stepping ? "stepping" : "resuming", tid, status,
+               strsignal(signal));
+      }
+
+      ErrorCode error;
+      if (stepping) {
+        error = ptrace().step(ProcessThreadId(_pid, tid), info, signal);
+      } else {
+        error = ptrace().resume(ProcessThreadId(_pid, tid), info, signal);
+      }
+
+      if (error != kSuccess) {
+        DS2LOG(Target, Warning, "cannot resume thread %d error=%d", tid,
+               error);
+      }
+
+      goto continue_waiting;
+    } else if (_passthruSignals.find(signal) != _passthruSignals.end()) {
+      ptrace().resume(ProcessThreadId(_pid, tid), info, signal);
+      goto continue_waiting;
+    } else {
+      //
+      // This is a signal that we want to transmit back to the
+      // debugger.
+      //
+      break;
+    }
   }
 
-  if (!(WIFEXITED(status) || WIFSIGNALED(status)) || tid != _pid) {
+  if (!(WIFEXITED(status) || WIFSIGNALED(status))) {
     //
     // Suspend the process, this must be done after updating
     // the thread trap info.
@@ -331,7 +300,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
     suspend();
   }
 
-  if ((WIFEXITED(status) || WIFSIGNALED(status)) && tid == _pid) {
+  if ((WIFEXITED(status) || WIFSIGNALED(status))) {
     _terminated = true;
   }
 
@@ -348,25 +317,6 @@ ErrorCode Process::terminate() {
     _terminated = !super::isAlive();
   }
   return error;
-}
-
-bool Process::isAlive() const {
-  if (_terminated)
-    return false;
-
-  auto it = _threads.find(_pid);
-  if (it == _threads.end())
-    return false;
-
-  switch (it->second->state()) {
-  case Thread::kInvalid:
-  case Thread::kTerminated:
-    return false;
-  default:
-    break;
-  }
-
-  return super::isAlive();
 }
 
 ErrorCode Process::suspend() {
@@ -409,28 +359,6 @@ ErrorCode Process::suspend() {
       removeThread(thread->tid());
     }
   }
-
-  return kSuccess;
-}
-
-ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
-  enumerateThreads([&](Thread *thread) {
-    if (excluded.find(thread) != excluded.end())
-      return;
-
-    if (thread->state() == Thread::kStopped ||
-        thread->state() == Thread::kStepped) {
-      Architecture::CPUState state;
-      thread->readCPUState(state);
-      DS2LOG(Target, Debug, "resuming tid %d from pc %#llx", thread->tid(),
-             (unsigned long long)state.pc());
-      ErrorCode error = thread->resume(signal);
-      if (error != kSuccess) {
-        DS2LOG(Target, Warning, "failed resuming tid %d, error=%d",
-               thread->tid(), error);
-      }
-    }
-  });
 
   return kSuccess;
 }

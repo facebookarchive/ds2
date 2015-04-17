@@ -64,6 +64,9 @@ public:
                            Address const &address = Address());
 
 public:
+  virtual ErrorCode getLwpInfo(ProcessThreadId const &ptid, struct ptrace_lwpinfo *lwpinfo);
+
+public:
   virtual ErrorCode getEventPid(ProcessThreadId const &ptid, ProcessId &pid);
 
 public:
@@ -73,11 +76,11 @@ protected:
   void initCPUState(ProcessId pid);
   void doneCPUState();
 
+protected:
   template <typename CommandType, typename AddrType, typename DataType>
   long wrapPtrace(CommandType request, pid_t pid, AddrType addr,
                   DataType data) {
     typedef int ptrace_request_t;
-    fprintf(stderr, "ptrace(req=%d,pid=%d)\n", request, pid);
     return ::ptrace(static_cast<ptrace_request_t>(request), pid,
                     (char *)(uintptr_t) addr, (int)(uintptr_t) data);
   }

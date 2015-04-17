@@ -23,6 +23,7 @@ class Thread : public ds2::Target::POSIX::Thread {
 protected:
   friend class Process;
   Thread(Process *process, ThreadId tid);
+  int _lastSyscallNumber;
 
 public:
   virtual ~Thread();
@@ -42,7 +43,7 @@ public:
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state);
 
 protected:
-  virtual ErrorCode updateTrapInfo(int waitStatus);
+  virtual ErrorCode updateTrapInfo(int waitStatus, struct ptrace_lwpinfo *lwpinfo);
   virtual void updateState();
 
 private:

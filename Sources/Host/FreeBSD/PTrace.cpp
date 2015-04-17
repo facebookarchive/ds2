@@ -43,7 +43,6 @@ ErrorCode PTrace::traceThat(ProcessId pid) {
   if (pid <= 0)
     return kErrorInvalidArgument;
 
-  // XXX: probably should set PT_FOLLOW_FORK here
   return kSuccess;
 }
 
@@ -203,7 +202,7 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
     pid = ptid.pid;
   }
 
-  fprintf(stderr, "ptrace::step(pid=%d)\n", pid);
+  fprintf(stderr, "ptrace::step(pid=%d, address=0x%16llx)\n", pid, address.value());
   //
   // Continuation from address?
   //
@@ -249,8 +248,28 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
     addr = (caddr_t)address.value();
   }
 
-  if (wrapPtrace(PT_CONTINUE, pid, addr, signal) < 0)
+  if (wrapPtrace(PT_SYSCALL, pid, addr, signal) < 0)
     return TranslateErrno();
+
+  return kSuccess;
+}
+
+ErrorCode PTrace::getLwpInfo(ProcessThreadId const &ptid, struct ptrace_lwpinfo *lwpinfo) {
+  pid_t pid;
+
+  if (!ptid.valid())
+    return kErrorInvalidArgument;
+
+  if (!(ptid.tid <= kAnyThreadId)) {
+    pid = ptid.tid;
+  } else {
+    pid = ptid.pid;
+  }
+
+  if (wrapPtrace(PT_LWPINFO, pid, lwpinfo, sizeof(struct ptrace_lwpinfo)) < 0) {
+    fprintf(stderr, "PT_LWPINFO failed: %d\n", errno);
+    return TranslateErrno();
+  }
 
   return kSuccess;
 }

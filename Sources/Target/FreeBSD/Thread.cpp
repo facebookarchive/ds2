@@ -19,6 +19,8 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
+#include <sys/syscall.h>
+#include <DebugServer2/Architecture/X86_64/CPUState.h>
 
 #define super ds2::Target::POSIX::Thread
 
@@ -33,6 +35,7 @@ Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {
   // Initially the thread is stopped.
   //
   _state = kStopped;
+  _lastSyscallNumber = -1;
 }
 
 Thread::~Thread() {}
@@ -43,6 +46,7 @@ ErrorCode Thread::terminate() {
 }
 
 ErrorCode Thread::suspend() {
+  struct ptrace_lwpinfo lwpinfo;
   ErrorCode error = kSuccess;
   if (_state == kRunning) {
     error =
@@ -59,7 +63,8 @@ ErrorCode Thread::suspend() {
       return error;
     }
 
-    updateTrapInfo(status);
+    process()->_ptrace.getLwpInfo(ProcessThreadId(process()->pid(), tid()), &lwpinfo);
+    updateTrapInfo(status, &lwpinfo);
   }
 
   if (_state == kTerminated) {
@@ -162,76 +167,40 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
       ProcessThreadId(process()->pid(), tid()), info, state);
 }
 
-ErrorCode Thread::updateTrapInfo(int waitStatus) {
-  ErrorCode error = kSuccess;
-  siginfo_t si;
+ErrorCode Thread::updateTrapInfo(int waitStatus, struct ptrace_lwpinfo *lwpinfo) {
+  ProcessThreadId ptid(process()->pid(), tid());
 
   super::updateTrapInfo(waitStatus);
 
-  //
-  // When a thread traced with PTRACE_O_TRACECLONE calls clone(2), it (the
-  // caller of clone(2)) is stopped with a SIGTRAP, and control is given back
-  // to the tracer (us). The wait(2) status will then be constructed so that
-  //     status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))
-  // which results in WIFSTOPPED(status) == true and WSTOPSIG(status) ==
-  // SIGTRAP.
-  // We can now convert back kEventTrap to kEventStop and mark the reason as
-  // kReasonThreadNew.
-  //
-  #if 0
-  if (_trap.event == TrapInfo::kEventTrap &&
-      waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) {
-    _trap.event = TrapInfo::kEventStop;
-    _trap.reason = TrapInfo::kReasonThreadNew;
-  }
-  #endif
-
-  updateState(true);
-
-  if (_trap.event == TrapInfo::kEventStop) {
-    ProcessThreadId ptid(process()->pid(), tid());
-
-    error = process()->ptrace().getSigInfo(ptid, si);
-    if (error != kSuccess) {
-      DS2LOG(Target, Warning, "unable to get siginfo_t for tid %d, error=%s",
-             tid(), strerror(errno));
-      return error;
-    }
-
-    //
-    // These are the reasons why we might want to mark a stopped thread as
-    // being stopped for "no reason" (stopped by the debugger or debug
-    // server):
-    // (1) we sent the thread a SIGSTOP (with tkill) to interrupt it e.g.:
-    //     a thread hits a breakpoint, we have to stop every other thread;
-    // (2) the inferior received a SIGSTOP because of ptrace attach;
-    // (3) a thread has just been created and is waiting at entry.
-    //
-    if (/*si.si_code == SI_TKILL &&*/ si.si_pid == getpid()) {
-      // The only signal we are supposed to send to the inferior is a
-      // SIGSTOP anyway.
-      DS2ASSERT(_trap.signal == SIGSTOP);
-      _trap.event = TrapInfo::kEventNone;
-    } else if (si.si_code == SI_USER && si.si_pid == 0 &&
-               _trap.signal == SIGSTOP) {
-      _trap.event = TrapInfo::kEventNone;
-    } else if (_trap.reason == TrapInfo::kReasonThreadNew) {
-      _trap.event = TrapInfo::kEventNone;
-    } else {
-      //
-      // This is not a signal that we originated. We can output a
-      // warning if the signal comes from an external source.
-      //
-      if ((si.si_code == SI_USER /* || si.si_code == SI_TKILL*/) &&
-          si.si_pid != tid()) {
-        DS2LOG(Target, Warning,
-               "tid %d received a signal from an external source (sender=%d)",
-               tid(), si.si_pid);
-      }
-    }
+  // Check for syscall entry
+  if (lwpinfo->pl_flags & PL_FLAG_SCE) {
+    Architecture::CPUState state;
+    readCPUState(state);
+    _lastSyscallNumber = state.state64.gp.rax;
+    _trap.event = TrapInfo::kEventNone;
+    _trap.reason = TrapInfo::kReasonNone;
+    fprintf(stderr, "syscall: %d\n", _lastSyscallNumber);
   }
 
-  return error;
+  // Check for syscall exit
+  if (lwpinfo->pl_flags & PL_FLAG_SCX) {
+    if (_lastSyscallNumber == SYS_thr_create || _lastSyscallNumber == SYS_thr_new) {
+      _trap.event = TrapInfo::kEventNone;
+      _trap.reason = TrapInfo::kReasonThreadNew;
+      return kSuccess;
+    }
+
+    if (_lastSyscallNumber == SYS_thr_exit) {
+      _trap.event = TrapInfo::kEventNone;
+      _trap.reason = TrapInfo::kReasonThreadExit;
+      return kSuccess;
+    }
+
+    _trap.event = TrapInfo::kEventNone;
+    _trap.reason = TrapInfo::kReasonNone;
+  }
+
+  return kSuccess;
 }
 
 void Thread::updateState() { updateState(false); }
@@ -246,8 +215,6 @@ void Thread::updateState(bool force) {
 
   ProcStat::GetThreadState(_process->pid(), tid(), state, cpu);
   _trap.core = cpu;
-
-  fprintf(stderr, "thread %d state=%d\n", tid(), state);
 
   switch (state) {
   case Host::FreeBSD::kProcStateDead:
