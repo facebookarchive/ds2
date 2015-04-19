@@ -114,7 +114,7 @@ ErrorCode Process::attach(int waitStatus) {
           ptrace().wait(tid, true, &status);
           _ptrace.getLwpInfo(tid, &lwpinfo);
           ptrace().traceThat(tid);
-          thread->updateTrapInfo(status, &lwpinfo);
+          thread->updateTrapInfo(status);
         }
       });
     }
@@ -125,7 +125,7 @@ ErrorCode Process::attach(int waitStatus) {
   //
   _ptrace.getLwpInfo(_pid, &lwpinfo);
   _currentThread = new Thread(this, lwpinfo.pl_lwpid);
-  _currentThread->updateTrapInfo(waitStatus, &lwpinfo);
+  _currentThread->updateTrapInfo(waitStatus);
 
 
   return kSuccess;
@@ -143,13 +143,27 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
   DS2ASSERT(!_threads.empty());
 
 continue_waiting:
+  fprintf(stderr, "Process::wait(rstatus=%p, hang=%d)\n", rstatus, hang);
   err = super::wait(&status, hang);
   if (err != kSuccess)
     return err;
 
-  _ptrace.getLwpInfo(_pid, &lwpinfo);
-
   fprintf(stderr, "stopped, status=%d\n", status);
+
+  if (WIFEXITED(status)) {
+    err = super::wait(&status, true);
+    fprintf(stderr, "exit status=%d\n", status);
+    _currentThread->updateTrapInfo(status);
+    _terminated = true;
+    if (rstatus != nullptr) {
+      *rstatus = status;
+    }
+
+    return kSuccess;
+  }
+
+
+  _ptrace.getLwpInfo(_pid, &lwpinfo);
   fprintf(stderr, "lwpinfo id=%d\n", lwpinfo.pl_lwpid);
   fprintf(stderr, "lwpinfo siginfo si_code=%d\n", lwpinfo.pl_siginfo.si_code);
   fprintf(stderr, "lwpinfo flags=0x%08x\n", lwpinfo.pl_flags);
@@ -159,7 +173,7 @@ continue_waiting:
 
   DS2ASSERT(threadIt != _threads.end());
   _currentThread = threadIt->second;
-  _currentThread->updateTrapInfo(status, &lwpinfo);
+  _currentThread->updateTrapInfo(status);
 
   switch (_currentThread->_trap.event) {
   case TrapInfo::kEventNone:
@@ -168,15 +182,11 @@ continue_waiting:
       ptrace().resume(ProcessThreadId(_pid, tid), info);
       goto continue_waiting;
     case TrapInfo::kReasonThreadExit:
-      //
-      // We should never have threads stopped for no reason
-      // here, except when creating a thread. If we do, we can
-      // print an error message and keep running as a
-      // best-effort solution.
-      //
-      DS2LOG(Target, Error, "thread %d stopped for no reason", tid);
+      // Remove thread
+      _threads.erase(tid);
 
-    // Fall-through.
+      ptrace().resume(ProcessThreadId(_pid, tid), info);
+      goto continue_waiting;
 
     case TrapInfo::kReasonThreadNew:
       // Rescan threads
@@ -195,7 +205,7 @@ continue_waiting:
             ptrace().wait(tid, true, &status);
             _ptrace.getLwpInfo(tid, &lwpinfo);
             ptrace().traceThat(tid);
-            thread->updateTrapInfo(status, &lwpinfo);
+            thread->updateTrapInfo(status);
           }
       });
 

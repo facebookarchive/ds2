@@ -202,6 +202,8 @@ ErrorCode ProcessBase::afterResume() {
   if (!isAlive())
     return kSuccess;
 
+  DS2LOG(Target, Info, "process still alive, _pid=%d", _pid);
+
   BreakpointManager *bpm = breakpointManager();
 
   //

@@ -20,6 +20,7 @@
 #include <cstdio>
 #include <cstring>
 #include <sys/syscall.h>
+#include <sys/wait.h>
 #include <DebugServer2/Architecture/X86_64/CPUState.h>
 
 #define super ds2::Target::POSIX::Thread
@@ -63,8 +64,7 @@ ErrorCode Thread::suspend() {
       return error;
     }
 
-    process()->_ptrace.getLwpInfo(ProcessThreadId(process()->pid(), tid()), &lwpinfo);
-    updateTrapInfo(status, &lwpinfo);
+    updateTrapInfo(status);
   }
 
   if (_state == kTerminated) {
@@ -167,32 +167,35 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
       ProcessThreadId(process()->pid(), tid()), info, state);
 }
 
-ErrorCode Thread::updateTrapInfo(int waitStatus, struct ptrace_lwpinfo *lwpinfo) {
-  ProcessThreadId ptid(process()->pid(), tid());
+ErrorCode Thread::updateTrapInfo(int waitStatus) {
+  struct ptrace_lwpinfo lwpinfo;
 
   super::updateTrapInfo(waitStatus);
 
+  if (process()->_ptrace.getLwpInfo(process()->pid(), &lwpinfo) != kSuccess)
+    return kSuccess;
+
   // Check for syscall entry
-  if (lwpinfo->pl_flags & PL_FLAG_SCE) {
+  if (lwpinfo.pl_flags & PL_FLAG_SCE) {
     Architecture::CPUState state;
     readCPUState(state);
     _lastSyscallNumber = state.state64.gp.rax;
     _trap.event = TrapInfo::kEventNone;
     _trap.reason = TrapInfo::kReasonNone;
     fprintf(stderr, "syscall: %d\n", _lastSyscallNumber);
-  }
-
-  // Check for syscall exit
-  if (lwpinfo->pl_flags & PL_FLAG_SCX) {
-    if (_lastSyscallNumber == SYS_thr_create || _lastSyscallNumber == SYS_thr_new) {
-      _trap.event = TrapInfo::kEventNone;
-      _trap.reason = TrapInfo::kReasonThreadNew;
-      return kSuccess;
-    }
 
     if (_lastSyscallNumber == SYS_thr_exit) {
       _trap.event = TrapInfo::kEventNone;
       _trap.reason = TrapInfo::kReasonThreadExit;
+      return kSuccess;
+    }
+  }
+
+  // Check for syscall exit
+  if (lwpinfo.pl_flags & PL_FLAG_SCX) {
+    if (_lastSyscallNumber == SYS_thr_create ||_lastSyscallNumber == SYS_thr_new) {
+      _trap.event = TrapInfo::kEventNone;
+      _trap.reason = TrapInfo::kReasonThreadNew;
       return kSuccess;
     }
 
