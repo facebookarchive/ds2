@@ -211,9 +211,10 @@ bool ProcFS::ReadLink(pid_t pid, pid_t tid, char const *what, char *buf,
 void ProcFS::ParseKeyValue(
     FILE *fp, size_t maxsize, char sep,
     std::function<bool(char const *, char const *)> const &cb) {
+  char line[maxsize + 1];
+
   rewind(fp);
 
-  char *line = (char *)malloc(maxsize + 1);
   for (;;) {
     char *ep, *lp = fgets(line, maxsize, fp);
     if (lp == nullptr)
@@ -252,9 +253,10 @@ void ProcFS::ParseKeyValue(
 
 void ProcFS::ParseValues(FILE *fp, size_t maxsize, char sep, bool includeSep,
                          std::function<bool(size_t, char const *)> const &cb) {
+  char line[maxsize + 1];
+
   rewind(fp);
 
-  char *line = (char *)malloc(maxsize + 1);
   for (;;) {
     char *ep, *lp = fgets(line, maxsize, fp);
     if (lp == nullptr)
