@@ -1,10 +1,10 @@
 diff --git a/test/dotest.py b/test/dotest.py
-index 227714c..b39ba7e 100755
+index fcfa1f7..8d458ec 100755
 --- a/test/dotest.py
 +++ b/test/dotest.py
-@@ -1358,7 +1358,7 @@ else:
+@@ -1412,7 +1412,7 @@ else:
      lldb.remote_platform_working_dir = None
-     lldb.platfrom_url = None
+     lldb.platform_url = None
  
 -target_platform = lldb.DBG.GetSelectedPlatform().GetTriple().split('-')[2]
 +target_platform = "linux"
@@ -12,13 +12,13 @@ index 227714c..b39ba7e 100755
  # By default, both dsym and dwarf tests are performed.
  # Use @dsym_test or @dwarf_test decorators, defined in lldbtest.py, to mark a test
 diff --git a/test/lldbtest.py b/test/lldbtest.py
-index e80d776..6622761 100644
+index 6887ec5..26a8bf1 100644
 --- a/test/lldbtest.py
 +++ b/test/lldbtest.py
-@@ -684,7 +684,7 @@ def skipUnlessDarwin(func):
-     return skipUnlessPlatform(getDarwinOSTriples())(func)
+@@ -718,7 +718,7 @@ def skipUnlessDarwin(func):
  
  def getPlatform():
+     """Returns the target platform the test suite is running on."""
 -    platform = lldb.DBG.GetSelectedPlatform().GetTriple().split('-')[2]
 +    platform = "linux"
      if platform.startswith('freebsd'):
@@ -37,30 +37,30 @@ index ac0a392..416f47d 100644
          self.init_llgs_test()
          self.buildDwarf()
 diff --git a/test/tools/lldb-server/gdbremote_testcase.py b/test/tools/lldb-server/gdbremote_testcase.py
-index a639b01..558cfed 100644
+index 658487a..6161bc1 100644
 --- a/test/tools/lldb-server/gdbremote_testcase.py
 +++ b/test/tools/lldb-server/gdbremote_testcase.py
-@@ -161,7 +161,7 @@ class GdbRemoteTestCaseBase(TestBase):
+@@ -167,7 +167,7 @@ class GdbRemoteTestCaseBase(TestBase):
+             if not self.debug_monitor_exe:
                  self.skipTest("lldb-server exe not found")
-             dname = os.path.join(os.environ["LLDB_TEST"], os.environ["LLDB_SESSION_DIRNAME"])
  
--        self.debug_monitor_extra_args = ["gdbserver", "-c", "log enable -T -f {}/process-{}.log lldb break process thread".format(dname, self.id()), "-c", "log enable -T -f {}/packets-{}.log gdb-remote packets".format(dname, self.id())]
-+        self.debug_monitor_extra_args = [ "--lldb-compat" ]
+-        self.debug_monitor_extra_args = ["gdbserver"]
++        self.debug_monitor_extra_args = ["--lldb-compat"]
          if use_named_pipe:
              (self.named_pipe_path, self.named_pipe, self.named_pipe_fd) = self.create_named_pipe()
  
-@@ -187,10 +187,6 @@ class GdbRemoteTestCaseBase(TestBase):
+@@ -194,10 +195,6 @@ class GdbRemoteTestCaseBase(TestBase):
          sock = socket.socket()
          logger = self.logger
  
 -        triple = self.dbg.GetSelectedPlatform().GetTriple()
 -        if re.match(".*-.*-.*-android", triple):
--            self.forward_adb_port(self.port, self.port, "forward")
+-            self.forward_adb_port(self.port, self.port, "forward", self.stub_device)
 -
          connect_info = (self.stub_hostname, self.port)
          sock.connect(connect_info)
  
-@@ -224,10 +220,10 @@ class GdbRemoteTestCaseBase(TestBase):
+@@ -231,10 +228,10 @@ class GdbRemoteTestCaseBase(TestBase):
          if lldb.remote_platform:
              commandline_args = self.debug_monitor_extra_args + ["*:{}".format(self.port)]
          else:
@@ -73,7 +73,7 @@ index a639b01..558cfed 100644
          if self.named_pipe_path:
              commandline_args += ["--named-pipe", self.named_pipe_path]
          return commandline_args
-@@ -727,8 +723,11 @@ class GdbRemoteTestCaseBase(TestBase):
+@@ -740,8 +737,11 @@ class GdbRemoteTestCaseBase(TestBase):
                      raise Exception("malformed stub feature: final character {} not in expected set (+,-,?)".format(supported_type))
                  supported_dict[key] = supported_type 
              # Ensure we know the supported element
