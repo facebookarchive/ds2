@@ -71,7 +71,7 @@ bool AsyncProcessWaiter::wait(std::set<ProcessId> const &pids, ProcessId &wpid,
 }
 
 void AsyncProcessWaiter::start() {
-  _thread = std::move(std::thread(&AsyncProcessWaiter::run, this));
+  _thread = std::thread(&AsyncProcessWaiter::run, this);
 }
 
 void AsyncProcessWaiter::run() {

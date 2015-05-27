@@ -417,8 +417,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   }
 
   if (startRedirectThread) {
-    _delegateThread =
-        std::move(std::thread(&ProcessSpawner::redirectionThread, this));
+    _delegateThread = std::thread(&ProcessSpawner::redirectionThread, this);
   }
 
   return kSuccess;

@@ -21,7 +21,7 @@ SessionThread::SessionThread(QueueChannel *channel, Session *session)
 SessionThread::~SessionThread() { _thread.join(); }
 
 void SessionThread::start() {
-  _thread = std::move(std::thread(&SessionThread::run, this));
+  _thread = std::thread(&SessionThread::run, this);
 }
 
 void SessionThread::run() {
