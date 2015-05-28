@@ -22,7 +22,7 @@ git_clone() {
     elif [ -d "$2/.git" ]; then
         cd "$2"
         git reset --hard
-        git pull --rebase
+        git pull
         cd "$OLDPWD"
     else
         die "'$2' exists and is not a git repository."
