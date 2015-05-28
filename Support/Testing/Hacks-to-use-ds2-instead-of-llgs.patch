@@ -1,8 +1,22 @@
 diff --git a/test/dotest.py b/test/dotest.py
-index fcfa1f7..8d458ec 100755
+index 4926895..a577db0 100755
 --- a/test/dotest.py
 +++ b/test/dotest.py
-@@ -1412,7 +1412,7 @@ else:
+@@ -953,11 +953,11 @@ def setupSysPath():
+ 
+     if lldbtest_config.lldbExec and not is_exe(lldbtest_config.lldbExec):
+         print "'{}' is not a path to a valid executable".format(lldbtest_config.lldbExec)
+-        del lldbtest_config.lldbExec
++        lldbtest_config.lldbExec = None
+ 
+     if not lldbtest_config.lldbExec:
+         print "The 'lldb' executable cannot be located.  Some of the tests may not be run as a result."
+-        sys.exit(-1)
++        return
+ 
+     lldbLibDir = os.path.dirname(lldbtest_config.lldbExec)  # confusingly, this is the "bin" directory
+     os.environ["LLDB_LIB_DIR"] = lldbLibDir
+@@ -1285,7 +1285,7 @@ else:
      lldb.remote_platform_working_dir = None
      lldb.platform_url = None
  
@@ -12,23 +26,23 @@ index fcfa1f7..8d458ec 100755
  # By default, both dsym and dwarf tests are performed.
  # Use @dsym_test or @dwarf_test decorators, defined in lldbtest.py, to mark a test
 diff --git a/test/lldbtest.py b/test/lldbtest.py
-index 6887ec5..26a8bf1 100644
+index 919d4d6..d9286c6 100644
 --- a/test/lldbtest.py
 +++ b/test/lldbtest.py
-@@ -718,7 +718,7 @@ def skipUnlessDarwin(func):
+@@ -735,7 +735,7 @@ def skipUnlessDarwin(func):
  
  def getPlatform():
-     """Returns the target platform the test suite is running on."""
+     """Returns the target platform which the tests are running on."""
 -    platform = lldb.DBG.GetSelectedPlatform().GetTriple().split('-')[2]
 +    platform = "linux"
      if platform.startswith('freebsd'):
          platform = 'freebsd'
      return platform
 diff --git a/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py b/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py
-index ac0a392..416f47d 100644
+index 55cff08..e87aa01 100644
 --- a/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py
 +++ b/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py
-@@ -125,6 +125,7 @@ class TestGdbRemoteThreadsInStopReply(gdbremote_testcase.GdbRemoteTestCaseBase):
+@@ -127,6 +127,7 @@ class TestGdbRemoteThreadsInStopReply(gdbremote_testcase.GdbRemoteTestCaseBase):
  
      @llgs_test
      @dwarf_test
@@ -37,19 +51,19 @@ index ac0a392..416f47d 100644
          self.init_llgs_test()
          self.buildDwarf()
 diff --git a/test/tools/lldb-server/gdbremote_testcase.py b/test/tools/lldb-server/gdbremote_testcase.py
-index 658487a..6161bc1 100644
+index 773dded..9ee2fd4 100644
 --- a/test/tools/lldb-server/gdbremote_testcase.py
 +++ b/test/tools/lldb-server/gdbremote_testcase.py
-@@ -167,7 +167,7 @@ class GdbRemoteTestCaseBase(TestBase):
+@@ -165,7 +165,7 @@ class GdbRemoteTestCaseBase(TestBase):
              if not self.debug_monitor_exe:
                  self.skipTest("lldb-server exe not found")
  
 -        self.debug_monitor_extra_args = ["gdbserver"]
 +        self.debug_monitor_extra_args = ["--lldb-compat"]
-         if use_named_pipe:
-             (self.named_pipe_path, self.named_pipe, self.named_pipe_fd) = self.create_named_pipe()
  
-@@ -194,10 +195,6 @@ class GdbRemoteTestCaseBase(TestBase):
+         if len(lldbtest_config.channels) > 0:
+             self.debug_monitor_extra_args.append("--log-file={}-server.log".format(self.log_basename))
+@@ -197,10 +197,6 @@ class GdbRemoteTestCaseBase(TestBase):
          sock = socket.socket()
          logger = self.logger
  
@@ -60,7 +74,7 @@ index 658487a..6161bc1 100644
          connect_info = (self.stub_hostname, self.port)
          sock.connect(connect_info)
  
-@@ -231,10 +228,10 @@ class GdbRemoteTestCaseBase(TestBase):
+@@ -234,10 +230,10 @@ class GdbRemoteTestCaseBase(TestBase):
          if lldb.remote_platform:
              commandline_args = self.debug_monitor_extra_args + ["*:{}".format(self.port)]
          else:
@@ -73,7 +87,7 @@ index 658487a..6161bc1 100644
          if self.named_pipe_path:
              commandline_args += ["--named-pipe", self.named_pipe_path]
          return commandline_args
-@@ -740,8 +737,11 @@ class GdbRemoteTestCaseBase(TestBase):
+@@ -744,8 +740,11 @@ class GdbRemoteTestCaseBase(TestBase):
                      raise Exception("malformed stub feature: final character {} not in expected set (+,-,?)".format(supported_type))
                  supported_dict[key] = supported_type 
              # Ensure we know the supported element

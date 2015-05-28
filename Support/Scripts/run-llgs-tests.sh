@@ -26,7 +26,7 @@ git_clone "$LLVM_REPO"  llvm
 git_clone "$CLANG_REPO" llvm/tools/clang
 git_clone "$LLDB_REPO"  llvm/tools/lldb
 
-for p in "Hacks-to-use-ds2-instead-of-llgs" "Use-gcc-instead-of-clang-for-testing"; do
+for p in "Hacks-to-use-ds2-instead-of-llgs"; do
   echo "Applying $p.patch"
   patch -d "llvm/tools/lldb" -p1 <"$(dirname "$0")/../Testing/$p.patch"
 done
