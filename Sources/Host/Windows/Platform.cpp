@@ -33,11 +33,10 @@ namespace ds2 {
 namespace Host {
 
 void Platform::Initialize() {
-  // Disable buffering on standard streams. When running on Windows,
-  // output seems to be block-buffered, which is a problem if we want
+  // Disable buffering on stdout (where we print logs). When running on
+  // Windows, output seems to be block-buffered, which is a problem if we want
   // to see output as it gets produced.
   setvbuf(stdout, nullptr, _IONBF, 0);
-  setvbuf(stderr, nullptr, _IONBF, 0);
 
   // Initialize the socket subsystem.
   WSADATA wsaData;

@@ -23,7 +23,13 @@ namespace {
 uint64_t sLogMask;
 int sLogLevel;
 bool sColorsEnabled;
+// stderr is handled a bit differently on Windows, especially when running
+// under powershell. We can simply use stdout for log output.
+#if defined(_WIN32)
+FILE *sOutputStream = stdout;
+#else
 FILE *sOutputStream = stderr;
+#endif
 }
 
 namespace ds2 {
