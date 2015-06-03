@@ -9,6 +9,9 @@
 ##
 
 cmake_minimum_required(VERSION 2.8)
+if ("${CMAKE_MAJOR_VERSION}" EQUAL 3)
+  cmake_policy(SET CMP0054 NEW)
+endif ()
 
 project(DebugServer2)
 
@@ -164,7 +167,6 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STR
   set(GCC_FLAGS 1)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   set(MSVC_FLAGS 1)
-  message("Using MSVC flags")
 endif ()
 
 if (GCC_FLAGS)
