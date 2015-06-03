@@ -12,7 +12,7 @@
 
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Target/Windows/Process.h"
+#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 using ds2::Host::ProcessSpawner;
@@ -24,13 +24,55 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
-Process::Process() : Target::ProcessBase() {}
+Process::Process()
+    : Target::ProcessBase(), _handle(nullptr), _terminated(false) {}
 
-Process::~Process() {}
+Process::~Process() { CloseHandle(_handle); }
 
-ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
-  // Nothing to do for now.
-  return super::initialize(pid, flags);
+ErrorCode Process::initialize(ProcessId pid, HANDLE handle, ThreadId tid,
+                              HANDLE threadHandle, uint32_t flags) {
+  int status;
+  ErrorCode error = wait(&status, true);
+  if (error != kSuccess)
+    return error;
+
+  error = super::initialize(pid, flags);
+  if (error != kSuccess)
+    return error;
+
+  _handle = handle;
+
+  _currentThread = new Thread(this, tid, threadHandle);
+  _currentThread->updateTrapInfo();
+
+  return kSuccess;
+}
+
+ErrorCode Process::attach(bool reattach) { return kErrorUnsupported; }
+
+ErrorCode Process::detach() { return kErrorUnsupported; }
+
+ErrorCode Process::terminate() {
+  BOOL result = TerminateProcess(_handle, 0);
+  if (!result)
+    return kErrorUnknown;
+
+  _terminated = true;
+  return kSuccess;
+}
+
+bool Process::isAlive() const { return !_terminated; }
+
+ErrorCode Process::wait(int *status, bool hang) {
+  DEBUG_EVENT de;
+
+  BOOL result = WaitForDebugEvent(&de, hang ? INFINITE : 0);
+  if (!result)
+    return kErrorUnknown;
+
+  auto threadIt = _threads.find(de.dwThreadId);
+
+  return kSuccess;
 }
 
 ErrorCode Process::updateInfo() {
@@ -71,7 +113,6 @@ ErrorCode Process::updateInfo() {
 
 ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   ErrorCode error;
-  ProcessId pid;
 
   //
   // Create the process.
@@ -82,12 +123,13 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   if (error != kSuccess)
     goto fail;
 
-  pid = spawner.pid();
+  DS2LOG(Target, Debug, "created process %d", spawner.pid());
 
   //
   // Wait the process.
   //
-  error = process->initialize(pid, 0);
+  error = process->initialize(spawner.pid(), spawner.handle(), spawner.tid(),
+                              spawner.threadHandle(), 0);
   if (error != kSuccess)
     goto fail;
 

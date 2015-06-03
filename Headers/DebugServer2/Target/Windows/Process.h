@@ -20,22 +20,27 @@ namespace Windows {
 
 class Process : public Target::ProcessBase {
 protected:
+  HANDLE _handle;
+  bool _terminated;
+
+protected:
   Process();
 
 public:
   virtual ~Process();
 
-public:
-  virtual ErrorCode initialize(ProcessId pid, uint32_t flags);
+protected:
+  virtual ErrorCode initialize(ProcessId pid, HANDLE handle, ThreadId tid,
+                               HANDLE threadHandle, uint32_t flags);
 
 public:
-  virtual ErrorCode attach(bool reattach = false) { return kErrorUnsupported; }
-  virtual ErrorCode detach() { return kErrorUnsupported; }
+  virtual ErrorCode attach(bool reattach = false);
+  virtual ErrorCode detach();
 
 public:
   virtual ErrorCode interrupt() { return kErrorUnsupported; }
-  virtual ErrorCode terminate() { return kErrorUnsupported; }
-  virtual bool isAlive() const { return false; }
+  virtual ErrorCode terminate();
+  virtual bool isAlive() const;
 
 public:
   virtual ErrorCode suspend() { return kErrorUnsupported; }
@@ -85,9 +90,7 @@ public:
   void setSignalPass(int signo, bool set) {}
 
 public:
-  virtual ErrorCode wait(int *status = nullptr, bool hang = true) {
-    return kErrorUnsupported;
-  }
+  virtual ErrorCode wait(int *status = nullptr, bool hang = true);
 
 public:
   static Target::Process *Create(Host::ProcessSpawner &spawner);

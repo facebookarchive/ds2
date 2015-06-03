@@ -10,8 +10,8 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Process"
 
-#include "DebugServer2/Target/Linux/Process.h"
-#include "DebugServer2/Target/Linux/Thread.h"
+#include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"

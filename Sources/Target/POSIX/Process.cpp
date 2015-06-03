@@ -137,6 +137,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
     goto fail;
 
   pid = spawner.pid();
+  DS2LOG(Target, Debug, "created process %d", pid);
 
   //
   // Wait the process.
