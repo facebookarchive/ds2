@@ -16,15 +16,16 @@
 LLVM_REPO="https://github.com/llvm-mirror/llvm.git"
 CLANG_REPO="https://github.com/llvm-mirror/clang.git"
 LLDB_REPO="https://github.com/llvm-mirror/lldb.git"
+UPSTREAM_BRANCH="release_36"
 
 source "$(dirname "$0")/common.sh"
 
 [ "$(uname)" == "Linux" ] || die "The lldb-gdbserver test suite requires a Linux host environment."
 [ -x "./ds2" ]            || die "Unable to find a ds2 binary in the current directory."
 
-git_clone "$LLVM_REPO"  llvm
-git_clone "$CLANG_REPO" llvm/tools/clang
-git_clone "$LLDB_REPO"  llvm/tools/lldb
+git_clone "$LLVM_REPO"  llvm              "$UPSTREAM_BRANCH"
+git_clone "$CLANG_REPO" llvm/tools/clang  "$UPSTREAM_BRANCH"
+git_clone "$LLDB_REPO"  llvm/tools/lldb   "$UPSTREAM_BRANCH"
 
 for p in "Hacks-to-use-ds2-instead-of-llgs"; do
   echo "Applying $p.patch"
