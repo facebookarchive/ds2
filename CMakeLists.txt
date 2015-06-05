@@ -113,6 +113,7 @@ set(TARGET_Linux_SOURCES
 
 set(TARGET_Windows_SOURCES
     Sources/Target/Windows/Process.cpp
+    Sources/Target/Windows/Thread.cpp
     )
 
 set(GDB_SOURCES

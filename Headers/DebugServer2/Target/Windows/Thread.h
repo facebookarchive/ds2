@@ -17,7 +17,42 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
-class Thread : public ds2::Target::ThreadBase {};
+class Thread : public ds2::Target::ThreadBase {
+protected:
+  HANDLE _handle;
+
+protected:
+  friend class Process;
+  Thread(Process *process, ThreadId tid, HANDLE handle);
+
+public:
+  virtual ~Thread();
+
+public:
+  virtual ErrorCode terminate() { return kErrorUnsupported; }
+
+public:
+  virtual ErrorCode suspend() { return kErrorUnsupported; }
+
+public:
+  virtual ErrorCode step(int signal = 0, Address const &address = Address()) {
+    return kErrorUnsupported;
+  }
+  virtual ErrorCode resume(int signal = 0, Address const &address = Address()) {
+    return kErrorUnsupported;
+  }
+
+public:
+  virtual ErrorCode readCPUState(Architecture::CPUState &state) {
+    return kErrorUnsupported;
+  }
+  virtual ErrorCode writeCPUState(Architecture::CPUState const &state) {
+    return kErrorUnsupported;
+  }
+
+protected:
+  virtual ErrorCode updateTrapInfo() { return kErrorUnsupported; }
+};
 }
 }
 }
