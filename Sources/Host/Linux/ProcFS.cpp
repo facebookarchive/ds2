@@ -300,28 +300,28 @@ bool ProcFS::ReadUptime(Uptime &uptime) {
   if (fp == nullptr)
     return false;
 
-  ParseValues(fp, 1024, ' ', false,
-              [&](size_t index, char const *value) -> bool {
-    char *end;
+  ParseValues(
+      fp, 1024, ' ', false, [&](size_t index, char const *value) -> bool {
+        char *end;
 
-    switch (index) {
-    case UPTIME_F_RUN_TIME:
-      uptime.run_time.tv_sec = strtoll(value, &end, 0);
-      if (*end++ == '.') {
-        uptime.run_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
-      }
-      break;
+        switch (index) {
+        case UPTIME_F_RUN_TIME:
+          uptime.run_time.tv_sec = strtoll(value, &end, 0);
+          if (*end++ == '.') {
+            uptime.run_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
+          }
+          break;
 
-    case UPTIME_F_IDLE_TIME:
-      uptime.idle_time.tv_sec = strtoll(value, &end, 0);
-      if (*end++ == '.') {
-        uptime.idle_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
-      }
-      break;
-    }
+        case UPTIME_F_IDLE_TIME:
+          uptime.idle_time.tv_sec = strtoll(value, &end, 0);
+          if (*end++ == '.') {
+            uptime.idle_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
+          }
+          break;
+        }
 
-    return true;
-  });
+        return true;
+      });
 
   std::fclose(fp);
   return true;

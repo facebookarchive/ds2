@@ -26,8 +26,7 @@ struct PTracePrivateData {
   uint8_t breakpointCount;
   uint8_t watchpointCount;
 
-  PTracePrivateData()
-      : breakpointCount(0), watchpointCount(0) {}
+  PTracePrivateData() : breakpointCount(0), watchpointCount(0) {}
 };
 
 void PTrace::initCPUState(ProcessId pid) {
@@ -71,7 +70,8 @@ void PTrace::initCPUState(ProcessId pid) {
 
 void PTrace::doneCPUState() { delete _privateData; }
 
-ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
+ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
+                               ProcessInfo const &pinfo,
                                Architecture::CPUState &state) {
   ErrorCode error;
   pid_t pid;

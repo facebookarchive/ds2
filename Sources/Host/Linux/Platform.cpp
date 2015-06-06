@@ -39,20 +39,20 @@ char const *Platform::GetOSVendorName() {
 
   FILE *fp = std::fopen("/etc/lsb-release", "r");
   if (fp != nullptr) {
-    ProcFS::ParseKeyValue(fp, 1024, '=',
-                          [&](char const *key, char const *value) -> bool {
-      if (key == nullptr)
-        return true;
+    ProcFS::ParseKeyValue(
+        fp, 1024, '=', [&](char const *key, char const *value) -> bool {
+          if (key == nullptr)
+            return true;
 
-      if (std::strcmp(key, "DISTRIB_ID") == 0) {
-        vendor = value;
-        // make the vendor lowercase
-        std::transform(vendor.begin(), vendor.end(), vendor.begin(),
-                       static_cast<int (*)(int)>(&std::tolower));
-        return false; // break the loop
-      }
-      return true;
-    });
+          if (std::strcmp(key, "DISTRIB_ID") == 0) {
+            vendor = value;
+            // make the vendor lowercase
+            std::transform(vendor.begin(), vendor.end(), vendor.begin(),
+                           static_cast<int (*)(int)>(&std::tolower));
+            return false; // break the loop
+          }
+          return true;
+        });
     std::fclose(fp);
   } else {
     vendor = "unknown";

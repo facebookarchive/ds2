@@ -94,7 +94,7 @@ protected:
     typedef enum __ptrace_request ptrace_request_t;
 #endif
     return ::ptrace(static_cast<ptrace_request_t>(request), pid,
-                    (void *)(uintptr_t) addr, (void *)(uintptr_t) data);
+                    (void *)(uintptr_t)addr, (void *)(uintptr_t)data);
   }
 
 public:

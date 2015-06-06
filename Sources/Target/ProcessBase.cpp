@@ -40,7 +40,6 @@ ErrorCode ProcessBase::getInfo(ProcessInfo &info) {
   return error;
 }
 
-
 //
 // This is a utility function for detach.
 //

@@ -104,8 +104,8 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
 }
 
 static void DebugMain(ds2::StringCollection const &args,
-                      ds2::EnvironmentBlock const &env, int attachPid,
-                      int port, std::string const &namedPipePath) {
+                      ds2::EnvironmentBlock const &env, int attachPid, int port,
+                      std::string const &namedPipePath) {
   Socket *server = new Socket;
 
   if (!server->create()) {
@@ -203,33 +203,33 @@ static void ListProcesses() {
   printf("%s\n%s\n", "PID    USER       ARCH    NAME",
          "====== ========== ======= ============================");
 
-  Platform::EnumerateProcesses(true, ds2::UserId(),
-                               [&](ds2::ProcessInfo const &info) {
-    std::string pid = ds2::ToString(info.pid);
+  Platform::EnumerateProcesses(
+      true, ds2::UserId(), [&](ds2::ProcessInfo const &info) {
+        std::string pid = ds2::ToString(info.pid);
 
-    std::string user;
-    if (!Platform::GetUserName(info.realUid, user)) {
+        std::string user;
+        if (!Platform::GetUserName(info.realUid, user)) {
 #if !defined(_WIN32)
-      user = ds2::ToString(info.realUid);
+          user = ds2::ToString(info.realUid);
 #else
-      user = "<NONE>";
+          user = "<NONE>";
 #endif
-    }
+        }
 
-    std::string path = info.name;
-    size_t lastsep;
+        std::string path = info.name;
+        size_t lastsep;
 #if defined(_WIN32)
-    lastsep = path.rfind('\\');
+        lastsep = path.rfind('\\');
 #else
-    lastsep = path.rfind('/');
+        lastsep = path.rfind('/');
 #endif
-    if (lastsep != std::string::npos) {
-      path = path.substr(lastsep + 1);
-    }
+        if (lastsep != std::string::npos) {
+          path = path.substr(lastsep + 1);
+        }
 
-    printf("%-6s %-10.10s %-7.7s %s\n", pid.c_str(), user.c_str(),
-           ds2::GetArchName(info.cpuType, info.cpuSubType), path.c_str());
-  });
+        printf("%-6s %-10.10s %-7.7s %s\n", pid.c_str(), user.c_str(),
+               ds2::GetArchName(info.cpuType, info.cpuSubType), path.c_str());
+      });
 
   exit(EXIT_SUCCESS);
 }

@@ -122,10 +122,10 @@ void OptParse::usageDie(std::string const &message) {
 
   std::for_each(_options.begin(), _options.end(),
                 [&help_align](OptionCollection::value_type const &arg) {
-    if (arg.first.size() > help_align) {
-      help_align = arg.first.size();
-    }
-  });
+                  if (arg.first.size() > help_align) {
+                    help_align = arg.first.size();
+                  }
+                });
 
   help_align += 2;
 

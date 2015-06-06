@@ -35,18 +35,15 @@ private:
           {ILL_PRVOPC, "ILL_PRVOPC"},
           {ILL_PRVREG, "ILL_PRVREG"},
           {ILL_COPROC, "ILL_COPROC"},
-          {ILL_BADSTK, "ILL_BADSTK"},
-         }},
+          {ILL_BADSTK, "ILL_BADSTK"}, }},
         {SIGBUS,
          {
           {BUS_ADRALN, "BUS_ADRALN"},
           {BUS_ADRERR, "BUS_ADRERR"},
-          {BUS_OBJERR, "BUS_OBJERR"},
-         }},
+          {BUS_OBJERR, "BUS_OBJERR"}, }},
         {SIGSEGV,
          {
-          {SEGV_MAPERR, "SEGV_MAPERR"}, {SEGV_ACCERR, "SEGV_ACCERR"},
-         }},
+          {SEGV_MAPERR, "SEGV_MAPERR"}, {SEGV_ACCERR, "SEGV_ACCERR"}, }},
     };
     DS2ASSERT(SignalNames.find(si->si_signo) != SignalNames.end());
     DS2ASSERT(SignalCodeNames[si->si_signo].find(si->si_code) !=
