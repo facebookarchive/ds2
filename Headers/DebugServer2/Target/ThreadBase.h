@@ -37,9 +37,7 @@ public:
   virtual ~ThreadBase();
 
 public:
-  inline Process *process() const {
-    return const_cast<ThreadBase *>(this)->_process;
-  }
+  inline Process *process() const { return _process; }
   inline ThreadId tid() const { return _tid; }
   inline TrapInfo const &trapInfo() const { return _trap; }
 
