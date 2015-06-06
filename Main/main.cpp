@@ -217,11 +217,11 @@ static void ListProcesses() {
     }
 
     std::string path = info.name;
-    size_t lastsep =
+    size_t lastsep;
 #if defined(_WIN32)
-        path.rfind('\\');
+    lastsep = path.rfind('\\');
 #else
-        path.rfind('/');
+    lastsep = path.rfind('/');
 #endif
     if (lastsep != std::string::npos) {
       path = path.substr(lastsep + 1);
