@@ -1,6 +1,7 @@
 language: cpp
 
 env:
+  - BUILD_TYPE="Style"
   - BUILD_TYPE="Debug"    TARGET="Android-ARM"
   - BUILD_TYPE="Debug"    TARGET="Android-ARM64"
   - BUILD_TYPE="Debug"    TARGET="Android-X86"
@@ -22,6 +23,7 @@ matrix:
   fast_finish: true
 
 before_install:
+  - if [ "$BUILD_TYPE" = "Style" ];     then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;      fi
   - if [ "$TARGET" = "Linux-ARM" ];     then sudo add-apt-repository -y ppa:linaro-maintainers/toolchain; fi
   - if [ "$TARGET" = "Linux-X86" ];     then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;      fi
   - if [ "$TARGET" = "Linux-X86_64" ];  then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test;      fi
@@ -29,6 +31,7 @@ before_install:
   - sudo apt-get update
 
 install:
+  - if [ "$BUILD_TYPE" = "Style" ];       then ./Support/Scripts/install-ubuntu-clang-format.sh;          fi
   - if [ "$TARGET" = "Android-ARM" ];     then ./Support/Scripts/prepare-android-toolchain.sh "arm";      fi
   - if [ "$TARGET" = "Android-ARM64" ];   then ./Support/Scripts/prepare-android-toolchain.sh "aarch64";  fi
   - if [ "$TARGET" = "Android-X86" ];     then ./Support/Scripts/prepare-android-toolchain.sh "x86";      fi
@@ -45,6 +48,7 @@ before_script:
   - mkdir -p build && cd build
 
 script:
-  - cmake -DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake" -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" ..
-  - make
+  - if [ "$BUILD_TYPE" = "Style" ]; then CLANG_FORMAT=clang-format-3.6 ../Support/Scripts/check-style.sh ../{Sources,Headers,Main}; fi
+  - if [ "$BUILD_TYPE" != "Style" ]; then cmake -DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake" -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" ..; fi
+  - if [ "$BUILD_TYPE" != "Style" ]; then make; fi
   - if [ "$LLGS_TESTS" = "1" ]; then ../Support/Scripts/run-llgs-tests.sh; fi
