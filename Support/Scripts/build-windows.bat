@@ -12,7 +12,9 @@
 :: build the project with msbuild. If running from powershell, use
 ::     ..\Support\Scripts\build-windows.bat
 
+@echo off
+
 set cpu=12
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\tools\vsvars32.bat"
-msbuild /maxcpucount:%cpu% ds2.vcxproj
+msbuild /nologo /verbosity:minimal /maxcpucount:%cpu% ds2.vcxproj
