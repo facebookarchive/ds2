@@ -112,6 +112,7 @@ set(TARGET_Linux_SOURCES
     )
 
 set(TARGET_Windows_SOURCES
+    Sources/Target/Windows/${ARCH_NAME}/Process${ARCH_NAME}.cpp
     Sources/Target/Windows/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Windows/Process.cpp
     Sources/Target/Windows/Thread.cpp

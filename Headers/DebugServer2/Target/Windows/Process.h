@@ -106,13 +106,9 @@ public:
   }
 
 public:
-  virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const {
-    return nullptr;
-  }
+  virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const;
   virtual Architecture::LLDBDescriptor const *
-  getLLDBRegistersDescriptor() const {
-    return nullptr;
-  }
+  getLLDBRegistersDescriptor() const;
 };
 }
 }
