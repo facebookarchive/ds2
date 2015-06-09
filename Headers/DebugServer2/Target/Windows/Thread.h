@@ -43,12 +43,8 @@ public:
   }
 
 public:
-  virtual ErrorCode readCPUState(Architecture::CPUState &state) {
-    return kErrorUnsupported;
-  }
-  virtual ErrorCode writeCPUState(Architecture::CPUState const &state) {
-    return kErrorUnsupported;
-  }
+  virtual ErrorCode readCPUState(Architecture::CPUState &state);
+  virtual ErrorCode writeCPUState(Architecture::CPUState const &state);
 
 protected:
   virtual ErrorCode updateTrapInfo() { return kErrorUnsupported; }

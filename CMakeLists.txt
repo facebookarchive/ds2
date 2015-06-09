@@ -105,13 +105,14 @@ set(TARGET_POSIX_SOURCES
 
 set(TARGET_Linux_SOURCES
     ${TARGET_POSIX_SOURCES}
-    Sources/Target/Linux/Process.cpp
-    Sources/Target/Linux/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Linux/${ARCH_NAME}/Process${ARCH_NAME}.cpp
+    Sources/Target/Linux/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
+    Sources/Target/Linux/Process.cpp
     Sources/Target/Linux/Thread.cpp
     )
 
 set(TARGET_Windows_SOURCES
+    Sources/Target/Windows/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Windows/Process.cpp
     Sources/Target/Windows/Thread.cpp
     )
