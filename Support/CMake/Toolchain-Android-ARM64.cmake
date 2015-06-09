@@ -9,7 +9,7 @@
 ##
 
 set(CMAKE_SYSTEM_NAME Linux)
-set(ARCH_NAME ARM64)
+set(CMAKE_SYSTEM_PROCESSOR ARM64)
 
 set(CMAKE_C_COMPILER /tmp/aosp-toolchain/aarch64-linux-android-4.8/bin/aarch64-linux-android-gcc)
 set(CMAKE_CXX_COMPILER /tmp/aosp-toolchain/aarch64-linux-android-4.8/bin/aarch64-linux-android-g++)

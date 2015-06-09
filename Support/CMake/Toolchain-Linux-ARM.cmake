@@ -9,7 +9,7 @@
 ##
 
 set(CMAKE_SYSTEM_NAME Linux)
-set(ARCH_NAME ARM)
+set(CMAKE_SYSTEM_PROCESSOR ARM)
 
 set(CMAKE_C_COMPILER arm-linux-gnueabi-gcc-4.7)
 set(CMAKE_CXX_COMPILER arm-linux-gnueabi-g++-4.7)

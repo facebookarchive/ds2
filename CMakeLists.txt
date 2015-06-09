@@ -16,10 +16,7 @@ endif ()
 project(DebugServer2)
 
 set(OS_NAME ${CMAKE_SYSTEM_NAME})
-
-if (NOT ARCH_NAME)
-  execute_process(COMMAND uname -m OUTPUT_VARIABLE ARCH_NAME)
-endif ()
+set(ARCH_NAME ${CMAKE_SYSTEM_PROCESSOR})
 
 string(STRIP "${ARCH_NAME}" ARCH_NAME)
 string(TOUPPER "${ARCH_NAME}" ARCH_NAME)
