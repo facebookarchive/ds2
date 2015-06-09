@@ -53,7 +53,7 @@ typedef SSIZE_T ssize_t;
 #define ARCH_SPARC64
 #elif defined(__vax__)
 #define ARCH_VAX
-#elif defined(__x86_64__) || defined(_M_X64)
+#elif defined(__x86_64__) || defined(_M_AMD64)
 #define ARCH_X86_64
 #else
 #error "Architecture not supported."
