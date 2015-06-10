@@ -30,6 +30,16 @@ elseif (ARCH_NAME MATCHES "AMD64")
   set(ARCH_NAME "X86_64")
 endif ()
 
+if (MSVC)
+  if ("${CMAKE_GENERATOR}" MATCHES "ARM")
+    set(ARCH_NAME "ARM")
+  elseif ("${CMAKE_GENERATOR}" MATCHES "Win64")
+    set(ARCH_NAME "X86_64")
+  else ()
+    set(ARCH_NAME "X86")
+  endif ()
+endif ()
+
 set(ARCHITECTURE_COMMON_SOURCES
     Sources/Architecture/RegisterLayout.cpp
     )
