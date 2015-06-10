@@ -31,7 +31,11 @@ struct AVXVector {
 
 struct X87Register {
   union {
+#if !defined(_WIN32)
+    // On Windows, long double and double are the same type.
+    // https://msdn.microsoft.com/en-us/library/9cx8xs15.aspx
     long double f80;
+#endif
     double f64;
     float f32;
     uint64_t mm;
