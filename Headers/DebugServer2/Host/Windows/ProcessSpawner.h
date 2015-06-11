@@ -24,8 +24,10 @@ protected:
   StringCollection _arguments;
   EnvironmentBlock _environment;
   std::string _workingDirectory;
-  HANDLE _processHandle;
   ProcessId _pid;
+  HANDLE _handle;
+  ThreadId _tid;
+  HANDLE _threadHandle;
 
 public:
   ProcessSpawner();
@@ -79,6 +81,9 @@ public:
 
 public:
   inline ProcessId pid() const { return _pid; }
+  inline HANDLE handle() const { return _handle; }
+  inline ThreadId tid() const { return _tid; }
+  inline HANDLE threadHandle() const { return _threadHandle; }
   inline int exitStatus() const { return 0; }
   inline int signalCode() const { return 0; }
 
