@@ -143,11 +143,11 @@ Thread *DebugSessionImpl::findThread(ProcessThreadId const &ptid) const {
   if (_process == nullptr)
     return nullptr;
 
-  if (ptid.pid > 0 && ptid.pid != _process->pid())
+  if (ptid.validPid() && ptid.pid != _process->pid())
     return nullptr;
 
   Thread *thread = nullptr;
-  if (ptid.tid <= 0) {
+  if (!ptid.validTid()) {
     thread = _process->currentThread();
   } else {
     thread = _process->thread(ptid.tid);
@@ -284,7 +284,7 @@ ErrorCode DebugSessionImpl::onQueryAttached(Session &, ProcessId pid,
                                             bool &attachedProcess) {
   if (_process == nullptr)
     return kErrorProcessNotFound;
-  if (pid > 0 && pid != _process->pid())
+  if (pid != kAnyProcessId && pid != kAllProcessId && pid != _process->pid())
     return kErrorProcessNotFound;
 
   attachedProcess = _process->attached();
