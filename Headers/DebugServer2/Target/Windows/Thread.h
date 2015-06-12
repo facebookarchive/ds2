@@ -38,9 +38,7 @@ public:
   virtual ErrorCode step(int signal = 0, Address const &address = Address()) {
     return kErrorUnsupported;
   }
-  virtual ErrorCode resume(int signal = 0, Address const &address = Address()) {
-    return kErrorUnsupported;
-  }
+  virtual ErrorCode resume(int signal = 0, Address const &address = Address());
 
 public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state);

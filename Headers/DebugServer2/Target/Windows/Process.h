@@ -46,9 +46,7 @@ public:
   virtual ErrorCode suspend() { return kErrorUnsupported; }
   virtual ErrorCode
   resume(int signal = 0,
-         std::set<Thread *> const &excluded = std::set<Thread *>()) {
-    return kErrorUnsupported;
-  }
+         std::set<Thread *> const &excluded = std::set<Thread *>());
 
 public:
   ErrorCode readMemory(Address const &address, void *data, size_t length,

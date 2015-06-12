@@ -105,6 +105,7 @@ ErrorCode Thread::step(int signal, Address const &address) {
 
 ErrorCode Thread::resume(int signal, Address const &address) {
   ErrorCode error = kSuccess;
+
   if (_state == kStopped || _state == kStepped) {
     if (signal == 0) {
       switch (_trap.signal) {
@@ -134,6 +135,7 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   } else if (_state == kTerminated) {
     error = kErrorProcessNotFound;
   }
+
   return error;
 }
 

@@ -75,6 +75,28 @@ ErrorCode Process::wait(int *status, bool hang) {
   return kSuccess;
 }
 
+ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
+  enumerateThreads([&](Thread *thread) {
+    if (excluded.find(thread) != excluded.end())
+      return;
+
+    if (thread->state() == Thread::kStopped ||
+        thread->state() == Thread::kStepped) {
+      Architecture::CPUState state;
+      thread->readCPUState(state);
+      DS2LOG(Target, Debug, "resuming tid %d from pc %#llx", thread->tid(),
+             (unsigned long long)state.pc());
+      ErrorCode error = thread->resume(signal);
+      if (error != kSuccess) {
+        DS2LOG(Target, Warning, "failed resuming tid %d, error=%d",
+               thread->tid(), error);
+      }
+    }
+  });
+
+  return kSuccess;
+}
+
 ErrorCode Process::updateInfo() {
   if (_info.pid == _pid)
     return kErrorAlreadyExist;
