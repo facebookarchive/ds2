@@ -29,6 +29,9 @@ protected:
 public:
   virtual ~Process();
 
+public:
+  inline HANDLE handle() const { return _handle; }
+
 protected:
   virtual ErrorCode initialize(ProcessId pid, HANDLE handle, ThreadId tid,
                                HANDLE threadHandle, uint32_t flags);
