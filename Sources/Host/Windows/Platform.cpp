@@ -31,6 +31,7 @@
 
 namespace ds2 {
 namespace Host {
+namespace Windows {
 
 void Platform::Initialize() {
   // Disable buffering on stdout (where we print logs). When running on
@@ -374,6 +375,7 @@ std::string Platform::WideToNarrowString(std::wstring const &s) {
   WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, res.data(), size, nullptr,
                       nullptr);
   return res.data();
+}
 }
 }
 }
