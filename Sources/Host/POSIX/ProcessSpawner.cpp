@@ -13,6 +13,7 @@
 #if defined(__linux__)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #endif
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Utils/Log.h"
 

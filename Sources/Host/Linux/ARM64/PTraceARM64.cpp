@@ -8,8 +8,9 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
+#include "DebugServer2/Host/Linux/PTrace.h"
+#include "DebugServer2/Host/Platform.h"
 
 #define super ds2::Host::POSIX::PTrace
 

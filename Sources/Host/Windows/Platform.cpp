@@ -353,6 +353,17 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
   return true;
 }
 
+ErrorCode Platform::TranslateError(DWORD error) {
+  switch (error) {
+  default:
+    // Make sure we catch unknown error codes during development.
+    DS2ASSERT(false);
+    return kErrorUnknown;
+  }
+}
+
+ErrorCode Platform::TranslateError() { return TranslateError(GetLastError()); }
+
 std::wstring Platform::NarrowToWideString(std::string const &s) {
   std::vector<wchar_t> res;
   int size;

@@ -10,6 +10,7 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -28,11 +29,8 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
                          CONTEXT_EXTENDED_REGISTERS; // SSE registers.
 
   BOOL result = GetThreadContext(_handle, &context);
-  if (!result) {
-    DS2LOG(Target, Error, "Unable to GetThreadContext: %d, handle=%p",
-           GetLastError(), _handle);
-    return kErrorUnknown;
-  }
+  if (!result)
+    return Host::Platform::TranslateError();
 
   // GP registers + segment selectors.
   state.gp.eax = context.Eax;

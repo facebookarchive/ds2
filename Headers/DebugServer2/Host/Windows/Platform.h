@@ -73,6 +73,10 @@ public:
   static bool GetCurrentEnvironment(EnvironmentBlock &env);
 
 public:
+  static ErrorCode TranslateError(DWORD error);
+  static ErrorCode TranslateError();
+
+public:
   static std::wstring NarrowToWideString(std::string const &s);
   static std::string WideToNarrowString(std::wstring const &s);
 };

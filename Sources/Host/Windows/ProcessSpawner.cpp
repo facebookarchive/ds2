@@ -106,13 +106,16 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       wideWorkingDirectory.empty() ? nullptr : wideWorkingDirectory.c_str(),
       &si, &pi);
 
+  if (!result)
+    return Platform::TranslateError();
+
   _pid = pi.dwProcessId;
   _handle = pi.hProcess;
 
   _tid = pi.dwThreadId;
   _threadHandle = pi.hThread;
 
-  return result ? kSuccess : kErrorUnknown;
+  return kSuccess;
 }
 }
 }

@@ -182,6 +182,26 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
 
   return true;
 }
+
+ErrorCode Platform::TranslateError(int error) {
+  switch (error) {
+  case EBUSY:
+    return ds2::kErrorBusy;
+  case ESRCH:
+    return ds2::kErrorProcessNotFound;
+  case EFAULT:
+  case EIO:
+    return ds2::kErrorInvalidAddress;
+  case EPERM:
+    return ds2::kErrorNoPermission;
+  default:
+    // Make sure we catch unknown error codes during development.
+    DS2ASSERT(false);
+    return kErrorUnknown;
+  }
+}
+
+ErrorCode Platform::TranslateError() { return TranslateError(errno); }
 }
 }
 }

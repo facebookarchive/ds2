@@ -10,9 +10,10 @@
 
 #define __DS2_LOG_CLASS_NAME__ "PTrace"
 
-#include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
+#include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
@@ -68,7 +69,7 @@ ErrorCode PTrace::traceMe(bool disableASLR) {
   }
 
   if (wrapPtrace(PTRACE_TRACEME, 0, nullptr, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -86,7 +87,7 @@ ErrorCode PTrace::traceThat(ProcessId pid) {
     DS2LOG(Main, Warning,
            "unable to set PTRACE_O_TRACECLONE on pid %d, error=%s", pid,
            strerror(errno));
-    return TranslateErrno();
+    return Platform::TranslateError();
   }
 
   return kSuccess;
@@ -97,7 +98,7 @@ ErrorCode PTrace::attach(ProcessId pid) {
     return kErrorProcessNotFound;
 
   if (wrapPtrace(PTRACE_ATTACH, pid, nullptr, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -109,7 +110,7 @@ ErrorCode PTrace::detach(ProcessId pid) {
   DS2LOG(Main, Debug, "detaching from pid %llu", (unsigned long long)pid);
 
   if (wrapPtrace(PTRACE_DETACH, pid, nullptr, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -130,7 +131,7 @@ ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {
   }
 
   if (rc < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -184,7 +185,7 @@ ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
   }
 
   if (errno != 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   if (count != nullptr) {
     *count = nread;
@@ -243,7 +244,7 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
   }
 
   if (errno != 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   if (count != nullptr) {
     *count = nwritten;
@@ -265,7 +266,7 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   }
 
   if (tkill(pid, SIGSTOP) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -307,7 +308,7 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   }
 
   if (wrapPtrace(PTRACE_SINGLESTEP, pid, nullptr, signal) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -342,7 +343,7 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   }
 
   if (wrapPtrace(PTRACE_CONT, pid, nullptr, signal) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -361,7 +362,7 @@ ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &epid) {
 
   unsigned long value;
   if (wrapPtrace(PTRACE_GETEVENTMSG, pid, nullptr, &value) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   epid = value;
   return kSuccess;
@@ -380,7 +381,7 @@ ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   }
 
   if (wrapPtrace(PTRACE_GETSIGINFO, pid, nullptr, &si) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -391,7 +392,7 @@ ErrorCode PTrace::readRegisterSet(ProcessThreadId const &ptid, int regSetCode,
 
   if (wrapPtrace(PTRACE_GETREGSET, ptid.validTid() ? ptid.tid : ptid.pid,
                  regSetCode, &iov) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   // On return, the kernel modifies iov.len to return the number of bytes read.
   // This should be exactly equal to the number of bytes requested.
@@ -406,7 +407,7 @@ ErrorCode PTrace::writeRegisterSet(ProcessThreadId const &ptid, int regSetCode,
 
   if (wrapPtrace(PTRACE_SETREGSET, ptid.validTid() ? ptid.tid : ptid.pid,
                  regSetCode, &iov) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }

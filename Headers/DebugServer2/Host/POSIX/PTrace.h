@@ -77,10 +77,6 @@ public:
   virtual ErrorCode execute(ProcessThreadId const &ptid,
                             ProcessInfo const &pinfo, void const *code,
                             size_t length, uint64_t &result);
-
-protected:
-  static ErrorCode TranslateErrno(int error);
-  static ErrorCode TranslateErrno();
 };
 }
 }

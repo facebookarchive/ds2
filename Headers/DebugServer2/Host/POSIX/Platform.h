@@ -58,6 +58,10 @@ public:
 public:
   static ProcessId GetCurrentProcessId();
   static bool GetCurrentEnvironment(EnvironmentBlock &env);
+
+public:
+  static ErrorCode TranslateError(int error);
+  static ErrorCode TranslateError();
 };
 }
 }

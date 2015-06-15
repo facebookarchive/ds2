@@ -11,6 +11,7 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Process"
 
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
@@ -55,7 +56,7 @@ ErrorCode Process::detach() { return kErrorUnsupported; }
 ErrorCode Process::terminate() {
   BOOL result = TerminateProcess(_handle, 0);
   if (!result)
-    return kErrorUnknown;
+    return Platform::TranslateError();
 
   _terminated = true;
   return kSuccess;
@@ -68,7 +69,7 @@ ErrorCode Process::wait(int *status, bool hang) {
 
   BOOL result = WaitForDebugEvent(&de, hang ? INFINITE : 0);
   if (!result)
-    return kErrorUnknown;
+    return Platform::TranslateError();
 
   auto threadIt = _threads.find(de.dwThreadId);
 

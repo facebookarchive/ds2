@@ -10,6 +10,7 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Windows/Thread.h"
 #include "DebugServer2/Utils/Log.h"
@@ -48,7 +49,7 @@ ErrorCode Thread::resume(int signal, Address const &address) {
 
     BOOL result = ContinueDebugEvent(_process->pid(), _tid, DBG_CONTINUE);
     if (!result)
-      return kErrorUnknown;
+      return Host::Platform::TranslateError();
 
     _state = kRunning;
     _trap.signal = 0;

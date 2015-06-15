@@ -86,7 +86,7 @@ ErrorCode PlatformSessionImpl::onFileOpen(Session &, std::string const &path,
                                           uint32_t flags, uint32_t mode,
                                           int &fd) {
   if ((fd = Platform::OpenFile(path, flags, mode)) < 0)
-    return kErrorUnknown;
+    return Platform::TranslateError();
   else
     return kSuccess;
 }
@@ -98,7 +98,7 @@ ErrorCode PlatformSessionImpl::onFileClose(Session &session, int fd) {
   // arbitrary file descriptors.
   //
   if (!Platform::CloseFile(fd))
-    return kErrorUnknown;
+    return Platform::TranslateError();
   else
     return kSuccess;
 }
