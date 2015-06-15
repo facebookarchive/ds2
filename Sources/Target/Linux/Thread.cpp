@@ -186,7 +186,7 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
     _trap.reason = TrapInfo::kReasonThreadNew;
   }
 
-  updateState(true);
+  updateState();
 
   if (_trap.event == TrapInfo::kEventStop) {
     ProcessThreadId ptid(process()->pid(), tid());
@@ -234,9 +234,7 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
   return error;
 }
 
-void Thread::updateState() { updateState(false); }
-
-void Thread::updateState(bool force) {
+void Thread::updateState() {
   if (!process()->isAlive()) {
     _state = kTerminated;
     return;
