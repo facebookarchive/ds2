@@ -65,7 +65,7 @@ public:
 
 protected:
   friend class ProcessBase;
-  virtual void updateState();
+  virtual void updateState() = 0;
 
 protected:
   virtual ErrorCode prepareSoftwareSingleStep(Address const &address);

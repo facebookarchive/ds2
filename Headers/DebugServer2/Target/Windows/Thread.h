@@ -45,6 +45,9 @@ public:
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state);
 
 protected:
+  virtual void updateState() {}
+
+protected:
   virtual ErrorCode updateTrapInfo() { return kErrorUnsupported; }
 };
 }
