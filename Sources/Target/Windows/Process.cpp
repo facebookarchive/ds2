@@ -71,7 +71,37 @@ ErrorCode Process::wait(int *status, bool hang) {
   if (!result)
     return Platform::TranslateError();
 
-  auto threadIt = _threads.find(de.dwThreadId);
+  switch (de.dwDebugEventCode) {
+  case CREATE_PROCESS_DEBUG_EVENT:
+    // Nothing to do when the process is created, just continue.
+    // TODO(sas): We might have to release contents of the
+    // CREATE_PROCESS_DEBUG_INFO structure.
+    return kSuccess;
+
+  case EXIT_PROCESS_DEBUG_EVENT:
+    _terminated = true;
+    return kSuccess;
+
+  case CREATE_THREAD_DEBUG_EVENT:
+    DS2LOG(Target, Fatal, "debug event CREATE_THREAD");
+  case EXIT_THREAD_DEBUG_EVENT:
+    DS2LOG(Target, Fatal, "debug event EXIT_THREAD");
+  case RIP_EVENT:
+    DS2LOG(Target, Fatal, "debug event RIP");
+
+  case EXCEPTION_DEBUG_EVENT:
+  case LOAD_DLL_DEBUG_EVENT:
+  case UNLOAD_DLL_DEBUG_EVENT:
+  case OUTPUT_DEBUG_STRING_EVENT: {
+    auto threadIt = _threads.find(de.dwThreadId);
+    DS2ASSERT(threadIt != _threads.end());
+    threadIt->second->updateState(de);
+  } break;
+
+  default:
+    // We should have an exhaustive list of debug events.
+    DS2ASSERT(false);
+  }
 
   return kSuccess;
 }

@@ -59,6 +59,25 @@ ErrorCode Thread::resume(int signal, Address const &address) {
 
   return error;
 }
+
+void Thread::updateState() {}
+
+void Thread::updateState(DEBUG_EVENT const &de) {
+  DS2ASSERT(de.dwThreadId == _tid);
+
+  switch (de.dwDebugEventCode) {
+  case EXCEPTION_DEBUG_EVENT:
+  case LOAD_DLL_DEBUG_EVENT:
+  case UNLOAD_DLL_DEBUG_EVENT:
+  case OUTPUT_DEBUG_STRING_EVENT:
+    _state = kStopped;
+    break;
+
+  default:
+    // Some debug events need to be handled at the process layer.
+    DS2ASSERT(false);
+  }
+}
 }
 }
 }
