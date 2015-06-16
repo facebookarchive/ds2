@@ -104,9 +104,6 @@ struct TrapInfo {
     kReasonThreadExit,
   };
 
-  ProcessId pid;
-  ThreadId tid;
-
   Event event;
   Reason reason;
   uint32_t core;
@@ -121,9 +118,6 @@ struct TrapInfo {
   TrapInfo() { clear(); }
 
   inline void clear() {
-    pid = kAnyProcessId;
-    tid = kAnyThreadId;
-
     core = 0;
 
     event = kEventNone;

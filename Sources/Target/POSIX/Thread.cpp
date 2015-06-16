@@ -27,9 +27,6 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
 
   _trap.clear();
 
-  _trap.pid = _process->pid();
-  _trap.tid = tid();
-
   if (WIFEXITED(waitStatus)) {
     _trap.event = TrapInfo::kEventExit;
     _trap.status = WEXITSTATUS(waitStatus);

@@ -169,8 +169,8 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
 
   Architecture::CPUState state;
 
-  stop.ptid.pid = trap.pid;
-  stop.ptid.tid = trap.tid;
+  stop.ptid.pid = thread->process()->pid();
+  stop.ptid.tid = thread->tid();
   stop.core = trap.core;
   stop.reason = StopCode::kSignalStop;
   switch (trap.event) {
