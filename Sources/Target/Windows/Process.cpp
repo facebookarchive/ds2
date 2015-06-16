@@ -44,7 +44,6 @@ ErrorCode Process::initialize(ProcessId pid, HANDLE handle, ThreadId tid,
   _handle = handle;
 
   _currentThread = new Thread(this, tid, threadHandle);
-  _currentThread->updateTrapInfo();
 
   return kSuccess;
 }

@@ -185,18 +185,24 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
   case TrapInfo::kEventKill:
   case TrapInfo::kEventCoreDump:
     stop.event = StopCode::kSignalExit;
+#if !defined(_WIN32)
     stop.signal = trap.signal;
+#endif
     readRegisters = false;
     break;
   case TrapInfo::kEventTrap:
     stop.event = StopCode::kSignal;
     stop.reason = StopCode::kBreakpoint;
+#if !defined(_WIN32)
     stop.signal = trap.signal;
+#endif
     break;
   case TrapInfo::kEventStop:
     stop.event = StopCode::kSignal;
     stop.reason = StopCode::kSignalStop;
+#if !defined(_WIN32)
     stop.signal = trap.signal;
+#endif
     break;
   }
 
@@ -786,7 +792,7 @@ DebugSessionImpl::onResume(Session &session,
                action.action == kResumeActionSingleStepWithSignal) {
       error = thread->step(action.signal, action.address);
       if (error != kSuccess) {
-        DS2LOG(DebugSession, Warning, "cannot resume pid %d tid %d, error=%d",
+        DS2LOG(DebugSession, Warning, "cannot step pid %d tid %d, error=%d",
                _process->pid(), thread->tid(), error);
         continue;
       }
@@ -820,7 +826,7 @@ DebugSessionImpl::onResume(Session &session,
       if (excluded.find(thread) == excluded.end()) {
         error = thread->step(globalAction.signal, globalAction.address);
         if (error != kSuccess) {
-          DS2LOG(DebugSession, Warning, "cannot resume pid %d tid %d, error=%d",
+          DS2LOG(DebugSession, Warning, "cannot step pid %d tid %d, error=%d",
                  _process->pid(), thread->tid(), error);
         }
       }

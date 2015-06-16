@@ -314,7 +314,22 @@ std::string StopCode::encode(CompatibilityMode mode) const {
   if (event == kCleanExit) {
     ss << HEX(2) << (status & 0xff) << DEC;
   } else {
+#if !defined(_WIN32)
     ss << HEX(2) << (reason != kNone ? (signal & 0xff) : 0) << DEC;
+#else
+    // Windows doesn't have a notion of signals but the gdb protocol still
+    // needs some sort of emulation for these.
+    ss << HEX(2);
+    switch (reason) {
+    case kBreakpoint:
+      ss << 5;
+      break;
+    default:
+      ss << 0;
+      break;
+    }
+    ss << DEC;
+#endif
   }
 
   //

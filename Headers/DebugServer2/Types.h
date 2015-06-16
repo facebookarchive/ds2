@@ -108,7 +108,9 @@ struct TrapInfo {
   Reason reason;
   uint32_t core;
   int status;
+#if !defined(_WIN32)
   int signal;
+#endif
 
   struct {
     uint32_t type;
@@ -123,7 +125,9 @@ struct TrapInfo {
     event = kEventNone;
     reason = kReasonNone;
     status = 0;
+#if !defined(_WIN32)
     signal = 0;
+#endif
 
     exception.type = 0;
     exception.data[0] = 0;

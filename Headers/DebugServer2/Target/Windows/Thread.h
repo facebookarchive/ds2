@@ -35,9 +35,7 @@ public:
   virtual ErrorCode suspend() { return kErrorUnsupported; }
 
 public:
-  virtual ErrorCode step(int signal = 0, Address const &address = Address()) {
-    return kErrorUnsupported;
-  }
+  virtual ErrorCode step(int signal = 0, Address const &address = Address());
   virtual ErrorCode resume(int signal = 0, Address const &address = Address());
 
 public:
@@ -47,9 +45,6 @@ public:
 protected:
   virtual void updateState();
   virtual void updateState(DEBUG_EVENT const &de);
-
-protected:
-  virtual ErrorCode updateTrapInfo() { return kErrorUnsupported; }
 };
 }
 }

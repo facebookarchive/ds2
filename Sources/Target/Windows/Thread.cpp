@@ -52,7 +52,6 @@ ErrorCode Thread::resume(int signal, Address const &address) {
       return Host::Platform::TranslateError();
 
     _state = kRunning;
-    _trap.signal = 0;
   } else if (_state == kTerminated) {
     error = kErrorProcessNotFound;
   }
@@ -67,10 +66,17 @@ void Thread::updateState(DEBUG_EVENT const &de) {
 
   switch (de.dwDebugEventCode) {
   case EXCEPTION_DEBUG_EVENT:
+    _state = kStopped;
+    _trap.event = TrapInfo::kEventTrap;
+    _trap.reason = TrapInfo::kReasonNone;
+    break;
+
   case LOAD_DLL_DEBUG_EVENT:
   case UNLOAD_DLL_DEBUG_EVENT:
   case OUTPUT_DEBUG_STRING_EVENT:
     _state = kStopped;
+    _trap.event = TrapInfo::kEventNone;
+    _trap.reason = TrapInfo::kReasonNone;
     break;
 
   default:
