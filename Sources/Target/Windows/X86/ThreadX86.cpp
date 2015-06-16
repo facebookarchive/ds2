@@ -21,7 +21,8 @@ namespace Windows {
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   CONTEXT context;
 
-  memset(&context, 0, sizeof context);
+  memset(&context, 0, sizeof(context));
+  // TODO(sas): Handle AVX.
   context.ContextFlags = CONTEXT_INTEGER |           // GP registers.
                          CONTEXT_CONTROL |           // Some more GP + cs/ss.
                          CONTEXT_SEGMENTS |          // Data segment selectors.
@@ -87,7 +88,36 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
 }
 
 ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
-  return kErrorUnsupported;
+  CONTEXT context;
+
+  memset(&context, 0, sizeof(context));
+  // TODO(sas): Handle floats, SSE and AVX.
+  context.ContextFlags = CONTEXT_INTEGER | // GP registers.
+                         CONTEXT_CONTROL | // Some more GP + cs/ss.
+                         CONTEXT_SEGMENTS; // Data segment selectors.
+
+  context.Eax = state.gp.eax;
+  context.Ecx = state.gp.ecx;
+  context.Edx = state.gp.edx;
+  context.Ebx = state.gp.ebx;
+  context.Esi = state.gp.esi;
+  context.Edi = state.gp.edi;
+  context.Ebp = state.gp.ebp;
+  context.Esp = state.gp.esp;
+  context.Eip = state.gp.eip;
+  context.SegCs = state.gp.cs & 0xffff;
+  context.SegSs = state.gp.ss & 0xffff;
+  context.SegDs = state.gp.ds & 0xffff;
+  context.SegEs = state.gp.es & 0xffff;
+  context.SegFs = state.gp.fs & 0xffff;
+  context.SegGs = state.gp.gs & 0xffff;
+  context.EFlags = state.gp.eflags;
+
+  BOOL result = SetThreadContext(_handle, &context);
+  if (!result)
+    return Host::Platform::TranslateError();
+
+  return kSuccess;
 }
 }
 }
