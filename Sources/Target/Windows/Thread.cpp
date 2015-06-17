@@ -80,8 +80,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     break;
 
   default:
-    // Some debug events need to be handled at the process layer.
-    DS2ASSERT(false);
+    DS2BUG("unknown debug event code: %d", de.dwDebugEventCode);
   }
 }
 }

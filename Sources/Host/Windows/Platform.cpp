@@ -356,9 +356,7 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
 ErrorCode Platform::TranslateError(DWORD error) {
   switch (error) {
   default:
-    // Make sure we catch unknown error codes during development.
-    DS2ASSERT(false);
-    return kErrorUnknown;
+    DS2BUG("unknown error code: %d", error);
   }
 }
 

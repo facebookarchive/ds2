@@ -61,6 +61,15 @@ void Log(int level, char const *classname, char const *funcname,
 #else
 #define DS2ASSERT(COND) (void)0
 #endif
+
+// DS2LOG(Fatal...) already aborts but we add an additional abort() to make it
+// explicit to the compiler that this call doesn't return. This way we can
+// avoid unnecessary returns in users of DS2BUG.
+#define DS2BUG(...)                                                            \
+  do {                                                                         \
+    DS2LOG(Fatal, __VA_ARGS__);                                                \
+    abort();                                                                   \
+  } while (0)
 }
 
 #endif // !__DebugServer2_Utils_Log_h

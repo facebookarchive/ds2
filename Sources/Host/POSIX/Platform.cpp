@@ -195,9 +195,7 @@ ErrorCode Platform::TranslateError(int error) {
   case EPERM:
     return ds2::kErrorNoPermission;
   default:
-    // Make sure we catch unknown error codes during development.
-    DS2ASSERT(false);
-    return kErrorUnknown;
+    DS2BUG("unknown error code: %d", error);
   }
 }
 

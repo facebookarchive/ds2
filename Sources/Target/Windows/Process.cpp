@@ -98,8 +98,7 @@ ErrorCode Process::wait(int *status, bool hang) {
   } break;
 
   default:
-    // We should have an exhaustive list of debug events.
-    DS2ASSERT(false);
+    DS2BUG("unknown debug event code: %d", de.dwDebugEventCode);
   }
 
   return kSuccess;
