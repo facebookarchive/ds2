@@ -53,13 +53,9 @@ public:
 
 public:
   ErrorCode readMemory(Address const &address, void *data, size_t length,
-                       size_t *nread = nullptr) {
-    return kErrorUnsupported;
-  }
+                       size_t *nread = nullptr);
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,
-                        size_t *nwritten = nullptr) {
-    return kErrorUnsupported;
-  }
+                        size_t *nwritten = nullptr);
 
 public:
   virtual ErrorCode getMemoryRegionInfo(Address const &address,

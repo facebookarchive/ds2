@@ -127,6 +127,36 @@ ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
   return kSuccess;
 }
 
+ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
+                              size_t *nread) {
+  BOOL result =
+      ReadProcessMemory(_handle, reinterpret_cast<LPCVOID>(address.value()),
+                        data, length, reinterpret_cast<SIZE_T *>(nread));
+
+  if (!result) {
+    auto error = GetLastError();
+    if (error != ERROR_PARTIAL_COPY)
+      return Host::Platform::TranslateError(error);
+  }
+
+  return kSuccess;
+}
+
+ErrorCode Process::writeMemory(Address const &address, void const *data,
+                               size_t length, size_t *nwritten) {
+  BOOL result =
+      WriteProcessMemory(_handle, reinterpret_cast<LPVOID>(address.value()),
+                         data, length, reinterpret_cast<SIZE_T *>(nwritten));
+
+  if (!result) {
+    auto error = GetLastError();
+    if (error != ERROR_PARTIAL_COPY)
+      return Host::Platform::TranslateError(error);
+  }
+
+  return kSuccess;
+}
+
 ErrorCode Process::updateInfo() {
   if (_info.pid == _pid)
     return kErrorAlreadyExist;
