@@ -229,7 +229,7 @@ std::string StopCode::encodeInfo(CompatibilityMode mode) const {
       case kAddressWatchpoint:
       case kLibraryLoad:
       case kReplayLog:
-        DS2LOG(Protocol, Warning, "stop reason not implemented: %d", reason);
+        DS2LOG(Warning, "stop reason not implemented: %d", reason);
       }
     }
 

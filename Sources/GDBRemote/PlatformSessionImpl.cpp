@@ -55,8 +55,7 @@ ErrorCode PlatformSessionImpl::onQueryProcessInfo(Session &, ProcessId pid,
 ErrorCode PlatformSessionImpl::onExecuteProgram(
     Session &, std::string const &command, uint32_t timeout,
     std::string const &workingDirectory, ProgramResult &result) {
-  DS2LOG(PlatformSession, Debug, "command='%s' timeout=%u", command.c_str(),
-         timeout);
+  DS2LOG(Debug, "command='%s' timeout=%u", command.c_str(), timeout);
 
   ProcessSpawner ps;
 
@@ -199,7 +198,7 @@ ErrorCode PlatformSessionImpl::onSetWorkingDirectory(Session &,
 
 ErrorCode PlatformSessionImpl::onSetStdFile(Session &, int fileno,
                                             std::string const &path) {
-  DS2LOG(PlatformSession, Debug, "stdfile[%d] = %s", fileno, path.c_str());
+  DS2LOG(Debug, "stdfile[%d] = %s", fileno, path.c_str());
 
   if (fileno < 0 || fileno > 2)
     return kErrorInvalidArgument;
@@ -235,7 +234,7 @@ PlatformSessionImpl::onSetProgramArguments(Session &,
                                            StringCollection const &args) {
   _arguments = args;
   for (auto const &arg : _arguments) {
-    DS2LOG(PlatformSession, Debug, "arg=%s", arg.c_str());
+    DS2LOG(Debug, "arg=%s", arg.c_str());
   }
   return kSuccess;
 }

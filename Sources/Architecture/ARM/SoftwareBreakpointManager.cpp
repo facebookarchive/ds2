@@ -163,7 +163,7 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
     break;
 #endif
   default:
-    DS2LOG(BPManager, Error, "invalid breakpoint type %d", type);
+    DS2LOG(Error, "invalid breakpoint type %d", type);
     DS2ASSERT(0 && "invalid breakpoint type");
     break;
   }
@@ -178,20 +178,19 @@ void SoftwareBreakpointManager::enableLocation(Site const &site) {
   old.resize(opcode.size());
   error = _process->readMemory(site.address, &old[0], old.size());
   if (error != kSuccess) {
-    DS2LOG(BPManager, Error, "cannot enable breakpoint at %#lx",
+    DS2LOG(Error, "cannot enable breakpoint at %#lx",
            (unsigned long)site.address.value());
     return;
   }
 
   error = _process->writeMemory(site.address, &opcode[0], opcode.size());
   if (error != kSuccess) {
-    DS2LOG(BPManager, Error, "cannot enable breakpoint at %#lx",
+    DS2LOG(Error, "cannot enable breakpoint at %#lx",
            (unsigned long)site.address.value());
     return;
   }
 
-  DS2LOG(BPManager, Info,
-         "set breakpoint instruction %#lx at %#lx (saved insn %#lx)",
+  DS2LOG(Info, "set breakpoint instruction %#lx at %#lx (saved insn %#lx)",
          (unsigned long)(site.size == 2 ? *(uint16_t *)&opcode[0]
                                         : *(uint32_t *)&opcode[0]),
          (unsigned long)site.address.value(),
@@ -207,12 +206,12 @@ void SoftwareBreakpointManager::disableLocation(Site const &site) {
 
   error = _process->writeMemory(site.address, &old[0], old.size());
   if (error != kSuccess) {
-    DS2LOG(BPManager, Error, "cannot restore instruction at %#lx",
+    DS2LOG(Error, "cannot restore instruction at %#lx",
            (unsigned long)site.address.value());
     return;
   }
 
-  DS2LOG(BPManager, Info, "reset instruction %#lx at %#lx",
+  DS2LOG(Info, "reset instruction %#lx at %#lx",
          (unsigned long)(site.size == 2 ? *(uint16_t *)&old[0]
                                         : *(uint32_t *)&old[0]),
          (unsigned long)site.address.value());

@@ -49,7 +49,7 @@ private:
     DS2ASSERT(SignalCodeNames[si->si_signo].find(si->si_code) !=
               SignalCodeNames[si->si_signo].end());
 
-    DS2LOG(Main, Error, "received %s with code %s at address %p, crashing",
+    DS2LOG(Error, "received %s with code %s at address %p, crashing",
            SignalNames[si->si_signo],
            SignalCodeNames[si->si_signo][si->si_code], si->si_addr);
 

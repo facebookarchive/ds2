@@ -31,7 +31,7 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
   ErrorCode error;
   uint32_t insns[2];
 
-  DS2LOG(Architecture, Debug, "process=%p", process);
+  DS2LOG(Debug, "process=%p", process);
 
   error = process->readMemory(pc, insns, sizeof(insns));
   if (error != ds2::kSuccess)
@@ -48,7 +48,7 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
     return ds2::kSuccess;
   }
 
-  DS2LOG(Architecture, Debug, "Thumb branch/IT found at %#x (it=%s[%u])", pc,
+  DS2LOG(Debug, "Thumb branch/IT found at %#x (it=%s[%u])", pc,
          info.it ? "true" : "false", info.it ? info.itCount : 0);
 
   //
@@ -86,7 +86,7 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_r);
 
-  DS2LOG(Architecture, Debug, "link=%d", link);
+  DS2LOG(Debug, "link=%d", link);
   //
   // If it's a conditional branch, we need to move
   // the nextPC by the size of this instruction.
@@ -227,7 +227,7 @@ PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
 
   uint32_t address;
 
-  DS2LOG(Architecture, Debug, "ARM branch found at %#x", pc);
+  DS2LOG(Debug, "ARM branch found at %#x", pc);
 
   link = (info.type == ds2::Architecture::ARM::kBranchTypeBL_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_i ||
@@ -361,9 +361,9 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
                                          nextPCSize, branchPC, branchPCSize);
   }
 
-  DS2LOG(Architecture, Debug,
-         "PC=%#x, branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]", pc,
-         branchPC, branchPCSize, link ? "true" : "false", nextPC, nextPCSize);
+  DS2LOG(Debug, "PC=%#x, branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]",
+         pc, branchPC, branchPCSize, link ? "true" : "false", nextPC,
+         nextPCSize);
 
   if (branchPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(branchPCSize != 0);

@@ -729,8 +729,8 @@ void Session::Handle_H(ProtocolInterpreter::Handler const &,
   _ptids[command] = ptid;
   sendOK();
 
-  DS2LOG(DebugSession, Debug, "setting command '%c' to pid %d tid %d", command,
-         ptid.pid, ptid.tid);
+  DS2LOG(Debug, "setting command '%c' to pid %d tid %d", command, ptid.pid,
+         ptid.tid);
 }
 
 //
@@ -1358,7 +1358,7 @@ void Session::Handle_QLaunchArch(ProtocolInterpreter::Handler const &,
 void Session::Handle_QListThreadsInStopReply(
     ProtocolInterpreter::Handler const &, std::string const &) {
   if (_compatMode != kCompatibilityModeLLDB) {
-    DS2LOG(DebugSession, Debug, "entering LLDB compatibility mode");
+    DS2LOG(Debug, "entering LLDB compatibility mode");
     _compatMode = kCompatibilityModeLLDB;
   }
 
@@ -1438,7 +1438,7 @@ void Session::Handle_QThreadSuffixSupported(
     ProtocolInterpreter::Handler const &, std::string const &) {
   // We always support them.
   if (_compatMode != kCompatibilityModeLLDB) {
-    DS2LOG(DebugSession, Debug, "entering LLDB compatibility mode");
+    DS2LOG(Debug, "entering LLDB compatibility mode");
     _compatMode = kCompatibilityModeLLDB;
   }
 
@@ -2132,8 +2132,7 @@ void Session::Handle_qSupported(ProtocolInterpreter::Handler const &,
 
     Feature const &feature = remoteFeatures.back();
     if (feature.name == "multiprocess" && feature.flag == Feature::kSupported) {
-      DS2LOG(DebugSession, Debug,
-             "entering GDB multiprocess compatibility mode");
+      DS2LOG(Debug, "entering GDB multiprocess compatibility mode");
       _compatMode = kCompatibilityModeGDBMultiprocess;
     }
   });

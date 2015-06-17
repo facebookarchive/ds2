@@ -105,7 +105,7 @@ ds2::Target::Process *Process::Attach(ProcessId pid) {
   //
   ErrorCode error = process->ptrace().attach(pid);
   if (error != kSuccess) {
-    DS2LOG(Target, Error, "ptrace attach failed: %s", strerror(errno));
+    DS2LOG(Error, "ptrace attach failed: %s", strerror(errno));
     goto fail;
   }
 
@@ -137,7 +137,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
     goto fail;
 
   pid = spawner.pid();
-  DS2LOG(Target, Debug, "created process %d", pid);
+  DS2LOG(Debug, "created process %d", pid);
 
   //
   // Wait the process.

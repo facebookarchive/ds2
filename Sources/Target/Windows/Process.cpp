@@ -82,11 +82,11 @@ ErrorCode Process::wait(int *status, bool hang) {
     return kSuccess;
 
   case CREATE_THREAD_DEBUG_EVENT:
-    DS2LOG(Target, Fatal, "debug event CREATE_THREAD");
+    DS2LOG(Fatal, "debug event CREATE_THREAD");
   case EXIT_THREAD_DEBUG_EVENT:
-    DS2LOG(Target, Fatal, "debug event EXIT_THREAD");
+    DS2LOG(Fatal, "debug event EXIT_THREAD");
   case RIP_EVENT:
-    DS2LOG(Target, Fatal, "debug event RIP");
+    DS2LOG(Fatal, "debug event RIP");
 
   case EXCEPTION_DEBUG_EVENT:
   case LOAD_DLL_DEBUG_EVENT:
@@ -114,12 +114,12 @@ ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
         thread->state() == Thread::kStepped) {
       Architecture::CPUState state;
       thread->readCPUState(state);
-      DS2LOG(Target, Debug, "resuming tid %d from pc %#llx", thread->tid(),
+      DS2LOG(Debug, "resuming tid %d from pc %#llx", thread->tid(),
              (unsigned long long)state.pc());
       ErrorCode error = thread->resume(signal);
       if (error != kSuccess) {
-        DS2LOG(Target, Warning, "failed resuming tid %d, error=%d",
-               thread->tid(), error);
+        DS2LOG(Warning, "failed resuming tid %d, error=%d", thread->tid(),
+               error);
       }
     }
   });
@@ -205,7 +205,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   if (error != kSuccess)
     goto fail;
 
-  DS2LOG(Target, Debug, "created process %d", spawner.pid());
+  DS2LOG(Debug, "created process %d", spawner.pid());
 
   //
   // Wait the process.

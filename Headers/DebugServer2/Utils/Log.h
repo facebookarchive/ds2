@@ -22,21 +22,6 @@
 namespace ds2 {
 
 //
-// Log Categories
-//
-enum {
-  kLogMain,
-  kLogDebugSession,
-  kLogPlatformSession,
-  kLogSlaveSession,
-  kLogBPManager,
-  kLogProtocol,
-  kLogRemote,
-  kLogArchitecture,
-  kLogTarget
-};
-
-//
 // Log Level
 //
 enum {
@@ -44,33 +29,31 @@ enum {
   kLogLevelInfo,
   kLogLevelWarning,
   kLogLevelError,
-  kLogLevelFatal
+  kLogLevelFatal,
 };
 
 uint32_t GetLogLevel();
 void SetLogLevel(uint32_t level);
-void SetLogMask(uint64_t mask);
 void SetLogColorsEnabled(bool enabled);
 void SetLogOutputStream(FILE *stream);
 
-void Log(int category, int level, char const *classname, char const *funcname,
-         char const *format, ...) DS2_ATTRIBUTE_PRINTF(5, 6);
+void Log(int level, char const *classname, char const *funcname,
+         char const *format, ...) DS2_ATTRIBUTE_PRINTF(4, 5);
 
 #ifdef __DS2_LOG_CLASS_NAME__
-#define DS2LOG(CAT, LVL, ...)                                                  \
-  ds2::Log(ds2::kLog##CAT, ds2::kLogLevel##LVL, __DS2_LOG_CLASS_NAME__,        \
-           __FUNCTION__, __VA_ARGS__)
-#else
-#define DS2LOG(CAT, LVL, ...)                                                  \
-  ds2::Log(ds2::kLog##CAT, ds2::kLogLevel##LVL, nullptr, __FUNCTION__,         \
+#define DS2LOG(LVL, ...)                                                       \
+  ds2::Log(ds2::kLogLevel##LVL, __DS2_LOG_CLASS_NAME__, __FUNCTION__,          \
            __VA_ARGS__)
+#else
+#define DS2LOG(LVL, ...)                                                       \
+  ds2::Log(ds2::kLogLevel##LVL, nullptr, __FUNCTION__, __VA_ARGS__)
 #endif
 
 #if !defined(NDEBUG)
 #define DS2ASSERT(COND)                                                        \
   do {                                                                         \
     if (!(COND)) {                                                             \
-      DS2LOG(Main, Error, "assertion `%s' failed at %s:%d", #COND, __FILE__,   \
+      DS2LOG(Fatal, "assertion `%s' failed at %s:%d", #COND, __FILE__,         \
              __LINE__);                                                        \
       abort();                                                                 \
     }                                                                          \

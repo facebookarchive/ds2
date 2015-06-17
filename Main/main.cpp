@@ -52,17 +52,17 @@ static void PlatformMain(int argc, char **argv, int port) {
   Socket *server = new Socket;
 
   if (!server->create()) {
-    DS2LOG(Main, Error, "cannot create server socket on port %d: %s", port,
+    DS2LOG(Error, "cannot create server socket on port %d: %s", port,
            server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
   if (!server->listen(port)) {
-    DS2LOG(Main, Error, "error: failed to listen: %s", server->error().c_str());
+    DS2LOG(Error, "error: failed to listen: %s", server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Main, Info, "listening on port %d", port);
+  DS2LOG(Info, "listening on port %d", port);
 
   PlatformSessionImpl impl;
 
@@ -93,14 +93,14 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
   session.setDelegate(impl);
   session.create(qchannel);
 
-  DS2LOG(Main, Debug, "DEBUG SERVER STARTED");
+  DS2LOG(Debug, "DEBUG SERVER STARTED");
 
   thread.start();
 
   while (session.receive(/*cooked=*/true))
     ;
 
-  DS2LOG(Main, Debug, "DEBUG SERVER KILLED");
+  DS2LOG(Debug, "DEBUG SERVER KILLED");
 }
 
 static void DebugMain(ds2::StringCollection const &args,
@@ -109,23 +109,23 @@ static void DebugMain(ds2::StringCollection const &args,
   Socket *server = new Socket;
 
   if (!server->create()) {
-    DS2LOG(Main, Error, "cannot create server socket on port %d: %s", port,
+    DS2LOG(Error, "cannot create server socket on port %d: %s", port,
            server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
   if (!server->listen(port)) {
-    DS2LOG(Main, Error, "failed to listen: %s", server->error().c_str());
+    DS2LOG(Error, "failed to listen: %s", server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Main, Info, "listening on port %d", server->port());
+  DS2LOG(Info, "listening on port %d", server->port());
 
   if (!namedPipePath.empty()) {
     std::string portStr = ds2::ToString(server->port());
     FILE *namedPipe = fopen(namedPipePath.c_str(), "a");
     if (namedPipe == nullptr) {
-      DS2LOG(Main, Error, "unable to open %s: %s", namedPipePath.c_str(),
+      DS2LOG(Error, "unable to open %s: %s", namedPipePath.c_str(),
              strerror(errno));
     } else {
       // Write the null terminator to the file. This follows the llgs behavior.
@@ -191,7 +191,7 @@ static void SlaveMain(int argc, char **argv) {
     //
     fprintf(stdout, "%u %d\n", port, pid);
 
-    DS2LOG(Main, Info, "listening on port %u pid %d", port, pid);
+    DS2LOG(Info, "listening on port %u pid %d", port, pid);
   }
 
   exit(EXIT_SUCCESS);
@@ -244,7 +244,6 @@ int main(int argc, char **argv) {
   ds2::SetLogColorsEnabled(isatty(fileno(stderr)));
 #endif
   ds2::SetLogLevel(ds2::kLogLevelWarning);
-  ds2::SetLogMask(~0U);
 
   enum RunMode {
     kRunModeNormal,
@@ -306,7 +305,7 @@ int main(int argc, char **argv) {
   if (!opts.getString("log-output").empty()) {
     FILE *stream = fopen(opts.getString("log-output").c_str(), "a");
     if (stream == nullptr) {
-      DS2LOG(Main, Error, "unable to open %s for writing: %s",
+      DS2LOG(Error, "unable to open %s for writing: %s",
              opts.getString("log-output").c_str(), strerror(errno));
     } else {
 #if !defined(_WIN32)
@@ -413,7 +412,7 @@ int main(int argc, char **argv) {
       char const *arg = e.c_str();
       char const *equal = strchr(arg, '=');
       if (equal == nullptr || equal == arg)
-        DS2LOG(Main, Fatal, "invalid environment value: %s", arg);
+        DS2LOG(Fatal, "invalid environment value: %s", arg);
       env[std::string(arg, equal)] = equal + 1;
     }
 

@@ -39,7 +39,7 @@ DebugSessionImpl::DebugSessionImpl(int attachPid)
   _resumeSessionLock.lock();
   _process = ds2::Target::Process::Attach(attachPid);
   if (_process == nullptr)
-    DS2LOG(Main, Fatal, "cannot attach to pid %d", attachPid);
+    DS2LOG(Fatal, "cannot attach to pid %d", attachPid);
 }
 
 DebugSessionImpl::DebugSessionImpl()
@@ -72,7 +72,7 @@ DebugSessionImpl::onQuerySupported(Session &session,
                                    Feature::Collection const &remoteFeatures,
                                    Feature::Collection &localFeatures) {
   for (auto feature : remoteFeatures) {
-    DS2LOG(DebugSession, Debug, "gdb feature: %s", feature.name.c_str());
+    DS2LOG(Debug, "gdb feature: %s", feature.name.c_str());
   }
 
   // TODO PacketSize should be respected
@@ -117,7 +117,7 @@ ErrorCode DebugSessionImpl::onPassSignals(Session &session,
                                           std::vector<int> const &signals) {
   _process->resetSignalPass();
   for (int signo : signals) {
-    DS2LOG(DebugSession, Debug, "passing signal %d", signo);
+    DS2LOG(Debug, "passing signal %d", signo);
     _process->setSignalPass(signo, true);
   }
   return kSuccess;
@@ -126,7 +126,7 @@ ErrorCode DebugSessionImpl::onPassSignals(Session &session,
 ErrorCode DebugSessionImpl::onProgramSignals(Session &session,
                                              std::vector<int> const &signals) {
   for (int signo : signals) {
-    DS2LOG(DebugSession, Debug, "programming signal %d", signo);
+    DS2LOG(Debug, "programming signal %d", signo);
     _process->setSignalPass(signo, false);
   }
   return kSuccess;
@@ -160,7 +160,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
                                           ProcessThreadId const &ptid,
                                           StopCode &stop) const {
   Thread *thread = findThread(ptid);
-  DS2LOG(DebugSession, Debug, "thread %p", thread);
+  DS2LOG(Debug, "thread %p", thread);
   if (thread == nullptr)
     return kErrorProcessNotFound;
 
@@ -431,7 +431,7 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
                                        std::string const &annex,
                                        uint64_t offset, uint64_t length,
                                        std::string &buffer, bool &last) {
-  DS2LOG(DebugSession, Info, "object='%s' annex='%s' offset=%#llx length=%#llx",
+  DS2LOG(Info, "object='%s' annex='%s' offset=%#llx length=%#llx",
          object.c_str(), annex.c_str(), (unsigned long long)offset,
          (unsigned long long)length);
 
@@ -729,9 +729,9 @@ ErrorCode DebugSessionImpl::onAttach(Session &session, ProcessId pid,
   if (mode != kAttachNow)
     return kErrorInvalidArgument;
 
-  DS2LOG(SlaveSession, Info, "attaching to pid %u", pid);
+  DS2LOG(Info, "attaching to pid %u", pid);
   _process = Target::Process::Attach(pid);
-  DS2LOG(SlaveSession, Debug, "_process=%p", _process);
+  DS2LOG(Debug, "_process=%p", _process);
   if (_process == nullptr)
     return kErrorProcessNotFound;
 
@@ -762,7 +762,7 @@ DebugSessionImpl::onResume(Session &session,
   for (auto const &action : actions) {
     if (action.ptid.any()) {
       if (hasGlobalAction) {
-        DS2LOG(DebugSession, Error, "more than one global action specified");
+        DS2LOG(Error, "more than one global action specified");
         error = kErrorAlreadyExist;
         goto ret;
       }
@@ -774,7 +774,7 @@ DebugSessionImpl::onResume(Session &session,
 
     Thread *thread = findThread(action.ptid);
     if (thread == nullptr) {
-      DS2LOG(DebugSession, Warning, "pid %d tid %d not found", action.ptid.pid,
+      DS2LOG(Warning, "pid %d tid %d not found", action.ptid.pid,
              action.ptid.tid);
       continue;
     }
@@ -783,7 +783,7 @@ DebugSessionImpl::onResume(Session &session,
         action.action == kResumeActionContinueWithSignal) {
       error = thread->resume(action.signal, action.address);
       if (error != kSuccess) {
-        DS2LOG(DebugSession, Warning, "cannot resume pid %d tid %d, error=%d",
+        DS2LOG(Warning, "cannot resume pid %d tid %d, error=%d",
                _process->pid(), thread->tid(), error);
         continue;
       }
@@ -792,13 +792,13 @@ DebugSessionImpl::onResume(Session &session,
                action.action == kResumeActionSingleStepWithSignal) {
       error = thread->step(action.signal, action.address);
       if (error != kSuccess) {
-        DS2LOG(DebugSession, Warning, "cannot step pid %d tid %d, error=%d",
-               _process->pid(), thread->tid(), error);
+        DS2LOG(Warning, "cannot step pid %d tid %d, error=%d", _process->pid(),
+               thread->tid(), error);
         continue;
       }
       excluded.insert(thread);
     } else {
-      DS2LOG(DebugSession, Warning,
+      DS2LOG(Warning,
              "cannot resume pid %d tid %d, action %d not yet implemented",
              _process->pid(), thread->tid(), action.action);
       continue;
@@ -812,13 +812,13 @@ DebugSessionImpl::onResume(Session &session,
     if (globalAction.action == kResumeActionContinue ||
         globalAction.action == kResumeActionContinueWithSignal) {
       if (globalAction.address.valid()) {
-        DS2LOG(DebugSession, Warning, "global continue with address");
+        DS2LOG(Warning, "global continue with address");
       }
 
       error = _process->resume(globalAction.signal, excluded);
       if (error != kSuccess && error != kErrorAlreadyExist) {
-        DS2LOG(DebugSession, Warning, "cannot resume pid %d, error=%d",
-               _process->pid(), error);
+        DS2LOG(Warning, "cannot resume pid %d, error=%d", _process->pid(),
+               error);
       }
     } else if (globalAction.action == kResumeActionSingleStep ||
                globalAction.action == kResumeActionSingleStepWithSignal) {
@@ -826,13 +826,12 @@ DebugSessionImpl::onResume(Session &session,
       if (excluded.find(thread) == excluded.end()) {
         error = thread->step(globalAction.signal, globalAction.address);
         if (error != kSuccess) {
-          DS2LOG(DebugSession, Warning, "cannot step pid %d tid %d, error=%d",
+          DS2LOG(Warning, "cannot step pid %d tid %d, error=%d",
                  _process->pid(), thread->tid(), error);
         }
       }
     } else {
-      DS2LOG(DebugSession, Warning,
-             "cannot resume pid %d, action %d not yet implemented",
+      DS2LOG(Warning, "cannot resume pid %d, action %d not yet implemented",
              _process->pid(), globalAction.action);
     }
   }
@@ -887,13 +886,13 @@ ErrorCode DebugSessionImpl::onTerminate(Session &session,
 
   error = _process->terminate();
   if (error != kSuccess) {
-    DS2LOG(DebugSession, Error, "couldn't terminate process");
+    DS2LOG(Error, "couldn't terminate process");
     return error;
   }
 
   error = _process->wait();
   if (error != kSuccess) {
-    DS2LOG(DebugSession, Error, "couldn't wait for process termination");
+    DS2LOG(Error, "couldn't wait for process termination");
     return error;
   }
 
@@ -940,13 +939,12 @@ ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
 
 ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
                                          EnvironmentBlock const &env) {
-  DS2LOG(DebugSession, Debug, "spawning process with args:");
+  DS2LOG(Debug, "spawning process with args:");
   for (auto const &arg : args)
-    DS2LOG(DebugSession, Debug, "  %s", arg.c_str());
-  DS2LOG(DebugSession, Debug, "and with environment:");
+    DS2LOG(Debug, "  %s", arg.c_str());
+  DS2LOG(Debug, "and with environment:");
   for (auto const &val : env)
-    DS2LOG(DebugSession, Debug, "  %s=%s", val.first.c_str(),
-           val.second.c_str());
+    DS2LOG(Debug, "  %s=%s", val.first.c_str(), val.second.c_str());
 
   _spawner.setExecutable(args[0]);
   _spawner.setArguments(StringCollection(args.begin() + 1, args.end()));
@@ -973,7 +971,7 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
 
   _process = ds2::Target::Process::Create(_spawner);
   if (_process == nullptr) {
-    DS2LOG(Main, Error, "cannot execute '%s'", args[0].c_str());
+    DS2LOG(Error, "cannot execute '%s'", args[0].c_str());
     return kErrorUnknown;
   }
 

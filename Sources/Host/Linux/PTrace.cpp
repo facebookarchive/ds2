@@ -63,8 +63,7 @@ ErrorCode PTrace::traceMe(bool disableASLR) {
   if (disableASLR) {
     int persona = ::personality(std::numeric_limits<uint32_t>::max());
     if (::personality(persona | ADDR_NO_RANDOMIZE) == -1) {
-      DS2LOG(Main, Warning, "unable to disable ASLR, error=%s",
-             strerror(errno));
+      DS2LOG(Warning, "unable to disable ASLR, error=%s", strerror(errno));
     }
   }
 
@@ -84,9 +83,8 @@ ErrorCode PTrace::traceThat(ProcessId pid) {
   // Trace clone and exit events to track threads.
   //
   if (wrapPtrace(PTRACE_SETOPTIONS, pid, nullptr, traceFlags) < 0) {
-    DS2LOG(Main, Warning,
-           "unable to set PTRACE_O_TRACECLONE on pid %d, error=%s", pid,
-           strerror(errno));
+    DS2LOG(Warning, "unable to set PTRACE_O_TRACECLONE on pid %d, error=%s",
+           pid, strerror(errno));
     return Platform::TranslateError();
   }
 
@@ -107,7 +105,7 @@ ErrorCode PTrace::detach(ProcessId pid) {
   if (pid <= kAnyProcessId)
     return kErrorProcessNotFound;
 
-  DS2LOG(Main, Debug, "detaching from pid %llu", (unsigned long long)pid);
+  DS2LOG(Debug, "detaching from pid %llu", (unsigned long long)pid);
 
   if (wrapPtrace(PTRACE_DETACH, pid, nullptr, nullptr) < 0)
     return Platform::TranslateError();

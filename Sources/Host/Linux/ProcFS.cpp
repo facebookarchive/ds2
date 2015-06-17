@@ -163,7 +163,7 @@ FILE *ProcFS::OpenFILE(char const *what, char const *mode) {
   ds2_snprintf(path, PATH_MAX, "/proc/%s", what);
   FILE *res = fopen(path, mode);
   if (res == nullptr)
-    DS2LOG(Target, Error, "can't open %s: %s", path, strerror(errno));
+    DS2LOG(Error, "can't open %s: %s", path, strerror(errno));
   return res;
 }
 
@@ -177,7 +177,7 @@ FILE *ProcFS::OpenFILE(pid_t pid, pid_t tid, char const *what,
   MakePath(path, PATH_MAX, pid, tid, what);
   FILE *res = fopen(path, mode);
   if (res == nullptr)
-    DS2LOG(Target, Error, "can't open %s: %s", path, strerror(errno));
+    DS2LOG(Error, "can't open %s: %s", path, strerror(errno));
   return res;
 }
 

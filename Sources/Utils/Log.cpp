@@ -20,7 +20,6 @@
 
 namespace {
 
-uint64_t sLogMask;
 int sLogLevel;
 bool sColorsEnabled;
 // stderr is handled a bit differently on Windows, especially when running
@@ -38,18 +37,13 @@ uint32_t GetLogLevel() { return sLogLevel; }
 
 void SetLogLevel(uint32_t level) { sLogLevel = level; }
 
-void SetLogMask(uint64_t mask) { sLogMask = mask; }
-
 void SetLogColorsEnabled(bool enabled) { sColorsEnabled = enabled; }
 
 void SetLogOutputStream(FILE *stream) { sOutputStream = stream; }
 
-void vLog(int category, int level, char const *classname, char const *funcname,
+void vLog(int level, char const *classname, char const *funcname,
           char const *format, va_list ap) {
   if (sLogLevel > level)
-    return;
-
-  if ((sLogMask & (1ULL << category)) == 0)
     return;
 
   std::stringstream ss;
@@ -118,12 +112,12 @@ void vLog(int category, int level, char const *classname, char const *funcname,
     exit(EXIT_FAILURE);
 }
 
-void Log(int category, int level, char const *classname, char const *funcname,
+void Log(int level, char const *classname, char const *funcname,
          char const *format, ...) {
   va_list ap;
 
   va_start(ap, format);
-  vLog(category, level, classname, funcname, format, ap);
+  vLog(level, classname, funcname, format, ap);
   va_end(ap);
 }
 }

@@ -54,7 +54,7 @@ ErrorCode Thread::suspend() {
     error = process()->ptrace().wait(ProcessThreadId(process()->pid(), tid()),
                                      true, &status);
     if (error != kSuccess) {
-      DS2LOG(Target, Error, "failed to wait for tid %d, error=%s\n", tid(),
+      DS2LOG(Error, "failed to wait for tid %d, error=%s\n", tid(),
              strerror(errno));
       return error;
     }
@@ -72,7 +72,7 @@ ErrorCode Thread::suspend() {
 ErrorCode Thread::step(int signal, Address const &address) {
   ErrorCode error = kSuccess;
   if (_state == kStopped || _state == kStepped) {
-    DS2LOG(Target, Debug, "stepping tid %d", tid());
+    DS2LOG(Debug, "stepping tid %d", tid());
     if (process()->isSingleStepSupported()) {
       ProcessInfo info;
 
@@ -193,8 +193,8 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
 
     error = process()->ptrace().getSigInfo(ptid, si);
     if (error != kSuccess) {
-      DS2LOG(Target, Warning, "unable to get siginfo_t for tid %d, error=%s",
-             tid(), strerror(errno));
+      DS2LOG(Warning, "unable to get siginfo_t for tid %d, error=%s", tid(),
+             strerror(errno));
       return error;
     }
 
@@ -224,7 +224,7 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
       //
       if ((si.si_code == SI_USER || si.si_code == SI_TKILL) &&
           si.si_pid != tid()) {
-        DS2LOG(Target, Warning,
+        DS2LOG(Warning,
                "tid %d received a signal from an external source (sender=%d)",
                tid(), si.si_pid);
       }

@@ -382,7 +382,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
         return kErrorUnknown;
 
       if (::execve(_executablePath.c_str(), &args[0], &environment[0]) < 0) {
-        DS2LOG(Main, Error, "cannot spawn executable %s, error=%s",
+        DS2LOG(Error, "cannot spawn executable %s, error=%s",
                _executablePath.c_str(), strerror(errno));
       }
     }
