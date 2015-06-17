@@ -109,7 +109,7 @@ void vLog(int level, char const *classname, char const *funcname,
   fflush(sOutputStream);
 
   if (level == kLogLevelFatal)
-    exit(EXIT_FAILURE);
+    abort();
 }
 
 void Log(int level, char const *classname, char const *funcname,
