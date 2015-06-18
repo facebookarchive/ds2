@@ -72,6 +72,9 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     break;
 
   case LOAD_DLL_DEBUG_EVENT:
+    if (de.u.LoadDll.hFile != NULL)
+      CloseHandle(de.u.LoadDll.hFile);
+
   case UNLOAD_DLL_DEBUG_EVENT:
   case OUTPUT_DEBUG_STRING_EVENT:
     _state = kStopped;

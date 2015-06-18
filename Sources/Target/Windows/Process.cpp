@@ -72,9 +72,15 @@ ErrorCode Process::wait(int *status, bool hang) {
 
   switch (de.dwDebugEventCode) {
   case CREATE_PROCESS_DEBUG_EVENT:
-    // Nothing to do when the process is created, just continue.
-    // TODO(sas): We might have to release contents of the
-    // CREATE_PROCESS_DEBUG_INFO structure.
+#define CHECK_AND_CLOSE(HAN)                                                   \
+  do {                                                                         \
+    if ((de.u.CreateProcessInfo.HAN) != NULL)                                  \
+      CloseHandle(de.u.CreateProcessInfo.HAN);                                 \
+  } while (0)
+    CHECK_AND_CLOSE(hFile);
+    CHECK_AND_CLOSE(hProcess);
+    CHECK_AND_CLOSE(hThread);
+#undef CHECK_AND_CLOSE
     return kSuccess;
 
   case EXIT_PROCESS_DEBUG_EVENT:
