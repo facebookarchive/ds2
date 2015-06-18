@@ -71,9 +71,50 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     _trap.reason = TrapInfo::kReasonNone;
     break;
 
-  case LOAD_DLL_DEBUG_EVENT:
+  case LOAD_DLL_DEBUG_EVENT: {
+    ErrorCode error;
+    std::wstring name = L"<NONAME>";
+
+    ProcessInfo pi;
+    error = process()->getInfo(pi);
+    if (error != kSuccess)
+      goto noname;
+
+    if (de.u.LoadDll.lpImageName == nullptr)
+      goto noname;
+
+    uint64_t ptr = 0;
+    error = process()->readMemory(
+        reinterpret_cast<uint64_t>(de.u.LoadDll.lpImageName), &ptr,
+        pi.pointerSize);
+    if (error != kSuccess)
+      goto noname;
+
+    if (ptr == 0)
+      goto noname;
+
+    // It seems like all strings passed by the kernel here are guaranteed to be
+    // unicode.
+    DS2ASSERT(de.u.LoadDll.fUnicode);
+
+    name.clear();
+    wchar_t c;
+    do {
+      error = process()->readMemory(ptr, &c, sizeof(c));
+      if (error != kSuccess)
+        break;
+      name.append(1, c);
+
+      ptr += sizeof(c);
+    } while (c != '\0');
+
+  noname:
+    DS2LOG(Debug, "new DLL loaded: %s",
+           Host::Platform::WideToNarrowString(name).c_str());
+
     if (de.u.LoadDll.hFile != NULL)
       CloseHandle(de.u.LoadDll.hFile);
+  }
 
   case UNLOAD_DLL_DEBUG_EVENT:
   case OUTPUT_DEBUG_STRING_EVENT:
