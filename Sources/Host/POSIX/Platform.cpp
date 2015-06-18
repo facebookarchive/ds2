@@ -194,6 +194,8 @@ ErrorCode Platform::TranslateError(int error) {
     return ds2::kErrorInvalidAddress;
   case EPERM:
     return ds2::kErrorNoPermission;
+  case EEXIST:
+    return ds2::kErrorAlreadyExist;
   default:
     DS2BUG("unknown error code: %d", error);
   }

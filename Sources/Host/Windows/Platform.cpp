@@ -355,6 +355,27 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
 
 ErrorCode Platform::TranslateError(DWORD error) {
   switch (error) {
+  case ERROR_FILE_NOT_FOUND:
+  case ERROR_PATH_NOT_FOUND:
+    return ds2::kErrorNotFound;
+  case ERROR_TOO_MANY_OPEN_FILES:
+    return ds2::kErrorTooManySystemFiles;
+  case ERROR_ACCESS_DENIED:
+    return ds2::kErrorAccessDenied;
+  case ERROR_INVALID_HANDLE:
+    return ds2::kErrorInvalidHandle;
+  case ERROR_NOT_ENOUGH_MEMORY:
+  case ERROR_OUTOFMEMORY:
+    return ds2::kErrorNoMemory;
+  case ERROR_WRITE_PROTECT:
+    return ds2::kErrorNotWriteable;
+  case ERROR_READ_FAULT:
+  case ERROR_WRITE_FAULT:
+    return ds2::kErrorInvalidAddress;
+  case ERROR_NOT_SUPPORTED:
+    return ds2::kErrorUnsupported;
+  case ERROR_FILE_EXISTS:
+    return ds2::kErrorAlreadyExist;
   default:
     DS2BUG("unknown error code: %d", error);
   }
