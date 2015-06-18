@@ -308,7 +308,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       startRedirectThread = true;
       if (term[0] == -1) {
         if (!open_terminal(term)) {
-          return kErrorTooManyFiles;
+          return Platform::TranslateError();
         }
       }
       fds[n][RD] = term[RD];
