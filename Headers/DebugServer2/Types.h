@@ -120,10 +120,9 @@ struct TrapInfo {
   TrapInfo() { clear(); }
 
   inline void clear() {
-    core = 0;
-
     event = kEventNone;
     reason = kReasonNone;
+    core = 0;
     status = 0;
 #if !defined(_WIN32)
     signal = 0;
