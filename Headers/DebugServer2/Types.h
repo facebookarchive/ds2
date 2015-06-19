@@ -112,11 +112,6 @@ struct TrapInfo {
   int signal;
 #endif
 
-  struct {
-    uint32_t type;
-    uint64_t data[3];
-  } exception;
-
   TrapInfo() { clear(); }
 
   inline void clear() {
@@ -127,11 +122,6 @@ struct TrapInfo {
 #if !defined(_WIN32)
     signal = 0;
 #endif
-
-    exception.type = 0;
-    exception.data[0] = 0;
-    exception.data[1] = 0;
-    exception.data[2] = 0;
   }
 };
 
