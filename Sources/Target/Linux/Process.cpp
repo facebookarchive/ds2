@@ -176,14 +176,8 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       // are created.
       //
       DS2LOG(Debug, "creating new thread tid=%d", tid);
-      new Thread(this, tid);
-
-      if (getInfo(info) != kSuccess) {
-        DS2LOG(Error, "couldn't get process info for pid %d", _pid);
-        goto continue_waiting;
-      }
-
-      ptrace().resume(ProcessThreadId(_pid, tid), info, 0);
+      auto thread = new Thread(this, tid);
+      thread->resume();
       goto continue_waiting;
     } else {
       _currentThread = threadIt->second;
@@ -211,12 +205,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
         // This thread has been stopped because it called
         // clone(2). Just resume it.
         //
-        if (getInfo(info) != kSuccess) {
-          DS2LOG(Error, "couldn't get process info for pid %d", _pid);
-          goto continue_waiting;
-        }
-
-        ptrace().resume(ProcessThreadId(_pid, tid), info);
+        _currentThread->resume();
         goto continue_waiting;
       }
 
@@ -248,11 +237,6 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       break;
 
     case TrapInfo::kEventStop:
-      if (getInfo(info) != kSuccess) {
-        DS2LOG(Error, "couldn't get process info for pid %d", _pid);
-        goto continue_waiting;
-      }
-
       signal = _currentThread->_trap.signal;
 
       if (signal == SIGSTOP || signal == SIGCHLD || signal == SIGRTMIN) {
@@ -284,9 +268,9 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
 
         ErrorCode error;
         if (stepping) {
-          error = ptrace().step(ProcessThreadId(_pid, tid), info, signal);
+          error = _currentThread->step(signal);
         } else {
-          error = ptrace().resume(ProcessThreadId(_pid, tid), info, signal);
+          error = _currentThread->resume(signal);
         }
 
         if (error != kSuccess) {
@@ -295,7 +279,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
 
         goto continue_waiting;
       } else if (_passthruSignals.find(signal) != _passthruSignals.end()) {
-        ptrace().resume(ProcessThreadId(_pid, tid), info, signal);
+        _currentThread->resume(signal);
         goto continue_waiting;
       } else {
         //
