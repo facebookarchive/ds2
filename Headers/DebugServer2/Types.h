@@ -93,7 +93,6 @@ struct TrapInfo {
     kEventNone,
     kEventExit,
     kEventKill,
-    kEventCoreDump,
     kEventTrap,
     kEventStop,
   };

@@ -192,7 +192,6 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
 
     case TrapInfo::kEventExit:
     case TrapInfo::kEventKill:
-    case TrapInfo::kEventCoreDump:
       DS2LOG(Debug, "thread %d is exiting", tid);
 
       //

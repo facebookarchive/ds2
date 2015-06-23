@@ -31,12 +31,7 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
     _trap.event = TrapInfo::kEventExit;
     _trap.status = WEXITSTATUS(waitStatus);
   } else if (WIFSIGNALED(waitStatus)) {
-#if defined(WCOREDUMP)
-    if (WCOREDUMP(waitStatus)) {
-      _trap.event = TrapInfo::kEventCoreDump;
-    } else
-#endif
-      _trap.event = TrapInfo::kEventKill;
+    _trap.event = TrapInfo::kEventKill;
     _trap.status = WEXITSTATUS(waitStatus);
     _trap.signal = WTERMSIG(waitStatus);
   } else if (WIFSTOPPED(waitStatus)) {
