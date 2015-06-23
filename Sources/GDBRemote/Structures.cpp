@@ -306,8 +306,6 @@ std::string StopCode::encode(CompatibilityMode mode) const {
   case kCleanExit:
     code = 'W';
     break;
-  default:
-    return std::string();
   }
 
   ss << code;
