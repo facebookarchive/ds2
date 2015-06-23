@@ -98,14 +98,7 @@ struct TrapInfo {
     kEventStop,
   };
 
-  enum Reason {
-    kReasonNone,
-    kReasonThreadNew,
-    kReasonThreadExit,
-  };
-
   Event event;
-  Reason reason;
   uint32_t core;
   int status;
 #if !defined(_WIN32)
@@ -116,7 +109,6 @@ struct TrapInfo {
 
   inline void clear() {
     event = kEventNone;
-    reason = kReasonNone;
     core = 0;
     status = 0;
 #if !defined(_WIN32)

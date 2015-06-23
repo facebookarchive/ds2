@@ -187,27 +187,8 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
 
     switch (_currentThread->_trap.event) {
     case TrapInfo::kEventNone:
-      switch (_currentThread->_trap.reason) {
-      case TrapInfo::kReasonNone:
-      case TrapInfo::kReasonThreadExit:
-        //
-        // We should never have threads stopped for no reason
-        // here, except when creating a thread. If we do, we can
-        // print an error message and keep running as a
-        // best-effort solution.
-        //
-        DS2LOG(Error, "thread %d stopped for no reason", tid);
-
-      // Fall-through.
-
-      case TrapInfo::kReasonThreadNew:
-        //
-        // This thread has been stopped because it called
-        // clone(2). Just resume it.
-        //
-        _currentThread->resume();
-        goto continue_waiting;
-      }
+      _currentThread->resume();
+      goto continue_waiting;
 
     case TrapInfo::kEventExit:
     case TrapInfo::kEventKill:

@@ -177,14 +177,11 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
   //     status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))
   // which results in WIFSTOPPED(status) == true and WSTOPSIG(status) ==
   // SIGTRAP.
-  // We can now convert back kEventTrap to kEventStop and mark the reason as
-  // kReasonThreadNew.
+  // We can now convert back kEventTrap to kEventNone.
   //
   if (_trap.event == TrapInfo::kEventTrap &&
-      waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) {
-    _trap.event = TrapInfo::kEventStop;
-    _trap.reason = TrapInfo::kReasonThreadNew;
-  }
+      waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8)))
+    _trap.event = TrapInfo::kEventNone;
 
   updateState();
 
@@ -205,7 +202,6 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
     // (1) we sent the thread a SIGSTOP (with tkill) to interrupt it e.g.:
     //     a thread hits a breakpoint, we have to stop every other thread;
     // (2) the inferior received a SIGSTOP because of ptrace attach;
-    // (3) a thread has just been created and is waiting at entry.
     //
     if (si.si_code == SI_TKILL && si.si_pid == getpid()) {
       // The only signal we are supposed to send to the inferior is a
@@ -214,8 +210,6 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
       _trap.event = TrapInfo::kEventNone;
     } else if (si.si_code == SI_USER && si.si_pid == 0 &&
                _trap.signal == SIGSTOP) {
-      _trap.event = TrapInfo::kEventNone;
-    } else if (_trap.reason == TrapInfo::kReasonThreadNew) {
       _trap.event = TrapInfo::kEventNone;
     } else {
       //
