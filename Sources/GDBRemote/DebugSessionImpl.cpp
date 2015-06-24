@@ -173,10 +173,10 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
   stop.ptid.tid = thread->tid();
   stop.core = trap.core;
 
-  stop.reason = StopInfo::kSignalStop;
+  stop.reason = StopInfo::kReasonSignalStop;
   switch (trap.event) {
   case StopInfo::kEventNone:
-    stop.reason = StopInfo::kNone;
+    stop.reason = StopInfo::kReasonNone;
     break;
   case StopInfo::kEventExit:
     stop.event = StopCode::kCleanExit;
@@ -192,14 +192,14 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
 #endif
   case StopInfo::kEventTrap:
     stop.event = StopCode::kSignal;
-    stop.reason = StopInfo::kBreakpoint;
+    stop.reason = StopInfo::kReasonBreakpoint;
 #if !defined(_WIN32)
     stop.signal = trap.signal;
 #endif
     break;
   case StopInfo::kEventStop:
     stop.event = StopCode::kSignal;
-    stop.reason = StopInfo::kSignalStop;
+    stop.reason = StopInfo::kReasonSignalStop;
 #if !defined(_WIN32)
     stop.signal = trap.signal;
 #endif

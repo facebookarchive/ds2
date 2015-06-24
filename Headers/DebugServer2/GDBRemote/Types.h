@@ -53,7 +53,9 @@ struct StopCode {
   std::set<ThreadId> threads;
 
 public:
-  StopCode() : event(kSignal), reason(StopInfo::kNone), core(-1) { signal = 0; }
+  StopCode() : event(kSignal), reason(StopInfo::kReasonNone), core(-1) {
+    signal = 0;
+  }
 
 public:
   std::string encode(CompatibilityMode mode) const;

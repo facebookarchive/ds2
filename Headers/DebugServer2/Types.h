@@ -100,17 +100,17 @@ struct StopInfo {
   };
 
   enum Reason {
-    kNone,
-    kWatchpoint,
-    kRegisterWatchpoint,
-    kAddressWatchpoint,
-    kLibraryLoad,
-    kReplayLog,
-    kBreakpoint,
-    kTrace,
-    kSignalStop, // TODO better name
-    kException,
-    kTrap
+    kReasonNone,
+    kReasonWatchpoint,
+    kReasonRegisterWatchpoint,
+    kReasonAddressWatchpoint,
+    kReasonLibraryLoad,
+    kReasonReplayLog,
+    kReasonBreakpoint,
+    kReasonTrace,
+    kReasonSignalStop, // TODO better name
+    kReasonException,
+    kReasonTrap,
   };
 
   Event event;
