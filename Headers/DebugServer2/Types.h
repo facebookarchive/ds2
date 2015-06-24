@@ -114,6 +114,7 @@ struct StopInfo {
   };
 
   Event event;
+  Reason reason;
   uint32_t core;
   int status;
 #if !defined(_WIN32)
@@ -124,6 +125,7 @@ struct StopInfo {
 
   inline void clear() {
     event = kEventNone;
+    reason = kReasonNone;
     core = 0;
     status = 0;
 #if !defined(_WIN32)
