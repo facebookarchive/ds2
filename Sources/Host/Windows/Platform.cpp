@@ -306,7 +306,7 @@ std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   // http://msdn.microsoft.com/en-us/library/xcb2z8hs.aspx describes a
   // handshake between a process and VS to transmit thread names so we
   // might end up using something similar for the inferior.
-  return "<NONE>";
+  return "";
 }
 
 const char *Platform::GetSelfExecutablePath() {
