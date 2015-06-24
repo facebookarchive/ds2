@@ -300,9 +300,11 @@ std::string StopCode::encode(CompatibilityMode mode) const {
   case kSignal:
     code = (mode != kCompatibilityModeGDB) ? 'T' : 'S';
     break;
+#if !defined(_WIN32)
   case kSignalExit:
     code = 'X';
     break;
+#endif
   case kCleanExit:
     code = 'W';
     break;
@@ -315,7 +317,7 @@ std::string StopCode::encode(CompatibilityMode mode) const {
 #if !defined(_WIN32)
     ss << HEX(2) << (reason != kNone ? (signal & 0xff) : 0) << DEC;
 #else
-    // Windows doesn't have a notion of signals but the gdb protocol still
+    // Windows doesn't have a notion of signals but the GDB protocol still
     // needs some sort of emulation for these.
     ss << HEX(2);
     switch (reason) {

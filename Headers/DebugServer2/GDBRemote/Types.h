@@ -32,7 +32,13 @@ struct MemoryRegionInfo : ds2::MemoryRegionInfo {
 };
 
 struct StopCode {
-  enum Event { kSignal, kCleanExit, kSignalExit };
+  enum Event {
+    kSignal,
+    kCleanExit,
+#if !defined(_WIN32)
+    kSignalExit,
+#endif
+  };
 
   enum Reason {
     kNone,

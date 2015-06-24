@@ -182,13 +182,13 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
     stop.status = trap.status;
     readRegisters = false;
     break;
+#if !defined(_WIN32)
   case TrapInfo::kEventKill:
     stop.event = StopCode::kSignalExit;
-#if !defined(_WIN32)
     stop.signal = trap.signal;
-#endif
     readRegisters = false;
     break;
+#endif
   case TrapInfo::kEventTrap:
     stop.event = StopCode::kSignal;
     stop.reason = StopCode::kBreakpoint;

@@ -92,7 +92,9 @@ struct TrapInfo {
   enum Event {
     kEventNone,
     kEventExit,
+#if !defined(_WIN32)
     kEventKill,
+#endif
     kEventTrap,
     kEventStop,
   };
