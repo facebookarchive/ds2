@@ -99,6 +99,20 @@ struct TrapInfo {
     kEventStop,
   };
 
+  enum Reason {
+    kNone,
+    kWatchpoint,
+    kRegisterWatchpoint,
+    kAddressWatchpoint,
+    kLibraryLoad,
+    kReplayLog,
+    kBreakpoint,
+    kTrace,
+    kSignalStop, // TODO better name
+    kException,
+    kTrap
+  };
+
   Event event;
   uint32_t core;
   int status;

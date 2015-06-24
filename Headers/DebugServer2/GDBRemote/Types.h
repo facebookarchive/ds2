@@ -40,23 +40,8 @@ struct StopCode {
 #endif
   };
 
-  enum Reason {
-    kNone,
-    kWatchpoint,
-    kRegisterWatchpoint,
-    kAddressWatchpoint,
-    kLibraryLoad,
-    kReplayLog,
-    // LLDB compat
-    kBreakpoint,
-    kTrace,
-    kSignalStop, // TODO better name
-    kException,
-    kTrap
-  };
-
   Event event;
-  Reason reason;
+  TrapInfo::Reason reason;
   union {
     int signal;
     int status;
@@ -68,7 +53,7 @@ struct StopCode {
   std::set<ThreadId> threads;
 
 public:
-  StopCode() : event(kSignal), reason(kNone), core(-1) { signal = 0; }
+  StopCode() : event(kSignal), reason(TrapInfo::kNone), core(-1) { signal = 0; }
 
 public:
   std::string encode(CompatibilityMode mode) const;
