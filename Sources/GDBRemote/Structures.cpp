@@ -319,16 +319,7 @@ std::string StopCode::encode(CompatibilityMode mode) const {
 #else
     // Windows doesn't have a notion of signals but the GDB protocol still
     // needs some sort of emulation for these.
-    ss << HEX(2);
-    switch (reason) {
-    case kBreakpoint:
-      ss << 5;
-      break;
-    default:
-      ss << 0;
-      break;
-    }
-    ss << DEC;
+    ss << HEX(2) << (reason != kNone ? 5 : 0) << DEC;
 #endif
   }
 
