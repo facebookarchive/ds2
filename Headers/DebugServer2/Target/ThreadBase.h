@@ -27,7 +27,7 @@ public:
 protected:
   Process *_process;
   ThreadId _tid;
-  TrapInfo _trap;
+  StopInfo _trap;
   State _state;
 
 protected:
@@ -39,7 +39,7 @@ public:
 public:
   inline Process *process() const { return _process; }
   inline ThreadId tid() const { return _tid; }
-  inline TrapInfo const &trapInfo() const { return _trap; }
+  inline StopInfo const &trapInfo() const { return _trap; }
 
 public:
   virtual ErrorCode terminate() = 0;

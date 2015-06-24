@@ -67,8 +67,8 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   switch (de.dwDebugEventCode) {
   case EXCEPTION_DEBUG_EVENT:
     _state = kStopped;
-    _trap.event = TrapInfo::kEventTrap;
-    _trap.reason = TrapInfo::kReasonNone;
+    _trap.event = StopInfo::kEventTrap;
+    _trap.reason = StopInfo::kReasonNone;
     break;
 
   case LOAD_DLL_DEBUG_EVENT: {
@@ -119,8 +119,8 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   case UNLOAD_DLL_DEBUG_EVENT:
   case OUTPUT_DEBUG_STRING_EVENT:
     _state = kStopped;
-    _trap.event = TrapInfo::kEventNone;
-    _trap.reason = TrapInfo::kReasonNone;
+    _trap.event = StopInfo::kEventNone;
+    _trap.reason = StopInfo::kReasonNone;
     break;
 
   default:

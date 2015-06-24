@@ -105,7 +105,7 @@ ErrorCode Process::attach(int waitStatus) {
           int status;
           ptrace().wait(tid, true, &status);
           ptrace().traceThat(tid);
-          thread->updateTrapInfo(status);
+          thread->updateStopInfo(status);
         }
       });
     }
@@ -115,7 +115,7 @@ ErrorCode Process::attach(int waitStatus) {
   // Create the main thread, ourselves.
   //
   _currentThread = new Thread(this, _pid);
-  _currentThread->updateTrapInfo(waitStatus);
+  _currentThread->updateStopInfo(waitStatus);
 
   return kSuccess;
 }
@@ -183,15 +183,15 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       _currentThread = threadIt->second;
     }
 
-    _currentThread->updateTrapInfo(status);
+    _currentThread->updateStopInfo(status);
 
     switch (_currentThread->_trap.event) {
-    case TrapInfo::kEventNone:
+    case StopInfo::kEventNone:
       _currentThread->resume();
       goto continue_waiting;
 
-    case TrapInfo::kEventExit:
-    case TrapInfo::kEventKill:
+    case StopInfo::kEventExit:
+    case StopInfo::kEventKill:
       DS2LOG(Debug, "thread %d is exiting", tid);
 
       //
@@ -211,12 +211,12 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       removeThread(tid);
       goto continue_waiting;
 
-    case TrapInfo::kEventTrap:
+    case StopInfo::kEventTrap:
       DS2LOG(Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
              strsignal(WSTOPSIG(status)));
       break;
 
-    case TrapInfo::kEventStop:
+    case StopInfo::kEventStop:
       signal = _currentThread->_trap.signal;
 
       if (signal == SIGSTOP || signal == SIGCHLD || signal == SIGRTMIN) {

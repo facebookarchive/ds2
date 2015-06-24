@@ -22,7 +22,7 @@ protected:
   Thread(ds2::Target::Process *process, ThreadId tid);
 
 protected:
-  virtual ErrorCode updateTrapInfo(int waitStatus);
+  virtual ErrorCode updateStopInfo(int waitStatus);
 };
 }
 }

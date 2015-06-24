@@ -88,7 +88,7 @@ typedef std::map<std::string, std::string> EnvironmentBlock;
 // Repesents the stop information of a process.
 //
 
-struct TrapInfo {
+struct StopInfo {
   enum Event {
     kEventNone,
     kEventExit,
@@ -120,7 +120,7 @@ struct TrapInfo {
   int signal;
 #endif
 
-  TrapInfo() { clear(); }
+  StopInfo() { clear(); }
 
   inline void clear() {
     event = kEventNone;

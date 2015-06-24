@@ -41,7 +41,7 @@ struct StopCode {
   };
 
   Event event;
-  TrapInfo::Reason reason;
+  StopInfo::Reason reason;
   union {
     int signal;
     int status;
@@ -53,7 +53,7 @@ struct StopCode {
   std::set<ThreadId> threads;
 
 public:
-  StopCode() : event(kSignal), reason(TrapInfo::kNone), core(-1) { signal = 0; }
+  StopCode() : event(kSignal), reason(StopInfo::kNone), core(-1) { signal = 0; }
 
 public:
   std::string encode(CompatibilityMode mode) const;

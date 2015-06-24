@@ -165,7 +165,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
     return kErrorProcessNotFound;
 
   bool readRegisters = true;
-  TrapInfo const &trap = thread->trapInfo();
+  StopInfo const &trap = thread->trapInfo();
 
   Architecture::CPUState state;
 
@@ -173,33 +173,33 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
   stop.ptid.tid = thread->tid();
   stop.core = trap.core;
 
-  stop.reason = TrapInfo::kSignalStop;
+  stop.reason = StopInfo::kSignalStop;
   switch (trap.event) {
-  case TrapInfo::kEventNone:
-    stop.reason = TrapInfo::kNone;
+  case StopInfo::kEventNone:
+    stop.reason = StopInfo::kNone;
     break;
-  case TrapInfo::kEventExit:
+  case StopInfo::kEventExit:
     stop.event = StopCode::kCleanExit;
     stop.status = trap.status;
     readRegisters = false;
     break;
 #if !defined(_WIN32)
-  case TrapInfo::kEventKill:
+  case StopInfo::kEventKill:
     stop.event = StopCode::kSignalExit;
     stop.signal = trap.signal;
     readRegisters = false;
     break;
 #endif
-  case TrapInfo::kEventTrap:
+  case StopInfo::kEventTrap:
     stop.event = StopCode::kSignal;
-    stop.reason = TrapInfo::kBreakpoint;
+    stop.reason = StopInfo::kBreakpoint;
 #if !defined(_WIN32)
     stop.signal = trap.signal;
 #endif
     break;
-  case TrapInfo::kEventStop:
+  case StopInfo::kEventStop:
     stop.event = StopCode::kSignal;
-    stop.reason = TrapInfo::kSignalStop;
+    stop.reason = StopInfo::kSignalStop;
 #if !defined(_WIN32)
     stop.signal = trap.signal;
 #endif

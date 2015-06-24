@@ -22,29 +22,29 @@ namespace POSIX {
 Thread::Thread(ds2::Target::Process *process, ThreadId tid)
     : super(process, tid) {}
 
-ErrorCode Thread::updateTrapInfo(int waitStatus) {
+ErrorCode Thread::updateStopInfo(int waitStatus) {
   ErrorCode error = kSuccess;
 
   _trap.clear();
 
   if (WIFEXITED(waitStatus)) {
-    _trap.event = TrapInfo::kEventExit;
+    _trap.event = StopInfo::kEventExit;
     _trap.status = WEXITSTATUS(waitStatus);
   } else if (WIFSIGNALED(waitStatus)) {
-    _trap.event = TrapInfo::kEventKill;
+    _trap.event = StopInfo::kEventKill;
     _trap.status = WEXITSTATUS(waitStatus);
     _trap.signal = WTERMSIG(waitStatus);
   } else if (WIFSTOPPED(waitStatus)) {
     _trap.signal = WSTOPSIG(waitStatus);
     switch (_trap.signal) {
     case SIGTRAP:
-      _trap.event = TrapInfo::kEventTrap;
+      _trap.event = StopInfo::kEventTrap;
       break;
     case SIGSTOP:
-      _trap.event = TrapInfo::kEventStop;
+      _trap.event = StopInfo::kEventStop;
       break;
     default:
-      _trap.event = TrapInfo::kEventStop;
+      _trap.event = StopInfo::kEventStop;
       break;
     }
   }

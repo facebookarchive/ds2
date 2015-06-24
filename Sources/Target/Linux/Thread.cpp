@@ -59,7 +59,7 @@ ErrorCode Thread::suspend() {
       return error;
     }
 
-    updateTrapInfo(status);
+    updateStopInfo(status);
   }
 
   if (_state == kTerminated) {
@@ -164,11 +164,11 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
       ProcessThreadId(process()->pid(), tid()), info, state);
 }
 
-ErrorCode Thread::updateTrapInfo(int waitStatus) {
+ErrorCode Thread::updateStopInfo(int waitStatus) {
   ErrorCode error = kSuccess;
   siginfo_t si;
 
-  super::updateTrapInfo(waitStatus);
+  super::updateStopInfo(waitStatus);
 
   //
   // When a thread traced with PTRACE_O_TRACECLONE calls clone(2), it (the
@@ -179,13 +179,13 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
   // SIGTRAP.
   // We can now convert back kEventTrap to kEventNone.
   //
-  if (_trap.event == TrapInfo::kEventTrap &&
+  if (_trap.event == StopInfo::kEventTrap &&
       waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8)))
-    _trap.event = TrapInfo::kEventNone;
+    _trap.event = StopInfo::kEventNone;
 
   updateState();
 
-  if (_trap.event == TrapInfo::kEventStop) {
+  if (_trap.event == StopInfo::kEventStop) {
     ProcessThreadId ptid(process()->pid(), tid());
 
     error = process()->ptrace().getSigInfo(ptid, si);
@@ -207,10 +207,10 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
       // The only signal we are supposed to send to the inferior is a
       // SIGSTOP anyway.
       DS2ASSERT(_trap.signal == SIGSTOP);
-      _trap.event = TrapInfo::kEventNone;
+      _trap.event = StopInfo::kEventNone;
     } else if (si.si_code == SI_USER && si.si_pid == 0 &&
                _trap.signal == SIGSTOP) {
-      _trap.event = TrapInfo::kEventNone;
+      _trap.event = StopInfo::kEventNone;
     } else {
       //
       // This is not a signal that we originated. We can output a

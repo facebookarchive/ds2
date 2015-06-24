@@ -174,23 +174,23 @@ std::string StopCode::encodeInfo(CompatibilityMode mode) const {
   if (!(core < 0)) {
     ss << ';' << "core:" << core;
   }
-  if (reason != TrapInfo::kNone) {
+  if (reason != StopInfo::kNone) {
 #if notyet
     ss << ';';
     switch (reason) {
-    case TrapInfo::kWatchpoint:
+    case StopInfo::kWatchpoint:
       ss << "watch";
       break;
-    case TrapInfo::kRegisterWatchpoint:
+    case StopInfo::kRegisterWatchpoint:
       ss << "rwatch";
       break;
-    case TrapInfo::kAddressWatchpoint:
+    case StopInfo::kAddressWatchpoint:
       ss << "awatch";
       break;
-    case TrapInfo::kLibraryLoad:
+    case StopInfo::kLibraryLoad:
       ss << "library";
       break;
-    case TrapInfo::kReplayLog:
+    case StopInfo::kReplayLog:
       ss << "replaylog";
       break;
     }
@@ -202,33 +202,33 @@ std::string StopCode::encodeInfo(CompatibilityMode mode) const {
   // Encode extra information needed by LLDB.
   //
   if (mode == kCompatibilityModeLLDB) {
-    if (reason != TrapInfo::kNone) {
+    if (reason != StopInfo::kNone) {
       ss << ';' << "reason:";
       switch (reason) {
-      case TrapInfo::kNone:
+      case StopInfo::kNone:
         break;
-      case TrapInfo::kTrace:
+      case StopInfo::kTrace:
         ss << "trace";
         break;
-      case TrapInfo::kBreakpoint:
+      case StopInfo::kBreakpoint:
         ss << "breakpoint";
         break;
-      case TrapInfo::kWatchpoint:
+      case StopInfo::kWatchpoint:
         ss << "watchpoint";
         break;
-      case TrapInfo::kSignalStop:
+      case StopInfo::kSignalStop:
         ss << "signal";
         break;
-      case TrapInfo::kTrap:
+      case StopInfo::kTrap:
         ss << "trap";
         break;
-      case TrapInfo::kException:
+      case StopInfo::kException:
         ss << "exception";
         break;
-      case TrapInfo::kRegisterWatchpoint:
-      case TrapInfo::kAddressWatchpoint:
-      case TrapInfo::kLibraryLoad:
-      case TrapInfo::kReplayLog:
+      case StopInfo::kRegisterWatchpoint:
+      case StopInfo::kAddressWatchpoint:
+      case StopInfo::kLibraryLoad:
+      case StopInfo::kReplayLog:
         DS2BUG("stop reason not implemented: %d", reason);
       }
     }
@@ -288,7 +288,7 @@ std::string StopCode::encode(CompatibilityMode mode) const {
     // We need to have some information in order to
     // have extended stop reason.
     //
-    if (!ptid.valid() && core < 0 && reason == TrapInfo::kNone &&
+    if (!ptid.valid() && core < 0 && reason == StopInfo::kNone &&
         registers.empty()) {
       //
       // We can use the simpler form.
@@ -316,11 +316,11 @@ std::string StopCode::encode(CompatibilityMode mode) const {
     ss << HEX(2) << (status & 0xff) << DEC;
   } else {
 #if !defined(_WIN32)
-    ss << HEX(2) << (reason != TrapInfo::kNone ? (signal & 0xff) : 0) << DEC;
+    ss << HEX(2) << (reason != StopInfo::kNone ? (signal & 0xff) : 0) << DEC;
 #else
     // Windows doesn't have a notion of signals but the GDB protocol still
     // needs some sort of emulation for these.
-    ss << HEX(2) << (reason != TrapInfo::kNone ? 5 : 0) << DEC;
+    ss << HEX(2) << (reason != StopInfo::kNone ? 5 : 0) << DEC;
 #endif
   }
 
