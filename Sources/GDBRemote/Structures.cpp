@@ -281,7 +281,6 @@ std::string StopCode::encodeRegisters() const {
 
 std::string StopCode::encode(CompatibilityMode mode) const {
   std::ostringstream ss;
-  char code;
 
   if (event == kSignal && mode == kCompatibilityModeGDBMultiprocess) {
     //
@@ -299,30 +298,25 @@ std::string StopCode::encode(CompatibilityMode mode) const {
 
   switch (event) {
   case kSignal:
-    code = (mode != kCompatibilityModeGDB) ? 'T' : 'S';
+    ss << ((mode != kCompatibilityModeGDB) ? 'T' : 'S') << HEX(2)
+#if !defined(_WIN32)
+       << ((reason != StopInfo::kReasonNone) ? (signal & 0xff) : 0)
+#else
+       // Windows doesn't have a notion of signals but the GDB protocol still
+       // needs some sort of emulation for these.
+       << (reason != StopInfo::kReasonNone ? 5 : 0)
+#endif
+       << DEC;
     break;
+
 #if !defined(_WIN32)
   case kSignalExit:
-    code = 'X';
+    ss << 'X' << HEX(2) << (signal & 0xff) << DEC;
     break;
 #endif
-  case kCleanExit:
-    code = 'W';
-    break;
-  }
 
-  ss << code;
-  if (event == kCleanExit) {
-    ss << HEX(2) << (status & 0xff) << DEC;
-  } else {
-#if !defined(_WIN32)
-    ss << HEX(2) << (reason != StopInfo::kReasonNone ? (signal & 0xff) : 0)
-       << DEC;
-#else
-    // Windows doesn't have a notion of signals but the GDB protocol still
-    // needs some sort of emulation for these.
-    ss << HEX(2) << (reason != StopInfo::kReasonNone ? 5 : 0) << DEC;
-#endif
+  case kCleanExit:
+    ss << 'W' << HEX(2) << (status & 0xff) << DEC;
   }
 
   //

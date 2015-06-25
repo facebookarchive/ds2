@@ -179,19 +179,26 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     return kSuccess;
 
   case StopInfo::kEventStop: {
-    // These are the reasons why we might want to mark a stopped thread as
-    // being stopped for "no reason" (stopped by the debugger or debug
-    // server):
-    // (1) When a thread traced with PTRACE_O_TRACECLONE calls clone(2), it
-    //     (the caller of clone(2)) is stopped with a SIGTRAP, and control is
-    //     given back to the tracer (us). The wait(2) status will then be
-    //     constructed so that
+    // These are the reasons why we might want to alter the stop info of a
+    // thread:
+    // (1) a thread traced with PTRACE_O_TRACECLONE calls clone(2), it (the
+    //     caller of clone(2)) is stopped with a SIGTRAP, and control is given
+    //     back to the tracer (us). The wait(2) status will then be constructed
+    //     so that
     //       status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))
     //     which results in WIFSTOPPED(status) == true and
-    //     WSTOPSIG(status) == SIGTRAP.
+    //     WSTOPSIG(status) == SIGTRAP. We mark the thread stopped for no
+    //     reason so it just gets restarted immediately (see
+    //     Linux::Process::wait);
     // (2) we sent the thread a SIGSTOP (with tkill) to interrupt it e.g.:
-    //     a thread hits a breakpoint, we have to stop every other thread;
-    // (3) the inferior received a SIGSTOP because of ptrace attach;
+    //     a thread hits a breakpoint, we have to stop every other thread.
+    //     These other treads will be mark as no reason so the debugger can
+    //     adapt its output (e.g.: lldb will simply hide these threads and only
+    //     display the one that stopped for a breakpoint);
+    // (3) the inferior received a SIGSTOP because of ptrace attach. We have to
+    //     mark the thread as stopped for a trap;
+    // (4) the inferior received a SIGTRAP. This is usually because of a
+    //     breakpoint, single step or such;
 
     siginfo_t si;
     ProcessThreadId ptid(process()->pid(), tid());
@@ -202,25 +209,27 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
       return error;
     }
 
-    if (waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) {
+    if (waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) { // (1)
       _trap.event = StopInfo::kEventNone;
-    } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) {
+    } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) { // (2)
       // The only signal we are supposed to send to the inferior is a
       // SIGSTOP anyway.
       DS2ASSERT(_trap.signal == SIGSTOP);
       _trap.event = StopInfo::kEventNone;
     } else if (si.si_code == SI_USER && si.si_pid == 0 &&
-               _trap.signal == SIGSTOP) {
-      _trap.event = StopInfo::kEventNone;
+               _trap.signal == SIGSTOP) { // (3)
+      _trap.reason = StopInfo::kReasonTrap;
+    } else if (_trap.signal == SIGTRAP) { // (4)
+      _trap.reason = StopInfo::kReasonBreakpoint;
     } else {
       // This is not a signal that we originated. We can output a
       // warning if the signal comes from an external source.
+      _trap.reason = StopInfo::kReasonSignalStop;
       if ((si.si_code == SI_USER || si.si_code == SI_TKILL) &&
-          si.si_pid != tid()) {
+          si.si_pid != tid())
         DS2LOG(Warning,
-               "tid %d received a signal from an external source (sender=%d)",
-               tid(), si.si_pid);
-      }
+               "tid %d received signal %s from an external source (sender=%d)",
+               tid(), strsignal(_trap.signal), si.si_pid);
     }
   } break;
   }

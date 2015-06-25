@@ -173,16 +173,26 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
   stop.ptid.tid = thread->tid();
   stop.core = trap.core;
 
-  stop.reason = StopInfo::kReasonSignalStop;
   switch (trap.event) {
   case StopInfo::kEventNone:
+    stop.event = StopCode::kSignal;
     stop.reason = StopInfo::kReasonNone;
+
+  case StopInfo::kEventStop:
+    stop.event = StopCode::kSignal;
+    stop.reason = trap.reason;
+#if !defined(_WIN32)
+    stop.signal = trap.signal;
+#endif
     break;
+
   case StopInfo::kEventExit:
+    DS2ASSERT(stop.reason == StopInfo::kReasonNone);
     stop.event = StopCode::kCleanExit;
     stop.status = trap.status;
     readRegisters = false;
     break;
+
 #if !defined(_WIN32)
   case StopInfo::kEventKill:
     stop.event = StopCode::kSignalExit;
@@ -190,16 +200,6 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
     readRegisters = false;
     break;
 #endif
-  case StopInfo::kEventStop:
-    stop.event = StopCode::kSignal;
-    stop.reason = StopInfo::kReasonSignalStop;
-#if !defined(_WIN32)
-    stop.signal = trap.signal;
-    // TODO(sas): Push this down to OS-specific code.
-    if (stop.signal == SIGTRAP)
-      stop.reason = StopInfo::kReasonBreakpoint;
-#endif
-    break;
   }
 
   if (readRegisters) {
