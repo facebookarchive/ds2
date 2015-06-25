@@ -9,7 +9,7 @@
 ##
 
 cmake_minimum_required(VERSION 2.8)
-if ("${CMAKE_MAJOR_VERSION}" EQUAL 3)
+if ("${CMAKE_VERSION}" VERSION_GREATER "3.1.0")
   cmake_policy(SET CMP0054 NEW)
 endif ()
 
