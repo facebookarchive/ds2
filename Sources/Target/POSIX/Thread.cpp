@@ -35,18 +35,8 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     _trap.status = WEXITSTATUS(waitStatus);
     _trap.signal = WTERMSIG(waitStatus);
   } else if (WIFSTOPPED(waitStatus)) {
+    _trap.event = StopInfo::kEventStop;
     _trap.signal = WSTOPSIG(waitStatus);
-    switch (_trap.signal) {
-    case SIGTRAP:
-      _trap.event = StopInfo::kEventTrap;
-      break;
-    case SIGSTOP:
-      _trap.event = StopInfo::kEventStop;
-      break;
-    default:
-      _trap.event = StopInfo::kEventStop;
-      break;
-    }
   }
 
   return error;

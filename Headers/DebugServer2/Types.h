@@ -91,12 +91,9 @@ typedef std::map<std::string, std::string> EnvironmentBlock;
 struct StopInfo {
   enum Event {
     kEventNone,
-    kEventExit,
-#if !defined(_WIN32)
-    kEventKill,
-#endif
-    kEventTrap,
     kEventStop,
+    kEventExit,
+    kEventKill,
   };
 
   enum Reason {

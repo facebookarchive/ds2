@@ -211,13 +211,11 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       removeThread(tid);
       goto continue_waiting;
 
-    case StopInfo::kEventTrap:
-      DS2LOG(Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
-             strsignal(WSTOPSIG(status)));
-      break;
-
     case StopInfo::kEventStop:
       signal = _currentThread->_trap.signal;
+
+      DS2LOG(Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
+             strsignal(signal));
 
       if (signal == SIGSTOP || signal == SIGCHLD || signal == SIGRTMIN) {
         //

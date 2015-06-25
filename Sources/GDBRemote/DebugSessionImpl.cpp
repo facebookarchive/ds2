@@ -190,18 +190,14 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
     readRegisters = false;
     break;
 #endif
-  case StopInfo::kEventTrap:
-    stop.event = StopCode::kSignal;
-    stop.reason = StopInfo::kReasonBreakpoint;
-#if !defined(_WIN32)
-    stop.signal = trap.signal;
-#endif
-    break;
   case StopInfo::kEventStop:
     stop.event = StopCode::kSignal;
     stop.reason = StopInfo::kReasonSignalStop;
 #if !defined(_WIN32)
     stop.signal = trap.signal;
+    // TODO(sas): Push this down to OS-specific code.
+    if (stop.signal == SIGTRAP)
+      stop.reason = StopInfo::kReasonBreakpoint;
 #endif
     break;
   }

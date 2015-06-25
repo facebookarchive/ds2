@@ -173,20 +173,6 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
   case StopInfo::kEventNone:
     DS2BUG("thread stopped for unknown reason, status=%#x", waitStatus);
 
-  case StopInfo::kEventTrap:
-    // When a thread traced with PTRACE_O_TRACECLONE calls clone(2), it (the
-    // caller of clone(2)) is stopped with a SIGTRAP, and control is given back
-    // to the tracer (us). The wait(2) status will then be constructed so that
-    //     status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))
-    // which results in WIFSTOPPED(status) == true and WSTOPSIG(status) ==
-    // SIGTRAP.
-    // We can now convert back kEventTrap to kEventNone.
-
-    if (waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8)))
-      _trap.event = StopInfo::kEventNone;
-
-    // Fall-through.
-
   case StopInfo::kEventExit:
   case StopInfo::kEventKill:
     DS2ASSERT(_trap.reason == StopInfo::kReasonNone);
@@ -196,9 +182,16 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     // These are the reasons why we might want to mark a stopped thread as
     // being stopped for "no reason" (stopped by the debugger or debug
     // server):
-    // (1) we sent the thread a SIGSTOP (with tkill) to interrupt it e.g.:
+    // (1) When a thread traced with PTRACE_O_TRACECLONE calls clone(2), it
+    //     (the caller of clone(2)) is stopped with a SIGTRAP, and control is
+    //     given back to the tracer (us). The wait(2) status will then be
+    //     constructed so that
+    //       status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))
+    //     which results in WIFSTOPPED(status) == true and
+    //     WSTOPSIG(status) == SIGTRAP.
+    // (2) we sent the thread a SIGSTOP (with tkill) to interrupt it e.g.:
     //     a thread hits a breakpoint, we have to stop every other thread;
-    // (2) the inferior received a SIGSTOP because of ptrace attach;
+    // (3) the inferior received a SIGSTOP because of ptrace attach;
 
     siginfo_t si;
     ProcessThreadId ptid(process()->pid(), tid());
@@ -209,7 +202,9 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
       return error;
     }
 
-    if (si.si_code == SI_TKILL && si.si_pid == getpid()) {
+    if (waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) {
+      _trap.event = StopInfo::kEventNone;
+    } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) {
       // The only signal we are supposed to send to the inferior is a
       // SIGSTOP anyway.
       DS2ASSERT(_trap.signal == SIGSTOP);
