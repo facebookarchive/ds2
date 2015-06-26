@@ -23,12 +23,6 @@
 #include <windows.h>
 #include <winsock2.h>
 
-// Note(sas): This is used to disable deprecation warnings for GetVersion(). We
-// can remove this when we get rid of calls to this function.
-#if defined(_MSVC_VER)
-#pragma warning(disable : 4996)
-#endif
-
 namespace ds2 {
 namespace Host {
 namespace Windows {
