@@ -68,13 +68,14 @@ void Log(int level, char const *classname, char const *funcname,
     DS2LOG(Fatal, "bug at %s:%d:" MESSAGE, __FILE__, __LINE__, ##__VA_ARGS__); \
     DS2_UNREACHABLE();                                                         \
   } while (0)
-#elif defined(_MSVC_VER)
+#elif defined(_MSC_VER)
 #define DS2BUG(MESSAGE, ...)                                                   \
   do {                                                                         \
     DS2LOG(Fatal, "bug at %s:%d:" MESSAGE, __FILE__, __LINE__, __VA_ARGS__);   \
     DS2_UNREACHABLE();                                                         \
   } while (0)
 #else
+#error "Compiler not supported."
 #endif
 }
 
