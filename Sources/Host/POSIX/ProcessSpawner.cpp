@@ -363,7 +363,9 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       close_terminal(term);
 
       if (!_workingDirectory.empty()) {
-        ::chdir(_workingDirectory.c_str());
+        int res = ::chdir(_workingDirectory.c_str());
+        if (res != 0)
+          return Platform::TranslateError();
       }
 
       std::vector<char *> args;
