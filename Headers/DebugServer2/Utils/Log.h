@@ -55,27 +55,24 @@ void Log(int level, char const *classname, char const *funcname,
     if (!(COND)) {                                                             \
       DS2LOG(Fatal, "assertion `%s' failed at %s:%d", #COND, __FILE__,         \
              __LINE__);                                                        \
-      abort();                                                                 \
+      DS2_UNREACHABLE();                                                       \
     }                                                                          \
   } while (0)
 #else
 #define DS2ASSERT(COND) (void)0
 #endif
 
-// DS2LOG(Fatal...) already aborts but we add an additional abort() to make it
-// explicit to the compiler that this call doesn't return. This way we can
-// avoid unnecessary returns in users of DS2BUG.
 #if defined(__clang__) || defined(__GNUC__)
 #define DS2BUG(MESSAGE, ...)                                                   \
   do {                                                                         \
     DS2LOG(Fatal, "bug at %s:%d:" MESSAGE, __FILE__, __LINE__, ##__VA_ARGS__); \
-    abort();                                                                   \
+    DS2_UNREACHABLE();                                                         \
   } while (0)
 #elif defined(_MSVC_VER)
 #define DS2BUG(MESSAGE, ...)                                                   \
   do {                                                                         \
     DS2LOG(Fatal, "bug at %s:%d:" MESSAGE, __FILE__, __LINE__, __VA_ARGS__);   \
-    abort();                                                                   \
+    DS2_UNREACHABLE();                                                         \
   } while (0)
 #else
 #endif
