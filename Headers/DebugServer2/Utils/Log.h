@@ -65,11 +65,20 @@ void Log(int level, char const *classname, char const *funcname,
 // DS2LOG(Fatal...) already aborts but we add an additional abort() to make it
 // explicit to the compiler that this call doesn't return. This way we can
 // avoid unnecessary returns in users of DS2BUG.
-#define DS2BUG(...)                                                            \
+#if defined(__clang__) || defined(__GNUC__)
+#define DS2BUG(MESSAGE, ...)                                                   \
   do {                                                                         \
-    DS2LOG(Fatal, __VA_ARGS__);                                                \
+    DS2LOG(Fatal, "bug at %s:%d:" MESSAGE, __FILE__, __LINE__, ##__VA_ARGS__); \
     abort();                                                                   \
   } while (0)
+#elif defined(_MSVC_VER)
+#define DS2BUG(MESSAGE, ...)                                                   \
+  do {                                                                         \
+    DS2LOG(Fatal, "bug at %s:%d:" MESSAGE, __FILE__, __LINE__, __VA_ARGS__);   \
+    abort();                                                                   \
+  } while (0)
+#else
+#endif
 }
 
 #endif // !__DebugServer2_Utils_Log_h
