@@ -43,7 +43,7 @@ bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
   ds2::Architecture::CPUState state;
 
   //
-  // Ignore hardware signle-stepping.
+  // Ignore hardware single-stepping.
   //
   if (thread->state() == Target::Thread::kStepped)
     return true;
