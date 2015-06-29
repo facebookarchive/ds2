@@ -102,6 +102,7 @@ struct StopInfo {
     kReasonRegisterWatchpoint,
     kReasonAddressWatchpoint,
     kReasonLibraryLoad,
+    kReasonLibraryUnload,
     kReasonReplayLog,
     kReasonBreakpoint,
     kReasonTrace,

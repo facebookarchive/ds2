@@ -174,65 +174,37 @@ std::string StopCode::encodeInfo(CompatibilityMode mode) const {
   if (!(core < 0)) {
     ss << ';' << "core:" << core;
   }
-  if (reason != StopInfo::kReasonNone) {
-#if notyet
-    ss << ';';
-    switch (reason) {
-    case StopInfo::kReasonWatchpoint:
-      ss << "watch";
-      break;
-    case StopInfo::kReasonRegisterWatchpoint:
-      ss << "rwatch";
-      break;
-    case StopInfo::kReasonAddressWatchpoint:
-      ss << "awatch";
-      break;
-    case StopInfo::kReasonLibraryLoad:
-      ss << "library";
-      break;
-    case StopInfo::kReasonReplayLog:
-      ss << "replaylog";
-      break;
-    }
-    ss << ':' << 1;
-#endif
+
+  switch (reason) {
+  case StopInfo::kReasonNone:
+    break;
+
+#define REASON_1(CODE, REASON)                                                 \
+  case CODE:                                                                   \
+    ss << ';' << REASON << ':' << 1;                                           \
+    break;
+    REASON_1(StopInfo::kReasonWatchpoint, "watch");
+    REASON_1(StopInfo::kReasonRegisterWatchpoint, "rwatch");
+    REASON_1(StopInfo::kReasonAddressWatchpoint, "awatch");
+    REASON_1(StopInfo::kReasonLibraryLoad, "library");
+    REASON_1(StopInfo::kReasonLibraryUnload, "library");
+    REASON_1(StopInfo::kReasonReplayLog, "replaylog");
+#undef REASON_1
+
+#define REASON_LLDB(CODE, REASON)                                              \
+  case CODE:                                                                   \
+    if (mode == kCompatibilityModeLLDB)                                        \
+      ss << ';' << "reason:" << REASON;                                        \
+    break;
+    REASON_LLDB(StopInfo::kReasonTrace, "trace");
+    REASON_LLDB(StopInfo::kReasonBreakpoint, "breakpoint");
+    REASON_LLDB(StopInfo::kReasonSignalStop, "signal");
+    REASON_LLDB(StopInfo::kReasonTrap, "trap");
+    REASON_LLDB(StopInfo::kReasonException, "exception");
+#undef REASON_LLDB
   }
 
-  //
-  // Encode extra information needed by LLDB.
-  //
   if (mode == kCompatibilityModeLLDB) {
-    if (reason != StopInfo::kReasonNone) {
-      ss << ';' << "reason:";
-      switch (reason) {
-      case StopInfo::kReasonNone:
-        break;
-      case StopInfo::kReasonTrace:
-        ss << "trace";
-        break;
-      case StopInfo::kReasonBreakpoint:
-        ss << "breakpoint";
-        break;
-      case StopInfo::kReasonWatchpoint:
-        ss << "watchpoint";
-        break;
-      case StopInfo::kReasonSignalStop:
-        ss << "signal";
-        break;
-      case StopInfo::kReasonTrap:
-        ss << "trap";
-        break;
-      case StopInfo::kReasonException:
-        ss << "exception";
-        break;
-      case StopInfo::kReasonRegisterWatchpoint:
-      case StopInfo::kReasonAddressWatchpoint:
-      case StopInfo::kReasonLibraryLoad:
-      case StopInfo::kReasonReplayLog:
-        DS2BUG("stop reason not implemented: %d", reason);
-      }
-    }
-
     ss << ';' << "threads:";
     if (threads.empty()) {
       //

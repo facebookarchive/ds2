@@ -78,20 +78,20 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     ProcessInfo pi;
     error = process()->getInfo(pi);
     if (error != kSuccess)
-      goto noname;
+      goto skip_name;
 
     if (de.u.LoadDll.lpImageName == nullptr)
-      goto noname;
+      goto skip_name;
 
     uint64_t ptr = 0;
     error = process()->readMemory(
         reinterpret_cast<uint64_t>(de.u.LoadDll.lpImageName), &ptr,
         pi.pointerSize);
     if (error != kSuccess)
-      goto noname;
+      goto skip_name;
 
     if (ptr == 0)
-      goto noname;
+      goto skip_name;
 
     // It seems like all strings passed by the kernel here are guaranteed to be
     // unicode.
@@ -108,15 +108,24 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       ptr += sizeof(c);
     } while (c != '\0');
 
-  noname:
+  skip_name:
     DS2LOG(Debug, "new DLL loaded: %s",
            Host::Platform::WideToNarrowString(name).c_str());
 
     if (de.u.LoadDll.hFile != NULL)
       CloseHandle(de.u.LoadDll.hFile);
-  }
+
+    _state = kStopped;
+    _stopInfo.event = StopInfo::kEventStop;
+    _stopInfo.reason = StopInfo::kReasonLibraryLoad;
+  } break;
 
   case UNLOAD_DLL_DEBUG_EVENT:
+    _state = kStopped;
+    _stopInfo.event = StopInfo::kEventStop;
+    _stopInfo.reason = StopInfo::kReasonLibraryUnload;
+    break;
+
   case OUTPUT_DEBUG_STRING_EVENT:
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventNone;
