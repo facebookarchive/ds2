@@ -25,18 +25,18 @@ Thread::Thread(ds2::Target::Process *process, ThreadId tid)
 ErrorCode Thread::updateStopInfo(int waitStatus) {
   ErrorCode error = kSuccess;
 
-  _trap.clear();
+  _stopInfo.clear();
 
   if (WIFEXITED(waitStatus)) {
-    _trap.event = StopInfo::kEventExit;
-    _trap.status = WEXITSTATUS(waitStatus);
+    _stopInfo.event = StopInfo::kEventExit;
+    _stopInfo.status = WEXITSTATUS(waitStatus);
   } else if (WIFSIGNALED(waitStatus)) {
-    _trap.event = StopInfo::kEventKill;
-    _trap.status = WEXITSTATUS(waitStatus);
-    _trap.signal = WTERMSIG(waitStatus);
+    _stopInfo.event = StopInfo::kEventKill;
+    _stopInfo.status = WEXITSTATUS(waitStatus);
+    _stopInfo.signal = WTERMSIG(waitStatus);
   } else if (WIFSTOPPED(waitStatus)) {
-    _trap.event = StopInfo::kEventStop;
-    _trap.signal = WSTOPSIG(waitStatus);
+    _stopInfo.event = StopInfo::kEventStop;
+    _stopInfo.signal = WSTOPSIG(waitStatus);
   }
 
   return error;

@@ -27,7 +27,7 @@ public:
 protected:
   Process *_process;
   ThreadId _tid;
-  StopInfo _trap;
+  StopInfo _stopInfo;
   State _state;
 
 protected:
@@ -39,7 +39,7 @@ public:
 public:
   inline Process *process() const { return _process; }
   inline ThreadId tid() const { return _tid; }
-  inline StopInfo const &trapInfo() const { return _trap; }
+  inline StopInfo const &stopInfo() const { return _stopInfo; }
 
 public:
   virtual ErrorCode terminate() = 0;
@@ -61,7 +61,7 @@ public:
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state) = 0;
 
 public:
-  inline uint32_t core() const { return _trap.core; }
+  inline uint32_t core() const { return _stopInfo.core; }
 
 protected:
   friend class ProcessBase;

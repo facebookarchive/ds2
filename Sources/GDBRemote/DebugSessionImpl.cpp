@@ -165,7 +165,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
     return kErrorProcessNotFound;
 
   bool readRegisters = true;
-  StopInfo const &trap = thread->trapInfo();
+  StopInfo const &trap = thread->stopInfo();
 
   Architecture::CPUState state;
 

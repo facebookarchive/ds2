@@ -185,7 +185,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
 
     _currentThread->updateStopInfo(status);
 
-    switch (_currentThread->_trap.event) {
+    switch (_currentThread->_stopInfo.event) {
     case StopInfo::kEventNone:
       _currentThread->resume();
       goto continue_waiting;
@@ -212,7 +212,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       goto continue_waiting;
 
     case StopInfo::kEventStop:
-      signal = _currentThread->_trap.signal;
+      signal = _currentThread->_stopInfo.signal;
 
       DS2LOG(Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
              strsignal(signal));

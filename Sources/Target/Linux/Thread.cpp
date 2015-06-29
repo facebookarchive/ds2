@@ -108,14 +108,14 @@ ErrorCode Thread::resume(int signal, Address const &address) {
 
   if (_state == kStopped || _state == kStepped) {
     if (signal == 0) {
-      switch (_trap.signal) {
+      switch (_stopInfo.signal) {
       case SIGCHLD:
       case SIGSTOP:
       case SIGTRAP:
         signal = 0;
         break;
       default:
-        signal = _trap.signal;
+        signal = _stopInfo.signal;
         break;
       }
     }
@@ -130,7 +130,7 @@ ErrorCode Thread::resume(int signal, Address const &address) {
                                        info, signal, address);
     if (error == kSuccess) {
       _state = kRunning;
-      _trap.signal = 0;
+      _stopInfo.signal = 0;
     }
   } else if (_state == kTerminated) {
     error = kErrorProcessNotFound;
@@ -169,13 +169,13 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
 
   updateState();
 
-  switch (_trap.event) {
+  switch (_stopInfo.event) {
   case StopInfo::kEventNone:
     DS2BUG("thread stopped for unknown reason, status=%#x", waitStatus);
 
   case StopInfo::kEventExit:
   case StopInfo::kEventKill:
-    DS2ASSERT(_trap.reason == StopInfo::kReasonNone);
+    DS2ASSERT(_stopInfo.reason == StopInfo::kReasonNone);
     return kSuccess;
 
   case StopInfo::kEventStop: {
@@ -210,26 +210,26 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     }
 
     if (waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) { // (1)
-      _trap.event = StopInfo::kEventNone;
+      _stopInfo.event = StopInfo::kEventNone;
     } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) { // (2)
       // The only signal we are supposed to send to the inferior is a
       // SIGSTOP anyway.
-      DS2ASSERT(_trap.signal == SIGSTOP);
-      _trap.event = StopInfo::kEventNone;
+      DS2ASSERT(_stopInfo.signal == SIGSTOP);
+      _stopInfo.event = StopInfo::kEventNone;
     } else if (si.si_code == SI_USER && si.si_pid == 0 &&
-               _trap.signal == SIGSTOP) { // (3)
-      _trap.reason = StopInfo::kReasonTrap;
-    } else if (_trap.signal == SIGTRAP) { // (4)
-      _trap.reason = StopInfo::kReasonBreakpoint;
+               _stopInfo.signal == SIGSTOP) { // (3)
+      _stopInfo.reason = StopInfo::kReasonTrap;
+    } else if (_stopInfo.signal == SIGTRAP) { // (4)
+      _stopInfo.reason = StopInfo::kReasonBreakpoint;
     } else {
       // This is not a signal that we originated. We can output a
       // warning if the signal comes from an external source.
-      _trap.reason = StopInfo::kReasonSignalStop;
+      _stopInfo.reason = StopInfo::kReasonSignalStop;
       if ((si.si_code == SI_USER || si.si_code == SI_TKILL) &&
           si.si_pid != tid())
         DS2LOG(Warning,
                "tid %d received signal %s from an external source (sender=%d)",
-               tid(), strsignal(_trap.signal), si.si_pid);
+               tid(), strsignal(_stopInfo.signal), si.si_pid);
     }
   } break;
   }
@@ -249,7 +249,7 @@ void Thread::updateState() {
     stat.state = 0;
   }
 
-  _trap.core = stat.task_cpu;
+  _stopInfo.core = stat.task_cpu;
 
   switch (stat.state) {
   case Host::Linux::kProcStateZombie:
