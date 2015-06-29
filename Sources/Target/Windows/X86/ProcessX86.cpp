@@ -8,6 +8,7 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
 
 using ds2::Architecture::GDBDescriptor;
@@ -16,6 +17,16 @@ using ds2::Architecture::LLDBDescriptor;
 namespace ds2 {
 namespace Target {
 namespace Windows {
+
+BreakpointManager *Process::breakpointManager() const {
+  if (_breakpointManager == nullptr) {
+    const_cast<Process *>(this)->_breakpointManager =
+        new Architecture::X86::SoftwareBreakpointManager(
+            reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
+  }
+
+  return _breakpointManager;
+}
 
 GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
   return &Architecture::X86::GDB;

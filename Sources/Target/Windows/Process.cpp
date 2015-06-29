@@ -26,7 +26,8 @@ namespace Target {
 namespace Windows {
 
 Process::Process()
-    : Target::ProcessBase(), _handle(nullptr), _terminated(false) {}
+    : Target::ProcessBase(), _handle(nullptr), _breakpointManager(nullptr),
+      _terminated(false) {}
 
 Process::~Process() { CloseHandle(_handle); }
 
