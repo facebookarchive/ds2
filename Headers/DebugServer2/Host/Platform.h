@@ -11,8 +11,6 @@
 #ifndef __DebugServer2_Host_Platform_h
 #define __DebugServer2_Host_Platform_h
 
-#include "DebugServer2/Host/Base.h"
-
 #if defined(_WIN32)
 #include "DebugServer2/Host/Windows/Platform.h"
 #elif defined(__linux__)

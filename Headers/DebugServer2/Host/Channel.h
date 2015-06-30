@@ -11,7 +11,7 @@
 #ifndef __DebugServer2_Host_Channel_h
 #define __DebugServer2_Host_Channel_h
 
-#include "DebugServer2/Host/Base.h"
+#include "DebugServer2/Types.h"
 
 namespace ds2 {
 namespace Host {

@@ -11,9 +11,9 @@
 #ifndef __DebugServer2_GDBRemote_Types_h
 #define __DebugServer2_GDBRemote_Types_h
 
-#include "DebugServer2/GDBRemote/Base.h"
 #include "DebugServer2/Architecture/RegisterLayout.h"
-#include "DebugServer2/Host/Base.h"
+#include "DebugServer2/GDBRemote/Base.h"
+#include "DebugServer2/Types.h"
 
 #include <set>
 

@@ -16,6 +16,7 @@
 #endif
 
 #include "DebugServer2/Host/POSIX/Platform.h"
+#include "DebugServer2/Types.h"
 
 #include <functional>
 
