@@ -83,12 +83,20 @@ DebugSessionImpl::onQuerySupported(Session &session,
   } else {
     localFeatures.push_back(std::string("BreakpointCommands-"));
   }
+  localFeatures.push_back(std::string("multiprocess+"));
   localFeatures.push_back(std::string("QPassSignals+"));
-  localFeatures.push_back(std::string("QProgramSignals+"));
   localFeatures.push_back(std::string("QStartNoAckMode+"));
   localFeatures.push_back(std::string("QDisableRandomization+"));
   localFeatures.push_back(std::string("QNonStop+"));
-  localFeatures.push_back(std::string("multiprocess+"));
+#if defined(OS_LINUX)
+  localFeatures.push_back(std::string("QProgramSignals+"));
+  localFeatures.push_back(std::string("qXfer:siginfo:read+"));
+  localFeatures.push_back(std::string("qXfer:siginfo:write+"));
+#else
+  localFeatures.push_back(std::string("QProgramSignals-"));
+  localFeatures.push_back(std::string("qXfer:siginfo:read-"));
+  localFeatures.push_back(std::string("qXfer:siginfo:write-"));
+#endif
   if (_process->isELFProcess()) {
     localFeatures.push_back(std::string("qXfer:auxv:read+"));
   }
@@ -99,8 +107,6 @@ DebugSessionImpl::onQuerySupported(Session &session,
     localFeatures.push_back(std::string("qXfer:libraries:read+"));
   }
   localFeatures.push_back(std::string("qXfer:osdata:read+"));
-  localFeatures.push_back(std::string("qXfer:siginfo:read+"));
-  localFeatures.push_back(std::string("qXfer:siginfo:write+"));
   localFeatures.push_back(std::string("qXfer:threads:read+"));
   // Disable unsupported tracepoints
   localFeatures.push_back(std::string("Qbtrace:bts-"));
