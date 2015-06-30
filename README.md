@@ -65,16 +65,22 @@ dependencies.
 
 ds2 accepts the following options:
 
-    usage: ds2 [OPTIONS] [PROGRAM [ARGUMENTS...]]
-      -a, --attach ARG          attach to the name or PID specified
-      -R, --debug-remote        enable debugging of remote protocol
-      -k, --keep-alive          keep the server alive after the client disconnects
-      -L, --list-processes      list processes debuggable by the current user
-      -o, --log-output ARG      output log message to the file specified
-      -n, --no-colors           disable colored output
-      -P, --platform            execute in platform mode
-      -p, --port ARG            listen on the port specified
-      -S, --slave               run in slave mode (used from platform spawner)
+```
+usage: ds2 [OPTIONS] [PROGRAM [ARGUMENTS...]]
+  -a, --attach ARG          attach to the name or PID specified
+  -R, --debug-remote        enable debugging of remote protocol
+  -k, --keep-alive          keep the server alive after the client disconnects
+  -L, --list-processes      list processes debuggable by the current user
+  -l, --lldb-compat         force ds2 to run in lldb compat mode
+  -o, --log-output ARG      output log message to the file specified
+  -N, --named-pipe ARG      determine a port dynamically and write back to FIFO
+  -n, --no-colors           disable colored output
+  -P, --platform            execute in platform mode
+  -p, --port ARG            listen on the port specified
+  -e, --set-env             add an element to the environment before launch
+  -S, --slave               run in slave mode (used from platform spawner)
+  -E, --unset-env           remove an element from the environment before lauch
+```
 
 After building ds2 for your target, run it with the binary to debug, or attach
 to an already running process. Then, start LLDB as usual and attach to the ds2
