@@ -22,7 +22,7 @@
 #include <unistd.h>
 
 // TODO HAVE_ENDIAN_H, HAVE_SYS_ENDIAN_H
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #include <endian.h>
 #else
 #include <sys/endian.h>

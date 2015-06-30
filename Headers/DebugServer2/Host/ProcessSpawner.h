@@ -11,10 +11,14 @@
 #ifndef __DebugServer2_Host_ProcessSpawner_h
 #define __DebugServer2_Host_ProcessSpawner_h
 
-#if defined(_WIN32)
+#include "DebugServer2/Base.h"
+
+#if defined(OS_LINUX)
+#include "DebugServer2/Host/POSIX/ProcessSpawner.h"
+#elif defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/ProcessSpawner.h"
 #else
-#include "DebugServer2/Host/POSIX/ProcessSpawner.h"
+#error "Target not supported."
 #endif
 
 #endif // !__DebugServer2_Host_ProcessSpawner_h

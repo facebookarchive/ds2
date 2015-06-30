@@ -10,9 +10,9 @@
 
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Host/Platform.h"
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #endif
 
@@ -24,7 +24,7 @@ int sLogLevel;
 bool sColorsEnabled;
 // stderr is handled a bit differently on Windows, especially when running
 // under powershell. We can simply use stdout for log output.
-#if defined(_WIN32)
+#if defined(OS_WIN32)
 FILE *sOutputStream = stdout;
 #else
 FILE *sOutputStream = stderr;

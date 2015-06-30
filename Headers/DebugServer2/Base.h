@@ -33,6 +33,14 @@ typedef SSIZE_T ssize_t;
 #error "Architecture not supported."
 #endif
 
+#if defined(__linux__)
+#define OS_LINUX
+#elif defined(_WIN32)
+#define OS_WIN32
+#else
+#error "Target not supported."
+#endif
+
 template <typename TYPE, size_t SIZE>
 static inline size_t array_size(TYPE const(&)[SIZE]) {
   return SIZE;

@@ -8,12 +8,12 @@
 // PATENTS file in the same directory.
 //
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #endif
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #define DEFAULT_WAIT_FLAGS (__WALL | __WCLONE)
 #else
 #define DEFAULT_WAIT_FLAGS (0)

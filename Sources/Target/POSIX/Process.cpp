@@ -171,7 +171,7 @@ void Process::setSignalPass(int signo, bool set) {
   // handled, so we never pass them thru.
   //
   if (signo == 0 || signo == SIGSTOP || signo == SIGCHLD
-#if defined(__linux__)
+#if defined(OS_LINUX)
       || signo == SIGRTMIN
 #endif
       )

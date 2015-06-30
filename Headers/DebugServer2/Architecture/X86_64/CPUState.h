@@ -139,7 +139,7 @@ struct CPUState64 {
     uint32_t dr[8];
   } dr;
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
   struct {
     uint64_t orig_rax;
     uint64_t fs_base;
@@ -155,7 +155,7 @@ public:
     std::memset(&x87, 0, sizeof(x87));
     std::memset(&eavx, 0, sizeof(eavx));
     std::memset(&dr, 0, sizeof(dr));
-#if defined(__linux__)
+#if defined(OS_LINUX)
     std::memset(&linux_gp, 0, sizeof(linux_gp));
 #endif
   }
@@ -516,7 +516,7 @@ public:
 
       _GETREG(sse, mxcsr);
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
       _GETREG(linux_gp, orig_rax);
 #endif
 

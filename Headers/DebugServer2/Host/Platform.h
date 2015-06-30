@@ -11,9 +11,11 @@
 #ifndef __DebugServer2_Host_Platform_h
 #define __DebugServer2_Host_Platform_h
 
-#if defined(_WIN32)
+#include "DebugServer2/Base.h"
+
+#if defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/Platform.h"
-#elif defined(__linux__)
+#elif defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/Platform.h"
 #else
 #error "Target not supported."
@@ -22,9 +24,9 @@
 namespace ds2 {
 namespace Host {
 
-#if defined(_WIN32)
+#if defined(OS_WIN32)
 using Windows::Platform;
-#elif defined(__linux__)
+#elif defined(OS_LINUX)
 using Linux::Platform;
 #else
 #error "Target not supported."

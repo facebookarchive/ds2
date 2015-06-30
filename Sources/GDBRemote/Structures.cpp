@@ -19,9 +19,9 @@
 #include <iomanip>
 #include <sstream>
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #define FORMAT_ID(ID) ID
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 #define FORMAT_ID(ID) 0
 #else
 #error "Target not supported."
@@ -266,7 +266,7 @@ std::string StopCode::encodeRegisters() const {
     size_t regsize = regval.second.size << 3;
 
     ss << HEX(2) << (regval.first & 0xff) << ':' << HEX(regsize >> 2)
-#ifdef __BIG_ENDIAN__
+#if defined(__BIG_ENDIAN__)
        << regval.second.value
 #else
        << (Swap64(regval.second.value) >> (64 - regsize))
@@ -299,7 +299,7 @@ std::string StopCode::encode(CompatibilityMode mode) const {
   switch (event) {
   case kSignal:
     ss << ((mode != kCompatibilityModeGDB) ? 'T' : 'S') << HEX(2)
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
        << ((reason != StopInfo::kReasonNone) ? (signal & 0xff) : 0)
 #else
        // Windows doesn't have a notion of signals but the GDB protocol still
@@ -309,7 +309,7 @@ std::string StopCode::encode(CompatibilityMode mode) const {
        << DEC;
     break;
 
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   case kSignalExit:
     ss << 'X' << HEX(2) << (signal & 0xff) << DEC;
     break;
@@ -439,7 +439,7 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
     ss << "pid:" << DEC << pid << ';';
     ss << "uid:" << DEC << FORMAT_ID(realUid) << ';';
     ss << "gid:" << DEC << FORMAT_ID(realGid) << ';';
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     ss << "ppid:" << DEC << parentPid << ';';
     ss << "euid:" << DEC << effectiveUid << ';';
     ss << "egid:" << DEC << effectiveGid << ';';
@@ -450,7 +450,7 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
     ss << "pid:" << HEX0 << pid << ';';
     ss << "real-uid:" << HEX0 << FORMAT_ID(realUid) << ';';
     ss << "real-gid:" << HEX0 << FORMAT_ID(realGid) << ';';
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     ss << "parent-pid:" << HEX0 << parentPid << ';';
     ss << "effective-uid:" << HEX0 << effectiveUid << ';';
     ss << "effective-gid:" << HEX0 << effectiveGid << ';';

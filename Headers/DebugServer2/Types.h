@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
 #include <unistd.h>
 #endif
 
@@ -30,7 +30,7 @@ namespace ds2 {
 // Basic Types
 //
 
-#if defined(_WIN32)
+#if defined(OS_WIN32)
 typedef DWORD ProcessId;
 typedef DWORD ThreadId;
 typedef PSID UserId;
@@ -114,7 +114,7 @@ struct StopInfo {
   Reason reason;
   uint32_t core;
   int status;
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   int signal;
 #endif
 
@@ -125,7 +125,7 @@ struct StopInfo {
     reason = kReasonNone;
     core = 0;
     status = 0;
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     signal = 0;
 #endif
   }
@@ -214,7 +214,7 @@ struct ProcessInfo {
   typedef std::vector<ProcessInfo> Collection;
 
   ProcessId pid;
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   ProcessId parentPid;
 #endif
 
@@ -222,7 +222,7 @@ struct ProcessInfo {
 
   UserId realUid;
   GroupId realGid;
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   UserId effectiveUid;
   GroupId effectiveGid;
 #endif
@@ -242,13 +242,13 @@ struct ProcessInfo {
 
   inline void clear() {
     pid = kAnyProcessId;
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     parentPid = kAnyProcessId;
 #endif
 
     name.clear();
 
-#if defined(_WIN32)
+#if defined(OS_WIN32)
     realUid = nullptr;
     realGid = nullptr;
 #else
@@ -270,7 +270,7 @@ struct ProcessInfo {
     osVendor.clear();
   }
 
-#if defined(_WIN32)
+#if defined(OS_WIN32)
   ~ProcessInfo() {
     free(realUid);
     free(realGid);

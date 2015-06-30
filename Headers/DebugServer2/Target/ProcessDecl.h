@@ -22,10 +22,10 @@
 namespace ds2 {
 namespace Target {
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 __FORWARD_DECLARE(Linux, Process);
 __FORWARD_DECLARE(Linux, Thread);
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 __FORWARD_DECLARE(Windows, Process);
 __FORWARD_DECLARE(Windows, Thread);
 #else

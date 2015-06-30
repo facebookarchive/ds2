@@ -28,7 +28,7 @@
 #include <iomanip>
 #include <set>
 #include <string>
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
@@ -47,7 +47,7 @@ static uint16_t gDefaultPort = 12345;
 static bool gKeepAlive = false;
 static bool gLLDBCompat = false;
 
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
 static void PlatformMain(int argc, char **argv, int port) {
   Socket *server = new Socket;
 
@@ -150,7 +150,7 @@ static void DebugMain(ds2::StringCollection const &args,
   } while (gKeepAlive);
 }
 
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
 static void SlaveMain(int argc, char **argv) {
   Socket *server = new Socket;
 
@@ -209,7 +209,7 @@ static void ListProcesses() {
 
         std::string user;
         if (!Platform::GetUserName(info.realUid, user)) {
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
           user = ds2::ToString(info.realUid);
 #else
           user = "<NONE>";
@@ -218,7 +218,7 @@ static void ListProcesses() {
 
         std::string path = info.name;
         size_t lastsep;
-#if defined(_WIN32)
+#if defined(OS_WIN32)
         lastsep = path.rfind('\\');
 #else
         lastsep = path.rfind('/');
@@ -240,14 +240,14 @@ int main(int argc, char **argv) {
 
   ds2::Host::Platform::Initialize();
   ds2::SetLogColorsEnabled(false);
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   ds2::SetLogColorsEnabled(isatty(fileno(stderr)));
 #endif
   ds2::SetLogLevel(ds2::kLogLevelWarning);
 
   enum RunMode {
     kRunModeNormal,
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     kRunModePlatform,
     kRunModeSlave,
 #endif
@@ -282,7 +282,7 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "list-processes", 'L',
                  "list processes debuggable by the current user");
 
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   // Platform mode.
   opts.addOption(ds2::OptParse::boolOption, "platform", 'P',
                  "execute in platform mode");
@@ -308,7 +308,7 @@ int main(int argc, char **argv) {
       DS2LOG(Error, "unable to open %s for writing: %s",
              opts.getString("log-output").c_str(), strerror(errno));
     } else {
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
       //
       // Note(sas): When ds2 is spawned by the app, it will run with the
       // app's user/group ID, and will create its log file owned by the
@@ -346,7 +346,7 @@ int main(int argc, char **argv) {
     ListProcesses();
   }
 
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   if (opts.getBool("platform")) {
     mode = kRunModePlatform;
     //
@@ -392,7 +392,7 @@ int main(int argc, char **argv) {
   }
 
   switch (mode) {
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   case kRunModePlatform:
     PlatformMain(argc, argv, port);
     break;

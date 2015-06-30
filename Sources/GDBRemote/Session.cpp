@@ -22,9 +22,9 @@
 #include <iomanip>
 #include <sstream>
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #define UNPACK_ID(STR) std::strtoul(STR, nullptr, 10)
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 #define UNPACK_ID(STR) 0
 #else
 #error "Target not supported."
@@ -2467,7 +2467,7 @@ void Session::Handle_qfProcessInfo(ProtocolInterpreter::Handler const &,
       match.realUid = UNPACK_ID(value.c_str());
     } else if (key == "gid") {
       match.realGid = UNPACK_ID(value.c_str());
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     } else if (key == "parent_pid") {
       match.parentPid = std::strtoul(value.c_str(), nullptr, 10);
     } else if (key == "euid") {

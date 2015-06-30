@@ -31,7 +31,7 @@ struct AVXVector {
 
 struct X87Register {
   union {
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     // On Windows, long double and double are the same type.
     // https://msdn.microsoft.com/en-us/library/9cx8xs15.aspx
     long double f80;
@@ -92,7 +92,7 @@ struct CPUState {
     uint32_t dr[8];
   } dr;
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
   struct {
     uint32_t orig_eax;
   } linux_gp;
@@ -106,7 +106,7 @@ public:
     std::memset(&x87, 0, sizeof(x87));
     std::memset(&avx, 0, sizeof(avx));
     std::memset(&dr, 0, sizeof(dr));
-#if defined(__linux__)
+#if defined(OS_LINUX)
     std::memset(&linux_gp, 0, sizeof(linux_gp));
 #endif
   }
@@ -378,7 +378,7 @@ public:
 
       _GETREG(sse, mxcsr);
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
       _GETREG(linux_gp, orig_eax);
 #endif
 
