@@ -100,7 +100,14 @@ DebugSessionImpl::onQuerySupported(Session &session,
   if (_process->isELFProcess()) {
     localFeatures.push_back(std::string("qXfer:auxv:read+"));
   }
+// qXfer:features:read seems buggy in ds2. When lldb requests register sets
+// through this command, it doesn't seem to be able to properly read them
+// afterwards. Disabling for now until we fix that bug.
+#if notyet
   localFeatures.push_back(std::string("qXfer:features:read+"));
+#else
+  localFeatures.push_back(std::string("qXfer:features:read-"));
+#endif
   if (_process->isELFProcess()) {
     localFeatures.push_back(std::string("qXfer:libraries-svr4:read+"));
   } else {
