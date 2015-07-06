@@ -492,6 +492,32 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
       last = false;
     }
     return kSuccess;
+  } else if (object == "libraries") {
+    std::ostringstream ss;
+
+    ss << "<library-list>" << std::endl;
+
+    _process->enumerateSharedLibraries(
+        [&](Target::Process::SharedLibrary const &library) {
+          // Ignore the main module and move on to the next one.
+          if (library.main)
+            return;
+
+          ss << "  <library name=\"" << library.path << "\">" << std::endl;
+          for (auto section : library.sections)
+            ss << "    <section address=\"0x" << std::hex << section << "\" />"
+               << std::endl;
+          ss << "  </library>" << std::endl;
+        });
+
+    ss << "</library-list>";
+    buffer = ss.str().substr(offset);
+    if (buffer.length() > length) {
+      buffer.resize(length);
+      last = false;
+    }
+
+    return kSuccess;
   } else if (object == "libraries-svr4") {
     std::ostringstream ss;
     std::ostringstream sslibs;
@@ -528,6 +554,7 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
         buffer.resize(length);
         last = false;
       }
+
       return kSuccess;
     }
   }
