@@ -16,6 +16,8 @@
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <psapi.h>
+
 using ds2::Host::ProcessSpawner;
 using ds2::Host::Platform;
 
@@ -226,6 +228,46 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
 fail:
   delete process;
   return nullptr;
+}
+
+ErrorCode Process::enumerateSharedLibraries(
+    std::function<void(SharedLibrary const &)> const &cb) {
+  BOOL rc;
+  std::vector<HMODULE> modules;
+  DWORD bytesNeeded;
+
+  rc = EnumProcessModules(_handle, modules.data(),
+                          modules.size() * sizeof(HMODULE), &bytesNeeded);
+  if (!rc)
+    return Platform::TranslateError();
+
+  modules.resize(bytesNeeded / sizeof(HMODULE));
+
+  rc = EnumProcessModules(_handle, modules.data(),
+                          modules.size() * sizeof(HMODULE), &bytesNeeded);
+  if (!rc)
+    return Platform::TranslateError();
+
+  for (auto m : modules) {
+    SharedLibrary sl;
+
+    sl.main = false;
+
+    WCHAR nameStr[MAX_PATH];
+    DWORD nameSize;
+    nameSize = GetModuleFileNameExW(_handle, m, nameStr, sizeof(nameStr));
+    if (nameSize == 0)
+      return Platform::TranslateError();
+    sl.path = Platform::WideToNarrowString(std::wstring(nameStr, nameSize));
+
+    // Modules on Windows only have one "section", which is the address of the
+    // module itself.
+    sl.sections.push_back(reinterpret_cast<uint64_t>(m));
+
+    cb(sl);
+  }
+
+  return kSuccess;
 }
 }
 }
