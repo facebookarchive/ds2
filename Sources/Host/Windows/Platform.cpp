@@ -370,6 +370,8 @@ ErrorCode Platform::TranslateError(DWORD error) {
     return ds2::kErrorUnsupported;
   case ERROR_FILE_EXISTS:
     return ds2::kErrorAlreadyExist;
+  case ERROR_PARTIAL_COPY:
+    return ds2::kErrorNoSpace;
   default:
     DS2BUG("unknown error code: %d", error);
   }
