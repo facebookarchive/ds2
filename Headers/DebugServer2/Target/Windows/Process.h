@@ -76,12 +76,8 @@ public:
 
 public:
   virtual ErrorCode allocateMemory(size_t size, uint32_t protection,
-                                   uint64_t *address) {
-    return kErrorUnsupported;
-  }
-  virtual ErrorCode deallocateMemory(uint64_t address, size_t size) {
-    return kErrorUnsupported;
-  }
+                                   uint64_t *address);
+  virtual ErrorCode deallocateMemory(uint64_t address, size_t size);
 
 public:
   void resetSignalPass() {}

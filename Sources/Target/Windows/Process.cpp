@@ -230,6 +230,46 @@ fail:
   return nullptr;
 }
 
+ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
+                                  uint64_t *address) {
+  DWORD allocProtection = 0;
+
+  if (protection & kProtectionExecute) {
+    if (protection & kProtectionWrite)
+      allocProtection = PAGE_EXECUTE_READWRITE;
+    else if (protection & kProtectionRead)
+      allocProtection = PAGE_EXECUTE_READ;
+    else
+      allocProtection = PAGE_EXECUTE;
+  } else {
+    if (protection & kProtectionWrite)
+      allocProtection = PAGE_READWRITE;
+    else if (protection & kProtectionRead)
+      allocProtection = PAGE_READONLY;
+    else
+      allocProtection = PAGE_NOACCESS;
+  }
+
+  LPVOID result = VirtualAllocEx(_handle, nullptr, size,
+                                 MEM_COMMIT | MEM_RESERVE, allocProtection);
+
+  if (result == NULL)
+    return Platform::TranslateError();
+
+  *address = reinterpret_cast<uint64_t>(result);
+  return kSuccess;
+}
+
+ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
+  BOOL result =
+      VirtualFreeEx(_handle, reinterpret_cast<LPVOID>(address), 0, MEM_RELEASE);
+
+  if (!result)
+    return Platform::TranslateError();
+
+  return kSuccess;
+}
+
 ErrorCode Process::enumerateSharedLibraries(
     std::function<void(SharedLibrary const &)> const &cb) {
   BOOL rc;
