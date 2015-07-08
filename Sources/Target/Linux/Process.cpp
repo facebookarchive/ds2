@@ -252,7 +252,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
         }
 
         if (error != kSuccess) {
-          DS2LOG(Warning, "cannot resume thread %d error=%d", tid, error);
+          DS2LOG(Warning, "cannot resume thread %d, error=%d", tid, error);
         }
 
         goto continue_waiting;
