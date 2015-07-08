@@ -365,6 +365,7 @@ ErrorCode Platform::TranslateError(DWORD error) {
     return ds2::kErrorNotWriteable;
   case ERROR_READ_FAULT:
   case ERROR_WRITE_FAULT:
+  case ERROR_INVALID_ADDRESS:
     return ds2::kErrorInvalidAddress;
   case ERROR_NOT_SUPPORTED:
     return ds2::kErrorUnsupported;
