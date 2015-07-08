@@ -15,6 +15,8 @@
 #include "DebugServer2/Target/Windows/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <cinttypes>
+
 #define super ds2::Target::ThreadBase
 
 namespace ds2 {
@@ -109,8 +111,9 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     } while (c != '\0');
 
   skip_name:
-    DS2LOG(Debug, "new DLL loaded: %s",
-           Host::Platform::WideToNarrowString(name).c_str());
+    DS2LOG(Debug, "new DLL loaded: %s, base=%#" PRIxPTR,
+           Host::Platform::WideToNarrowString(name).c_str(),
+           de.u.LoadDll.lpBaseOfDll);
 
     if (de.u.LoadDll.hFile != NULL)
       CloseHandle(de.u.LoadDll.hFile);
@@ -121,6 +124,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   } break;
 
   case UNLOAD_DLL_DEBUG_EVENT:
+    DS2LOG(Debug, "DLL unloaded, base=%#" PRIxPTR, de.u.UnloadDll.lpBaseOfDll);
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonLibraryUnload;
