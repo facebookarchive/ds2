@@ -82,15 +82,15 @@ ErrorCode Process::attach(int waitStatus) {
     // Enumerate all the tasks and create a Thread
     // object for every entry.
     //
-    bool keep_going = true;
+    bool keepGoing = true;
 
     //
     // Try to find threads of the newly attached process in multiple
     // rounds so that we avoid race conditions with threads being
     // created before we stop the creator.
     //
-    while (keep_going) {
-      keep_going = false;
+    while (keepGoing) {
+      keepGoing = false;
 
       ProcFS::EnumerateThreads(_pid, [&](pid_t tid) {
         //
@@ -99,7 +99,7 @@ ErrorCode Process::attach(int waitStatus) {
         if (thread(tid) != nullptr || tid == _pid)
           return;
 
-        keep_going = true;
+        keepGoing = true;
         Thread *thread = new Thread(this, tid);
         if (ptrace().attach(tid) == kSuccess) {
           int status;
