@@ -119,14 +119,14 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       CloseHandle(de.u.LoadDll.hFile);
 
     _state = kStopped;
-    _stopInfo.event = StopInfo::kEventStop;
+    _stopInfo.event = StopInfo::kEventNone;
     _stopInfo.reason = StopInfo::kReasonLibraryLoad;
   } break;
 
   case UNLOAD_DLL_DEBUG_EVENT:
     DS2LOG(Debug, "DLL unloaded, base=%#" PRIxPTR, de.u.UnloadDll.lpBaseOfDll);
     _state = kStopped;
-    _stopInfo.event = StopInfo::kEventStop;
+    _stopInfo.event = StopInfo::kEventNone;
     _stopInfo.reason = StopInfo::kReasonLibraryUnload;
     break;
 

@@ -276,7 +276,7 @@ std::string StopCode::encode(CompatibilityMode mode) const {
 #else
        // Windows doesn't have a notion of signals but the GDB protocol still
        // needs some sort of emulation for these.
-       << (reason != StopInfo::kReasonNone ? 5 : 0)
+       << (event != StopInfo::kEventNone ? 5 : 0)
 #endif
        << DEC;
     break;
