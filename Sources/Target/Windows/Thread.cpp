@@ -88,7 +88,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     if (de.u.LoadDll.lpImageName == nullptr)
       goto skip_name;
 
-    uint64_t ptr = 0;
+    uint64_t ptr;
     error = process()->readMemory(
         reinterpret_cast<uint64_t>(de.u.LoadDll.lpImageName), &ptr,
         pi.pointerSize);
