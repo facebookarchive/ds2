@@ -89,6 +89,9 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       goto skip_name;
 
     uint64_t ptr;
+    // ptr needs to be set to 0 or `if (ptr != 0)` might be true even if the
+    // pointer is null, on 32-bit targets.
+    ptr = 0;
     error = process()->readMemory(
         reinterpret_cast<uint64_t>(de.u.LoadDll.lpImageName), &ptr,
         pi.pointerSize);
