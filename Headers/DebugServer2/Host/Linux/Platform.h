@@ -11,7 +11,12 @@
 #ifndef __DebugServer2_Host_Linux_Platform_h
 #define __DebugServer2_Host_Linux_Platform_h
 
+#ifndef __DebugServer2_Host_Platform_h
+#error "You shall not include this file directly."
+#endif
+
 #include "DebugServer2/Host/POSIX/Platform.h"
+#include "DebugServer2/Types.h"
 
 #include <functional>
 

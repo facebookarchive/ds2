@@ -110,20 +110,22 @@ std::vector<std::string> const &OptParse::getVector(std::string const &name) {
 }
 
 void OptParse::usageDie(std::string const &message) {
+  auto outStream = stderr;
+
   if (!message.empty()) {
-    fprintf(stderr, "error: %s\n", message.c_str());
+    fprintf(outStream, "error: %s\n", message.c_str());
   }
 
-  fprintf(stderr, "usage: %s [OPTIONS] [PROGRAM [ARGUMENTS...]]\n", "ds2");
+  fprintf(outStream, "usage: %s [OPTIONS] [PROGRAM [ARGUMENTS...]]\n", "ds2");
 
   size_t help_align = 0;
 
   std::for_each(_options.begin(), _options.end(),
                 [&help_align](OptionCollection::value_type const &arg) {
-    if (arg.first.size() > help_align) {
-      help_align = arg.first.size();
-    }
-  });
+                  if (arg.first.size() > help_align) {
+                    help_align = arg.first.size();
+                  }
+                });
 
   help_align += 2;
 
@@ -131,12 +133,12 @@ void OptParse::usageDie(std::string const &message) {
     if (e.second.hidden)
       continue;
 
-    fprintf(stderr, "  -%c, --%s", e.second.shortName, e.first.c_str());
-    fprintf(stderr, " %s", (e.second.type == stringOption ? "ARG" : "   "));
+    fprintf(outStream, "  -%c, --%s", e.second.shortName, e.first.c_str());
+    fprintf(outStream, " %s", (e.second.type == stringOption ? "ARG" : "   "));
     for (size_t i = 0; i < help_align - e.first.size(); ++i) {
-      fprintf(stderr, " ");
+      fprintf(outStream, " ");
     }
-    fprintf(stderr, "%s\n", e.second.help.c_str());
+    fprintf(outStream, "%s\n", e.second.help.c_str());
   }
 
   exit(EXIT_FAILURE);

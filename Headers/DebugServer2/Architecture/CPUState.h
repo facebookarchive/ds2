@@ -15,7 +15,7 @@
 
 #if defined(ARCH_ARM)
 #include "DebugServer2/Architecture/ARM/CPUState.h"
-#elif defined(ARM_ARM64)
+#elif defined(ARCH_ARM64)
 #include "DebugServer2/Architecture/ARM/CPUState.h"
 #include "DebugServer2/Architecture/ARM64/CPUState.h"
 #elif defined(ARCH_X86)

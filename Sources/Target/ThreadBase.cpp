@@ -24,7 +24,5 @@ ThreadBase::~ThreadBase() {}
 ErrorCode ThreadBase::prepareSoftwareSingleStep(Address const &) {
   return kErrorUnsupported;
 }
-
-void ThreadBase::updateState() {}
 }
 }

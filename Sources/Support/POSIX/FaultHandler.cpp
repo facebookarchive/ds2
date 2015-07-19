@@ -35,24 +35,21 @@ private:
           {ILL_PRVOPC, "ILL_PRVOPC"},
           {ILL_PRVREG, "ILL_PRVREG"},
           {ILL_COPROC, "ILL_COPROC"},
-          {ILL_BADSTK, "ILL_BADSTK"},
-         }},
+          {ILL_BADSTK, "ILL_BADSTK"}, }},
         {SIGBUS,
          {
           {BUS_ADRALN, "BUS_ADRALN"},
           {BUS_ADRERR, "BUS_ADRERR"},
-          {BUS_OBJERR, "BUS_OBJERR"},
-         }},
+          {BUS_OBJERR, "BUS_OBJERR"}, }},
         {SIGSEGV,
          {
-          {SEGV_MAPERR, "SEGV_MAPERR"}, {SEGV_ACCERR, "SEGV_ACCERR"},
-         }},
+          {SEGV_MAPERR, "SEGV_MAPERR"}, {SEGV_ACCERR, "SEGV_ACCERR"}, }},
     };
     DS2ASSERT(SignalNames.find(si->si_signo) != SignalNames.end());
     DS2ASSERT(SignalCodeNames[si->si_signo].find(si->si_code) !=
               SignalCodeNames[si->si_signo].end());
 
-    DS2LOG(Main, Error, "received %s with code %s at address %p, crashing",
+    DS2LOG(Error, "received %s with code %s at address %p, crashing",
            SignalNames[si->si_signo],
            SignalCodeNames[si->si_signo][si->si_code], si->si_addr);
 
@@ -60,13 +57,14 @@ private:
   }
 
   void installCatcher() {
+    static char alt[SIGSTKSZ];
     struct sigaction sa;
     stack_t ss;
 
     // Allocate our own signal stack so that fault handlers work even
     // when the stack pointer is busted.
-    ss.ss_sp = (char *)malloc(SIGSTKSZ);
-    ss.ss_size = SIGSTKSZ;
+    ss.ss_sp = &alt;
+    ss.ss_size = sizeof(alt);
     ss.ss_flags = 0;
 
     sa.sa_sigaction = FaultHandler::signalHandler;

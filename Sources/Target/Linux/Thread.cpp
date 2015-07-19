@@ -54,12 +54,12 @@ ErrorCode Thread::suspend() {
     error = process()->ptrace().wait(ProcessThreadId(process()->pid(), tid()),
                                      true, &status);
     if (error != kSuccess) {
-      DS2LOG(Target, Error, "failed to wait for tid %d, error=%s\n", tid(),
+      DS2LOG(Error, "failed to wait for tid %d, error=%s\n", tid(),
              strerror(errno));
       return error;
     }
 
-    updateTrapInfo(status);
+    updateStopInfo(status);
   }
 
   if (_state == kTerminated) {
@@ -72,7 +72,7 @@ ErrorCode Thread::suspend() {
 ErrorCode Thread::step(int signal, Address const &address) {
   ErrorCode error = kSuccess;
   if (_state == kStopped || _state == kStepped) {
-    DS2LOG(Target, Debug, "stepping tid %d", tid());
+    DS2LOG(Debug, "stepping tid %d", tid());
     if (process()->isSingleStepSupported()) {
       ProcessInfo info;
 
@@ -105,16 +105,17 @@ ErrorCode Thread::step(int signal, Address const &address) {
 
 ErrorCode Thread::resume(int signal, Address const &address) {
   ErrorCode error = kSuccess;
+
   if (_state == kStopped || _state == kStepped) {
     if (signal == 0) {
-      switch (_trap.signal) {
+      switch (_stopInfo.signal) {
       case SIGCHLD:
       case SIGSTOP:
       case SIGTRAP:
         signal = 0;
         break;
       default:
-        signal = _trap.signal;
+        signal = _stopInfo.signal;
         break;
       }
     }
@@ -129,11 +130,12 @@ ErrorCode Thread::resume(int signal, Address const &address) {
                                        info, signal, address);
     if (error == kSuccess) {
       _state = kRunning;
-      _trap.signal = 0;
+      _stopInfo.signal = 0;
     }
   } else if (_state == kTerminated) {
     error = kErrorProcessNotFound;
   }
+
   return error;
 }
 
@@ -162,79 +164,80 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
       ProcessThreadId(process()->pid(), tid()), info, state);
 }
 
-ErrorCode Thread::updateTrapInfo(int waitStatus) {
-  ErrorCode error = kSuccess;
-  siginfo_t si;
+ErrorCode Thread::updateStopInfo(int waitStatus) {
+  super::updateStopInfo(waitStatus);
 
-  super::updateTrapInfo(waitStatus);
+  updateState();
 
-  //
-  // When a thread traced with PTRACE_O_TRACECLONE calls clone(2), it (the
-  // caller of clone(2)) is stopped with a SIGTRAP, and control is given back
-  // to the tracer (us). The wait(2) status will then be constructed so that
-  //     status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))
-  // which results in WIFSTOPPED(status) == true and WSTOPSIG(status) ==
-  // SIGTRAP.
-  // We can now convert back kEventTrap to kEventStop and mark the reason as
-  // kReasonThreadNew.
-  //
-  if (_trap.event == TrapInfo::kEventTrap &&
-      waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) {
-    _trap.event = TrapInfo::kEventStop;
-    _trap.reason = TrapInfo::kReasonThreadNew;
-  }
+  switch (_stopInfo.event) {
+  case StopInfo::kEventNone:
+    DS2BUG("thread stopped for unknown reason, status=%#x", waitStatus);
 
-  updateState(true);
+  case StopInfo::kEventExit:
+  case StopInfo::kEventKill:
+    DS2ASSERT(_stopInfo.reason == StopInfo::kReasonNone);
+    return kSuccess;
 
-  if (_trap.event == TrapInfo::kEventStop) {
+  case StopInfo::kEventStop: {
+    // These are the reasons why we might want to alter the stop info of a
+    // thread:
+    // (1) a thread traced with PTRACE_O_TRACECLONE calls clone(2), it (the
+    //     caller of clone(2)) is stopped with a SIGTRAP, and control is given
+    //     back to the tracer (us). The wait(2) status will then be constructed
+    //     so that
+    //       status >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))
+    //     which results in WIFSTOPPED(status) == true and
+    //     WSTOPSIG(status) == SIGTRAP. We mark the thread stopped for no
+    //     reason so it just gets restarted immediately (see
+    //     Linux::Process::wait);
+    // (2) we sent the thread a SIGSTOP (with tkill) to interrupt it e.g.:
+    //     a thread hits a breakpoint, we have to stop every other thread.
+    //     These other treads will be mark as no reason so the debugger can
+    //     adapt its output (e.g.: lldb will simply hide these threads and only
+    //     display the one that stopped for a breakpoint);
+    // (3) the inferior received a SIGSTOP because of ptrace attach. We have to
+    //     mark the thread as stopped for a trap;
+    // (4) the inferior received a SIGTRAP. This is usually because of a
+    //     breakpoint, single step or such;
+
+    siginfo_t si;
     ProcessThreadId ptid(process()->pid(), tid());
-
-    error = process()->ptrace().getSigInfo(ptid, si);
+    ErrorCode error = process()->ptrace().getSigInfo(ptid, si);
     if (error != kSuccess) {
-      DS2LOG(Target, Warning, "unable to get siginfo_t for tid %d, error=%s",
-             tid(), strerror(errno));
+      DS2LOG(Warning, "unable to get siginfo_t for tid %d, error=%s", tid(),
+             strerror(errno));
       return error;
     }
 
-    //
-    // These are the reasons why we might want to mark a stopped thread as
-    // being stopped for "no reason" (stopped by the debugger or debug
-    // server):
-    // (1) we sent the thread a SIGSTOP (with tkill) to interrupt it e.g.:
-    //     a thread hits a breakpoint, we have to stop every other thread;
-    // (2) the inferior received a SIGSTOP because of ptrace attach;
-    // (3) a thread has just been created and is waiting at entry.
-    //
-    if (si.si_code == SI_TKILL && si.si_pid == getpid()) {
+    if (waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) { // (1)
+      _stopInfo.event = StopInfo::kEventNone;
+    } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) { // (2)
       // The only signal we are supposed to send to the inferior is a
       // SIGSTOP anyway.
-      DS2ASSERT(_trap.signal == SIGSTOP);
-      _trap.event = TrapInfo::kEventNone;
+      DS2ASSERT(_stopInfo.signal == SIGSTOP);
+      _stopInfo.event = StopInfo::kEventNone;
     } else if (si.si_code == SI_USER && si.si_pid == 0 &&
-               _trap.signal == SIGSTOP) {
-      _trap.event = TrapInfo::kEventNone;
-    } else if (_trap.reason == TrapInfo::kReasonThreadNew) {
-      _trap.event = TrapInfo::kEventNone;
+               _stopInfo.signal == SIGSTOP) { // (3)
+      _stopInfo.reason = StopInfo::kReasonTrap;
+    } else if (_stopInfo.signal == SIGTRAP) { // (4)
+      _stopInfo.reason = StopInfo::kReasonBreakpoint;
     } else {
-      //
       // This is not a signal that we originated. We can output a
       // warning if the signal comes from an external source.
-      //
+      _stopInfo.reason = StopInfo::kReasonSignalStop;
       if ((si.si_code == SI_USER || si.si_code == SI_TKILL) &&
-          si.si_pid != tid()) {
-        DS2LOG(Target, Warning,
-               "tid %d received a signal from an external source (sender=%d)",
-               tid(), si.si_pid);
-      }
+          si.si_pid != tid())
+        DS2LOG(Warning,
+               "tid %d received signal %s from an external source (sender=%d)",
+               tid(), strsignal(_stopInfo.signal), si.si_pid);
     }
+  } break;
   }
 
-  return error;
+  return kSuccess;
 }
 
-void Thread::updateState() { updateState(false); }
-
-void Thread::updateState(bool force) {
+void Thread::updateState() {
   if (!process()->isAlive()) {
     _state = kTerminated;
     return;
@@ -246,7 +249,7 @@ void Thread::updateState(bool force) {
     stat.state = 0;
   }
 
-  _trap.core = stat.task_cpu;
+  _stopInfo.core = stat.task_cpu;
 
   switch (stat.state) {
   case Host::Linux::kProcStateZombie:

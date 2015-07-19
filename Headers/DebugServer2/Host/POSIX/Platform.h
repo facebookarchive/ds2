@@ -15,6 +15,8 @@
 #error "You shall not include this file directly."
 #endif
 
+#include "DebugServer2/Types.h"
+
 #include <string>
 
 namespace ds2 {
@@ -58,6 +60,10 @@ public:
 public:
   static ProcessId GetCurrentProcessId();
   static bool GetCurrentEnvironment(EnvironmentBlock &env);
+
+public:
+  static ErrorCode TranslateError(int error);
+  static ErrorCode TranslateError();
 };
 }
 }

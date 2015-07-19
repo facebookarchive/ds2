@@ -40,7 +40,6 @@ ErrorCode ProcessBase::getInfo(ProcessInfo &info) {
   return error;
 }
 
-
 //
 // This is a utility function for detach.
 //
@@ -158,7 +157,7 @@ void ProcessBase::insert(ThreadBase *thread) {
                                       static_cast<Thread *>(thread))).second)
     return;
 
-  DS2LOG(Target, Info, "[New Thread %p (LWP %llu)]", thread,
+  DS2LOG(Info, "[New Thread %p (LWP %llu)]", thread,
          (unsigned long long)thread->tid());
 }
 
@@ -170,7 +169,7 @@ void ProcessBase::removeThread(ThreadId tid) {
   Thread *thread = it->second;
   _threads.erase(it);
 
-  DS2LOG(Target, Info, "[Thread %p (LWP %llu) exited]", thread,
+  DS2LOG(Info, "[Thread %p (LWP %llu) exited]", thread,
          (unsigned long long)thread->tid());
 
   delete thread;
@@ -212,7 +211,7 @@ ErrorCode ProcessBase::afterResume() {
 
     for (auto it : _threads) {
       if (bpm->hit(it.second)) {
-        DS2LOG(Target, Info, "hit breakpoint for tid %llu",
+        DS2LOG(Info, "hit breakpoint for tid %llu",
                (unsigned long long)it.second->tid());
       }
     }

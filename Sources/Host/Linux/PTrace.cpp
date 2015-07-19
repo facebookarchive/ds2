@@ -10,9 +10,10 @@
 
 #define __DS2_LOG_CLASS_NAME__ "PTrace"
 
-#include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
+#include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
@@ -62,13 +63,12 @@ ErrorCode PTrace::traceMe(bool disableASLR) {
   if (disableASLR) {
     int persona = ::personality(std::numeric_limits<uint32_t>::max());
     if (::personality(persona | ADDR_NO_RANDOMIZE) == -1) {
-      DS2LOG(Main, Warning, "unable to disable ASLR, error=%s",
-             strerror(errno));
+      DS2LOG(Warning, "unable to disable ASLR, error=%s", strerror(errno));
     }
   }
 
   if (wrapPtrace(PTRACE_TRACEME, 0, nullptr, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -83,10 +83,9 @@ ErrorCode PTrace::traceThat(ProcessId pid) {
   // Trace clone and exit events to track threads.
   //
   if (wrapPtrace(PTRACE_SETOPTIONS, pid, nullptr, traceFlags) < 0) {
-    DS2LOG(Main, Warning,
-           "unable to set PTRACE_O_TRACECLONE on pid %d, error=%s", pid,
-           strerror(errno));
-    return TranslateErrno();
+    DS2LOG(Warning, "unable to set PTRACE_O_TRACECLONE on pid %d, error=%s",
+           pid, strerror(errno));
+    return Platform::TranslateError();
   }
 
   return kSuccess;
@@ -97,7 +96,7 @@ ErrorCode PTrace::attach(ProcessId pid) {
     return kErrorProcessNotFound;
 
   if (wrapPtrace(PTRACE_ATTACH, pid, nullptr, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -106,10 +105,10 @@ ErrorCode PTrace::detach(ProcessId pid) {
   if (pid <= kAnyProcessId)
     return kErrorProcessNotFound;
 
-  DS2LOG(Main, Debug, "detaching from pid %llu", (unsigned long long)pid);
+  DS2LOG(Debug, "detaching from pid %llu", (unsigned long long)pid);
 
   if (wrapPtrace(PTRACE_DETACH, pid, nullptr, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -130,7 +129,7 @@ ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {
   }
 
   if (rc < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -184,7 +183,7 @@ ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
   }
 
   if (errno != 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   if (count != nullptr) {
     *count = nread;
@@ -243,7 +242,7 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
   }
 
   if (errno != 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   if (count != nullptr) {
     *count = nwritten;
@@ -265,7 +264,7 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   }
 
   if (tkill(pid, SIGSTOP) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -307,7 +306,7 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   }
 
   if (wrapPtrace(PTRACE_SINGLESTEP, pid, nullptr, signal) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -342,7 +341,7 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   }
 
   if (wrapPtrace(PTRACE_CONT, pid, nullptr, signal) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -361,7 +360,7 @@ ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &epid) {
 
   unsigned long value;
   if (wrapPtrace(PTRACE_GETEVENTMSG, pid, nullptr, &value) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   epid = value;
   return kSuccess;
@@ -380,7 +379,33 @@ ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   }
 
   if (wrapPtrace(PTRACE_GETSIGINFO, pid, nullptr, &si) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
+
+  return kSuccess;
+}
+
+ErrorCode PTrace::readRegisterSet(ProcessThreadId const &ptid, int regSetCode,
+                                  void *buffer, size_t length) {
+  struct iovec iov = {buffer, length};
+
+  if (wrapPtrace(PTRACE_GETREGSET, ptid.validTid() ? ptid.tid : ptid.pid,
+                 regSetCode, &iov) < 0)
+    return Platform::TranslateError();
+
+  // On return, the kernel modifies iov.len to return the number of bytes read.
+  // This should be exactly equal to the number of bytes requested.
+  DS2ASSERT(iov.iov_len == length);
+
+  return kSuccess;
+}
+
+ErrorCode PTrace::writeRegisterSet(ProcessThreadId const &ptid, int regSetCode,
+                                   void const *buffer, size_t length) {
+  struct iovec iov = {&buffer, length};
+
+  if (wrapPtrace(PTRACE_SETREGSET, ptid.validTid() ? ptid.tid : ptid.pid,
+                 regSetCode, &iov) < 0)
+    return Platform::TranslateError();
 
   return kSuccess;
 }

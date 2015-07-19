@@ -22,39 +22,21 @@ namespace POSIX {
 Thread::Thread(ds2::Target::Process *process, ThreadId tid)
     : super(process, tid) {}
 
-ErrorCode Thread::updateTrapInfo(int waitStatus) {
+ErrorCode Thread::updateStopInfo(int waitStatus) {
   ErrorCode error = kSuccess;
 
-  _trap.clear();
-
-  _trap.pid = _process->pid();
-  _trap.tid = tid();
+  _stopInfo.clear();
 
   if (WIFEXITED(waitStatus)) {
-    _trap.event = TrapInfo::kEventExit;
-    _trap.status = WEXITSTATUS(waitStatus);
+    _stopInfo.event = StopInfo::kEventExit;
+    _stopInfo.status = WEXITSTATUS(waitStatus);
   } else if (WIFSIGNALED(waitStatus)) {
-#if defined(WCOREDUMP)
-    if (WCOREDUMP(waitStatus)) {
-      _trap.event = TrapInfo::kEventCoreDump;
-    } else
-#endif
-      _trap.event = TrapInfo::kEventKill;
-    _trap.status = WEXITSTATUS(waitStatus);
-    _trap.signal = WTERMSIG(waitStatus);
+    _stopInfo.event = StopInfo::kEventKill;
+    _stopInfo.status = WEXITSTATUS(waitStatus);
+    _stopInfo.signal = WTERMSIG(waitStatus);
   } else if (WIFSTOPPED(waitStatus)) {
-    _trap.signal = WSTOPSIG(waitStatus);
-    switch (_trap.signal) {
-    case SIGTRAP:
-      _trap.event = TrapInfo::kEventTrap;
-      break;
-    case SIGSTOP:
-      _trap.event = TrapInfo::kEventStop;
-      break;
-    default:
-      _trap.event = TrapInfo::kEventStop;
-      break;
-    }
+    _stopInfo.event = StopInfo::kEventStop;
+    _stopInfo.signal = WSTOPSIG(waitStatus);
   }
 
   return error;

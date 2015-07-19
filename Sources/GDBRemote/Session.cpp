@@ -22,11 +22,11 @@
 #include <iomanip>
 #include <sstream>
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #define UNPACK_ID(STR) std::strtoul(STR, nullptr, 10)
 #elif defined(__FreeBSD__)
 #define UNPACK_ID(STR) std::strtoul(STR, nullptr, 10)
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 #define UNPACK_ID(STR) 0
 #else
 #error "Target not supported."
@@ -731,8 +731,8 @@ void Session::Handle_H(ProtocolInterpreter::Handler const &,
   _ptids[command] = ptid;
   sendOK();
 
-  DS2LOG(DebugSession, Debug, "setting command '%c' to pid %d tid %d", command,
-         ptid.pid, ptid.tid);
+  DS2LOG(Debug, "setting command '%c' to pid %d tid %d", command, ptid.pid,
+         ptid.tid);
 }
 
 //
@@ -1079,9 +1079,8 @@ void Session::Handle_QEnvironment(ProtocolInterpreter::Handler const &,
 // Description:   Sets the environment variable to the value specified
 // Compatibility: LLDB
 //
-void
-Session::Handle_QEnvironmentHexEncoded(ProtocolInterpreter::Handler const &,
-                                       std::string const &args) {
+void Session::Handle_QEnvironmentHexEncoded(
+    ProtocolInterpreter::Handler const &, std::string const &args) {
   std::string key, value, ev(HexToString(args));
 
   size_t eq = ev.find('=');
@@ -1358,11 +1357,10 @@ void Session::Handle_QLaunchArch(ProtocolInterpreter::Handler const &,
 // Description:   Lists the threads of the process in the stop reply packet.
 // Compatibility: LLDB
 //
-void
-Session::Handle_QListThreadsInStopReply(ProtocolInterpreter::Handler const &,
-                                        std::string const &) {
+void Session::Handle_QListThreadsInStopReply(
+    ProtocolInterpreter::Handler const &, std::string const &) {
   if (_compatMode != kCompatibilityModeLLDB) {
-    DS2LOG(DebugSession, Debug, "entering LLDB compatibility mode");
+    DS2LOG(Debug, "entering LLDB compatibility mode");
     _compatMode = kCompatibilityModeLLDB;
   }
 
@@ -1386,9 +1384,8 @@ void Session::Handle_QSetDisableASLR(ProtocolInterpreter::Handler const &,
 // Description:   Enable asynchronous profiling.
 // Compatibility: LLDB
 //
-void
-Session::Handle_QSetEnableAsyncProfiling(ProtocolInterpreter::Handler const &,
-                                         std::string const &args) {
+void Session::Handle_QSetEnableAsyncProfiling(
+    ProtocolInterpreter::Handler const &, std::string const &args) {
   uint32_t scanType = 0;
   uint32_t interval = 0;
   bool enabled = false;
@@ -1439,12 +1436,11 @@ void Session::Handle_QSetLogging(ProtocolInterpreter::Handler const &,
 //                and 'P' packets
 // Compatibility: LLDB
 //
-void
-Session::Handle_QThreadSuffixSupported(ProtocolInterpreter::Handler const &,
-                                       std::string const &) {
+void Session::Handle_QThreadSuffixSupported(
+    ProtocolInterpreter::Handler const &, std::string const &) {
   // We always support them.
   if (_compatMode != kCompatibilityModeLLDB) {
-    DS2LOG(DebugSession, Debug, "entering LLDB compatibility mode");
+    DS2LOG(Debug, "entering LLDB compatibility mode");
     _compatMode = kCompatibilityModeLLDB;
   }
 
@@ -2138,8 +2134,7 @@ void Session::Handle_qSupported(ProtocolInterpreter::Handler const &,
 
     Feature const &feature = remoteFeatures.back();
     if (feature.name == "multiprocess" && feature.flag == Feature::kSupported) {
-      DS2LOG(DebugSession, Debug,
-             "entering GDB multiprocess compatibility mode");
+      DS2LOG(Debug, "entering GDB multiprocess compatibility mode");
       _compatMode = kCompatibilityModeGDBMultiprocess;
     }
   });
@@ -2326,9 +2321,8 @@ void Session::Handle_qUserName(ProtocolInterpreter::Handler const &,
 // Description:   Query if the 'vAttachOrWait' packet is supported
 // Compatibility: LLDB
 //
-void
-Session::Handle_qVAttachOrWaitSupported(ProtocolInterpreter::Handler const &,
-                                        std::string const &) {
+void Session::Handle_qVAttachOrWaitSupported(
+    ProtocolInterpreter::Handler const &, std::string const &) {
   // We support it.
   sendOK();
 }
@@ -2338,9 +2332,8 @@ Session::Handle_qVAttachOrWaitSupported(ProtocolInterpreter::Handler const &,
 // Description:   Return the number of supported hardware watchpoints.
 // Compatibility: LLDB
 //
-void
-Session::Handle_qWatchpointSupportInfo(ProtocolInterpreter::Handler const &,
-                                       std::string const &) {
+void Session::Handle_qWatchpointSupportInfo(
+    ProtocolInterpreter::Handler const &, std::string const &) {
   size_t count = 0;
   ErrorCode error = _delegate->onQueryHardwareWatchpointCount(*this, count);
   if (error != kSuccess) {
@@ -2476,7 +2469,7 @@ void Session::Handle_qfProcessInfo(ProtocolInterpreter::Handler const &,
       match.realUid = UNPACK_ID(value.c_str());
     } else if (key == "gid") {
       match.realGid = UNPACK_ID(value.c_str());
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     } else if (key == "parent_pid") {
       match.parentPid = std::strtoul(value.c_str(), nullptr, 10);
     } else if (key == "euid") {

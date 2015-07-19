@@ -114,7 +114,7 @@ void BreakpointManager::enable() {
   // enabling the breakpoint manager.
   //
   if (_enabled)
-    DS2LOG(BPManager, Warning, "double-enabling breakpoints");
+    DS2LOG(Warning, "double-enabling breakpoints");
   _enabled = true;
 
   enumerate([this](Site const &site) { enableLocation(site); });
@@ -122,7 +122,7 @@ void BreakpointManager::enable() {
 
 void BreakpointManager::disable() {
   if (!_enabled)
-    DS2LOG(BPManager, Warning, "double-disabling breakpoints");
+    DS2LOG(Warning, "double-disabling breakpoints");
   _enabled = false;
 
   enumerate([this](Site const &site) { disableLocation(site); });

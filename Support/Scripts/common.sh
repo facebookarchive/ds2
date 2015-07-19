@@ -17,14 +17,25 @@ die() {
 }
 
 git_clone() {
-    if [ ! -e "$2" ]; then
-        git clone --depth 1 "$1" "$2"
-    elif [ -d "$2/.git" ]; then
-        cd "$2"
+    src="$1"
+    dst="$2"
+    branch="${3-}"
+
+    if [ ! -e "$dst" ]; then
+        clone_command=(git clone --depth 1)
+        if [ -n "$branch" ]; then
+            clone_command+=(--branch "$branch")
+        fi
+        "${clone_command[@]}" "$src" "$dst"
+    elif [ -d "$dst/.git" ]; then
+        cd "$dst"
         git reset --hard
-        git pull --rebase
+        if [ -n "$branch" ]; then
+            git checkout "$branch"
+        fi
+        git pull
         cd "$OLDPWD"
     else
-        die "'$2' exists and is not a git repository."
+        die "'$dst' exists and is not a git repository."
     fi
 }

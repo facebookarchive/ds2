@@ -11,7 +11,7 @@
 
 source "$(dirname "$0")/common.sh"
 
-[ $# -eq 1 ] || die "usage: $0 [ arm | x86 ]"
+[ $# -ge 1 ] && [ $# -le 2 ] || die "usage: $0 ARCH [VERSION]"
 
 case "$(uname)" in
   "Linux")  host="linux-x86";;
@@ -19,14 +19,20 @@ case "$(uname)" in
   *)        die "This script works only on Linux and Mac OS X.";;
 esac
 
-case "$1" in
-  "arm")  toolchain_arch="arm";     toolchain_triple="arm-linux-androideabi";;
-  "x86")  toolchain_arch="x86_64";  toolchain_triple="x86_64-linux-android";;
-  *)      die "Unknown architecture '$1'." ;;
+case "${1}" in
+  "aarch64")  toolchain_arch="aarch64"; toolchain_triple="aarch64-linux-android";;
+  "arm")      toolchain_arch="arm";     toolchain_triple="arm-linux-androideabi";;
+  "x86")      toolchain_arch="x86_64";  toolchain_triple="x86_64-linux-android";;
+  *)          die "Unknown architecture '${1}'." ;;
+esac
+
+case "${2:-default}" in
+  "4.8"|"4.9")  toolchain_version="${2}";;
+  "default")    toolchain_version="4.8";;
+  *)            die "Unusupported toolchain version '${2}'.";;
 esac
 
 aosp_platform="android-21"
-toolchain_version="4.8"
 toolchain_path="/tmp/aosp-toolchain/${toolchain_triple}-${toolchain_version}"
 aosp_ndk_path="/tmp/aosp-toolchain/aosp-ndk"
 
@@ -48,11 +54,21 @@ mkdir -p "$(dirname "${toolchain_path}")"
 aosp_prebuilt_clone "gcc/${host}/$1/${toolchain_triple}-${toolchain_version}" "${toolchain_path}"
 aosp_prebuilt_clone "ndk" "${aosp_ndk_path}"
 
-# Copy sysroot. For x86_64, libraries are in `usr/lib64/`; we need to copy 32-bit versions of these libraries to `usr/lib/`.
-clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
-if [ "${toolchain_arch}" = "x86_64" ]; then
-  clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-x86/usr/lib" "${toolchain_path}/sysroot/usr/lib"
-fi
+# Copy sysroot.
+case "$1" in
+  "aarch64")
+    # For aarch64, the sysroot is in `arch-arm64`, not `arch-aarch64`.
+    clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-arm64" "${toolchain_path}/sysroot"
+    ;;
+  "arm")
+    clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
+    ;;
+  "x86")
+    # For x86_64, libraries are in `usr/lib64/`; we need to copy 32-bit versions of these libraries to `usr/lib/`.
+    clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
+    clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-x86/usr/lib" "${toolchain_path}/sysroot/usr/lib"
+    ;;
+esac
 
 # Copy C++ stuff
 clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/include" "${toolchain_path}/include/c++/${toolchain_version}"
@@ -65,6 +81,10 @@ copy_cpp_bits() {
   clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/include/bits" "${toolchain_path}/include/c++/${toolchain_version}/${toolchain_triple}/$2"
 }
 case "$1" in
+  "aarch64")
+    copy_cpp_binaries "arm64-v8a" "lib"
+    copy_cpp_bits "arm64-v8a" "bits"
+    ;;
   "arm")
     copy_cpp_binaries "armeabi" "lib"
     copy_cpp_bits "armeabi" "bits"

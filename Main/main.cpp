@@ -28,7 +28,7 @@
 #include <iomanip>
 #include <set>
 #include <string>
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
 #include <sys/stat.h>
 #include <unistd.h>
 #endif
@@ -47,22 +47,22 @@ static uint16_t gDefaultPort = 12345;
 static bool gKeepAlive = false;
 static bool gLLDBCompat = false;
 
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
 static void PlatformMain(int argc, char **argv, int port) {
   Socket *server = new Socket;
 
   if (!server->create()) {
-    DS2LOG(Main, Error, "cannot create server socket on port %d: %s", port,
+    DS2LOG(Error, "cannot create server socket on port %d: %s", port,
            server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
   if (!server->listen(port)) {
-    DS2LOG(Main, Error, "error: failed to listen: %s", server->error().c_str());
+    DS2LOG(Error, "error: failed to listen: %s", server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Main, Info, "listening on port %d", port);
+  DS2LOG(Info, "listening on port %d", port);
 
   PlatformSessionImpl impl;
 
@@ -93,39 +93,39 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
   session.setDelegate(impl);
   session.create(qchannel);
 
-  DS2LOG(Main, Debug, "DEBUG SERVER STARTED");
+  DS2LOG(Debug, "DEBUG SERVER STARTED");
 
   thread.start();
 
   while (session.receive(/*cooked=*/true))
     ;
 
-  DS2LOG(Main, Debug, "DEBUG SERVER KILLED");
+  DS2LOG(Debug, "DEBUG SERVER KILLED");
 }
 
 static void DebugMain(ds2::StringCollection const &args,
-                      ds2::EnvironmentBlock const &env, int attachPid,
-                      int port, std::string const &namedPipePath) {
+                      ds2::EnvironmentBlock const &env, int attachPid, int port,
+                      std::string const &namedPipePath) {
   Socket *server = new Socket;
 
   if (!server->create()) {
-    DS2LOG(Main, Error, "cannot create server socket on port %d: %s", port,
+    DS2LOG(Error, "cannot create server socket on port %d: %s", port,
            server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
   if (!server->listen(port)) {
-    DS2LOG(Main, Error, "failed to listen: %s", server->error().c_str());
+    DS2LOG(Error, "failed to listen: %s", server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Main, Info, "listening on port %d", server->port());
+  DS2LOG(Info, "listening on port %d", server->port());
 
   if (!namedPipePath.empty()) {
     std::string portStr = ds2::ToString(server->port());
     FILE *namedPipe = fopen(namedPipePath.c_str(), "a");
     if (namedPipe == nullptr) {
-      DS2LOG(Main, Error, "unable to open %s: %s", namedPipePath.c_str(),
+      DS2LOG(Error, "unable to open %s: %s", namedPipePath.c_str(),
              strerror(errno));
     } else {
       // Write the null terminator to the file. This follows the llgs behavior.
@@ -150,7 +150,7 @@ static void DebugMain(ds2::StringCollection const &args,
   } while (gKeepAlive);
 }
 
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
 static void SlaveMain(int argc, char **argv) {
   Socket *server = new Socket;
 
@@ -191,7 +191,7 @@ static void SlaveMain(int argc, char **argv) {
     //
     fprintf(stdout, "%u %d\n", port, pid);
 
-    DS2LOG(Main, Info, "listening on port %u pid %d", port, pid);
+    DS2LOG(Info, "listening on port %u pid %d", port, pid);
   }
 
   exit(EXIT_SUCCESS);
@@ -203,33 +203,33 @@ static void ListProcesses() {
   printf("%s\n%s\n", "PID    USER       ARCH    NAME",
          "====== ========== ======= ============================");
 
-  Platform::EnumerateProcesses(true, ds2::UserId(),
-                               [&](ds2::ProcessInfo const &info) {
-    std::string pid = ds2::ToString(info.pid);
+  Platform::EnumerateProcesses(
+      true, ds2::UserId(), [&](ds2::ProcessInfo const &info) {
+        std::string pid = ds2::ToString(info.pid);
 
-    std::string user;
-    if (!Platform::GetUserName(info.realUid, user)) {
-#if !defined(_WIN32)
-      user = ds2::ToString(info.realUid);
+        std::string user;
+        if (!Platform::GetUserName(info.realUid, user)) {
+#if !defined(OS_WIN32)
+          user = ds2::ToString(info.realUid);
 #else
-      user = "<NONE>";
+          user = "<NONE>";
 #endif
-    }
+        }
 
-    std::string path = info.name;
-    size_t lastsep =
-#if defined(_WIN32)
-        path.rfind('\\');
+        std::string path = info.name;
+        size_t lastsep;
+#if defined(OS_WIN32)
+        lastsep = path.rfind('\\');
 #else
-        path.rfind('/');
+        lastsep = path.rfind('/');
 #endif
-    if (lastsep != std::string::npos) {
-      path = path.substr(lastsep + 1);
-    }
+        if (lastsep != std::string::npos) {
+          path = path.substr(lastsep + 1);
+        }
 
-    printf("%-6s %-10.10s %-7.7s %s\n", pid.c_str(), user.c_str(),
-           ds2::GetArchName(info.cpuType, info.cpuSubType), path.c_str());
-  });
+        printf("%-6s %-10.10s %-7.7s %s\n", pid.c_str(), user.c_str(),
+               ds2::GetArchName(info.cpuType, info.cpuSubType), path.c_str());
+      });
 
   exit(EXIT_SUCCESS);
 }
@@ -240,15 +240,14 @@ int main(int argc, char **argv) {
 
   ds2::Host::Platform::Initialize();
   ds2::SetLogColorsEnabled(false);
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   ds2::SetLogColorsEnabled(isatty(fileno(stderr)));
 #endif
   ds2::SetLogLevel(ds2::kLogLevelWarning);
-  ds2::SetLogMask(~0U);
 
   enum RunMode {
     kRunModeNormal,
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     kRunModePlatform,
     kRunModeSlave,
 #endif
@@ -283,7 +282,7 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "list-processes", 'L',
                  "list processes debuggable by the current user");
 
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   // Platform mode.
   opts.addOption(ds2::OptParse::boolOption, "platform", 'P',
                  "execute in platform mode");
@@ -306,10 +305,10 @@ int main(int argc, char **argv) {
   if (!opts.getString("log-output").empty()) {
     FILE *stream = fopen(opts.getString("log-output").c_str(), "a");
     if (stream == nullptr) {
-      DS2LOG(Main, Error, "unable to open %s for writing: %s",
+      DS2LOG(Error, "unable to open %s for writing: %s",
              opts.getString("log-output").c_str(), strerror(errno));
     } else {
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
       //
       // Note(sas): When ds2 is spawned by the app, it will run with the
       // app's user/group ID, and will create its log file owned by the
@@ -347,7 +346,7 @@ int main(int argc, char **argv) {
     ListProcesses();
   }
 
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   if (opts.getBool("platform")) {
     mode = kRunModePlatform;
     //
@@ -393,7 +392,7 @@ int main(int argc, char **argv) {
   }
 
   switch (mode) {
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   case kRunModePlatform:
     PlatformMain(argc, argv, port);
     break;
@@ -413,7 +412,7 @@ int main(int argc, char **argv) {
       char const *arg = e.c_str();
       char const *equal = strchr(arg, '=');
       if (equal == nullptr || equal == arg)
-        DS2LOG(Main, Fatal, "invalid environment value: %s", arg);
+        DS2LOG(Fatal, "invalid environment value: %s", arg);
       env[std::string(arg, equal)] = equal + 1;
     }
 

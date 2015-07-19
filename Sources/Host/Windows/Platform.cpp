@@ -23,21 +23,15 @@
 #include <windows.h>
 #include <winsock2.h>
 
-// Note(sas): This is used to disable deprecation warnings for GetVersion(). We
-// can remove this when we get rid of calls to this function.
-#if defined(_MSVC_VER)
-#pragma warning(disable : 4996)
-#endif
-
 namespace ds2 {
 namespace Host {
+namespace Windows {
 
 void Platform::Initialize() {
-  // Disable buffering on standard streams. When running on Windows,
-  // output seems to be block-buffered, which is a problem if we want
+  // Disable buffering on stdout (where we print logs). When running on
+  // Windows, output seems to be block-buffered, which is a problem if we want
   // to see output as it gets produced.
   setvbuf(stdout, nullptr, _IONBF, 0);
-  setvbuf(stderr, nullptr, _IONBF, 0);
 
   // Initialize the socket subsystem.
   WSADATA wsaData;
@@ -306,7 +300,7 @@ std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   // http://msdn.microsoft.com/en-us/library/xcb2z8hs.aspx describes a
   // handshake between a process and VS to transmit thread names so we
   // might end up using something similar for the inferior.
-  return "<NONE>";
+  return "";
 }
 
 const char *Platform::GetSelfExecutablePath() {
@@ -353,6 +347,40 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
   return true;
 }
 
+ErrorCode Platform::TranslateError(DWORD error) {
+  switch (error) {
+  case ERROR_FILE_NOT_FOUND:
+  case ERROR_PATH_NOT_FOUND:
+    return ds2::kErrorNotFound;
+  case ERROR_TOO_MANY_OPEN_FILES:
+    return ds2::kErrorTooManySystemFiles;
+  case ERROR_ACCESS_DENIED:
+    return ds2::kErrorAccessDenied;
+  case ERROR_INVALID_HANDLE:
+    return ds2::kErrorInvalidHandle;
+  case ERROR_NOT_ENOUGH_MEMORY:
+  case ERROR_OUTOFMEMORY:
+    return ds2::kErrorNoMemory;
+  case ERROR_WRITE_PROTECT:
+    return ds2::kErrorNotWriteable;
+  case ERROR_READ_FAULT:
+  case ERROR_WRITE_FAULT:
+  case ERROR_INVALID_ADDRESS:
+  case ERROR_NOACCESS:
+    return ds2::kErrorInvalidAddress;
+  case ERROR_NOT_SUPPORTED:
+    return ds2::kErrorUnsupported;
+  case ERROR_FILE_EXISTS:
+    return ds2::kErrorAlreadyExist;
+  case ERROR_PARTIAL_COPY:
+    return ds2::kErrorNoSpace;
+  default:
+    DS2BUG("unknown error code: %d", error);
+  }
+}
+
+ErrorCode Platform::TranslateError() { return TranslateError(GetLastError()); }
+
 std::wstring Platform::NarrowToWideString(std::string const &s) {
   std::vector<wchar_t> res;
   int size;
@@ -375,6 +403,7 @@ std::string Platform::WideToNarrowString(std::wstring const &s) {
   WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, res.data(), size, nullptr,
                       nullptr);
   return res.data();
+}
 }
 }
 }

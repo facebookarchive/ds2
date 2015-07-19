@@ -9,23 +9,35 @@
 ##
 
 cmake_minimum_required(VERSION 2.8)
+if ("${CMAKE_VERSION}" VERSION_GREATER "3.1.0")
+  cmake_policy(SET CMP0054 NEW)
+endif ()
 
 project(DebugServer2)
 
 set(OS_NAME ${CMAKE_SYSTEM_NAME})
-
-if (NOT ARCH_NAME)
-  execute_process(COMMAND uname -m OUTPUT_VARIABLE ARCH_NAME)
-endif ()
+set(ARCH_NAME ${CMAKE_SYSTEM_PROCESSOR})
 
 string(STRIP "${ARCH_NAME}" ARCH_NAME)
 string(TOUPPER "${ARCH_NAME}" ARCH_NAME)
-if (ARCH_NAME MATCHES "^ARM")
+if (ARCH_NAME MATCHES "^ARM64" OR ARCH_NAME MATCHES "AARCH64")
+  set(ARCH_NAME "ARM64")
+elseif (ARCH_NAME MATCHES "^ARM")
   set(ARCH_NAME "ARM") # Normalize ARMHF -> ARM
 elseif (ARCH_NAME MATCHES "I386")
   set(ARCH_NAME "X86")
 elseif (ARCH_NAME MATCHES "AMD64")
   set(ARCH_NAME "X86_64")
+endif ()
+
+if (MSVC)
+  if ("${CMAKE_GENERATOR}" MATCHES "ARM")
+    set(ARCH_NAME "ARM")
+  elseif ("${CMAKE_GENERATOR}" MATCHES "Win64")
+    set(ARCH_NAME "X86_64")
+  else ()
+    set(ARCH_NAME "X86")
+  endif ()
 endif ()
 
 set(ARCHITECTURE_COMMON_SOURCES
@@ -41,6 +53,7 @@ set(ARCHITECTURE_ARM_SOURCES
 
 set(ARCHITECTURE_ARM64_SOURCES
     ${ARCHITECTURE_ARM_SOURCES}
+    Sources/Architecture/ARM64/RegistersDescriptors.cpp
     )
 
 set(ARCHITECTURE_X86_SOURCES
@@ -100,9 +113,9 @@ set(TARGET_POSIX_SOURCES
 
 set(TARGET_Linux_SOURCES
     ${TARGET_POSIX_SOURCES}
-    Sources/Target/Linux/Process.cpp
-    Sources/Target/Linux/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Linux/${ARCH_NAME}/Process${ARCH_NAME}.cpp
+    Sources/Target/Linux/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
+    Sources/Target/Linux/Process.cpp
     Sources/Target/Linux/Thread.cpp
     )
 
@@ -115,7 +128,10 @@ set(TARGET_FreeBSD_SOURCES
     )
 
 set(TARGET_Windows_SOURCES
+    Sources/Target/Windows/${ARCH_NAME}/Process${ARCH_NAME}.cpp
+    Sources/Target/Windows/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Windows/Process.cpp
+    Sources/Target/Windows/Thread.cpp
     )
 
 set(GDB_SOURCES
@@ -180,55 +196,53 @@ add_executable(ds2 ${DEBUGSERVER2_SOURCES})
 include_directories(Headers)
 include_directories(Main)
 
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  set(GCC_FLAGS 1)
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  set(MSVC_FLAGS 1)
-  message("Using MSVC flags")
-endif ()
-
-if (GCC_FLAGS)
+if (MSVC)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /DSTRICT /wd4244 /wd4996")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DWIN32_LEAN_AND_MEAN /DNOMINMAX")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+else ()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter")
+
   if (STATIC)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
   endif ()
+
+  if (PIE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpie")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
+  endif ()
+
   if ("${ARCH_NAME}" STREQUAL "X86")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
   endif ()
+
   if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DCINTERFACE")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare")
   endif ()
-elseif (MSVC_FLAGS)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /DSTRICT /wd4244 /wd4996")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DWIN32_LEAN_AND_MEAN /DNOMINMAX")
+
+  if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+    target_link_libraries(ds2 util procstat)
+  endif ()
+
+  include(CheckFunctionExists)
+  foreach (FUNC gettid personality posix_openpt wait4)
+    string(TOUPPER "${FUNC}" UCFUNC)
+    CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${UCFUNC})
+    if (HAVE_${UCFUNC})
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_${UCFUNC}")
+    endif ()
+  endforeach ()
+
+  include(CheckIncludeFile)
+  CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
+  if (HAVE_SYS_PERSONALITY_H)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_SYS_PERSONALITY_H")
+  endif ()
 endif ()
 
 if (WIN32)
-  if (GCC_FLAGS)
-    # Some constructs from Windows API headers won't compile properly with our
-    # standard warnings set.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare")
-  endif ()
   target_link_libraries(ds2 psapi shlwapi ws2_32)
-endif ()
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-  target_link_libraries(ds2 util procstat)
-endif ()
-
-include(CheckFunctionExists)
-foreach (FUNC gettid personality posix_openpt wait4)
-  string(TOUPPER "${FUNC}" UCFUNC)
-  CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${UCFUNC})
-  if (HAVE_${UCFUNC})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_${UCFUNC}")
-  endif ()
-endforeach ()
-
-include(CheckIncludeFile)
-CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
-if (HAVE_SYS_PERSONALITY_H)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_SYS_PERSONALITY_H")
 endif ()
 
 include(FindThreads)

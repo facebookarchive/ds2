@@ -15,6 +15,8 @@
 #error "You shall not include this file directly."
 #endif
 
+#include "DebugServer2/Types.h"
+
 #include <functional>
 #include <string>
 
@@ -71,6 +73,10 @@ public:
 public:
   static const char *GetSelfExecutablePath();
   static bool GetCurrentEnvironment(EnvironmentBlock &env);
+
+public:
+  static ErrorCode TranslateError(DWORD error);
+  static ErrorCode TranslateError();
 
 public:
   static std::wstring NarrowToWideString(std::string const &s);

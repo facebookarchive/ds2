@@ -10,11 +10,11 @@
 
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Host/Platform.h"
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #elif defined(__FreeBSD__)
 #include "DebugServer2/Host/FreeBSD/ExtraWrappers.h"
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #endif
 
@@ -22,10 +22,15 @@
 
 namespace {
 
-uint64_t sLogMask;
 int sLogLevel;
 bool sColorsEnabled;
+// stderr is handled a bit differently on Windows, especially when running
+// under powershell. We can simply use stdout for log output.
+#if defined(OS_WIN32)
+FILE *sOutputStream = stdout;
+#else
 FILE *sOutputStream = stderr;
+#endif
 }
 
 namespace ds2 {
@@ -34,18 +39,13 @@ uint32_t GetLogLevel() { return sLogLevel; }
 
 void SetLogLevel(uint32_t level) { sLogLevel = level; }
 
-void SetLogMask(uint64_t mask) { sLogMask = mask; }
-
 void SetLogColorsEnabled(bool enabled) { sColorsEnabled = enabled; }
 
 void SetLogOutputStream(FILE *stream) { sOutputStream = stream; }
 
-void vLog(int category, int level, char const *classname, char const *funcname,
+void vLog(int level, char const *classname, char const *funcname,
           char const *format, va_list ap) {
   if (sLogLevel > level)
-    return;
-
-  if ((sLogMask & (1ULL << category)) == 0)
     return;
 
   std::stringstream ss;
@@ -111,15 +111,15 @@ void vLog(int category, int level, char const *classname, char const *funcname,
   fflush(sOutputStream);
 
   if (level == kLogLevelFatal)
-    exit(EXIT_FAILURE);
+    abort();
 }
 
-void Log(int category, int level, char const *classname, char const *funcname,
+void Log(int level, char const *classname, char const *funcname,
          char const *format, ...) {
   va_list ap;
 
   va_start(ap, format);
-  vLog(category, level, classname, funcname, format, ap);
+  vLog(level, classname, funcname, format, ap);
   va_end(ap);
 }
 }

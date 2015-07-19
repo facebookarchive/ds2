@@ -29,7 +29,7 @@ extern char **environ;
 #endif
 
 // TODO HAVE_ENDIAN_H, HAVE_SYS_ENDIAN_H
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #include <endian.h>
 #else
 #include <sys/endian.h>
@@ -48,24 +48,6 @@ ds2::CPUType Platform::GetCPUType() {
   return (sizeof(void *) == 8) ? kCPUTypeARM64 : kCPUTypeARM;
 #elif defined(ARCH_X86) || defined(ARCH_X86_64)
   return (sizeof(void *) == 8) ? kCPUTypeX86_64 : kCPUTypeI386;
-#elif defined(ARCH_PPC) || defined(ARCH_PPC64)
-  return (sizeof(void *) == 8) ? kCPUTypePOWERPC64 : kCPUTypePOWERPC;
-#elif defined(ARCH_MIPS) || defined(ARCH_MIPS64)
-  return (sizeof(void *) == 8) ? kCPUTypeMIPS64 : kCPUTypeMIPS;
-#elif defined(ARCH_SPARC) || defined(ARCH_SPARC64)
-  return (sizeof(void *) == 8) ? kCPUTypeSPARC64 : kCPUTypeSPARC;
-#elif defined(ARCH_HPPA) || defined(ARCH_HPPA64)
-  return (sizeof(void *) == 8) ? kCPUTypeHPPA64 : kCPUTypeHPPA;
-#elif defined(ARCH_ALPHA)
-  return kCPUTypeALPHA;
-#elif defined(ARCH_I860)
-  return kCPUTypeI860;
-#elif defined(ARCH_M68K)
-  return kCPUTypeMC680x0;
-#elif defined(ARCH_VAX)
-  return kCPUTypeVAX;
-#elif defined(ARCH_M88K)
-  return kCPUTypeMC88000;
 #else
 #error "Architecture not supported."
 #endif
@@ -189,6 +171,26 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
 
   return true;
 }
+
+ErrorCode Platform::TranslateError(int error) {
+  switch (error) {
+  case EBUSY:
+    return ds2::kErrorBusy;
+  case ESRCH:
+    return ds2::kErrorProcessNotFound;
+  case EFAULT:
+  case EIO:
+    return ds2::kErrorInvalidAddress;
+  case EPERM:
+    return ds2::kErrorNoPermission;
+  case EEXIST:
+    return ds2::kErrorAlreadyExist;
+  default:
+    DS2BUG("unknown error code: %d", error);
+  }
+}
+
+ErrorCode Platform::TranslateError() { return TranslateError(errno); }
 }
 }
 }

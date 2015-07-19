@@ -106,30 +106,11 @@ fail:
   return kill(ptid, SIGKILL); // we can't really do much at this point :(
 }
 
-ErrorCode PTrace::TranslateErrno(int error) {
-  switch (error) {
-  case EBUSY:
-    return ds2::kErrorBusy;
-  case ESRCH:
-    return ds2::kErrorProcessNotFound;
-  case EFAULT:
-    return ds2::kErrorInvalidAddress;
-  case EIO:
-    return ds2::kErrorInvalidAddress;
-  case EPERM:
-    return ds2::kErrorNoPermission;
-  default:
-    break;
-  }
-  return ds2::kErrorInvalidArgument;
-}
-
 ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &pid)
 {
   return kErrorUnsupported;
 }
 
-ErrorCode PTrace::TranslateErrno() { return TranslateErrno(errno); }
 }
 }
 }

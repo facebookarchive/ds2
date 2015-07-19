@@ -43,7 +43,7 @@ bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
   ds2::Architecture::CPUState state;
 
   //
-  // Ignore hardware signle-stepping.
+  // Ignore hardware single-stepping.
   //
   if (thread->state() == Target::Thread::kStepped)
     return true;
@@ -77,21 +77,20 @@ void SoftwareBreakpointManager::enableLocation(Site const &site) {
 
   error = _process->readMemory(site.address, &old, sizeof(old));
   if (error != kSuccess) {
-    DS2LOG(BPManager, Error, "cannot enable breakpoint at %#lx",
+    DS2LOG(Error, "cannot enable breakpoint at %#lx",
            (unsigned long)site.address.value());
     return;
   }
 
   error = _process->writeMemory(site.address, &opcode, sizeof(opcode));
   if (error != kSuccess) {
-    DS2LOG(BPManager, Error, "cannot enable breakpoint at %#lx",
+    DS2LOG(Error, "cannot enable breakpoint at %#lx",
            (unsigned long)site.address.value());
     return;
   }
 
-  DS2LOG(BPManager, Info,
-         "set breakpoint instruction %#x at %#lx (saved insn %#x)", opcode,
-         (unsigned long)site.address.value(), old);
+  DS2LOG(Info, "set breakpoint instruction %#x at %#lx (saved insn %#x)",
+         opcode, (unsigned long)site.address.value(), old);
 
   _insns[site.address] = old;
 }
@@ -102,12 +101,12 @@ void SoftwareBreakpointManager::disableLocation(Site const &site) {
 
   error = _process->writeMemory(site.address, &old, sizeof(old));
   if (error != kSuccess) {
-    DS2LOG(BPManager, Error, "cannot restore instruction at %#lx",
+    DS2LOG(Error, "cannot restore instruction at %#lx",
            (unsigned long)site.address.value());
     return;
   }
 
-  DS2LOG(BPManager, Info, "reset instruction %#x at %#lx", old,
+  DS2LOG(Info, "reset instruction %#x at %#lx", old,
          (unsigned long)site.address.value());
 
   _insns.erase(site.address);

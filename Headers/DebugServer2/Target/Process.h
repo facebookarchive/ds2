@@ -11,9 +11,11 @@
 #ifndef __DebugServer2_Target_Process_h
 #define __DebugServer2_Target_Process_h
 
-#if defined(__linux__)
+#include "DebugServer2/Base.h"
+
+#if defined(OS_LINUX)
 #include "DebugServer2/Target/Linux/Process.h"
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 #include "DebugServer2/Target/Windows/Process.h"
 #elif defined(__FreeBSD__)
 #include "DebugServer2/Target/FreeBSD/Process.h"
@@ -24,9 +26,9 @@
 namespace ds2 {
 namespace Target {
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 using Linux::Process;
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 using Windows::Process;
 #elif defined(__FreeBSD__)
 using FreeBSD::Process;

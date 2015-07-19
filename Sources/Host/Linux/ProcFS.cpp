@@ -163,7 +163,7 @@ FILE *ProcFS::OpenFILE(char const *what, char const *mode) {
   ds2_snprintf(path, PATH_MAX, "/proc/%s", what);
   FILE *res = fopen(path, mode);
   if (res == nullptr)
-    DS2LOG(Target, Error, "can't open %s: %s", path, strerror(errno));
+    DS2LOG(Error, "can't open %s: %s", path, strerror(errno));
   return res;
 }
 
@@ -177,7 +177,7 @@ FILE *ProcFS::OpenFILE(pid_t pid, pid_t tid, char const *what,
   MakePath(path, PATH_MAX, pid, tid, what);
   FILE *res = fopen(path, mode);
   if (res == nullptr)
-    DS2LOG(Target, Error, "can't open %s: %s", path, strerror(errno));
+    DS2LOG(Error, "can't open %s: %s", path, strerror(errno));
   return res;
 }
 
@@ -211,9 +211,10 @@ bool ProcFS::ReadLink(pid_t pid, pid_t tid, char const *what, char *buf,
 void ProcFS::ParseKeyValue(
     FILE *fp, size_t maxsize, char sep,
     std::function<bool(char const *, char const *)> const &cb) {
+  char line[maxsize + 1];
+
   rewind(fp);
 
-  char *line = (char *)malloc(maxsize + 1);
   for (;;) {
     char *ep, *lp = fgets(line, maxsize, fp);
     if (lp == nullptr)
@@ -252,9 +253,10 @@ void ProcFS::ParseKeyValue(
 
 void ProcFS::ParseValues(FILE *fp, size_t maxsize, char sep, bool includeSep,
                          std::function<bool(size_t, char const *)> const &cb) {
+  char line[maxsize + 1];
+
   rewind(fp);
 
-  char *line = (char *)malloc(maxsize + 1);
   for (;;) {
     char *ep, *lp = fgets(line, maxsize, fp);
     if (lp == nullptr)
@@ -298,28 +300,28 @@ bool ProcFS::ReadUptime(Uptime &uptime) {
   if (fp == nullptr)
     return false;
 
-  ParseValues(fp, 1024, ' ', false,
-              [&](size_t index, char const *value) -> bool {
-    char *end;
+  ParseValues(
+      fp, 1024, ' ', false, [&](size_t index, char const *value) -> bool {
+        char *end;
 
-    switch (index) {
-    case UPTIME_F_RUN_TIME:
-      uptime.run_time.tv_sec = strtoll(value, &end, 0);
-      if (*end++ == '.') {
-        uptime.run_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
-      }
-      break;
+        switch (index) {
+        case UPTIME_F_RUN_TIME:
+          uptime.run_time.tv_sec = strtoll(value, &end, 0);
+          if (*end++ == '.') {
+            uptime.run_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
+          }
+          break;
 
-    case UPTIME_F_IDLE_TIME:
-      uptime.idle_time.tv_sec = strtoll(value, &end, 0);
-      if (*end++ == '.') {
-        uptime.idle_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
-      }
-      break;
-    }
+        case UPTIME_F_IDLE_TIME:
+          uptime.idle_time.tv_sec = strtoll(value, &end, 0);
+          if (*end++ == '.') {
+            uptime.idle_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
+          }
+          break;
+        }
 
-    return true;
-  });
+        return true;
+      });
 
   std::fclose(fp);
   return true;

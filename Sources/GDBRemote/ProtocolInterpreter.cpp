@@ -43,7 +43,7 @@ static std::string EscapeForTerm(std::string const &s) {
 ProtocolInterpreter::ProtocolInterpreter() : _session(nullptr) {}
 
 void ProtocolInterpreter::onPacketData(std::string const &data, bool valid) {
-  DS2LOG(Remote, Debug, "getpkt(\"%s\")", EscapeForTerm(&data[0]).c_str());
+  DS2LOG(Debug, "getpkt(\"%s\")", EscapeForTerm(&data[0]).c_str());
 
   if (_session == nullptr)
     return;
@@ -138,7 +138,7 @@ void ProtocolInterpreter::onPacketData(std::string const &data, bool valid) {
 }
 
 void ProtocolInterpreter::onInvalidData(std::string const &data) {
-  DS2LOG(Protocol, Warning, "received invalid data: '%s'", data.c_str());
+  DS2LOG(Warning, "received invalid data: '%s'", data.c_str());
 
   if (_session == nullptr)
     return;
@@ -151,8 +151,7 @@ void ProtocolInterpreter::onCommand(std::string const &command,
   size_t commandLength;
   Handler const *handler = findHandler(command, commandLength);
   if (handler == nullptr) {
-    DS2LOG(Protocol, Debug, "handler for command '%s' unknown",
-           command.c_str());
+    DS2LOG(Debug, "handler for command '%s' unknown", command.c_str());
 
     //
     // The handler couldn't be found, send a NAK.
@@ -173,12 +172,11 @@ void ProtocolInterpreter::onCommand(std::string const &command,
 
   if (extra.find_first_of("*}") != std::string::npos) {
     extra = Uncompress(extra);
-    DS2LOG(Protocol, Debug, "args='%.*s'", static_cast<int>(extra.length()),
-           &extra[0]);
+    DS2LOG(Debug, "args='%.*s'", static_cast<int>(extra.length()), &extra[0]);
   }
 
 #if 0
-    DS2LOG(Protocol, Debug, "command='%s' arguments='%s'\n",
+    DS2LOG(Debug, "command='%s' arguments='%s'\n",
             command.substr(0, commandLength).c_str(),
             extra.c_str());
 #endif

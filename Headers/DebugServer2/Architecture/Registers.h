@@ -23,23 +23,8 @@
 #elif defined(ARCH_X86_64)
 #include "DebugServer2/Architecture/I386/Registers.h"
 #include "DebugServer2/Architecture/X86_64/Registers.h"
-#elif defined(ARCH_MIPS)
-#include "DebugServer2/Architecture/MIPS/Registers.h"
-#elif defined(ARCH_MIPS64)
-#include "DebugServer2/Architecture/MIPS/Registers.h"
-#include "DebugServer2/Architecture/MIPS64/Registers.h"
-#elif defined(ARCH_PPC)
-#include "DebugServer2/Architecture/PowerPC/Registers.h"
-#elif defined(ARCH_PPC64)
-#include "DebugServer2/Architecture/PowerPC/Registers.h"
-#include "DebugServer2/Architecture/PowerPC64/Registers.h"
-#elif defined(ARCH_SPARC)
-#include "DebugServer2/Architecture/SPARC/Registers.h"
-#elif defined(ARCH_SPARC64)
-#include "DebugServer2/Architecture/SPARC/Registers.h"
-#include "DebugServer2/Architecture/SPARC64/Registers.h"
 #else
-#error "Unknown target architecture."
+#error "Architecture not supported."
 #endif
 
 #endif // !__DebugServer2_Architecture_Registers_h

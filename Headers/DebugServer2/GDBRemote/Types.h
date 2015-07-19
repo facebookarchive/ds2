@@ -11,9 +11,9 @@
 #ifndef __DebugServer2_GDBRemote_Types_h
 #define __DebugServer2_GDBRemote_Types_h
 
-#include "DebugServer2/GDBRemote/Base.h"
 #include "DebugServer2/Architecture/RegisterLayout.h"
-#include "DebugServer2/Host/Base.h"
+#include "DebugServer2/GDBRemote/Base.h"
+#include "DebugServer2/Types.h"
 
 #include <set>
 
@@ -32,25 +32,16 @@ struct MemoryRegionInfo : ds2::MemoryRegionInfo {
 };
 
 struct StopCode {
-  enum Event { kSignal, kCleanExit, kSignalExit };
-
-  enum Reason {
-    kNone,
-    kWatchpoint,
-    kRegisterWatchpoint,
-    kAddressWatchpoint,
-    kLibraryLoad,
-    kReplayLog,
-    // LLDB compat
-    kBreakpoint,
-    kTrace,
-    kSignalStop, // TODO better name
-    kException,
-    kTrap
+  enum Event {
+    kSignal,
+    kCleanExit,
+#if !defined(OS_WIN32)
+    kSignalExit,
+#endif
   };
 
   Event event;
-  Reason reason;
+  StopInfo::Reason reason;
   union {
     int signal;
     int status;
@@ -62,7 +53,9 @@ struct StopCode {
   std::set<ThreadId> threads;
 
 public:
-  StopCode() : event(kSignal), reason(kNone), core(-1) { signal = 0; }
+  StopCode() : event(kSignal), reason(StopInfo::kReasonNone), core(-1) {
+    signal = 0;
+  }
 
 public:
   std::string encode(CompatibilityMode mode) const;

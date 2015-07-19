@@ -19,11 +19,11 @@
 #include <iomanip>
 #include <sstream>
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #define FORMAT_ID(ID) ID
 #elif defined(__FreeBSD__)
 #define FORMAT_ID(ID) ID
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 #define FORMAT_ID(ID) 0
 #else
 #error "Target not supported."
@@ -176,65 +176,37 @@ std::string StopCode::encodeInfo(CompatibilityMode mode) const {
   if (!(core < 0)) {
     ss << ';' << "core:" << core;
   }
-  if (reason != kNone) {
-#if notyet
-    ss << ';';
-    switch (reason) {
-    case kWatchpoint:
-      ss << "watch";
-      break;
-    case kRegisterWatchpoint:
-      ss << "rwatch";
-      break;
-    case kAddressWatchpoint:
-      ss << "awatch";
-      break;
-    case kLibraryLoad:
-      ss << "library";
-      break;
-    case kReplayLog:
-      ss << "replaylog";
-      break;
-    }
-    ss << ':' << 1;
-#endif
+
+  switch (reason) {
+  case StopInfo::kReasonNone:
+    break;
+
+#define REASON_1(CODE, REASON)                                                 \
+  case CODE:                                                                   \
+    ss << ';' << REASON << ':' << 1;                                           \
+    break;
+    REASON_1(StopInfo::kReasonWatchpoint, "watch");
+    REASON_1(StopInfo::kReasonRegisterWatchpoint, "rwatch");
+    REASON_1(StopInfo::kReasonAddressWatchpoint, "awatch");
+    REASON_1(StopInfo::kReasonLibraryLoad, "library");
+    REASON_1(StopInfo::kReasonLibraryUnload, "library");
+    REASON_1(StopInfo::kReasonReplayLog, "replaylog");
+#undef REASON_1
+
+#define REASON_LLDB(CODE, REASON)                                              \
+  case CODE:                                                                   \
+    if (mode == kCompatibilityModeLLDB)                                        \
+      ss << ';' << "reason:" << REASON;                                        \
+    break;
+    REASON_LLDB(StopInfo::kReasonTrace, "trace");
+    REASON_LLDB(StopInfo::kReasonBreakpoint, "breakpoint");
+    REASON_LLDB(StopInfo::kReasonSignalStop, "signal");
+    REASON_LLDB(StopInfo::kReasonTrap, "trap");
+    REASON_LLDB(StopInfo::kReasonException, "exception");
+#undef REASON_LLDB
   }
 
-  //
-  // Encode extra information needed by LLDB.
-  //
   if (mode == kCompatibilityModeLLDB) {
-    if (reason != kNone) {
-      ss << ';' << "reason:";
-      switch (reason) {
-      case kNone:
-        break;
-      case kTrace:
-        ss << "trace";
-        break;
-      case kBreakpoint:
-        ss << "breakpoint";
-        break;
-      case kWatchpoint:
-        ss << "watchpoint";
-        break;
-      case kSignalStop:
-        ss << "signal";
-        break;
-      case kTrap:
-        ss << "trap";
-        break;
-      case kException:
-        ss << "exception";
-        break;
-      case kRegisterWatchpoint:
-      case kAddressWatchpoint:
-      case kLibraryLoad:
-      case kReplayLog:
-        DS2LOG(Protocol, Warning, "stop reason not implemented: %d", reason);
-      }
-    }
-
     ss << ';' << "threads:";
     if (threads.empty()) {
       //
@@ -268,7 +240,7 @@ std::string StopCode::encodeRegisters() const {
     size_t regsize = regval.second.size << 3;
 
     ss << HEX(2) << (regval.first & 0xff) << ':' << HEX(regsize >> 2)
-#ifdef __BIG_ENDIAN__
+#if defined(__BIG_ENDIAN__)
        << regval.second.value
 #else
        << (Swap64(regval.second.value) >> (64 - regsize))
@@ -283,14 +255,14 @@ std::string StopCode::encodeRegisters() const {
 
 std::string StopCode::encode(CompatibilityMode mode) const {
   std::ostringstream ss;
-  char code;
 
   if (event == kSignal && mode == kCompatibilityModeGDBMultiprocess) {
     //
     // We need to have some information in order to
     // have extended stop reason.
     //
-    if (!ptid.valid() && core < 0 && reason == kNone && registers.empty()) {
+    if (!ptid.valid() && core < 0 && reason == StopInfo::kReasonNone &&
+        registers.empty()) {
       //
       // We can use the simpler form.
       //
@@ -300,23 +272,25 @@ std::string StopCode::encode(CompatibilityMode mode) const {
 
   switch (event) {
   case kSignal:
-    code = (mode != kCompatibilityModeGDB) ? 'T' : 'S';
+    ss << ((mode != kCompatibilityModeGDB) ? 'T' : 'S') << HEX(2)
+#if !defined(OS_WIN32)
+       << ((reason != StopInfo::kReasonNone) ? (signal & 0xff) : 0)
+#else
+       // Windows doesn't have a notion of signals but the GDB protocol still
+       // needs some sort of emulation for these.
+       << (event != StopInfo::kEventNone ? 5 : 0)
+#endif
+       << DEC;
     break;
-  case kSignalExit:
-    code = 'X';
-    break;
-  case kCleanExit:
-    code = 'W';
-    break;
-  default:
-    return std::string();
-  }
 
-  ss << code;
-  if (event == kCleanExit) {
-    ss << HEX(2) << (status & 0xff) << DEC;
-  } else {
-    ss << HEX(2) << (reason != kNone ? (signal & 0xff) : 0) << DEC;
+#if !defined(OS_WIN32)
+  case kSignalExit:
+    ss << 'X' << HEX(2) << (signal & 0xff) << DEC;
+    break;
+#endif
+
+  case kCleanExit:
+    ss << 'W' << HEX(2) << (status & 0xff) << DEC;
   }
 
   //
@@ -439,7 +413,7 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
     ss << "pid:" << DEC << pid << ';';
     ss << "uid:" << DEC << FORMAT_ID(realUid) << ';';
     ss << "gid:" << DEC << FORMAT_ID(realGid) << ';';
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     ss << "ppid:" << DEC << parentPid << ';';
     ss << "euid:" << DEC << effectiveUid << ';';
     ss << "egid:" << DEC << effectiveGid << ';';
@@ -450,7 +424,7 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
     ss << "pid:" << HEX0 << pid << ';';
     ss << "real-uid:" << HEX0 << FORMAT_ID(realUid) << ';';
     ss << "real-gid:" << HEX0 << FORMAT_ID(realGid) << ';';
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     ss << "parent-pid:" << HEX0 << parentPid << ';';
     ss << "effective-uid:" << HEX0 << effectiveUid << ';';
     ss << "effective-gid:" << HEX0 << effectiveGid << ';';

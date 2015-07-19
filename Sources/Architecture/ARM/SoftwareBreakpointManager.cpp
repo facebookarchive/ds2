@@ -10,8 +10,8 @@
 
 #define __DS2_LOG_CLASS_NAME__ "SoftwareBreakpointManager"
 
-#include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
+#include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
@@ -46,10 +46,11 @@ ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
     if (address.value() & 1) {
       isThumb = true;
     } else {
-      // TODO: add a nicer way to get the thumb bit.
-      CPUState state;
+      ds2::Architecture::CPUState state;
       ErrorCode error = _process->currentThread()->readCPUState(state);
-      isThumb = ((error == kSuccess) && (state.gp.cpsr & (1 << 5)));
+      if (error != kSuccess)
+        return error;
+      isThumb = state.isThumb();
     }
 
     if (isThumb) {
@@ -102,7 +103,7 @@ void SoftwareBreakpointManager::enumerate(
 }
 
 bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
-  CPUState state;
+  ds2::Architecture::CPUState state;
   thread->readCPUState(state);
   return super::hit(state.pc());
 }
@@ -110,6 +111,7 @@ bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
 void SoftwareBreakpointManager::getOpcode(uint32_t type,
                                           std::string &opcode) const {
   switch (type) {
+#if defined(ARCH_ARM)
   case 2: // udf #1
 #if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     opcode += '\xde';
@@ -145,8 +147,23 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
     opcode += '\xe7';
 #endif
     break;
+#elif defined(ARCH_ARM64)
+  case 4:
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+    opcode += '\xd4';
+    opcode += '\x20';
+    opcode += '\x20';
+    opcode += '\x00';
+#else
+    opcode += '\x00';
+    opcode += '\x20';
+    opcode += '\x20';
+    opcode += '\xd4';
+#endif
+    break;
+#endif
   default:
-    DS2LOG(BPManager, Error, "invalid breakpoint type %d", type);
+    DS2LOG(Error, "invalid breakpoint type %d", type);
     DS2ASSERT(0 && "invalid breakpoint type");
     break;
   }
@@ -161,20 +178,19 @@ void SoftwareBreakpointManager::enableLocation(Site const &site) {
   old.resize(opcode.size());
   error = _process->readMemory(site.address, &old[0], old.size());
   if (error != kSuccess) {
-    DS2LOG(BPManager, Error, "cannot enable breakpoint at %#lx",
+    DS2LOG(Error, "cannot enable breakpoint at %#lx",
            (unsigned long)site.address.value());
     return;
   }
 
   error = _process->writeMemory(site.address, &opcode[0], opcode.size());
   if (error != kSuccess) {
-    DS2LOG(BPManager, Error, "cannot enable breakpoint at %#lx",
+    DS2LOG(Error, "cannot enable breakpoint at %#lx",
            (unsigned long)site.address.value());
     return;
   }
 
-  DS2LOG(BPManager, Info,
-         "set breakpoint instruction %#lx at %#lx (saved insn %#lx)",
+  DS2LOG(Info, "set breakpoint instruction %#lx at %#lx (saved insn %#lx)",
          (unsigned long)(site.size == 2 ? *(uint16_t *)&opcode[0]
                                         : *(uint32_t *)&opcode[0]),
          (unsigned long)site.address.value(),
@@ -190,12 +206,12 @@ void SoftwareBreakpointManager::disableLocation(Site const &site) {
 
   error = _process->writeMemory(site.address, &old[0], old.size());
   if (error != kSuccess) {
-    DS2LOG(BPManager, Error, "cannot restore instruction at %#lx",
+    DS2LOG(Error, "cannot restore instruction at %#lx",
            (unsigned long)site.address.value());
     return;
   }
 
-  DS2LOG(BPManager, Info, "reset instruction %#lx at %#lx",
+  DS2LOG(Info, "reset instruction %#lx at %#lx",
          (unsigned long)(site.size == 2 ? *(uint16_t *)&old[0]
                                         : *(uint32_t *)&old[0]),
          (unsigned long)site.address.value());

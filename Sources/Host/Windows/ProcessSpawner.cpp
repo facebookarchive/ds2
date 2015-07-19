@@ -21,7 +21,7 @@ using ds2::Host::Windows::Platform;
 namespace ds2 {
 namespace Host {
 
-ProcessSpawner::ProcessSpawner() : _processHandle(0), _pid(0) {}
+ProcessSpawner::ProcessSpawner() : _pid(0), _handle(0) {}
 
 ProcessSpawner::~ProcessSpawner() {}
 
@@ -106,10 +106,16 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       wideWorkingDirectory.empty() ? nullptr : wideWorkingDirectory.c_str(),
       &si, &pi);
 
-  _processHandle = pi.hProcess;
-  _pid = pi.dwProcessId;
+  if (!result)
+    return Platform::TranslateError();
 
-  return result ? kSuccess : kErrorUnknown;
+  _pid = pi.dwProcessId;
+  _handle = pi.hProcess;
+
+  _tid = pi.dwThreadId;
+  _threadHandle = pi.hThread;
+
+  return kSuccess;
 }
 }
 }

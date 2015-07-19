@@ -105,7 +105,7 @@ ds2::Target::Process *Process::Attach(ProcessId pid) {
   //
   ErrorCode error = process->ptrace().attach(pid);
   if (error != kSuccess) {
-    DS2LOG(Target, Error, "ptrace attach failed: %s", strerror(errno));
+    DS2LOG(Error, "ptrace attach failed: %s", strerror(errno));
     goto fail;
   }
 
@@ -137,7 +137,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
     goto fail;
 
   pid = spawner.pid();
-  DS2LOG(Target, Error, "spawned with pid %d", pid);
+  DS2LOG(Debug, "created process %d", pid);
 
   //
   // Wait the process.
@@ -175,7 +175,7 @@ void Process::setSignalPass(int signo, bool set) {
   // handled, so we never pass them thru.
   //
   if (signo == 0 || signo == SIGSTOP || signo == SIGCHLD
-#if defined(__linux__)
+#if defined(OS_LINUX)
       || signo == SIGRTMIN
 #endif
       )

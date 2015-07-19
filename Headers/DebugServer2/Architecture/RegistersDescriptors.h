@@ -33,18 +33,6 @@ USE_DESCRIPTORS(X86);
 #elif defined(ARCH_X86_64)
 #include "DebugServer2/Architecture/X86_64/RegistersDescriptors.h"
 USE_DESCRIPTORS(X86_64);
-#elif defined(ARCH_PPC)
-#include "DebugServer2/Architecture/PowerPC/RegistersDescriptors.h"
-USE_DESCRIPTORS(PowerPC);
-#elif defined(ARCH_PPC64)
-#include "DebugServer2/Architecture/PowerPC64/RegistersDescriptors.h"
-USE_DESCRIPTORS(PowerPC64);
-#elif defined(ARCH_MIPS)
-#include "DebugServer2/Architecture/MIPS/RegistersDescriptors.h"
-USE_DESCRIPTORS(MIPS);
-#elif defined(ARCH_MIPS64)
-#include "DebugServer2/Architecture/MIPS64/RegistersDescriptors.h"
-USE_DESCRIPTORS(MIPS64);
 #else
 #error "Architecture not supported."
 #endif

@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
 #include <unistd.h>
 #endif
 
@@ -30,7 +30,7 @@ namespace ds2 {
 // Basic Types
 //
 
-#if defined(_WIN32)
+#if defined(OS_WIN32)
 typedef DWORD ProcessId;
 typedef DWORD ThreadId;
 typedef PSID UserId;
@@ -67,13 +67,9 @@ struct ProcessThreadId {
     return tid != kAllThreadId && tid != kAnyThreadId;
   }
 
-  inline bool valid() const {
-    return validPid() || validTid();
-  }
+  inline bool valid() const { return validPid() || validTid(); }
 
-  inline bool any() const {
-    return !validPid() && !validTid();
-  }
+  inline bool any() const { return !validPid() && !validTid(); }
 
   inline void clear() {
     pid = kAnyProcessId;
@@ -92,53 +88,47 @@ typedef std::map<std::string, std::string> EnvironmentBlock;
 // Repesents the stop information of a process.
 //
 
-struct TrapInfo {
+struct StopInfo {
   enum Event {
     kEventNone,
+    kEventStop,
     kEventExit,
     kEventKill,
-    kEventCoreDump,
-    kEventTrap,
-    kEventStop,
   };
 
   enum Reason {
     kReasonNone,
-    kReasonThreadNew,
-    kReasonThreadExit,
+    kReasonWatchpoint,
+    kReasonRegisterWatchpoint,
+    kReasonAddressWatchpoint,
+    kReasonLibraryLoad,
+    kReasonLibraryUnload,
+    kReasonReplayLog,
+    kReasonBreakpoint,
+    kReasonTrace,
+    kReasonSignalStop, // TODO better name
+    kReasonException,
+    kReasonTrap,
   };
-
-  ProcessId pid;
-  ThreadId tid;
 
   Event event;
   Reason reason;
   uint32_t core;
   int status;
+#if !defined(OS_WIN32)
   int signal;
+#endif
 
-  struct {
-    uint32_t type;
-    uint64_t data[3];
-  } exception;
-
-  TrapInfo() { clear(); }
+  StopInfo() { clear(); }
 
   inline void clear() {
-    pid = kAnyProcessId;
-    tid = kAnyThreadId;
-
-    core = 0;
-
     event = kEventNone;
     reason = kReasonNone;
+    core = 0;
     status = 0;
+#if !defined(OS_WIN32)
     signal = 0;
-
-    exception.type = 0;
-    exception.data[0] = 0;
-    exception.data[1] = 0;
-    exception.data[2] = 0;
+#endif
   }
 };
 
@@ -225,7 +215,7 @@ struct ProcessInfo {
   typedef std::vector<ProcessInfo> Collection;
 
   ProcessId pid;
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   ProcessId parentPid;
 #endif
 
@@ -233,7 +223,7 @@ struct ProcessInfo {
 
   UserId realUid;
   GroupId realGid;
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
   UserId effectiveUid;
   GroupId effectiveGid;
 #endif
@@ -253,13 +243,13 @@ struct ProcessInfo {
 
   inline void clear() {
     pid = kAnyProcessId;
-#if !defined(_WIN32)
+#if !defined(OS_WIN32)
     parentPid = kAnyProcessId;
 #endif
 
     name.clear();
 
-#if defined(_WIN32)
+#if defined(OS_WIN32)
     realUid = nullptr;
     realGid = nullptr;
 #else
@@ -281,7 +271,7 @@ struct ProcessInfo {
     osVendor.clear();
   }
 
-#if defined(_WIN32)
+#if defined(OS_WIN32)
   ~ProcessInfo() {
     free(realUid);
     free(realGid);

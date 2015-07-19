@@ -20,40 +20,43 @@ namespace Windows {
 
 class Process : public Target::ProcessBase {
 protected:
+  HANDLE _handle;
+  BreakpointManager *_breakpointManager;
+  bool _terminated;
+
+protected:
   Process();
 
 public:
   virtual ~Process();
 
 public:
-  virtual ErrorCode initialize(ProcessId pid, uint32_t flags);
+  inline HANDLE handle() const { return _handle; }
+
+protected:
+  virtual ErrorCode initialize(ProcessId pid, HANDLE handle, ThreadId tid,
+                               HANDLE threadHandle, uint32_t flags);
 
 public:
-  virtual ErrorCode attach(bool reattach = false) { return kErrorUnsupported; }
-  virtual ErrorCode detach() { return kErrorUnsupported; }
+  virtual ErrorCode attach(bool reattach = false);
+  virtual ErrorCode detach();
 
 public:
   virtual ErrorCode interrupt() { return kErrorUnsupported; }
-  virtual ErrorCode terminate() { return kErrorUnsupported; }
-  virtual bool isAlive() const { return false; }
+  virtual ErrorCode terminate();
+  virtual bool isAlive() const;
 
 public:
   virtual ErrorCode suspend() { return kErrorUnsupported; }
   virtual ErrorCode
   resume(int signal = 0,
-         std::set<Thread *> const &excluded = std::set<Thread *>()) {
-    return kErrorUnsupported;
-  }
+         std::set<Thread *> const &excluded = std::set<Thread *>());
 
 public:
   ErrorCode readMemory(Address const &address, void *data, size_t length,
-                       size_t *nread = nullptr) {
-    return kErrorUnsupported;
-  }
+                       size_t *nread = nullptr);
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,
-                        size_t *nwritten = nullptr) {
-    return kErrorUnsupported;
-  }
+                        size_t *nwritten = nullptr);
 
 public:
   virtual ErrorCode getMemoryRegionInfo(Address const &address,
@@ -65,7 +68,7 @@ public:
   virtual ErrorCode updateInfo();
 
 public:
-  virtual BreakpointManager *breakpointManager() const { return nullptr; }
+  virtual BreakpointManager *breakpointManager() const;
   virtual WatchpointManager *watchpointManager() const { return nullptr; }
 
 public:
@@ -73,21 +76,15 @@ public:
 
 public:
   virtual ErrorCode allocateMemory(size_t size, uint32_t protection,
-                                   uint64_t *address) {
-    return kErrorUnsupported;
-  }
-  virtual ErrorCode deallocateMemory(uint64_t address, size_t size) {
-    return kErrorUnsupported;
-  }
+                                   uint64_t *address);
+  virtual ErrorCode deallocateMemory(uint64_t address, size_t size);
 
 public:
   void resetSignalPass() {}
   void setSignalPass(int signo, bool set) {}
 
 public:
-  virtual ErrorCode wait(int *status = nullptr, bool hang = true) {
-    return kErrorUnsupported;
-  }
+  virtual ErrorCode wait(int *status = nullptr, bool hang = true);
 
 public:
   static Target::Process *Create(Host::ProcessSpawner &spawner);
@@ -98,18 +95,12 @@ public:
     return kErrorUnsupported;
   }
   virtual ErrorCode enumerateSharedLibraries(
-      std::function<void(SharedLibrary const &)> const &cb) {
-    return kErrorUnsupported;
-  }
+      std::function<void(SharedLibrary const &)> const &cb);
 
 public:
-  virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const {
-    return nullptr;
-  }
+  virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const;
   virtual Architecture::LLDBDescriptor const *
-  getLLDBRegistersDescriptor() const {
-    return nullptr;
-  }
+  getLLDBRegistersDescriptor() const;
 };
 }
 }

@@ -8,8 +8,9 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
+#include "DebugServer2/Host/Linux/PTrace.h"
+#include "DebugServer2/Host/Platform.h"
 
 #include <sys/ptrace.h>
 #include <sys/uio.h>
@@ -303,7 +304,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
   //
   user_regs_struct gprs;
   if (wrapPtrace(PTRACE_GETREGS, pid, nullptr, &gprs) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   if (pinfo.pointerSize == sizeof(uint32_t)) {
     state.is32 = true;
@@ -363,7 +364,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   }
 
   if (wrapPtrace(PTRACE_SETREGS, pid, nullptr, &gprs) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   //
   // Write X87 and SSE state

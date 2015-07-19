@@ -44,49 +44,6 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
     break;
 #endif
 
-#elif defined(ARCH_MIPS) || defined(ARCH_MIPS64)
-  case EM_MIPS_RS3_LE:
-    type = kCPUTypeMIPS;
-    subType = kCPUSubTypeMIPS_ALL;
-    break;
-
-  case EM_MIPS:
-#if !defined(ARCH_MIPS64)
-    if (!is64Bit)
-#endif
-    {
-      type = is64Bit ? kCPUTypeMIPS64 : kCPUTypeMIPS;
-      subType = kCPUSubTypeMIPS_ALL;
-    }
-    break;
-
-#elif defined(ARCH_PPC) || defined(ARCH_PPC64)
-  case EM_PPC:
-    type = kCPUTypePOWERPC;
-    subType = kCPUSubTypePOWERPC_ALL;
-    break;
-
-#if defined(ARCH_PPC64)
-  case EM_PPC64:
-    type = kCPUTypePOWERPC64;
-    subType = kCPUSubTypePOWERPC_970;
-    break;
-#endif
-
-#elif defined(ARCH_SPARC) || defined(ARCH_SPARC64)
-  case EM_SPARC:
-    type = kCPUTypeSPARC;
-    subType = kCPUSubTypeSPARC_ALL;
-    break;
-
-#if defined(ARCH_SPARC64)
-  case EM_SPARCV9:
-  case EM_SPARC32PLUS:
-    type = kCPUTypeSPARC64;
-    subType = kCPUSubTypeSPARC_ALL;
-    break;
-#endif
-
 #else
 #error "Architecture not supported."
 #endif

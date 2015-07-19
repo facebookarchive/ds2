@@ -27,7 +27,7 @@ public:
 protected:
   Process *_process;
   ThreadId _tid;
-  TrapInfo _trap;
+  StopInfo _stopInfo;
   State _state;
 
 protected:
@@ -37,11 +37,9 @@ public:
   virtual ~ThreadBase();
 
 public:
-  inline Process *process() const {
-    return const_cast<ThreadBase *>(this)->_process;
-  }
+  inline Process *process() const { return _process; }
   inline ThreadId tid() const { return _tid; }
-  inline TrapInfo const &trapInfo() const { return _trap; }
+  inline StopInfo const &stopInfo() const { return _stopInfo; }
 
 public:
   virtual ErrorCode terminate() = 0;
@@ -63,11 +61,11 @@ public:
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state) = 0;
 
 public:
-  inline uint32_t core() const { return _trap.core; }
+  inline uint32_t core() const { return _stopInfo.core; }
 
 protected:
   friend class ProcessBase;
-  virtual void updateState();
+  virtual void updateState() = 0;
 
 protected:
   virtual ErrorCode prepareSoftwareSingleStep(Address const &address);

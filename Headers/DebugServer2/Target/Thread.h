@@ -11,9 +11,11 @@
 #ifndef __DebugServer2_Target_Thread_h
 #define __DebugServer2_Target_Thread_h
 
-#if defined(__linux__)
+#include "DebugServer2/Base.h"
+
+#if defined(OS_LINUX)
 #include "DebugServer2/Target/Linux/Thread.h"
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 #include "DebugServer2/Target/Windows/Thread.h"
 #elif defined(__FreeBSD__)
 #include "DebugServer2/Target/FreeBSD/Thread.h"
@@ -24,9 +26,9 @@
 namespace ds2 {
 namespace Target {
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 using Linux::Thread;
-#elif defined(_WIN32)
+#elif defined(OS_WIN32)
 using Windows::Thread;
 #elif defined(__FreeBSD__)
 using FreeBSD::Thread;

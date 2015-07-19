@@ -10,9 +10,10 @@
 
 #define __DS2_LOG_CLASS_NAME__ "ProcessSpawner"
 
-#if defined(__linux__)
+#if defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #endif
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -315,7 +316,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       startRedirectThread = true;
       if (term[0] == -1) {
         if (!open_terminal(term)) {
-          return kErrorTooManyFiles;
+          return Platform::TranslateError();
         }
       }
       fds[n][RD] = term[RD];
@@ -370,7 +371,9 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       close_terminal(term);
 
       if (!_workingDirectory.empty()) {
-        ::chdir(_workingDirectory.c_str());
+        int res = ::chdir(_workingDirectory.c_str());
+        if (res != 0)
+          return Platform::TranslateError();
       }
 
       std::vector<char *> args;
@@ -389,7 +392,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
         return kErrorUnknown;
 
       if (::execve(_executablePath.c_str(), &args[0], &environment[0]) < 0) {
-        DS2LOG(Main, Error, "cannot spawn executable %s, error=%s",
+        DS2LOG(Error, "cannot spawn executable %s, error=%s",
                _executablePath.c_str(), strerror(errno));
       }
     }
@@ -425,8 +428,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   }
 
   if (startRedirectThread) {
-    _delegateThread =
-        std::move(std::thread(&ProcessSpawner::redirectionThread, this));
+    _delegateThread = std::thread(&ProcessSpawner::redirectionThread, this);
   }
 
   return kSuccess;

@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
+#include "DebugServer2/Host/Platform.h"
 
 #define super ds2::Host::POSIX::PTrace
 
@@ -63,7 +64,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
   //
   user_regs_struct gprs;
   if (wrapPtrace(PTRACE_GETREGS, pid, nullptr, &gprs) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   state.gp.eax = gprs.eax;
   state.gp.ecx = gprs.ecx;
@@ -181,7 +182,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   gprs.orig_eax = state.linux_gp.orig_eax;
 
   if (wrapPtrace(PTRACE_SETREGS, pid, nullptr, &gprs) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   //
   // Write X87 and SSE state

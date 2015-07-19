@@ -13,7 +13,7 @@
 
 #include "DebugServer2/Host/Channel.h"
 
-#if defined(_WIN32)
+#if defined(OS_WIN32)
 #include <winsock2.h>
 #endif
 
@@ -22,9 +22,9 @@ namespace Host {
 
 class Socket : public Channel {
 private:
-#ifdef _WIN32
+#if defined(OS_WIN32)
   typedef int socklen_t;
-#else
+#elif defined(OS_LINUX)
   typedef int SOCKET;
   static SOCKET const INVALID_SOCKET = -1;
 #endif
