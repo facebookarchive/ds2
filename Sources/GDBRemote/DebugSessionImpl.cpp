@@ -180,8 +180,6 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
   bool readRegisters = true;
   StopInfo const &trap = thread->stopInfo();
 
-  fprintf(stderr, "queryStopCode trap.event = %d\n", trap.event);
-
   Architecture::CPUState state;
 
   stop.ptid.pid = thread->process()->pid();

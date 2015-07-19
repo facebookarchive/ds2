@@ -51,7 +51,6 @@ ErrorCode PTrace::attach(ProcessId pid) {
   if (pid <= kAnyProcessId)
     return kErrorProcessNotFound;
 
-  fprintf(stderr, "ptrace::attach(pid=%d) [sender=%d]\n", pid, getpid());
   if (wrapPtrace(PT_ATTACH, pid, nullptr, nullptr) < 0)
     return Platform::TranslateError();
 
@@ -63,15 +62,9 @@ ErrorCode PTrace::detach(ProcessId pid) {
     return kErrorProcessNotFound;
 
   DS2LOG(Debug, "detaching from pid %llu", (unsigned long long)pid);
-  fprintf(stderr, "ptrace::detach(pid=%d) [sender=%d]\n", pid, getpid());
-  if (wrapPtrace(PT_DETACH, pid, nullptr, nullptr) < 0) {
-    fprintf(stderr,
-            "ptrace::detach error=%d!\n",
-            errno);
+  if (wrapPtrace(PT_DETACH, pid, nullptr, nullptr) < 0)
     return Platform::TranslateError();
-  }
 
-  fprintf(stderr, "ptrace::detach success!\n");
   return kSuccess;
 }
 
@@ -182,8 +175,6 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
     pid = ptid.pid;
   }
 
-  fprintf(stderr,"ptrace::suspend(pid=%d)\n", pid);
-
   if (kill(pid, SIGSTOP) < 0)
     return Platform::TranslateError();
 
@@ -203,7 +194,6 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
     pid = ptid.pid;
   }
 
-  fprintf(stderr, "ptrace::step(pid=%d, address=0x%16llx)\n", pid, address.value());
   //
   // Continuation from address?
   //
