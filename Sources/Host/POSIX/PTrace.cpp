@@ -124,6 +124,11 @@ ErrorCode PTrace::TranslateErrno(int error) {
   return ds2::kErrorInvalidArgument;
 }
 
+ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &pid)
+{
+  return kErrorUnsupported;
+}
+
 ErrorCode PTrace::TranslateErrno() { return TranslateErrno(errno); }
 }
 }

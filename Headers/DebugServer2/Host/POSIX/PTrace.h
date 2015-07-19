@@ -68,7 +68,7 @@ public:
 
 public:
   virtual ErrorCode getEventPid(ProcessThreadId const &ptid,
-                                ProcessId &pid) = 0;
+                                ProcessId &pid);
 
 public:
   virtual ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) = 0;
