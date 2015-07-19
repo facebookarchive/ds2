@@ -273,7 +273,6 @@ ErrorCode ELFProcess::updateInfo() {
   //
   if (!_loadBase.valid() || !_entryPoint.valid()) {
     error = updateAuxiliaryVector();
-    fprintf(stderr, "updateAuxiliaryVector error=%d\n", error);
     if (error != kSuccess && error != kErrorAlreadyExist)
       return error;
 
@@ -299,15 +298,12 @@ ErrorCode ELFProcess::updateInfo() {
 
     _entryPoint = getAuxiliaryVectorValue(AT_ENTRY);
 
-    fprintf(stderr, "entry point: %p\n", _entryPoint);
-
     //
     // Query the memory region information to know where
     // is the load base.
     //
     MemoryRegionInfo mri;
     error = getMemoryRegionInfo(_entryPoint, mri);
-    fprintf(stderr, "getMemoryRegionInfo error=%d\n", error);
 
     //
     // Restore the hack.
@@ -318,7 +314,6 @@ ErrorCode ELFProcess::updateInfo() {
     if (error != kSuccess)
       return error;
 
-    fprintf(stderr, "_loadBase = 0x%llx\n", mri.start.value());
     _loadBase = mri.start;
   }
 
@@ -331,7 +326,6 @@ ErrorCode ELFProcess::updateInfo() {
   } eh;
 
   error = readMemory(loadBase(), &eh, sizeof(eh));
-  fprintf(stderr, "readMemory error=%d\n", error);
   if (error != kSuccess)
     return error;
 

@@ -29,7 +29,6 @@ using ds2::Support::ELFSupport;
 bool ProcStat::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
     struct kinfo_proc *kip;
 
-    fprintf(stderr, "ProcStat::GetProcessInfo(pid=%d)\n", pid);
     kip = kinfo_getproc(pid);
     if (kip == nullptr)
         return false;
@@ -50,7 +49,6 @@ bool ProcStat::GetThreadState(pid_t pid, pid_t tid, int &state, int &cpu) {
     struct kinfo_proc *kip;
     unsigned int count, i;
 
-    fprintf(stderr, "ProcStat::GetThreadState(pid=%d, tid=%d)\n", pid, tid);
     pstat = procstat_open_sysctl();
     kip = procstat_getprocs(pstat, KERN_PROC_PID | KERN_PROC_INC_THREAD, pid, &count);
 
@@ -153,7 +151,6 @@ void ProcStat::EnumerateThreads(pid_t pid, std::function<void(pid_t tid)> const 
     struct kinfo_proc *kip;
     unsigned int count, i;
 
-    fprintf(stderr, "ProcStat::EnumerateThreads(pid=%d)\n", pid);
     pstat = procstat_open_sysctl();
     kip = procstat_getprocs(pstat, KERN_PROC_PID | KERN_PROC_INC_THREAD, pid, &count);
 
