@@ -43,7 +43,7 @@ public:
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state);
 
 protected:
-  virtual ErrorCode updateTrapInfo(int waitStatus);
+  virtual ErrorCode updateStopInfo(int waitStatus);
   virtual void updateState();
 
 private:

@@ -37,6 +37,8 @@ typedef SSIZE_T ssize_t;
 #define OS_LINUX
 #elif defined(_WIN32)
 #define OS_WIN32
+#elif defined(__FreeBSD__)
+#define OS_FREEBSD
 #else
 #error "Target not supported."
 #endif

@@ -9,6 +9,7 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/FreeBSD/PTrace.h"
 
 #include <sys/ptrace.h>
@@ -322,7 +323,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
   //
   struct reg gprs;
   if (wrapPtrace(PT_GETREGS, pid, &gprs, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   if (pinfo.pointerSize == sizeof(uint32_t)) {
     state.is32 = true;
@@ -382,7 +383,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   }
 
   if (wrapPtrace(PT_SETREGS, pid, &gprs, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   //
   // Write X87 and SSE state

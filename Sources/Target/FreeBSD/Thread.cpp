@@ -48,7 +48,6 @@ ErrorCode Thread::terminate() {
 }
 
 ErrorCode Thread::suspend() {
-  struct ptrace_lwpinfo lwpinfo;
   ErrorCode error = kSuccess;
   if (_state == kRunning) {
     error =
@@ -60,12 +59,12 @@ ErrorCode Thread::suspend() {
     error = process()->ptrace().wait(ProcessThreadId(process()->pid(), tid()),
                                      true, &status);
     if (error != kSuccess) {
-      DS2LOG(Target, Error, "failed to wait for tid %d, error=%s\n", tid(),
+      DS2LOG(Error, "failed to wait for tid %d, error=%s\n", tid(),
              strerror(errno));
       return error;
     }
 
-    updateTrapInfo(status);
+    updateStopInfo(status);
   }
 
   if (_state == kTerminated) {
@@ -78,7 +77,7 @@ ErrorCode Thread::suspend() {
 ErrorCode Thread::step(int signal, Address const &address) {
   ErrorCode error = kSuccess;
   if (_state == kStopped || _state == kStepped) {
-    DS2LOG(Target, Debug, "stepping tid %d", tid());
+    DS2LOG(Debug, "stepping tid %d", tid());
     if (process()->isSingleStepSupported()) {
       ProcessInfo info;
 
@@ -113,14 +112,14 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   ErrorCode error = kSuccess;
   if (_state == kStopped || _state == kStepped) {
     if (signal == 0) {
-      switch (_trap.signal) {
+      switch (_stopInfo.signal) {
       case SIGCHLD:
       case SIGSTOP:
       case SIGTRAP:
         signal = 0;
         break;
       default:
-        signal = _trap.signal;
+        signal = _stopInfo.signal;
         break;
       }
     }
@@ -135,7 +134,7 @@ ErrorCode Thread::resume(int signal, Address const &address) {
                                        info, signal, address);
     if (error == kSuccess) {
       _state = kRunning;
-      _trap.signal = 0;
+      _stopInfo.signal = 0;
     }
   } else if (_state == kTerminated) {
     error = kErrorProcessNotFound;
@@ -168,39 +167,41 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
       ProcessThreadId(process()->pid(), tid()), info, state);
 }
 
-ErrorCode Thread::updateTrapInfo(int waitStatus) {
+ErrorCode Thread::updateStopInfo(int waitStatus) {
+  super::updateStopInfo(waitStatus);
   struct ptrace_lwpinfo lwpinfo;
+  updateState();
 
-  super::updateTrapInfo(waitStatus);
+  switch (_stopInfo.event) {
+  case StopInfo::kEventNone:
+    DS2BUG("thread stopped for unknown reason, status=%#x", waitStatus);
 
-  if (process()->_ptrace.getLwpInfo(process()->pid(), &lwpinfo) != kSuccess)
+  case StopInfo::kEventExit:
+  case StopInfo::kEventKill:
+    DS2ASSERT(_stopInfo.reason == StopInfo::kReasonNone);
     return kSuccess;
 
-  // Check for syscall entry
-  if (lwpinfo.pl_flags & PL_FLAG_SCE) {
-    Architecture::CPUState state;
-    readCPUState(state);
-    _lastSyscallNumber = state.state64.gp.rax;
-    _trap.event = TrapInfo::kEventNone;
-    _trap.reason = TrapInfo::kReasonNone;
-
-    if (_lastSyscallNumber == SYS_thr_exit) {
-      _trap.event = TrapInfo::kEventNone;
-      _trap.reason = TrapInfo::kReasonThreadExit;
-      return kSuccess;
-    }
-  }
-
-  // Check for syscall exit
-  if (lwpinfo.pl_flags & PL_FLAG_SCX) {
-    if (_lastSyscallNumber == SYS_thr_create ||_lastSyscallNumber == SYS_thr_new) {
-      _trap.event = TrapInfo::kEventNone;
-      _trap.reason = TrapInfo::kReasonThreadNew;
-      return kSuccess;
+  case StopInfo::kEventStop: {
+    siginfo_t si;
+    ErrorCode error = process()->_ptrace.getLwpInfo(process()->pid(), &lwpinfo);
+    if (error != kSuccess) {
+      DS2LOG(Warning, "unable to get siginfo_t for tid %d, error=%s", tid(),
+             strerror(errno));
+      return error;
     }
 
-    _trap.event = TrapInfo::kEventNone;
-    _trap.reason = TrapInfo::kReasonNone;
+    if (si.si_code == SI_USER && lwpinfo.pl_siginfo.si_pid == 0 &&
+        _stopInfo.signal == SIGSTOP) { // (3)
+      _stopInfo.reason = StopInfo::kReasonTrap;
+    } else if (_stopInfo.signal == SIGTRAP) { // (4)
+      _stopInfo.reason = StopInfo::kReasonBreakpoint;
+    } else {
+      // This is not a signal that we originated. We can output a
+      // warning if the signal comes from an external source.
+        DS2LOG(Warning, "tid %d received signal %s from an external source (sender=%d)",
+               tid(), strsignal(_stopInfo.signal), si.si_pid);
+    }
+  } break;
   }
 
   return kSuccess;
@@ -217,7 +218,7 @@ void Thread::updateState(bool force) {
   }
 
   ProcStat::GetThreadState(_process->pid(), tid(), state, cpu);
-  _trap.core = cpu;
+  _stopInfo.core = cpu;
 
   switch (state) {
   case Host::FreeBSD::kProcStateDead:

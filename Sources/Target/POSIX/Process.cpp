@@ -146,16 +146,12 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   if (error != kSuccess)
     goto fail;
 
-  DS2LOG(Target, Error, "initialized");
-
   //
   // Give a chance to the ptracer to set any specific options.
   //
   error = process->ptrace().traceThat(pid);
   if (error != kSuccess)
     goto fail;
-
-  DS2LOG(Target, Error, "traceThat done");
 
   return process;
 

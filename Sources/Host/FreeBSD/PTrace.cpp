@@ -12,6 +12,7 @@
 #define __DS2_LOG_CLASS_NAME__ "PTrace"
 
 #include "DebugServer2/Host/FreeBSD/PTrace.h"
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -34,7 +35,7 @@ PTrace::~PTrace() { doneCPUState(); }
 
 ErrorCode PTrace::traceMe(bool disableASLR) {
   if (wrapPtrace(PT_TRACE_ME, 0, nullptr, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -52,7 +53,7 @@ ErrorCode PTrace::attach(ProcessId pid) {
 
   fprintf(stderr, "ptrace::attach(pid=%d) [sender=%d]\n", pid, getpid());
   if (wrapPtrace(PT_ATTACH, pid, nullptr, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -61,13 +62,13 @@ ErrorCode PTrace::detach(ProcessId pid) {
   if (pid <= kAnyProcessId)
     return kErrorProcessNotFound;
 
-  DS2LOG(Main, Debug, "detaching from pid %llu", (unsigned long long)pid);
+  DS2LOG(Debug, "detaching from pid %llu", (unsigned long long)pid);
   fprintf(stderr, "ptrace::detach(pid=%d) [sender=%d]\n", pid, getpid());
   if (wrapPtrace(PT_DETACH, pid, nullptr, nullptr) < 0) {
     fprintf(stderr,
             "ptrace::detach error=%d!\n",
             errno);
-    return TranslateErrno();
+    return Platform::TranslateError();
   }
 
   fprintf(stderr, "ptrace::detach success!\n");
@@ -90,7 +91,7 @@ ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {
   }
 
   if (rc < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -125,7 +126,7 @@ ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
   desc.piod_len = length;
 
   if (wrapPtrace(PT_IO, pid, &desc, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   if (count != nullptr)
     *count = desc.piod_len;
@@ -162,7 +163,7 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
   desc.piod_len = length;
 
   if (wrapPtrace(PT_IO, pid, &desc, nullptr) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   if (count != nullptr)
     *count = desc.piod_len;
@@ -184,7 +185,7 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   fprintf(stderr,"ptrace::suspend(pid=%d)\n", pid);
 
   if (kill(pid, SIGSTOP) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -220,7 +221,7 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   }
 
   if (wrapPtrace(PT_STEP, pid, nullptr, signal) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -248,7 +249,7 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   }
 
   if (wrapPtrace(PT_SYSCALL, pid, addr, signal) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -266,7 +267,7 @@ ErrorCode PTrace::getLwpInfo(ProcessThreadId const &ptid, struct ptrace_lwpinfo 
   }
 
   if (wrapPtrace(PT_LWPINFO, pid, lwpinfo, sizeof(struct ptrace_lwpinfo)) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   return kSuccess;
 }
@@ -285,7 +286,7 @@ ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   }
 
   if (wrapPtrace(PT_LWPINFO, pid, &lwpinfo, sizeof lwpinfo) < 0)
-    return TranslateErrno();
+    return Platform::TranslateError();
 
   si = lwpinfo.pl_siginfo;
   return kSuccess;
