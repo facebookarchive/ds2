@@ -240,7 +240,6 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
     pid = ptid.pid;
   }
 
-  fprintf(stderr, "ptrace::resume(pid=%d)\n", pid);
   //
   // Continuation from address?
   //
@@ -266,28 +265,10 @@ ErrorCode PTrace::getLwpInfo(ProcessThreadId const &ptid, struct ptrace_lwpinfo 
     pid = ptid.pid;
   }
 
-  if (wrapPtrace(PT_LWPINFO, pid, lwpinfo, sizeof(struct ptrace_lwpinfo)) < 0) {
-    fprintf(stderr, "PT_LWPINFO failed: %d\n", errno);
+  if (wrapPtrace(PT_LWPINFO, pid, lwpinfo, sizeof(struct ptrace_lwpinfo)) < 0)
     return TranslateErrno();
-  }
 
   return kSuccess;
-}
-
-ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &epid) {
-  pid_t pid;
-
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
-
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
-
-  //epid = value;
-  return kErrorInvalidArgument;
 }
 
 ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {

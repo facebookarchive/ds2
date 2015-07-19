@@ -1,5 +1,6 @@
 //
 // Copyright (c) 2014, Facebook, Inc.
+// Copyright (c) 2015, Jakub Klama <jakub@ixsystems.com>
 // All rights reserved.
 //
 // This source code is licensed under the University of Illinois/NCSA Open
@@ -182,7 +183,6 @@ ErrorCode Thread::updateTrapInfo(int waitStatus) {
     _lastSyscallNumber = state.state64.gp.rax;
     _trap.event = TrapInfo::kEventNone;
     _trap.reason = TrapInfo::kReasonNone;
-    fprintf(stderr, "syscall: %d\n", _lastSyscallNumber);
 
     if (_lastSyscallNumber == SYS_thr_exit) {
       _trap.event = TrapInfo::kEventNone;
