@@ -30,7 +30,7 @@ public:
 public:
   virtual ErrorCode getSharedLibraryInfoAddress(Address &address);
   virtual ErrorCode enumerateSharedLibraries(
-      std::function<void(SharedLibrary const &)> const &cb);
+      std::function<void(SharedLibraryInfo const &)> const &cb);
 
 public:
   virtual ErrorCode enumerateAuxiliaryVector(std::function<

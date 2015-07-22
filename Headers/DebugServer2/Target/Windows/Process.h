@@ -95,7 +95,7 @@ public:
     return kErrorUnsupported;
   }
   virtual ErrorCode enumerateSharedLibraries(
-      std::function<void(SharedLibrary const &)> const &cb);
+      std::function<void(SharedLibraryInfo const &)> const &cb);
 
 public:
   virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const;

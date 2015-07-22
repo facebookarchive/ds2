@@ -297,6 +297,17 @@ struct MemoryRegionInfo {
     protection = 0;
   }
 };
+
+struct SharedLibraryInfo {
+  bool main;
+  std::string path;
+  struct {
+    uint64_t mapAddress;
+    uint64_t baseAddress;
+    uint64_t ldAddress;
+  } svr4;
+  std::vector<uint64_t> sections;
+};
 }
 
 #endif // !__DebugServer2_Types_h

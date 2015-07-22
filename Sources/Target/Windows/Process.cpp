@@ -271,7 +271,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
 }
 
 ErrorCode Process::enumerateSharedLibraries(
-    std::function<void(SharedLibrary const &)> const &cb) {
+    std::function<void(SharedLibraryInfo const &)> const &cb) {
   BOOL rc;
   std::vector<HMODULE> modules;
   DWORD bytesNeeded;
@@ -289,7 +289,7 @@ ErrorCode Process::enumerateSharedLibraries(
     return Platform::TranslateError();
 
   for (auto m : modules) {
-    SharedLibrary sl;
+    SharedLibraryInfo sl;
 
     sl.main = false;
 
