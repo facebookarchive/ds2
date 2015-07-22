@@ -194,6 +194,12 @@ DummySessionDelegateImpl::onQuerySharedLibrariesInfoAddress(Session &,
   return kErrorUnsupported;
 }
 
+ErrorCode DummySessionDelegateImpl::onQuerySharedLibraryInfo(
+    Session &session, std::string const &path, std::string const &triple,
+    SharedLibraryInfo &info) {
+  return kErrorUnsupported;
+}
+
 ErrorCode DummySessionDelegateImpl::onRestart(Session &, ProcessId) {
   return kErrorUnsupported;
 }

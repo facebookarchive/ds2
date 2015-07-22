@@ -113,6 +113,7 @@ Session::Session(CompatibilityMode mode) : _compatMode(mode) {
   REGISTER_HANDLER_EQUALS_1(qLaunchGDBServer);
   REGISTER_HANDLER_EQUALS_1(qLaunchSuccess);
   REGISTER_HANDLER_EQUALS_1(qMemoryRegionInfo);
+  REGISTER_HANDLER_EQUALS_1(qModuleInfo);
   REGISTER_HANDLER_EQUALS_1(qOffsets);
   REGISTER_HANDLER_EQUALS_1(qP);
   REGISTER_HANDLER_EQUALS_1(qPlatform_IO_MkDir);
@@ -1815,6 +1816,30 @@ void Session::Handle_qMemoryRegionInfo(ProtocolInterpreter::Handler const &,
   }
 
   send(info.encode());
+}
+
+//
+// Packet:        qModuleInfo:<module_path>;<arch triple>
+// Description:   Get information for a module by given module path and
+//                architecture.
+// Compatibility: LLDB
+//
+void Session::Handle_qModuleInfo(ProtocolInterpreter::Handler const &,
+                                 std::string const &args) {
+  size_t semicolon = args.find(';');
+  std::string path(HexToString(args.substr(0, semicolon)));
+  std::string triple(HexToString(args.substr(semicolon + 1)));
+  SharedLibraryInfo info;
+
+  ErrorCode error =
+      _delegate->onQuerySharedLibraryInfo(*this, path, triple, info);
+  if (error != kSuccess) {
+    sendError(error);
+    return;
+  }
+
+  // FIXME: send the actual response.
+  sendOK();
 }
 
 //

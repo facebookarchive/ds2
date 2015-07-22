@@ -139,6 +139,8 @@ private:
                              std::string const &);
   void Handle_qMemoryRegionInfo(ProtocolInterpreter::Handler const &,
                                 std::string const &);
+  void Handle_qModuleInfo(ProtocolInterpreter::Handler const &,
+                          std::string const &);
   void Handle_qOffsets(ProtocolInterpreter::Handler const &,
                        std::string const &);
   void Handle_qP(ProtocolInterpreter::Handler const &, std::string const &);
