@@ -81,6 +81,8 @@ bool ProcStat::GetProcessMap(pid_t pid, std::vector<ds2::MemoryRegionInfo> &entr
 
     pstat = procstat_open_sysctl();
     kip = kinfo_getproc(pid);
+    if (kip == nullptr)
+        return false;
     vmp = procstat_getvmmap(pstat, kip, &count);
 
     for (i = 0; i < count; i++) {
@@ -115,6 +117,8 @@ bool ProcStat::EnumerateAuxiliaryVector(pid_t pid, std::function<void(
 
     pstat = procstat_open_sysctl();
     kip = kinfo_getproc(pid);
+    if (kip == nullptr)
+        return false;
     auxvp = procstat_getauxv(pstat, kip, &count);
 
     for (i = 0; i < count; i++) {
