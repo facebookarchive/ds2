@@ -37,18 +37,6 @@ protected:
   ThreadBase::IdentityMap _threads;
   Thread *_currentThread;
 
-public:
-  struct SharedLibrary {
-    bool main;
-    std::string path;
-    struct {
-      uint64_t mapAddress;
-      uint64_t baseAddress;
-      uint64_t ldAddress;
-    } svr4;
-    std::vector<uint64_t> sections;
-  };
-
 protected:
   ProcessBase();
 

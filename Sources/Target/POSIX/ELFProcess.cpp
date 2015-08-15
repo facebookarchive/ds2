@@ -163,9 +163,9 @@ inline ErrorCode ReadELFLinkMap(ELFProcess *process, Address address,
 }
 
 template <typename T>
-ErrorCode EnumerateLinkMap(
-    ELFProcess *process, Address addressToDPtr,
-    std::function<void(ELFProcess::SharedLibrary const &)> const &cb) {
+ErrorCode
+EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
+                 std::function<void(SharedLibraryInfo const &)> const &cb) {
   ELFDebug<T> debug;
   ELFLinkMap<T> linkMap;
   T address;
@@ -194,7 +194,7 @@ ErrorCode EnumerateLinkMap(
     if (error != ds2::kSuccess)
       return error;
 
-    ELFProcess::SharedLibrary shlib;
+    SharedLibraryInfo shlib;
     shlib.main = isMain;
     shlib.sections.clear();
     shlib.svr4.mapAddress = linkMapAddress;
@@ -488,7 +488,7 @@ ErrorCode ELFProcess::getSharedLibraryInfoAddress(Address &address) {
 // Enumerates the linkmap of this SVR4 ELF process.
 //
 ErrorCode ELFProcess::enumerateSharedLibraries(
-    std::function<void(SharedLibrary const &)> const &cb) {
+    std::function<void(SharedLibraryInfo const &)> const &cb) {
   Address address;
   ErrorCode error = getSharedLibraryInfoAddress(address);
   if (error != kSuccess)

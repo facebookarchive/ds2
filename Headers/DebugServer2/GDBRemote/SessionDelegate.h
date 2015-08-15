@@ -93,6 +93,10 @@ protected: // Debugging Session
                                           Address &data, bool &isSegment) = 0;
   virtual ErrorCode onQuerySharedLibrariesInfoAddress(Session &session,
                                                       Address &address) = 0;
+  virtual ErrorCode onQuerySharedLibraryInfo(Session &session,
+                                             std::string const &path,
+                                             std::string const &triple,
+                                             SharedLibraryInfo &info) = 0;
 
   virtual ErrorCode onRestart(Session &session, ProcessId pid) = 0;
   virtual ErrorCode onInterrupt(Session &session) = 0;

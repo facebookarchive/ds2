@@ -167,6 +167,13 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
 ErrorCode Thread::updateStopInfo(int waitStatus) {
   super::updateStopInfo(waitStatus);
 
+  // First check to make sure the thread has not exited yet.
+  // If exited, return success early rather than updating the thread state.
+  if (_stopInfo.event == StopInfo::kEventExit) {
+    DS2ASSERT(_stopInfo.reason == StopInfo::kReasonNone);
+    return kSuccess;
+  }
+
   updateState();
 
   switch (_stopInfo.event) {

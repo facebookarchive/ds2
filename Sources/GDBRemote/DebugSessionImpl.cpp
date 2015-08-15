@@ -497,18 +497,17 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
 
     ss << "<library-list>" << std::endl;
 
-    _process->enumerateSharedLibraries(
-        [&](Target::Process::SharedLibrary const &library) {
-          // Ignore the main module and move on to the next one.
-          if (library.main)
-            return;
+    _process->enumerateSharedLibraries([&](SharedLibraryInfo const &library) {
+      // Ignore the main module and move on to the next one.
+      if (library.main)
+        return;
 
-          ss << "  <library name=\"" << library.path << "\">" << std::endl;
-          for (auto section : library.sections)
-            ss << "    <section address=\"0x" << std::hex << section << "\" />"
-               << std::endl;
-          ss << "  </library>" << std::endl;
-        });
+      ss << "  <library name=\"" << library.path << "\">" << std::endl;
+      for (auto section : library.sections)
+        ss << "    <section address=\"0x" << std::hex << section << "\" />"
+           << std::endl;
+      ss << "  </library>" << std::endl;
+    });
 
     ss << "</library-list>";
     buffer = ss.str().substr(offset);
@@ -524,22 +523,21 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
     Address mainMapAddress;
 
     if (_process->isELFProcess()) {
-      _process->enumerateSharedLibraries(
-          [&](Target::Process::SharedLibrary const &library) {
-            if (library.main) {
-              mainMapAddress = library.svr4.mapAddress;
-            } else {
-              sslibs << "<library "
-                     << "name=\"" << library.path << "\" "
-                     << "lm=\""
-                     << "0x" << std::hex << library.svr4.mapAddress << "\" "
-                     << "l_addr=\""
-                     << "0x" << std::hex << library.svr4.baseAddress << "\" "
-                     << "l_ld=\""
-                     << "0x" << std::hex << library.svr4.ldAddress << "\" "
-                     << "/>" << std::endl;
-            }
-          });
+      _process->enumerateSharedLibraries([&](SharedLibraryInfo const &library) {
+        if (library.main) {
+          mainMapAddress = library.svr4.mapAddress;
+        } else {
+          sslibs << "<library "
+                 << "name=\"" << library.path << "\" "
+                 << "lm=\""
+                 << "0x" << std::hex << library.svr4.mapAddress << "\" "
+                 << "l_addr=\""
+                 << "0x" << std::hex << library.svr4.baseAddress << "\" "
+                 << "l_ld=\""
+                 << "0x" << std::hex << library.svr4.ldAddress << "\" "
+                 << "/>" << std::endl;
+        }
+      });
 
       ss << "<library-list-svr4 version=\"1.0\"";
       if (mainMapAddress.valid()) {
