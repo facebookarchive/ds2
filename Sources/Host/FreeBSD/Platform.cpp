@@ -43,15 +43,7 @@ char const *Platform::GetOSVersion() {
 }
 
 char const *Platform::GetOSBuild() {
-  static char sBuild[32] = {'\0'};
-  if (sBuild[0] == '\0') {
-    char const *version = GetCachedUTSName()->version;
-    //
-    // Linux version is returned as #BUILDNO ...
-    //
-
-  }
-  return sBuild;
+  return GetCachedUTSName()->version;
 }
 
 bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
