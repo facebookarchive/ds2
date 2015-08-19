@@ -291,7 +291,7 @@ ErrorCode Process::enumerateSharedLibraries(
   for (auto m : modules) {
     SharedLibraryInfo sl;
 
-    sl.main = false;
+    sl.main = (m == modules[0]);
 
     WCHAR nameStr[MAX_PATH];
     DWORD nameSize;
