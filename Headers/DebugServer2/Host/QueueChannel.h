@@ -15,6 +15,8 @@
 #include "DebugServer2/MessageQueue.h"
 #include "DebugServer2/Types.h"
 
+#include <string>
+
 namespace ds2 {
 namespace Host {
 
