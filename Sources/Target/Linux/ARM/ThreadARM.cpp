@@ -85,8 +85,8 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
   link = (info.type == ds2::Architecture::ARM::kBranchTypeBL_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_i ||
           info.type == ds2::Architecture::ARM::kBranchTypeBLX_r);
-
   DS2LOG(Debug, "link=%d", link);
+
   //
   // If it's a conditional branch, we need to move
   // the nextPC by the size of this instruction.
@@ -310,6 +310,7 @@ PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
   //
   case ds2::Architecture::ARM::kBranchTypeBLX_i:
     branchPC = pc + info.disp;
+    branchPCSize = 2;
     break;
 
   //
@@ -327,11 +328,9 @@ PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
   // We can switch to Thumb with an LDR pc. If that's the case, adjust the
   // target and size.
   //
-  if (branchPC & 1) {
+  if (branchPCSize == 0) {
+    branchPCSize = (branchPC & 1) ? 2 : 4;
     branchPC &= ~1ULL;
-    branchPCSize = 2;
-  } else {
-    branchPCSize = 4;
   }
 
   return ds2::kSuccess;
