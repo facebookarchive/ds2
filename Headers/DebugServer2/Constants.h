@@ -54,11 +54,11 @@ enum Endian {
   kEndianBig = 1,
   kEndianLittle = 2,
   kEndianPDP = 3,
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#if defined(ENDIAN_BIG)
   kEndianNative = kEndianBig,
-#elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#elif defined(ENDIAN_LITTLE)
   kEndianNative = kEndianLittle,
-#elif __BYTE_ORDER__ == __ORDER_PDP_ENDIAN__
+#elif defined(ENDIAN_MIDDLE)
   kEndianNative = kEndianPDP,
 #else
   kEndianNative = kEndianUnknown,

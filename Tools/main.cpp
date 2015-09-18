@@ -455,7 +455,7 @@ static void GenerateProlog1(FILE *fp, Context const &ctx) {
   fprintf(fp, "using ds2::Architecture::GDBFeatureEntry;\n");
   fprintf(fp, "using ds2::Architecture::LLDBRegisterSet;\n\n");
 
-  fprintf(fp, "#if defined(__BIG_ENDIAN__)\n");
+  fprintf(fp, "#if defined(ENDIAN_BIG)\n");
   fprintf(fp, "#define REG_REL_OFFSET(MAXBYTES, RELOFF, REGSIZE) ((MAXBYTES) - "
               "((RELOFF) + (REGSIZE))\n");
   fprintf(fp, "#else\n");

@@ -238,7 +238,7 @@ std::string StopCode::encodeRegisters() const {
     size_t regsize = regval.second.size << 3;
 
     ss << HEX(2) << (regval.first & 0xff) << ':' << HEX(regsize >> 2)
-#if defined(__BIG_ENDIAN__)
+#if defined(ENDIAN_BIG)
        << regval.second.value
 #else
        << (Swap64(regval.second.value) >> (64 - regsize))

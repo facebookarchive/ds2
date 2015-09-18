@@ -22,14 +22,14 @@ using ds2::Architecture::GDBFeature;
 using ds2::Architecture::GDBFeatureEntry;
 using ds2::Architecture::LLDBRegisterSet;
 
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-#define REG_REL_OFFSET(MAXBYTES, RELOFF, REGSIZE)                              \
-  ((MAXBYTES) - ((RELOFF) + (REGSIZE)))
+#if defined(ENDIAN_BIG)
+#define REG_REL_OFFSET(MAXBYTES, RELOFF, REGSIZE) ((MAXBYTES) - ((RELOFF) + (REGSIZE))
 #else
 #define REG_REL_OFFSET(MAXBYTES, RELOFF, REGSIZE) (RELOFF)
 #endif
 
 namespace {
+
 //
 // Register Definitions (Forward Declarations)
 //

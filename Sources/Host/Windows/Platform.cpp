@@ -63,11 +63,11 @@ ds2::CPUSubType Platform::GetCPUSubType() {
 }
 
 ds2::Endian Platform::GetEndian() {
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#if defined(ENDIAN_LITTLE)
   return kEndianLittle;
-#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#elif defined(ENDIAN_BIG)
   return kEndianBig;
-#elif __BYTE_ORDER__ == __ORDER_PDP_ENDIAN__
+#elif defined(ENDIAN_MIDDLE)
   return kEndianPDP;
 #else
   return kEndianUnknown;
