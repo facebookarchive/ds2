@@ -223,3 +223,7 @@ endif ()
 
 include(FindThreads)
 target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
+
+if (DS2_ENABLE_REGSGEN2)
+  add_subdirectory(Tools/RegsGen2)
+endif ()
