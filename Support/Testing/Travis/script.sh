@@ -22,6 +22,9 @@ mkdir build && cd build
 
 cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake"
                -DCMAKE_BUILD_TYPE="${BUILD_TYPE}")
+if [[ "${REGSGEN-}" = "1" ]]; then
+  cmake_options+=(-DDS2_ENABLE_REGSGEN2="1")
+fi
 
 cmake "${cmake_options[@]}" ..
 make

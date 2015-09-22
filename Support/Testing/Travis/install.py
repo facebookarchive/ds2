@@ -32,6 +32,10 @@ if os.getenv('LLGS_TESTS') == '1':
     packages.append('swig')
     packages.append('lldb-3.3')
 
+if os.getenv('REGSGEN') == '1':
+    packages.append('flex')
+    packages.append('bison')
+
 check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
 
 android_toolchains = { 'Android-ARM':       'arm',
