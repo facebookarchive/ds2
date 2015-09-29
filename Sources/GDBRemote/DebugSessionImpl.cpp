@@ -190,6 +190,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
   case StopInfo::kEventNone:
     stop.event = StopCode::kSignal;
     stop.reason = StopInfo::kReasonNone;
+    break;
 
   case StopInfo::kEventStop:
     stop.event = StopCode::kSignal;
