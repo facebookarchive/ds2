@@ -71,7 +71,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonBreakpoint;
-    DS2LOG(Debug, "exception from inferior, code=%#08X, address=%#" PRIxPTR,
+    DS2LOG(Debug, "exception from inferior, code=%#08x, address=%#" PRIxPTR,
            de.u.Exception.ExceptionRecord.ExceptionCode,
            de.u.Exception.ExceptionRecord.ExceptionAddress);
     break;
