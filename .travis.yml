@@ -11,24 +11,17 @@
 language: cpp
 
 env:
-  - BUILD_TYPE="Debug"    TARGET="Linux-X86_64"   REGSGEN="1"
-  - BUILD_TYPE="Style"
-  - BUILD_TYPE="Debug"    TARGET="Android-ARM"
-  - BUILD_TYPE="Debug"    TARGET="Android-ARM64"
-  - BUILD_TYPE="Debug"    TARGET="Android-X86"
-  - BUILD_TYPE="Debug"    TARGET="Android-X86_64"
-  - BUILD_TYPE="Debug"    TARGET="Linux-ARM"
-  - BUILD_TYPE="Debug"    TARGET="Linux-X86"
-  - BUILD_TYPE="Debug"    TARGET="Linux-X86_64"
-  - BUILD_TYPE="Debug"    TARGET="Linux-X86_64"   LLGS_TESTS="1"
-  - BUILD_TYPE="Release"  TARGET="Android-ARM"
-  - BUILD_TYPE="Release"  TARGET="Android-ARM64"
-  - BUILD_TYPE="Release"  TARGET="Android-X86"
-  - BUILD_TYPE="Release"  TARGET="Android-X86_64"
-  - BUILD_TYPE="Release"  TARGET="Linux-ARM"
-  - BUILD_TYPE="Release"  TARGET="Linux-X86"
-  - BUILD_TYPE="Release"  TARGET="Linux-X86_64"
-  - BUILD_TYPE="Release"  TARGET="Linux-X86_64"   LLGS_TESTS="1"
+  - TARGET="Style"
+  - TARGET="Android-ARM"
+  - TARGET="Android-ARM64"
+  - TARGET="Android-X86"
+  - TARGET="Android-X86_64"
+  - TARGET="Linux-ARM"
+  - TARGET="Linux-X86"
+  - TARGET="Linux-X86_64"
+  - TARGET="Linux-X86_64"   REGSGEN="1"
+  - TARGET="Linux-X86_64"   LLGS_TESTS="1"
+  - TARGET="Linux-X86_64"   LLGS_TESTS="1"  RELEASE="1"
 
 matrix:
   fast_finish: true

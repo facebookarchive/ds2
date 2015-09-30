@@ -12,18 +12,16 @@
 import os
 from subprocess import check_call
 
-build_type = os.getenv('BUILD_TYPE')
-target = os.getenv('TARGET')
-
 repositories = ['ppa:andykimpe/cmake']
 keys = []
 
-if build_type == 'Style':
+target = os.getenv('TARGET')
+
+if target == 'Style':
     repositories.append('ppa:ubuntu-toolchain-r/test')
     repositories.append('deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main')
     keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
-
-if target == 'Linux-ARM':
+elif target == 'Linux-ARM':
     repositories.append('ppa:linaro-maintainers/toolchain')
 elif target in [ 'Linux-X86', 'Linux-X86_64' ]:
     repositories.append('ppa:ubuntu-toolchain-r/test')
