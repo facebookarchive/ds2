@@ -58,27 +58,27 @@ aosp_prebuilt_clone "ndk" "${aosp_ndk_path}"
 case "$1" in
   "aarch64")
     # For aarch64, the sysroot is in `arch-arm64`, not `arch-aarch64`.
-    clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-arm64" "${toolchain_path}/sysroot"
+    clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-arm64" "${toolchain_path}/sysroot"
     ;;
   "arm")
-    clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
+    clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
     ;;
   "x86")
     # For x86_64, libraries are in `usr/lib64/`; we need to copy 32-bit versions of these libraries to `usr/lib/`.
-    clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
-    clobber_dir "${aosp_ndk_path}/9/platforms/${aosp_platform}/arch-x86/usr/lib" "${toolchain_path}/sysroot/usr/lib"
+    clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
+    clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-x86/usr/lib" "${toolchain_path}/sysroot/usr/lib"
     ;;
 esac
 
 # Copy C++ stuff
-clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/include" "${toolchain_path}/include/c++/${toolchain_version}"
+clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/include" "${toolchain_path}/include/c++/${toolchain_version}"
 copy_cpp_binaries() {
-  clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/libgnustl_static.a" "${toolchain_path}/${toolchain_triple}/$2/libstdc++.a"
-  clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/libgnustl_shared.so" "${toolchain_path}/${toolchain_triple}/$2/libgnustl_shared.so"
-  clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/libsupc++.a" "${toolchain_path}/${toolchain_triple}/$2/libsupc++.a"
+  clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/libgnustl_static.a" "${toolchain_path}/${toolchain_triple}/$2/libstdc++.a"
+  clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/libgnustl_shared.so" "${toolchain_path}/${toolchain_triple}/$2/libgnustl_shared.so"
+  clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/libsupc++.a" "${toolchain_path}/${toolchain_triple}/$2/libsupc++.a"
 }
 copy_cpp_bits() {
-  clobber_dir "${aosp_ndk_path}/9/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/include/bits" "${toolchain_path}/include/c++/${toolchain_version}/${toolchain_triple}/$2"
+  clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/include/bits" "${toolchain_path}/include/c++/${toolchain_version}/${toolchain_triple}/$2"
 }
 case "$1" in
   "aarch64")
