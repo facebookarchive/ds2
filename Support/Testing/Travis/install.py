@@ -28,7 +28,10 @@ target = os.getenv('TARGET')
 if target == 'Style':
     packages.append('clang-format-3.6')
 elif target in linux_packages:
+    # Install gcc even when using clang, so we can run llgs tests.
     packages.append(linux_packages[target])
+    if os.getenv('CLANG') == '1':
+        packages.append('clang-3.6')
 elif target in android_toolchains:
     # Android builds get the toolchain from AOSP.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)

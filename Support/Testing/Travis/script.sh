@@ -20,7 +20,11 @@ fi
 
 mkdir build && cd build
 
-cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake")
+if [[ "${CLANG-}" = "1" ]]; then
+  cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}-Clang.cmake")
+else
+  cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake")
+fi
 
 if [[ "${REGSGEN-}" = "1" ]]; then
   cmake_options+=(-DDS2_ENABLE_REGSGEN2="1")
