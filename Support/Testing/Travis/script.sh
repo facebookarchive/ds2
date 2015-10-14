@@ -21,7 +21,7 @@ cd "$OLDPWD"
 
 cd "$(git rev-parse --show-toplevel)"
 
-cformat="clang-format-3.6"
+cformat="clang-format-3.7"
 
 check_dirty() {
   dirty=($(git status -s | awk '{ print $2 }'))
