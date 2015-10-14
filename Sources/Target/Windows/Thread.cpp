@@ -29,6 +29,8 @@ Thread::Thread(Process *process, ThreadId tid, HANDLE handle)
   // Initially the thread is stopped.
   //
   _state = kStopped;
+  _stopInfo.event = StopInfo::kEventStop;
+  _stopInfo.reason = StopInfo::kReasonTrap;
 }
 
 Thread::~Thread() { CloseHandle(_handle); }
@@ -69,6 +71,8 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   switch (de.dwDebugEventCode) {
   case EXCEPTION_DEBUG_EVENT:
     _state = kStopped;
+    // We always specify kReasonBreakpoint here, but we should instead analyze
+    // what the ExceptionCode is, and set the stop reason accordingly.
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonBreakpoint;
     DS2LOG(Debug, "exception from inferior, code=%#08x, address=%#" PRIxPTR,
@@ -125,20 +129,20 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       CloseHandle(de.u.LoadDll.hFile);
 
     _state = kStopped;
-    _stopInfo.event = StopInfo::kEventNone;
+    _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonLibraryLoad;
   } break;
 
   case UNLOAD_DLL_DEBUG_EVENT:
     DS2LOG(Debug, "DLL unloaded, base=%#" PRIxPTR, de.u.UnloadDll.lpBaseOfDll);
     _state = kStopped;
-    _stopInfo.event = StopInfo::kEventNone;
+    _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonLibraryUnload;
     break;
 
   case OUTPUT_DEBUG_STRING_EVENT:
     _state = kStopped;
-    _stopInfo.event = StopInfo::kEventNone;
+    _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonNone;
     break;
 

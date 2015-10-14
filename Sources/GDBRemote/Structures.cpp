@@ -270,15 +270,22 @@ std::string StopCode::encode(CompatibilityMode mode) const {
 
   switch (event) {
   case kSignal:
-    ss << ((mode != kCompatibilityModeGDB) ? 'T' : 'S') << HEX(2)
+    ss << ((mode != kCompatibilityModeGDB) ? 'T' : 'S') << HEX(2);
 #if !defined(OS_WIN32)
-       << ((reason != StopInfo::kReasonNone) ? (signal & 0xff) : 0)
+    ss << ((reason != StopInfo::kReasonNone) ? (signal & 0xff) : 0);
 #else
-       // Windows doesn't have a notion of signals but the GDB protocol still
-       // needs some sort of emulation for these.
-       << (reason != StopInfo::kReasonNone ? 5 : 0)
+    // Windows doesn't have a notion of signals but the GDB protocol still
+    // needs some sort of emulation for these.
+    switch (reason) {
+    case StopInfo::kReasonNone:
+    case StopInfo::kReasonLibraryLoad:
+    case StopInfo::kReasonLibraryUnload:
+      ss << 0;
+    default:
+      ss << 5;
+    }
 #endif
-       << DEC;
+    ss << DEC;
     break;
 
 #if !defined(OS_WIN32)
