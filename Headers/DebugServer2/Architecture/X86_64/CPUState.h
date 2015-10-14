@@ -48,38 +48,31 @@ struct CPUState64 {
       uint64_t rip;
       struct {
         uint32_t cs;
-      uint32_t:
-        32;
+        uint32_t : 32;
       };
       struct {
         uint32_t ss;
-      uint32_t:
-        32;
+        uint32_t : 32;
       };
       struct {
         uint32_t ds;
-      uint32_t:
-        32;
+        uint32_t : 32;
       };
       struct {
         uint32_t es;
-      uint32_t:
-        32;
+        uint32_t : 32;
       };
       struct {
         uint32_t fs;
-      uint32_t:
-        32;
+        uint32_t : 32;
       };
       struct {
         uint32_t gs;
-      uint32_t:
-        32;
+        uint32_t : 32;
       };
       struct {
         uint32_t eflags;
-      uint32_t:
-        32;
+        uint32_t : 32;
       };
     };
   } gp;

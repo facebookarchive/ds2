@@ -33,8 +33,9 @@ public:
       std::function<void(SharedLibraryInfo const &)> const &cb);
 
 public:
-  virtual ErrorCode enumerateAuxiliaryVector(std::function<
-      void(Support::ELFSupport::AuxiliaryVectorEntry const &)> const &cb);
+  virtual ErrorCode enumerateAuxiliaryVector(
+      std::function<
+          void(Support::ELFSupport::AuxiliaryVectorEntry const &)> const &cb);
 
 public:
   virtual bool isELFProcess() const;

@@ -118,13 +118,11 @@ struct BranchInfo {
     struct {
       uint32_t it : 1;
       uint32_t itCount : 3;
-    uint32_t:
-      28;
+      uint32_t : 28;
     } /*thumb*/;
     struct {
       uint32_t subt : 1;
-    uint32_t:
-      31;
+      uint32_t : 31;
     } /*arm*/;
   };
   BranchType type;

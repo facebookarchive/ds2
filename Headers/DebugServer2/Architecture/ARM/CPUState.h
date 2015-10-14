@@ -21,13 +21,11 @@ namespace ARM {
 
 struct VFPSingle {
 #ifdef ENDIAN_BIG
-uint32_t:
-  32;
+  uint32_t : 32;
   uint32_t value;
 #else
   uint32_t value;
-uint32_t:
-  32;
+  uint32_t : 32;
 #endif
 };
 

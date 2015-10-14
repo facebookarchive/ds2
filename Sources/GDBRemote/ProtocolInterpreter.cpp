@@ -206,8 +206,9 @@ bool ProtocolInterpreter::registerHandler(Handler const &handler) {
 
   // We need to sort the handlers vector.
   std::sort(_handlers.begin(), _handlers.end(),
-            [](Handler const &a, Handler const &b)
-                -> bool { return (a.command < b.command); });
+            [](Handler const &a, Handler const &b) -> bool {
+              return (a.command < b.command);
+            });
 
   return true;
 }
@@ -215,10 +216,11 @@ bool ProtocolInterpreter::registerHandler(Handler const &handler) {
 ProtocolInterpreter::Handler const *
 ProtocolInterpreter::findHandler(std::string const &command,
                                  size_t &commandLength) const {
-  auto it =
-      std::lower_bound(_handlers.begin(), _handlers.end(), command,
-                       [](Handler const &handler, std::string const &command)
-                           -> bool { return handler.compare(command) < 0; });
+  auto it = std::lower_bound(
+      _handlers.begin(), _handlers.end(), command,
+      [](Handler const &handler, std::string const &command) -> bool {
+        return handler.compare(command) < 0;
+      });
 
   Handler const *handler = nullptr;
   if (it != _handlers.end() && it->compare(command) == 0) {

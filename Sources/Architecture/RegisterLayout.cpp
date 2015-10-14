@@ -251,8 +251,9 @@ void GDBXMLGenerator::generateVector(std::ostringstream &s,
   s << '\t' << "<vector id=" << Quote(def->Name) << ' ';
   s << "type=" << Quote(GetVectorType(def->Encoding, def->ElementBitSize))
     << ' ';
-  s << "count=" << Quote(GetVectorCount(def->Encoding, def->BitSize,
-                                        def->ElementBitSize)) << ' ';
+  s << "count="
+    << Quote(GetVectorCount(def->Encoding, def->BitSize, def->ElementBitSize))
+    << ' ';
   s << "/>" << std::endl;
 }
 
@@ -264,8 +265,8 @@ void GDBXMLGenerator::generateUnion(std::ostringstream &s,
     s << "\t\t"
       << "<field name=" << Quote(fld.Name) << ' ' << "type="
       << Quote(GetType(fld.Encoding,
-                       fld.Def != nullptr ? fld.Def->Name : nullptr, 0)) << ' '
-      << "/>" << std::endl;
+                       fld.Def != nullptr ? fld.Def->Name : nullptr, 0))
+      << ' ' << "/>" << std::endl;
   }
   s << '\t' << "</union>" << std::endl;
 }
@@ -294,7 +295,8 @@ void GDBXMLGenerator::generateRegister(std::ostringstream &s,
   }
   if (def->GDBEncoding.Encoding != ds2::Architecture::kGDBEncodingUnknown) {
     s << "type=" << Quote(GetType(def->GDBEncoding.Encoding,
-                                  def->GDBEncoding.Name, def->BitSize)) << ' ';
+                                  def->GDBEncoding.Name, def->BitSize))
+      << ' ';
   }
   if ((def->Flags & ds2::Architecture::kRegisterDefNoGDBRegisterNumber) == 0 &&
       !(def->GDBRegisterNumber < 0)) {

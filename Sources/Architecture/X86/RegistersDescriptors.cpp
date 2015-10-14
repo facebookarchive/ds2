@@ -368,43 +368,21 @@ RegisterDef const *const reg_cnt_defs_xmm7[] = {&reg_def_ymm7, nullptr};
 //
 
 // Flag Set (eflags)
-FlagDef const flag_defs_eflags[] = {{"CF", 0, 1},
-                                    {"", 1, 1},
-                                    {"PF", 2, 1},
-                                    {"AF", 4, 1},
-                                    {"ZF", 6, 1},
-                                    {"SF", 7, 1},
-                                    {"TF", 8, 1},
-                                    {"IF", 9, 1},
-                                    {"DF", 10, 1},
-                                    {"OF", 11, 1},
-                                    {"NT", 14, 1},
-                                    {"RF", 16, 1},
-                                    {"VM", 17, 1},
-                                    {"AC", 18, 1},
-                                    {"VIF", 19, 1},
-                                    {"VIP", 20, 1},
-                                    {"ID", 21, 1},
-                                    {nullptr, 0, 0}};
+FlagDef const flag_defs_eflags[] = {
+    {"CF", 0, 1},  {"", 1, 1},     {"PF", 2, 1},   {"AF", 4, 1},
+    {"ZF", 6, 1},  {"SF", 7, 1},   {"TF", 8, 1},   {"IF", 9, 1},
+    {"DF", 10, 1}, {"OF", 11, 1},  {"NT", 14, 1},  {"RF", 16, 1},
+    {"VM", 17, 1}, {"AC", 18, 1},  {"VIF", 19, 1}, {"VIP", 20, 1},
+    {"ID", 21, 1}, {nullptr, 0, 0}};
 
 FlagSet const flag_set_eflags = {"i386_eflags", 32, 17, flag_defs_eflags};
 
 // Flag Set (mxcsr)
-FlagDef const flag_defs_mxcsr[] = {{"IE", 0, 1},
-                                   {"DE", 1, 1},
-                                   {"ZE", 2, 1},
-                                   {"OE", 3, 1},
-                                   {"UE", 4, 1},
-                                   {"PE", 5, 1},
-                                   {"DAZ", 6, 1},
-                                   {"IM", 7, 1},
-                                   {"DM", 8, 1},
-                                   {"ZM", 9, 1},
-                                   {"OM", 10, 1},
-                                   {"UM", 11, 1},
-                                   {"PM", 12, 1},
-                                   {"FZ", 15, 1},
-                                   {nullptr, 0, 0}};
+FlagDef const flag_defs_mxcsr[] = {
+    {"IE", 0, 1},  {"DE", 1, 1},  {"ZE", 2, 1},   {"OE", 3, 1},
+    {"UE", 4, 1},  {"PE", 5, 1},  {"DAZ", 6, 1},  {"IM", 7, 1},
+    {"DM", 8, 1},  {"ZM", 9, 1},  {"OM", 10, 1},  {"UM", 11, 1},
+    {"PM", 12, 1}, {"FZ", 15, 1}, {nullptr, 0, 0}};
 
 FlagSet const flag_set_mxcsr = {"i386_mxcsr", 32, 14, flag_defs_mxcsr};
 

@@ -52,14 +52,48 @@ struct DummyDelegate : ds2::GDB::ByteCodeInterpreterDelegate {
 };
 
 int main() {
-  char bytecode[] = {kOpcodeREG, 0, 1, kOpcodeREG, 0, 2, kOpcodeCONST32, 0xaa,
-                     0xbb, 0xcc, 0xdd, kOpcodeREFI32, kOpcodeSEXT, 32,
-                     kOpcodeMUL, kOpcodeADD, kOpcodeCONST32, 0x00, 0x00, 0x00,
-                     0x00,                                   // fn
-                     kOpcodeCONST32, 0x00, 0x00, 0x00, 0x00, // chan
-                     kOpcodePICK, 2,                         // arg0
-                     kOpcodePRINTF, 1, 0, 9, 'v', 'a', 'l', 'u', 'e', ':', '%',
-                     'x', '\0', kOpcodeEND};
+  char bytecode[] = {kOpcodeREG,
+                     0,
+                     1,
+                     kOpcodeREG,
+                     0,
+                     2,
+                     kOpcodeCONST32,
+                     0xaa,
+                     0xbb,
+                     0xcc,
+                     0xdd,
+                     kOpcodeREFI32,
+                     kOpcodeSEXT,
+                     32,
+                     kOpcodeMUL,
+                     kOpcodeADD,
+                     kOpcodeCONST32,
+                     0x00,
+                     0x00,
+                     0x00,
+                     0x00, // fn
+                     kOpcodeCONST32,
+                     0x00,
+                     0x00,
+                     0x00,
+                     0x00, // chan
+                     kOpcodePICK,
+                     2, // arg0
+                     kOpcodePRINTF,
+                     1,
+                     0,
+                     9,
+                     'v',
+                     'a',
+                     'l',
+                     'u',
+                     'e',
+                     ':',
+                     '%',
+                     'x',
+                     '\0',
+                     kOpcodeEND};
 
   ByteCodeInterpreter vm;
   DummyDelegate dd;

@@ -377,8 +377,9 @@ ds2::Host::POSIX::PTrace &Process::ptrace() const {
 
 ErrorCode Process::updateAuxiliaryVector() { return kSuccess; }
 
-ErrorCode Process::enumerateAuxiliaryVector(std::function<
-    void(Support::ELFSupport::AuxiliaryVectorEntry const &)> const &cb) {
+ErrorCode Process::enumerateAuxiliaryVector(
+    std::function<void(Support::ELFSupport::AuxiliaryVectorEntry const &)> const
+        &cb) {
   if (!ProcStat::EnumerateAuxiliaryVector(_pid, cb))
     return kSuccess;
 

@@ -153,8 +153,9 @@ ErrorCode ProcessBase::writeMemoryBuffer(Address const &address,
 }
 
 void ProcessBase::insert(ThreadBase *thread) {
-  if (!_threads.insert(std::make_pair(thread->tid(),
-                                      static_cast<Thread *>(thread))).second)
+  if (!_threads.insert(
+                   std::make_pair(thread->tid(), static_cast<Thread *>(thread)))
+           .second)
     return;
 
   DS2LOG(Info, "[New Thread %p (LWP %llu)]", thread,
