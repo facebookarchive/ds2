@@ -27,6 +27,11 @@ target = os.getenv('TARGET')
 
 if target == 'Style':
     packages.append('clang-format-3.6')
+elif target == 'Registers':
+    packages.append('flex')
+    packages.append('bison')
+    packages.append('g++-4.8')
+    packages.append('clang-format-3.6')
 elif target in linux_packages:
     # Install gcc even when using clang, so we can run llgs tests.
     packages.append(linux_packages[target])
@@ -41,9 +46,5 @@ elif target in android_toolchains:
 if os.getenv('LLGS_TESTS') == '1':
     packages.append('swig')
     packages.append('lldb-3.3')
-
-if os.getenv('REGSGEN') == '1':
-    packages.append('flex')
-    packages.append('bison')
 
 check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
