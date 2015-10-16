@@ -148,6 +148,7 @@
                 "invalidate-registers" : [ "edi", "di" ]
             },
             "ebp" : {
+                "dwarf-reg-number"     : 5,
                 "alternate-name"       : "fp",
                 "generic-name"         : "fp",
                 "gdb-encoding"         : "data-pointer",
