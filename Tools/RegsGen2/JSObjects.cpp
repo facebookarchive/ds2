@@ -378,8 +378,8 @@ JSDictionary *JSDictionary::Parse(
 }
 
 JSDictionary *JSDictionary::Parse(std::string const &path) {
-  return Parse(path, [](unsigned, unsigned,
-                        std::string const &) -> bool { return false; });
+  return Parse(path, [](unsigned, unsigned, std::string const &)
+                         -> bool { return false; });
 }
 
 JSDictionary *JSDictionary::Parse(
@@ -403,6 +403,6 @@ JSDictionary *JSDictionary::Parse(
 }
 
 JSDictionary *JSDictionary::Parse(FILE *fp) {
-  return Parse(fp, [](unsigned, unsigned,
-                      std::string const &) -> bool { return false; });
+  return Parse(fp, [](unsigned, unsigned, std::string const &)
+                       -> bool { return false; });
 }
