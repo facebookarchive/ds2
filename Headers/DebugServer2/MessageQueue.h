@@ -11,7 +11,7 @@
 #ifndef __DebugServer2_MessageQueue_h
 #define __DebugServer2_MessageQueue_h
 
-#include <DebugServer2/Base.h>
+#include "DebugServer2/Base.h"
 
 #include <condition_variable>
 #include <deque>

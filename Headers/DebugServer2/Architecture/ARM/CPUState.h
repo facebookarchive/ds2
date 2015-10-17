@@ -20,7 +20,7 @@ namespace Architecture {
 namespace ARM {
 
 struct VFPSingle {
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#ifdef ENDIAN_BIG
 uint32_t:
   32;
   uint32_t value;
@@ -36,7 +36,7 @@ struct VFPDouble {
 };
 
 struct VFPQuad {
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#ifdef ENDIAN_BIG
   uint64_t hi;
   uint64_t lo;
 #else

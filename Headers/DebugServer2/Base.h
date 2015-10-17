@@ -43,6 +43,20 @@ typedef SSIZE_T ssize_t;
 #error "Target not supported."
 #endif
 
+#if defined(OS_WIN32)
+#define ENDIAN_LITTLE
+#else
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#define ENDIAN_LITTLE
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#define ENDIAN_BIG
+#elif __BYTE_ORDER__ == __ORDER_PDP_ENDIAN__
+#define ENDIAN_MIDDLE
+#else
+#error "Unknown endianness"
+#endif
+#endif
+
 template <typename TYPE, size_t SIZE>
 static inline size_t array_size(TYPE const(&)[SIZE]) {
   return SIZE;

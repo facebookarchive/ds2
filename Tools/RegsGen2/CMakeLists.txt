@@ -10,17 +10,17 @@
 
 cmake_minimum_required(VERSION 2.8)
 
-project(regsgen)
+project(RegsGen2)
 
 find_package(BISON)
 find_package(FLEX)
 
 FLEX_TARGET(JSON_SCANNER
-            ${regsgen_SOURCE_DIR}/libjson/tokenizer.l
-            ${regsgen_BINARY_DIR}/tokenizer.c)
+            ${RegsGen2_SOURCE_DIR}/libjson/tokenizer.l
+            ${RegsGen2_BINARY_DIR}/tokenizer.c)
 BISON_TARGET(JSON_PARSER
-             ${regsgen_SOURCE_DIR}/libjson/parser.y
-             ${regsgen_BINARY_DIR}/parser.c
+             ${RegsGen2_SOURCE_DIR}/libjson/parser.y
+             ${RegsGen2_BINARY_DIR}/parser.c
              COMPILE_FLAGS --no-lines)
 ADD_FLEX_BISON_DEPENDENCY(JSON_SCANNER JSON_PARSER)
 
@@ -40,8 +40,8 @@ add_executable(regsgen2
                main.cpp
                )
 
-include_directories(${regsgen_SOURCE_DIR}/libjson)
-include_directories(${regsgen_BINARY_DIR})
+include_directories(${RegsGen2_SOURCE_DIR}/libjson)
+include_directories(${RegsGen2_BINARY_DIR})
 
 set(COMMON_FLAGS "-D_XOPEN_SOURCE=500 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 ${COMMON_FLAGS}")

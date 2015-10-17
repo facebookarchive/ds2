@@ -291,7 +291,7 @@ ErrorCode Process::enumerateSharedLibraries(
   for (auto m : modules) {
     SharedLibraryInfo sl;
 
-    sl.main = false;
+    sl.main = (m == modules[0]);
 
     WCHAR nameStr[MAX_PATH];
     DWORD nameSize;
@@ -299,6 +299,17 @@ ErrorCode Process::enumerateSharedLibraries(
     if (nameSize == 0)
       return Platform::TranslateError();
     sl.path = Platform::WideToNarrowString(std::wstring(nameStr, nameSize));
+
+    // The following two transforms ensure that the paths we return to the
+    // debugger look like unix paths. This shouldn't be required but LLDB seems
+    // to be having trouble with paths when the host and the remote don't use
+    // the same path separator.
+    if (sl.path.length() >= 2 && sl.path[0] >= 'A' && sl.path[0] <= 'Z' &&
+        sl.path[1] == ':')
+      sl.path.erase(0, 2);
+    for (auto &c : sl.path)
+      if (c == '\\')
+        c = '/';
 
     // Modules on Windows only have one "section", which is the address of the
     // module itself.

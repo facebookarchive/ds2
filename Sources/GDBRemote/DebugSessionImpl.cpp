@@ -178,38 +178,39 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
     return kErrorProcessNotFound;
 
   bool readRegisters = true;
-  StopInfo const &trap = thread->stopInfo();
+  StopInfo const &info = thread->stopInfo();
 
   Architecture::CPUState state;
 
   stop.ptid.pid = thread->process()->pid();
   stop.ptid.tid = thread->tid();
-  stop.core = trap.core;
+  stop.core = info.core;
 
-  switch (trap.event) {
+  switch (info.event) {
   case StopInfo::kEventNone:
     stop.event = StopCode::kSignal;
     stop.reason = StopInfo::kReasonNone;
+    break;
 
   case StopInfo::kEventStop:
     stop.event = StopCode::kSignal;
-    stop.reason = trap.reason;
+    stop.reason = info.reason;
 #if !defined(OS_WIN32)
-    stop.signal = trap.signal;
+    stop.signal = info.signal;
 #endif
     break;
 
   case StopInfo::kEventExit:
     DS2ASSERT(stop.reason == StopInfo::kReasonNone);
     stop.event = StopCode::kCleanExit;
-    stop.status = trap.status;
+    stop.status = info.status;
     readRegisters = false;
     break;
 
 #if !defined(OS_WIN32)
   case StopInfo::kEventKill:
     stop.event = StopCode::kSignalExit;
-    stop.signal = trap.signal;
+    stop.signal = info.signal;
     readRegisters = false;
     break;
 #endif

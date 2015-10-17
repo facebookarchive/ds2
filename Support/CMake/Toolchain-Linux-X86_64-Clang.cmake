@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 ##
 ## Copyright (c) 2014, Facebook, Inc.
 ## All rights reserved.
@@ -9,7 +8,8 @@
 ## PATENTS file in the same directory.
 ##
 
-echo deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main | sudo tee /etc/apt/sources.list.d/llvm-toolchain.list
-wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
-sudo apt-get update
-sudo apt-get install -y clang-format-3.6
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR X86_64)
+
+set(CMAKE_C_COMPILER clang-3.6)
+set(CMAKE_CXX_COMPILER clang++-3.6)

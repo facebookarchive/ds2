@@ -63,11 +63,11 @@ ds2::CPUSubType Platform::GetCPUSubType() {
 }
 
 ds2::Endian Platform::GetEndian() {
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#if defined(ENDIAN_LITTLE)
   return kEndianLittle;
-#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#elif defined(ENDIAN_BIG)
   return kEndianBig;
-#elif __BYTE_ORDER__ == __ORDER_PDP_ENDIAN__
+#elif defined(ENDIAN_MIDDLE)
   return kEndianPDP;
 #else
   return kEndianUnknown;
@@ -372,10 +372,12 @@ ErrorCode Platform::TranslateError(DWORD error) {
     return ds2::kErrorUnsupported;
   case ERROR_FILE_EXISTS:
     return ds2::kErrorAlreadyExist;
+  case ERROR_INVALID_PARAMETER:
+    return ds2::kErrorInvalidArgument;
   case ERROR_PARTIAL_COPY:
     return ds2::kErrorNoSpace;
   default:
-    DS2BUG("unknown error code: %d", error);
+    DS2BUG("unknown error code: %#x", error);
   }
 }
 
