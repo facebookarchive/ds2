@@ -246,6 +246,11 @@ static void Parse(std::string const &path, Context &ctx) {
     exit(EXIT_FAILURE);
   });
 
+  if (root == nullptr) {
+    fprintf(stderr, "%s: %s\n", path.c_str(), strerror(errno));
+    exit(EXIT_FAILURE);
+  }
+
   if (auto ns = root->value<JSString>("namespace")) {
     ctx.Namespace = ns->value();
   } else {
