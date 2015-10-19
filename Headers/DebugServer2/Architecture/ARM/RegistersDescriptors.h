@@ -27,7 +27,7 @@ enum /* dwarf_reg */ {
   reg_dwarf_r13 = 13,
   reg_dwarf_r14 = 14,
   reg_dwarf_r15 = 15,
-  reg_dwarf_cpsr = 16,
+  reg_dwarf_cpsr = 128,
   reg_dwarf_s0 = 64,
   reg_dwarf_s1 = 65,
   reg_dwarf_s2 = 66,
