@@ -1,8 +1,9 @@
 # ds2 [![Build Status](https://travis-ci.org/facebook/ds2.png?branch=master)](https://travis-ci.org/facebook/ds2)
 
 ds2 is a debug server designed to be used with [LLDB](http://lldb.llvm.org/) to
-perform remote debugging of Linux and android targets. It is still under active
-development, and one medium-term goal is to support Windows debugging.
+perform remote debugging of Linux, Android and Windows targets. Windows support
+is still under active development and other platforms are expected to join the
+mix in the future.
 
 ## Requirements
 
@@ -10,28 +11,43 @@ ds2 needs cmake and a C++11 compiler.
 
 ## Building ds2
 
-ds2 uses [CMake](http://www.cmake.org/) to generate its build system. After
-cloning the ds2 repository, run the following commands to build for the current
-host:
+ds2 uses [CMake](http://www.cmake.org/) to generate its build system. A variety
+of CMake toolchain files are provided to help with cross compilation for other
+targets.
+
+### Compiling on Linux
+
+After cloning the ds2 repository, run the following commands to build for the
+current host:
 
 ```sh
 cd ds2
-mkdir build
-cd build
+mkdir build && cd build
 cmake ..
 make
 ```
 
+### Compiling on Windows
+
+ds2 builds on Windows using MSVC. As with linux, use CMake to generate the
+build system, then use msbuild (or the script provided) to build the binary:
+
+```sh
+cd ds2
+mkdir build && cd build
+cmake ..
+..\Support\Scripts\build-windows.bat
+```
+
 ### Cross compiling for Linux-ARM
 
-Compiling for Linux-ARM is also possible. On Ubuntu 14.04, install
+Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install
 `gcc-4.7-arm-linux-gnueabi` and `g++-4.7-arm-linux-gnueabi` and use the
 provided toolchain file.
 
 ```sh
 cd ds2
-mkdir build
-cd build
+mkdir build && cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Linux-ARM.cmake ..
 make
 ```
@@ -44,6 +60,7 @@ debugging.
 For Android native debugging, it is possible to build ds2 with a toolchain from
 the Android NDK. A script is provided to generate the toolchain, and a CMake
 toolchain file can then be used to generate the build system.
+
 `Support/Scripts/prepare-android-toolchain.sh` will download a working version
 of the NDK, extract it, and install the toolchain to
 `/tmp/android-ndk-arm-toolchain` which can then be used for the build.
@@ -51,8 +68,7 @@ of the NDK, extract it, and install the toolchain to
 ```sh
 cd ds2
 ./Support/Scripts/prepare-android-toolchain.sh arm
-mkdir build
-cd build
+mkdir build && cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
 make
 ```
