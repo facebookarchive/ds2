@@ -11,6 +11,7 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Windows/Thread.h"
 #include "DebugServer2/Utils/Log.h"
@@ -18,6 +19,8 @@
 #include <cinttypes>
 
 #define super ds2::Target::ThreadBase
+
+using ds2::Support::Stringify;
 
 namespace ds2 {
 namespace Target {
@@ -75,9 +78,10 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     // what the ExceptionCode is, and set the stop reason accordingly.
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonBreakpoint;
-    DS2LOG(Debug, "exception from inferior, code=%#08x, address=%#" PRIxPTR,
-           de.u.Exception.ExceptionRecord.ExceptionCode,
-           de.u.Exception.ExceptionRecord.ExceptionAddress);
+    DS2LOG(
+        Debug, "exception from inferior, code=%s, address=%#" PRIxPTR,
+        Stringify::ExceptionCode(de.u.Exception.ExceptionRecord.ExceptionCode),
+        de.u.Exception.ExceptionRecord.ExceptionAddress);
     break;
 
   case LOAD_DLL_DEBUG_EVENT: {
