@@ -10,7 +10,6 @@
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/Host/POSIX/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cstring>
