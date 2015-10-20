@@ -149,6 +149,7 @@ set(SUPPORT_COMMON_SOURCES
 set(SUPPORT_POSIX_SOURCES
     Sources/Support/POSIX/ELFSupport.cpp
     Sources/Support/POSIX/FaultHandler.cpp
+    Sources/Support/POSIX/Stringify.cpp
     )
 
 set(SUPPORT_Linux_SOURCES
