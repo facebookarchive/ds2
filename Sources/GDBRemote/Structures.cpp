@@ -281,8 +281,10 @@ std::string StopCode::encode(CompatibilityMode mode) const {
     case StopInfo::kReasonLibraryLoad:
     case StopInfo::kReasonLibraryUnload:
       ss << 0;
+      break;
     default:
       ss << 5;
+      break;
     }
 #endif
     ss << DEC;
