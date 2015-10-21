@@ -66,7 +66,13 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   return error;
 }
 
-void Thread::updateState() {}
+void Thread::updateState() {
+  // This function does nothing, because there's no way of querying the state
+  // of a thread on Windows without being in the context of a debug event.
+  // Instead, what we do is we wait for a debug event, and then call the other
+  // overload of this function, `Thread::updateState(DEBUG_EVENT const &)`
+  // which will be able to get accurate information about the process.
+}
 
 void Thread::updateState(DEBUG_EVENT const &de) {
   DS2ASSERT(de.dwThreadId == _tid);
