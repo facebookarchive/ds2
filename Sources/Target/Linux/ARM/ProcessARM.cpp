@@ -241,9 +241,9 @@ static void ARMPrepareMmapCode(size_t size, uint32_t protection,
 
   uint32_t *code = reinterpret_cast<uint32_t *>(&codestr[0]);
   ARMMOV8SetImmediate(code + 0x06, __NR_mmap2);
-  *reinterpret_cast<uint32_t *>(code + 0x09) = size;
-  *reinterpret_cast<uint32_t *>(code + 0x0a) = protection;
-  *reinterpret_cast<uint32_t *>(code + 0x0b) = MAP_ANON | MAP_PRIVATE;
+  code[0x09] = size;
+  code[0x0a] = protection;
+  code[0x0b] = MAP_ANON | MAP_PRIVATE;
 }
 
 static void ARMPrepareMunmapCode(uint32_t address, size_t size,
@@ -252,8 +252,8 @@ static void ARMPrepareMunmapCode(uint32_t address, size_t size,
 
   uint32_t *code = reinterpret_cast<uint32_t *>(&codestr[0]);
   ARMMOV8SetImmediate(code + 0x02, __NR_munmap);
-  *reinterpret_cast<uint32_t *>(code + 0x05) = address;
-  *reinterpret_cast<uint32_t *>(code + 0x06) = size;
+  code[0x05] = address;
+  code[0x06] = size;
 }
 }
 
