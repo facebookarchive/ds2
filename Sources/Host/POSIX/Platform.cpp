@@ -170,6 +170,8 @@ ErrorCode Platform::TranslateError(int error) {
     return ds2::kErrorBusy;
   case ESRCH:
     return ds2::kErrorProcessNotFound;
+  case EBADF:
+    return ds2::kErrorInvalidHandle;
   case EFAULT:
   case EIO:
     return ds2::kErrorInvalidAddress;
