@@ -278,6 +278,11 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   U8Vector codestr;
   if (state.isThumb()) {
     ThumbPrepareMmapCode(size, protection, codestr);
+    // If the current PC is not aligned (thumb has 16bit instructions), add a
+    // nop at the begining of codestr to make sure ldr PC works as intended.
+    DS2ASSERT(state.pc() % 2 == 0);
+    if (state.pc() % 4 != 0)
+      codestr.insert(codestr.begin(), {0x00, 0x1c});
   } else {
     ARMPrepareMmapCode(size, protection, codestr);
   }
@@ -315,6 +320,11 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   U8Vector codestr;
   if (state.isThumb()) {
     ThumbPrepareMunmapCode(address, size, codestr);
+    // If the current PC is not aligned (thumb has 16bit instructions), add a
+    // nop at the begining of codestr to make sure ldr PC works as intended.
+    DS2ASSERT(state.pc() % 2 == 0);
+    if (state.pc() % 4 != 0)
+      codestr.insert(codestr.begin(), {0x00, 0x1c});
   } else {
     ARMPrepareMunmapCode(address, size, codestr);
   }
