@@ -15,7 +15,7 @@
 
 #if defined(OS_WIN32)
 #include "DebugServer2/Support/Windows/Stringify.h"
-#elif defined(OS_LINUX)
+#elif defined(OS_LINUX) || defined(OS_FREEBSD)
 #include "DebugServer2/Support/POSIX/Stringify.h"
 #else
 #error "Target not supported."
@@ -26,7 +26,7 @@ namespace Support {
 
 #if defined(OS_WIN32)
 using Windows::Stringify;
-#elif defined(OS_LINUX)
+#elif defined(OS_LINUX) || defined(OS_FREEBSD)
 using POSIX::Stringify;
 #else
 #error "Target not supported."
