@@ -165,6 +165,7 @@ set(SUPPORT_COMMON_SOURCES
 set(SUPPORT_POSIX_SOURCES
     Sources/Support/POSIX/ELFSupport.cpp
     Sources/Support/POSIX/FaultHandler.cpp
+    Sources/Support/POSIX/Stringify.cpp
     )
 
 set(SUPPORT_Linux_SOURCES
@@ -173,6 +174,10 @@ set(SUPPORT_Linux_SOURCES
 
 set(SUPPORT_FreeBSD_SOURCES
     ${SUPPORT_POSIX_SOURCES}
+    )
+
+set(SUPPORT_Windows_SOURCES
+    Sources/Support/Windows/Stringify.cpp
     )
 
 set(HOST_SOURCES ${HOST_COMMON_SOURCES} ${HOST_${OS_NAME}_SOURCES})
@@ -247,7 +252,3 @@ endif ()
 
 include(FindThreads)
 target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
-
-if (DS2_ENABLE_REGSGEN2)
-  add_subdirectory(Tools/RegsGen2)
-endif ()

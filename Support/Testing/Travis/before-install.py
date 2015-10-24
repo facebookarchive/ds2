@@ -17,11 +17,11 @@ keys = []
 
 target = os.getenv('TARGET')
 
-if target == 'Style' or os.getenv('CLANG') == '1':
+if target in [ 'Style', 'Registers' ] or os.getenv('CLANG') == '1':
     repositories.append('ppa:ubuntu-toolchain-r/test')
     keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
     repositories.append('deb http://llvm.org/apt/precise/ llvm-toolchain-precise-3.6 main')
-elif target == 'Linux-ARM':
+elif target in [ 'Linux-ARM' ]:
     repositories.append('ppa:linaro-maintainers/toolchain')
 elif target in [ 'Linux-X86', 'Linux-X86_64' ]:
     repositories.append('ppa:ubuntu-toolchain-r/test')

@@ -9,6 +9,8 @@
 //
 
 #include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
+#include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -25,6 +27,8 @@
 
 using ds2::Architecture::GDBDescriptor;
 using ds2::Architecture::LLDBDescriptor;
+using ds2::Host::Platform;
+using ds2::Support::Stringify;
 
 namespace ds2 {
 namespace Target {
@@ -241,9 +245,9 @@ static void ARMPrepareMmapCode(size_t size, uint32_t protection,
 
   uint32_t *code = reinterpret_cast<uint32_t *>(&codestr[0]);
   ARMMOV8SetImmediate(code + 0x06, __NR_mmap2);
-  *reinterpret_cast<uint32_t *>(code + 0x09) = size;
-  *reinterpret_cast<uint32_t *>(code + 0x0a) = protection;
-  *reinterpret_cast<uint32_t *>(code + 0x0b) = MAP_ANON | MAP_PRIVATE;
+  code[0x09] = size;
+  code[0x0a] = protection;
+  code[0x0b] = MAP_ANON | MAP_PRIVATE;
 }
 
 static void ARMPrepareMunmapCode(uint32_t address, size_t size,
@@ -252,8 +256,8 @@ static void ARMPrepareMunmapCode(uint32_t address, size_t size,
 
   uint32_t *code = reinterpret_cast<uint32_t *>(&codestr[0]);
   ARMMOV8SetImmediate(code + 0x02, __NR_munmap);
-  *reinterpret_cast<uint32_t *>(code + 0x05) = address;
-  *reinterpret_cast<uint32_t *>(code + 0x06) = size;
+  code[0x05] = address;
+  code[0x06] = size;
 }
 }
 
@@ -278,6 +282,11 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   U8Vector codestr;
   if (state.isThumb()) {
     ThumbPrepareMmapCode(size, protection, codestr);
+    // If the current PC is not aligned (thumb has 16bit instructions), add a
+    // nop at the begining of codestr to make sure ldr PC works as intended.
+    DS2ASSERT(state.pc() % 2 == 0);
+    if (state.pc() % 4 != 0)
+      codestr.insert(codestr.begin(), {0x00, 0x1c});
   } else {
     ARMPrepareMmapCode(size, protection, codestr);
   }
@@ -289,8 +298,14 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   if (error != kSuccess)
     return error;
 
-  if (*address == (uint64_t)MAP_FAILED)
-    return kErrorNoMemory;
+  // mmap() returns MAP_FAILED thanks to the libc wrapper. Here we don't have
+  // any, so we get the raw kernel return value, which is the address of the
+  // newly allocated pages, if the call succeeds, or -errno if the call fails.
+  if ((int)*address < 0) {
+    int error = -*address;
+    DS2LOG(Debug, "mmap failed with errno=%s", Stringify::Errno(error));
+    return Platform::TranslateError(error);
+  }
 
   return kSuccess;
 }
@@ -315,6 +330,11 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   U8Vector codestr;
   if (state.isThumb()) {
     ThumbPrepareMunmapCode(address, size, codestr);
+    // If the current PC is not aligned (thumb has 16bit instructions), add a
+    // nop at the begining of codestr to make sure ldr PC works as intended.
+    DS2ASSERT(state.pc() % 2 == 0);
+    if (state.pc() % 4 != 0)
+      codestr.insert(codestr.begin(), {0x00, 0x1c});
   } else {
     ARMPrepareMunmapCode(address, size, codestr);
   }
@@ -327,8 +347,11 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   if (error != kSuccess)
     return error;
 
-  if ((int)result < 0)
-    return kErrorInvalidArgument;
+  if ((int)result < 0) {
+    int error = -result;
+    DS2LOG(Debug, "munmap failed with errno=%s", Stringify::Errno(error));
+    return Platform::TranslateError(error);
+  }
 
   return kSuccess;
 }

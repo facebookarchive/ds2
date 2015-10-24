@@ -127,6 +127,7 @@
             },
 
             "eax" : {
+                "dwarf-reg-number"     : 0,
                 "invalidate-registers" : [ "eax", "ax", "ah", "al" ]
             },
             "ebx" : {
@@ -142,24 +143,29 @@
                 "invalidate-registers" : [ "edx", "dx", "dh", "dl" ]
             },
             "esi" : {
+                "dwarf-reg-number"     : 6,
                 "invalidate-registers" : [ "esi", "si" ]
             },
             "edi" : {
+                "dwarf-reg-number"     : 7,
                 "invalidate-registers" : [ "edi", "di" ]
             },
             "ebp" : {
+                "dwarf-reg-number"     : 5,
                 "alternate-name"       : "fp",
                 "generic-name"         : "fp",
                 "gdb-encoding"         : "data-pointer",
                 "invalidate-registers" : [ "ebp", "bp" ]
             },
             "esp" : {
+                "dwarf-reg-number"     : 4,
                 "alternate-name"       : "sp",
                 "generic-name"         : "sp",
                 "gdb-encoding"         : "data-pointer",
                 "invalidate-registers" : [ "esp", "sp" ]
             },
             "eip" : {
+                "dwarf-reg-number"     : 8,
                 "alternate-name"       : "pc",
                 "generic-name"         : "pc",
                 "gdb-encoding"         : "code-pointer"

@@ -10,13 +10,14 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Process"
 
-#include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Target/Thread.h"
+#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
-#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Support/Stringify.h"
+#include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
@@ -30,6 +31,7 @@
 
 using ds2::Host::Linux::PTrace;
 using ds2::Host::Linux::ProcFS;
+using ds2::Support::Stringify;
 
 #define super ds2::Target::POSIX::ELFProcess
 
@@ -215,7 +217,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
       signal = _currentThread->_stopInfo.signal;
 
       DS2LOG(Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
-             strsignal(signal));
+             Stringify::Signal(signal));
 
       if (signal == SIGSTOP || signal == SIGCHLD || signal == SIGRTMIN) {
         //
@@ -241,7 +243,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
         } else {
           DS2LOG(Debug, "%s due to special signal, tid=%d status=%#x signal=%s",
                  stepping ? "stepping" : "resuming", tid, status,
-                 strsignal(signal));
+                 Stringify::Signal(signal));
         }
 
         ErrorCode error;

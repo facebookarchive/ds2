@@ -10,7 +10,6 @@
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/Host/POSIX/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cstring>
@@ -178,6 +177,8 @@ ErrorCode Platform::TranslateError(int error) {
     return ds2::kErrorBusy;
   case ESRCH:
     return ds2::kErrorProcessNotFound;
+  case EBADF:
+    return ds2::kErrorInvalidHandle;
   case EFAULT:
   case EIO:
     return ds2::kErrorInvalidAddress;

@@ -11,6 +11,7 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Windows/Thread.h"
 #include "DebugServer2/Utils/Log.h"
@@ -18,6 +19,8 @@
 #include <cinttypes>
 
 #define super ds2::Target::ThreadBase
+
+using ds2::Support::Stringify;
 
 namespace ds2 {
 namespace Target {
@@ -29,6 +32,8 @@ Thread::Thread(Process *process, ThreadId tid, HANDLE handle)
   // Initially the thread is stopped.
   //
   _state = kStopped;
+  _stopInfo.event = StopInfo::kEventStop;
+  _stopInfo.reason = StopInfo::kReasonTrap;
 }
 
 Thread::~Thread() { CloseHandle(_handle); }
@@ -61,7 +66,13 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   return error;
 }
 
-void Thread::updateState() {}
+void Thread::updateState() {
+  // This function does nothing, because there's no way of querying the state
+  // of a thread on Windows without being in the context of a debug event.
+  // Instead, what we do is we wait for a debug event, and then call the other
+  // overload of this function, `Thread::updateState(DEBUG_EVENT const &)`
+  // which will be able to get accurate information about the process.
+}
 
 void Thread::updateState(DEBUG_EVENT const &de) {
   DS2ASSERT(de.dwThreadId == _tid);
@@ -69,11 +80,14 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   switch (de.dwDebugEventCode) {
   case EXCEPTION_DEBUG_EVENT:
     _state = kStopped;
+    // We always specify kReasonBreakpoint here, but we should instead analyze
+    // what the ExceptionCode is, and set the stop reason accordingly.
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonBreakpoint;
-    DS2LOG(Debug, "exception from inferior, code=%#08x, address=%#" PRIxPTR,
-           de.u.Exception.ExceptionRecord.ExceptionCode,
-           de.u.Exception.ExceptionRecord.ExceptionAddress);
+    DS2LOG(
+        Debug, "exception from inferior, code=%s, address=%#" PRIxPTR,
+        Stringify::ExceptionCode(de.u.Exception.ExceptionRecord.ExceptionCode),
+        de.u.Exception.ExceptionRecord.ExceptionAddress);
     break;
 
   case LOAD_DLL_DEBUG_EVENT: {
@@ -125,20 +139,20 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       CloseHandle(de.u.LoadDll.hFile);
 
     _state = kStopped;
-    _stopInfo.event = StopInfo::kEventNone;
+    _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonLibraryLoad;
   } break;
 
   case UNLOAD_DLL_DEBUG_EVENT:
     DS2LOG(Debug, "DLL unloaded, base=%#" PRIxPTR, de.u.UnloadDll.lpBaseOfDll);
     _state = kStopped;
-    _stopInfo.event = StopInfo::kEventNone;
+    _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonLibraryUnload;
     break;
 
   case OUTPUT_DEBUG_STRING_EVENT:
     _state = kStopped;
-    _stopInfo.event = StopInfo::kEventNone;
+    _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonNone;
     break;
 

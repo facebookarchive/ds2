@@ -16,7 +16,7 @@
 
 #include <windows.h>
 
-using ds2::Host::Windows::Platform;
+using ds2::Host::Platform;
 
 namespace ds2 {
 namespace Host {

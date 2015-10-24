@@ -12,6 +12,7 @@ language: cpp
 
 env:
   - TARGET="Style"
+  - TARGET="Registers"
   - TARGET="Android-ARM"
   - TARGET="Android-ARM64"
   - TARGET="Android-X86"
@@ -19,7 +20,6 @@ env:
   - TARGET="Linux-ARM"
   - TARGET="Linux-X86"
   - TARGET="Linux-X86_64"
-  - TARGET="Linux-X86_64"   REGSGEN="1"
   - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="0"
   - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="0" RELEASE="1"
   - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="1"
@@ -28,11 +28,10 @@ env:
 matrix:
   fast_finish: true
 
-before_install:
-  - ./Support/Testing/Travis/before-install.py
+branches:
+  only:
+    - master
 
-install:
-  - ./Support/Testing/Travis/install.py
-
-script:
-  - ./Support/Testing/Travis/script.sh
+before_install: ./Support/Testing/Travis/before-install.py
+install:        ./Support/Testing/Travis/install.py
+script:         ./Support/Testing/Travis/script.sh

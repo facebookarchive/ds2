@@ -8,6 +8,7 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cstdio>
@@ -19,39 +20,14 @@
 
 namespace {
 
+using ds2::Support::Stringify;
+
 class FaultHandler {
 private:
   static void signalHandler(int sig, siginfo_t *si, void *uc) {
-    static std::map<int, char const *> SignalNames = {
-        {SIGILL, "SIGILL"}, {SIGBUS, "SIGBUS"}, {SIGSEGV, "SIGSEGV"},
-    };
-    static std::map<int, std::map<int, char const *>> SignalCodeNames = {
-        {SIGILL,
-         {
-          {ILL_ILLOPC, "ILL_ILLOPC"},
-          {ILL_ILLOPN, "ILL_ILLOPN"},
-          {ILL_ILLADR, "ILL_ILLADR"},
-          {ILL_ILLTRP, "ILL_ILLTRP"},
-          {ILL_PRVOPC, "ILL_PRVOPC"},
-          {ILL_PRVREG, "ILL_PRVREG"},
-          {ILL_COPROC, "ILL_COPROC"},
-          {ILL_BADSTK, "ILL_BADSTK"}, }},
-        {SIGBUS,
-         {
-          {BUS_ADRALN, "BUS_ADRALN"},
-          {BUS_ADRERR, "BUS_ADRERR"},
-          {BUS_OBJERR, "BUS_OBJERR"}, }},
-        {SIGSEGV,
-         {
-          {SEGV_MAPERR, "SEGV_MAPERR"}, {SEGV_ACCERR, "SEGV_ACCERR"}, }},
-    };
-    DS2ASSERT(SignalNames.find(si->si_signo) != SignalNames.end());
-    DS2ASSERT(SignalCodeNames[si->si_signo].find(si->si_code) !=
-              SignalCodeNames[si->si_signo].end());
-
     DS2LOG(Error, "received %s with code %s at address %p, crashing",
-           SignalNames[si->si_signo],
-           SignalCodeNames[si->si_signo][si->si_code], si->si_addr);
+           Stringify::Signal(si->si_signo),
+           Stringify::SignalCode(si->si_signo, si->si_code), si->si_addr);
 
     _exit(si->si_signo);
   }

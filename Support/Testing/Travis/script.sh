@@ -13,9 +13,32 @@ set -eu
 
 cd "$(git rev-parse --show-toplevel)"
 
+cformat="clang-format-3.6"
+
+check_dirty() {
+  dirty=($(git status -s | awk '{ print $2 }'))
+  if [[ "${#dirty[@]}" -eq 0 ]]; then
+    echo "$1"
+    exit 0
+  else
+    echo "$2"
+    for f in "${dirty[@]}"; do
+      echo "dirty: $f"
+    done
+    exit 1
+  fi
+}
+
 if [[ "$TARGET" = "Style" ]]; then
-  CLANG_FORMAT=clang-format-3.6 "./Support/Scripts/check-style.sh" {Sources,Headers,Main}
-  exit
+  for d in Sources Headers Main; do
+    find "$d" -type f -exec "$cformat" -i -style=LLVM {} \;
+  done
+  check_dirty "Coding style correct." "Coding style errors."
+fi
+
+if [[ "$TARGET" = "Registers" ]]; then
+  CLANG_FORMAT="$cformat" CC="gcc-4.8" CXX="g++-4.8" "./Support/Scripts/generate-reg-descriptors.sh"
+  check_dirty "Generated sources up to date." "Generated sources out of date."
 fi
 
 mkdir build && cd build
@@ -24,10 +47,6 @@ if [[ "${CLANG-}" = "1" ]]; then
   cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}-Clang.cmake")
 else
   cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake")
-fi
-
-if [[ "${REGSGEN-}" = "1" ]]; then
-  cmake_options+=(-DDS2_ENABLE_REGSGEN2="1")
 fi
 
 if [[ "${RELEASE-}" = "1" ]]; then

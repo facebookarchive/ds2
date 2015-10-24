@@ -186,6 +186,8 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
   stop.ptid.tid = thread->tid();
   stop.core = info.core;
 
+  // This code translate a StopInfo to a StopCode that we can send back to the
+  // debugger.
   switch (info.event) {
   case StopInfo::kEventNone:
     stop.event = StopCode::kSignal;
@@ -209,6 +211,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
 
 #if !defined(OS_WIN32)
   case StopInfo::kEventKill:
+    DS2ASSERT(stop.reason == StopInfo::kReasonNone);
     stop.event = StopCode::kSignalExit;
     stop.signal = info.signal;
     readRegisters = false;
