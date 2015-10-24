@@ -24,7 +24,7 @@ class Socket : public Channel {
 private:
 #if defined(OS_WIN32)
   typedef int socklen_t;
-#elif defined(OS_LINUX)
+#elif defined(OS_LINUX) || defined(OS_FREEBSD)
   typedef int SOCKET;
   static SOCKET const INVALID_SOCKET = -1;
 #endif

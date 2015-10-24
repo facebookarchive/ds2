@@ -17,6 +17,8 @@
 #include "DebugServer2/Target/Linux/Process.h"
 #elif defined(OS_WIN32)
 #include "DebugServer2/Target/Windows/Process.h"
+#elif defined(__FreeBSD__)
+#include "DebugServer2/Target/FreeBSD/Process.h"
 #else
 #error "Target not supported."
 #endif
@@ -28,6 +30,8 @@ namespace Target {
 using Linux::Process;
 #elif defined(OS_WIN32)
 using Windows::Process;
+#elif defined(__FreeBSD__)
+using FreeBSD::Process;
 #else
 #error "Target not supported."
 #endif

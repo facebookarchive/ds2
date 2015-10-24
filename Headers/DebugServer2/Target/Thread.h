@@ -17,6 +17,8 @@
 #include "DebugServer2/Target/Linux/Thread.h"
 #elif defined(OS_WIN32)
 #include "DebugServer2/Target/Windows/Thread.h"
+#elif defined(__FreeBSD__)
+#include "DebugServer2/Target/FreeBSD/Thread.h"
 #else
 #error "Target not supported."
 #endif
@@ -28,6 +30,8 @@ namespace Target {
 using Linux::Thread;
 #elif defined(OS_WIN32)
 using Windows::Thread;
+#elif defined(__FreeBSD__)
+using FreeBSD::Thread;
 #else
 #error "Target not supported."
 #endif

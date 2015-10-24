@@ -16,6 +16,12 @@
 #include <limits>
 #include <link.h>
 
+#if defined(__FreeBSD__)
+#include <machine/elf.h>
+typedef Elf32_Auxinfo Elf32_auxv_t;
+typedef Elf64_Auxinfo Elf64_auxv_t;
+#endif
+
 using ds2::Support::ELFSupport;
 
 namespace ds2 {
@@ -32,8 +38,8 @@ inline void EnumerateELFAuxiliaryVector(
   AUXV const *auxve = reinterpret_cast<AUXV const *>(&auxv[0]);
 
   for (size_t n = 0; n < count; n++) {
-    ELFSupport::AuxiliaryVectorEntry entry = {auxve[n].a_type,
-                                              auxve[n].a_un.a_val};
+    ELFSupport::AuxiliaryVectorEntry entry = {(uint64_t)auxve[n].a_type,
+                                              (uint64_t)auxve[n].a_un.a_val};
     cb(entry);
   }
 }
@@ -175,7 +181,7 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
   if (error != ds2::kSuccess)
     return error;
 
-#if !defined(__ANDROID__)
+#if !defined(__ANDROID__) && !defined(__FreeBSD__)
   if (debug.version != LAV_CURRENT)
     return ds2::kErrorUnsupported;
 #endif

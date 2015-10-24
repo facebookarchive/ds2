@@ -87,6 +87,14 @@ set(HOST_Linux_SOURCES
     Sources/Host/Linux/${ARCH_NAME}/PTrace${ARCH_NAME}.cpp
     )
 
+set(HOST_FreeBSD_SOURCES
+    ${HOST_POSIX_SOURCES}
+    Sources/Host/FreeBSD/ProcStat.cpp
+    Sources/Host/FreeBSD/Platform.cpp
+    Sources/Host/FreeBSD/PTrace.cpp
+    Sources/Host/FreeBSD/${ARCH_NAME}/PTrace${ARCH_NAME}.cpp
+    )
+
 set(HOST_Windows_SOURCES
     Sources/Host/Windows/Platform.cpp
     Sources/Host/Windows/ProcessSpawner.cpp
@@ -109,6 +117,14 @@ set(TARGET_Linux_SOURCES
     Sources/Target/Linux/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Linux/Process.cpp
     Sources/Target/Linux/Thread.cpp
+    )
+
+set(TARGET_FreeBSD_SOURCES
+    ${TARGET_POSIX_SOURCES}
+    Sources/Target/FreeBSD/Process.cpp
+    Sources/Target/FreeBSD/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
+    Sources/Target/FreeBSD/${ARCH_NAME}/Process${ARCH_NAME}.cpp
+    Sources/Target/FreeBSD/Thread.cpp
     )
 
 set(TARGET_Windows_SOURCES
@@ -153,6 +169,10 @@ set(SUPPORT_POSIX_SOURCES
     )
 
 set(SUPPORT_Linux_SOURCES
+    ${SUPPORT_POSIX_SOURCES}
+    )
+
+set(SUPPORT_FreeBSD_SOURCES
     ${SUPPORT_POSIX_SOURCES}
     )
 
@@ -204,6 +224,10 @@ else ()
   if (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DCINTERFACE")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare")
+  endif ()
+
+  if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+    target_link_libraries(ds2 util procstat)
   endif ()
 
   include(CheckFunctionExists)

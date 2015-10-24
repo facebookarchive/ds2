@@ -21,6 +21,8 @@
 
 #if defined(OS_LINUX)
 #define FORMAT_ID(ID) ID
+#elif defined(__FreeBSD__)
+#define FORMAT_ID(ID) ID
 #elif defined(OS_WIN32)
 #define FORMAT_ID(ID) 0
 #else

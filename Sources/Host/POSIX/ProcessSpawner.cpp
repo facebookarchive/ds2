@@ -31,7 +31,11 @@ namespace ds2 {
 namespace Host {
 
 static bool open_terminal(int fds[2]) {
+#if defined(__FreeBSD__)
+  char *slave;
+#else
   char slave[PATH_MAX];
+#endif
 
   fds[0] = ::posix_openpt(O_RDWR | O_NOCTTY);
   if (fds[0] == -1)
@@ -43,8 +47,12 @@ static bool open_terminal(int fds[2]) {
   if (::unlockpt(fds[0]) == -1)
     goto error_fd0;
 
+#if defined(__FreeBSD__)
+  slave = ptsname(fds[0]);
+#else
   if (::ptsname_r(fds[0], slave, sizeof(slave)) != 0)
     goto error_fd0;
+#endif
 
   fds[1] = ::open(slave, O_RDWR);
   if (fds[1] == -1)

@@ -39,7 +39,7 @@ private:
 
     // Allocate our own signal stack so that fault handlers work even
     // when the stack pointer is busted.
-    ss.ss_sp = &alt;
+    ss.ss_sp = alt;
     ss.ss_size = sizeof(alt);
     ss.ss_flags = 0;
 
