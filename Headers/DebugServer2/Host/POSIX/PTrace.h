@@ -67,8 +67,7 @@ public:
                            Address const &address = Address()) = 0;
 
 public:
-  virtual ErrorCode getEventPid(ProcessThreadId const &ptid,
-                                ProcessId &pid) = 0;
+  virtual ErrorCode getEventPid(ProcessThreadId const &ptid, ProcessId &pid);
 
 public:
   virtual ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) = 0;

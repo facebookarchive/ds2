@@ -28,6 +28,9 @@ __FORWARD_DECLARE(Linux, Thread);
 #elif defined(OS_WIN32)
 __FORWARD_DECLARE(Windows, Process);
 __FORWARD_DECLARE(Windows, Thread);
+#elif defined(__FreeBSD__)
+__FORWARD_DECLARE(FreeBSD, Process);
+__FORWARD_DECLARE(FreeBSD, Thread);
 #else
 #error "Target not supported."
 #endif

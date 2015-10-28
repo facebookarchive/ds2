@@ -20,6 +20,13 @@
 #include <pwd.h>
 #include <unistd.h>
 
+#if defined(__FreeBSD__)
+#include <sys/types.h>
+#include <sys/socket.h>
+
+extern char **environ;
+#endif
+
 // TODO HAVE_ENDIAN_H, HAVE_SYS_ENDIAN_H
 #if defined(OS_LINUX)
 #include <endian.h>

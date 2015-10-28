@@ -17,6 +17,8 @@
 #include "DebugServer2/Host/Windows/Platform.h"
 #elif defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/Platform.h"
+#elif defined(OS_FREEBSD)
+#include "DebugServer2/Host/FreeBSD/Platform.h"
 #else
 #error "Target not supported."
 #endif
@@ -28,6 +30,8 @@ namespace Host {
 using Windows::Platform;
 #elif defined(OS_LINUX)
 using Linux::Platform;
+#elif defined(OS_FREEBSD)
+using FreeBSD::Platform;
 #else
 #error "Target not supported."
 #endif

@@ -105,6 +105,10 @@ ErrorCode PTrace::execute(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
 fail:
   return kill(ptid, SIGKILL); // we can't really do much at this point :(
 }
+
+ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &pid) {
+  return kErrorUnsupported;
+}
 }
 }
 }
