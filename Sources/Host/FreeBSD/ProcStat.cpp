@@ -83,6 +83,8 @@ bool ProcStat::GetProcessMap(pid_t pid,
 
   pstat = procstat_open_sysctl();
   kip = kinfo_getproc(pid);
+  if (kip == nullptr)
+    return false;
   vmp = procstat_getvmmap(pstat, kip, &count);
 
   for (i = 0; i < count; i++) {
@@ -118,6 +120,8 @@ bool ProcStat::EnumerateAuxiliaryVector(
 
   pstat = procstat_open_sysctl();
   kip = kinfo_getproc(pid);
+  if (kip == nullptr)
+    return false;
   auxvp = procstat_getauxv(pstat, kip, &count);
 
   for (i = 0; i < count; i++) {
