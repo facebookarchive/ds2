@@ -1,9 +1,8 @@
 # ds2 [![Build Status](https://travis-ci.org/facebook/ds2.png?branch=master)](https://travis-ci.org/facebook/ds2)
 
 ds2 is a debug server designed to be used with [LLDB](http://lldb.llvm.org/) to
-perform remote debugging of Linux, Android and Windows targets. Windows support
-is still under active development and other platforms are expected to join the
-mix in the future.
+perform remote debugging of Linux, Android, FreeBSD and Windows targets.
+Windows support is still under active development.
 
 ## Requirements
 
@@ -15,7 +14,7 @@ ds2 uses [CMake](http://www.cmake.org/) to generate its build system. A variety
 of CMake toolchain files are provided to help with cross compilation for other
 targets.
 
-### Compiling on Linux
+### Compiling on Linux and FreeBSD
 
 After cloning the ds2 repository, run the following commands to build for the
 current host:
@@ -39,22 +38,6 @@ cmake ..
 ..\Support\Scripts\build-windows.bat
 ```
 
-### Cross compiling for Linux-ARM
-
-Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install
-`gcc-4.7-arm-linux-gnueabi` and `g++-4.7-arm-linux-gnueabi` and use the
-provided toolchain file.
-
-```sh
-cd ds2
-mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Linux-ARM.cmake ..
-make
-```
-
-This will generate a binary that you can copy to your device to start
-debugging.
-
 ### Cross compiling for Android
 
 For Android native debugging, it is possible to build ds2 with a toolchain from
@@ -76,6 +59,22 @@ make
 Builds of ds2 targetting Android generate a static binary by default. The final
 build product can be copied over to the remote device and used with minimal
 dependencies.
+
+### Cross compiling for Linux-ARM
+
+Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install
+`gcc-4.7-arm-linux-gnueabi` and `g++-4.7-arm-linux-gnueabi` and use the
+provided toolchain file.
+
+```sh
+cd ds2
+mkdir build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Linux-ARM.cmake ..
+make
+```
+
+This will generate a binary that you can copy to your device to start
+debugging.
 
 ## Running ds2
 
