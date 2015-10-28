@@ -12,10 +12,10 @@
 #include "DebugServer2/Host/Platform.h"
 #if defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
-#elif defined(__FreeBSD__)
-#include "DebugServer2/Host/FreeBSD/ExtraWrappers.h"
 #elif defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
+#elif defined(OS_FREEBSD)
+#include "DebugServer2/Host/FreeBSD/ExtraWrappers.h"
 #endif
 
 #include <sstream>

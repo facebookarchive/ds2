@@ -19,9 +19,7 @@
 #include <iomanip>
 #include <sstream>
 
-#if defined(OS_LINUX)
-#define FORMAT_ID(ID) ID
-#elif defined(__FreeBSD__)
+#if defined(OS_LINUX) || defined(OS_FREEBSD)
 #define FORMAT_ID(ID) ID
 #elif defined(OS_WIN32)
 #define FORMAT_ID(ID) 0

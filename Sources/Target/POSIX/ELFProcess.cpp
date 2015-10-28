@@ -16,7 +16,7 @@
 #include <limits>
 #include <link.h>
 
-#if defined(__FreeBSD__)
+#if defined(OS_FREEBSD)
 #include <machine/elf.h>
 typedef Elf32_Auxinfo Elf32_auxv_t;
 typedef Elf64_Auxinfo Elf64_auxv_t;
@@ -181,7 +181,7 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
   if (error != ds2::kSuccess)
     return error;
 
-#if !defined(__ANDROID__) && !defined(__FreeBSD__)
+#if !defined(__ANDROID__) && !defined(OS_FREEBSD)
   if (debug.version != LAV_CURRENT)
     return ds2::kErrorUnsupported;
 #endif

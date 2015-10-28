@@ -20,7 +20,7 @@
 #include <pwd.h>
 #include <unistd.h>
 
-#if defined(__FreeBSD__)
+#if defined(OS_FREEBSD)
 #include <sys/types.h>
 #include <sys/socket.h>
 
