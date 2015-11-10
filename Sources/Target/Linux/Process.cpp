@@ -15,6 +15,7 @@
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
@@ -28,9 +29,11 @@
 #include <limits>
 #include <sys/ptrace.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 using ds2::Host::Linux::PTrace;
 using ds2::Host::Linux::ProcFS;
+using ds2::Host::Platform;
 using ds2::Support::Stringify;
 
 #define super ds2::Target::POSIX::ELFProcess
@@ -146,6 +149,22 @@ static pid_t blocking_wait4(pid_t pid, int *status, int flags,
   sigprocmask(SIG_SETMASK, &org_mask, nullptr);
 
   return ret;
+}
+
+ErrorCode Process::checkMemoryErrorCode(uint64_t address) {
+  // mmap() returns MAP_FAILED thanks to the libc wrapper. Here we don't have
+  // any, so we get the raw kernel return value, which is the address of the
+  // newly allocated pages, if the call succeeds, or -errno if the call fails.
+
+  int pgsz = getpagesize();
+
+  if (address & (pgsz - 1)) {
+    int error = -address;
+    DS2LOG(Debug, "mmap failed with errno=%s", Stringify::Errno(error));
+    return Platform::TranslateError(error);
+  }
+
+  return kSuccess;
 }
 
 ErrorCode Process::wait(int *rstatus, bool hang) {

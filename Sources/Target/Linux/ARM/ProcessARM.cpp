@@ -298,16 +298,7 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   if (error != kSuccess)
     return error;
 
-  // mmap() returns MAP_FAILED thanks to the libc wrapper. Here we don't have
-  // any, so we get the raw kernel return value, which is the address of the
-  // newly allocated pages, if the call succeeds, or -errno if the call fails.
-  if ((int)*address < 0) {
-    int error = -*address;
-    DS2LOG(Debug, "mmap failed with errno=%s", Stringify::Errno(error));
-    return Platform::TranslateError(error);
-  }
-
-  return kSuccess;
+  return checkMemoryErrorCode(*address);
 }
 
 ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {

@@ -57,6 +57,9 @@ public:
                                    uint64_t *address);
   virtual ErrorCode deallocateMemory(uint64_t address, size_t size);
 
+protected:
+  ErrorCode checkMemoryErrorCode(uint64_t address);
+
 public:
   virtual ErrorCode wait(int *status = nullptr, bool hang = true);
 
