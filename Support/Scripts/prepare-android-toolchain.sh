@@ -26,13 +26,8 @@ case "${1}" in
   *)          die "Unknown architecture '${1}'." ;;
 esac
 
-case "${2:-default}" in
-  "4.8"|"4.9")  toolchain_version="${2}";;
-  "default")    toolchain_version="4.8";;
-  *)            die "Unusupported toolchain version '${2}'.";;
-esac
-
 aosp_platform="android-21"
+toolchain_version="4.9"
 toolchain_path="/tmp/aosp-toolchain/${toolchain_triple}-${toolchain_version}"
 aosp_ndk_path="/tmp/aosp-toolchain/aosp-ndk"
 

@@ -11,7 +11,7 @@
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR ARM)
 
-set(CMAKE_C_COMPILER /tmp/aosp-toolchain/arm-linux-androideabi-4.8/bin/arm-linux-androideabi-gcc)
-set(CMAKE_CXX_COMPILER /tmp/aosp-toolchain/arm-linux-androideabi-4.8/bin/arm-linux-androideabi-g++)
+set(CMAKE_C_COMPILER /tmp/aosp-toolchain/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-gcc)
+set(CMAKE_CXX_COMPILER /tmp/aosp-toolchain/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-g++)
 
 set(STATIC 1)
