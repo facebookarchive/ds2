@@ -25,6 +25,7 @@ namespace ds2 {
 // Log Level
 //
 enum {
+  kLogLevelPacket,
   kLogLevelDebug,
   kLogLevelInfo,
   kLogLevelWarning,

@@ -97,7 +97,7 @@ bool SessionBase::send(std::string const &data, bool escaped) {
      << (unsigned)csum;
 
   std::string final_data = ss.str();
-  DS2LOG(Debug, "putpkt(\"%s\", %u)", final_data.c_str(),
+  DS2LOG(Packet, "putpkt(\"%s\", %u)", final_data.c_str(),
          (unsigned)final_data.length());
 
   return _channel->send(final_data);

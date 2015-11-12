@@ -93,6 +93,9 @@ void vLog(int level, char const *classname, char const *funcname,
     color = "\x1b[1;36m";
     label = "DEBUG  ";
     break;
+  case kLogLevelPacket:
+    color = "\x1b[0;35m";
+    label = "PACKET  ";
   default:
     break;
   }

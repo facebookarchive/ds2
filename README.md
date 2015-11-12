@@ -83,7 +83,8 @@ ds2 accepts the following options:
 ```
 usage: ds2 [OPTIONS] [PROGRAM [ARGUMENTS...]]
   -a, --attach ARG          attach to the name or PID specified
-  -R, --debug-remote        enable debugging of remote protocol
+  -R, --debug-remote        enable remote packet log output
+  -d, --debug               enable debug output
   -k, --keep-alive          keep the server alive after the client disconnects
   -L, --list-processes      list processes debuggable by the current user
   -l, --lldb-compat         force ds2 to run in lldb compat mode

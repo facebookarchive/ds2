@@ -262,7 +262,9 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
                  "output log message to the file specified");
   opts.addOption(ds2::OptParse::boolOption, "debug-remote", 'R',
-                 "enable debugging of remote protocol");
+                 "enable log for remote protocol packets");
+  opts.addOption(ds2::OptParse::boolOption, "debug", 'd',
+                 "enable debug log output");
   opts.addOption(ds2::OptParse::boolOption, "no-colors", 'n',
                  "disable colored output");
   opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
@@ -325,6 +327,8 @@ int main(int argc, char **argv) {
   }
 
   if (opts.getBool("debug-remote")) {
+    ds2::SetLogLevel(ds2::kLogLevelPacket);
+  } else if (opts.getBool("debug")) {
     ds2::SetLogLevel(ds2::kLogLevelDebug);
   }
 
