@@ -65,6 +65,7 @@ Session::Session(CompatibilityMode mode) : _compatMode(mode) {
   REGISTER_HANDLER_EQUALS_1(H);
   REGISTER_HANDLER_EQUALS_1(I);
   REGISTER_HANDLER_EQUALS_1(i);
+  REGISTER_HANDLER_EQUALS_1(jThreadsInfo);
   REGISTER_HANDLER_EQUALS_1(k);
   REGISTER_HANDLER_EQUALS_1(_M);
   REGISTER_HANDLER_EQUALS_1(_m);
@@ -828,6 +829,41 @@ void Session::Handle_i(ProtocolInterpreter::Handler const &,
     //
     _ptids['c'] = _ptids['g'] = stop.ptid;
   }
+}
+
+//
+// Packet:        jThreadsInfo
+// Description:   Get information on all threads at once
+// Compatibility: LLDB
+//
+void Session::Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
+                                  std::string const &) {
+  StopCode stop;
+  ErrorCode error =
+      _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), true, stop);
+  if (error != kSuccess) {
+    sendError(error);
+    return;
+  }
+
+  if (_compatMode != kCompatibilityModeLLDB) {
+    //
+    // Update the 'c' and 'g' ptids.
+    //
+    _ptids['c'] = _ptids['g'] = stop.ptid;
+  }
+
+  JSArray *jsonObj = JSArray::New();
+  for (auto const &tid : stop.threads) {
+    _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(kAnyProcessId, tid),
+                                     true, stop);
+    jsonObj->append(stop.encodeJson());
+  }
+
+  std::string jsonString = jsonObj->toString();
+  send(jsonString.c_str(), false);
+
+  delete jsonObj;
 }
 
 //

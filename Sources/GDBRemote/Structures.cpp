@@ -14,6 +14,8 @@
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/SwapEndian.h"
 
+#include "JSObjects/JSObjects.h"
+
 #include <cstdlib>
 #include <cstring>
 #include <iomanip>
@@ -160,6 +162,36 @@ std::string ProcessThreadId::encode(CompatibilityMode mode) const {
   return ss.str();
 }
 
+std::string StopCode::reasonToString() const {
+  switch (reason) {
+  case StopInfo::kReasonNone:
+    return "none";
+  case StopInfo::kReasonTrace:
+    return "trace";
+  case StopInfo::kReasonBreakpoint:
+    return "breakpoint";
+  case StopInfo::kReasonSignalStop:
+    return "signal";
+  case StopInfo::kReasonTrap:
+    return "trap";
+  case StopInfo::kReasonException:
+    return "exception";
+  case StopInfo::kReasonWatchpoint:
+    return "watch";
+  case StopInfo::kReasonRegisterWatchpoint:
+    return "rwatch";
+  case StopInfo::kReasonAddressWatchpoint:
+    return "awatch";
+  case StopInfo::kReasonLibraryLoad:
+  case StopInfo::kReasonLibraryUnload:
+    return "library";
+  case StopInfo::kReasonReplayLog:
+    return "replaylog";
+  }
+
+  return "";
+}
+
 std::string StopCode::encodeInfo(CompatibilityMode mode) const {
   std::ostringstream ss;
 
@@ -179,29 +211,23 @@ std::string StopCode::encodeInfo(CompatibilityMode mode) const {
   case StopInfo::kReasonNone:
     break;
 
-#define REASON_1(CODE, REASON)                                                 \
-  case CODE:                                                                   \
-    ss << ';' << REASON << ':' << 1;                                           \
+  case StopInfo::kReasonWatchpoint:
+  case StopInfo::kReasonRegisterWatchpoint:
+  case StopInfo::kReasonAddressWatchpoint:
+  case StopInfo::kReasonLibraryLoad:
+  case StopInfo::kReasonLibraryUnload:
+  case StopInfo::kReasonReplayLog:
+    ss << ';' << reasonToString() << ':' << 1;
     break;
-    REASON_1(StopInfo::kReasonWatchpoint, "watch");
-    REASON_1(StopInfo::kReasonRegisterWatchpoint, "rwatch");
-    REASON_1(StopInfo::kReasonAddressWatchpoint, "awatch");
-    REASON_1(StopInfo::kReasonLibraryLoad, "library");
-    REASON_1(StopInfo::kReasonLibraryUnload, "library");
-    REASON_1(StopInfo::kReasonReplayLog, "replaylog");
-#undef REASON_1
 
-#define REASON_LLDB(CODE, REASON)                                              \
-  case CODE:                                                                   \
-    if (mode == kCompatibilityModeLLDB)                                        \
-      ss << ';' << "reason:" << REASON;                                        \
+  case StopInfo::kReasonTrace:
+  case StopInfo::kReasonBreakpoint:
+  case StopInfo::kReasonSignalStop:
+  case StopInfo::kReasonTrap:
+  case StopInfo::kReasonException:
+    if (mode == kCompatibilityModeLLDB)
+      ss << ';' << "reason:" << reasonToString();
     break;
-    REASON_LLDB(StopInfo::kReasonTrace, "trace");
-    REASON_LLDB(StopInfo::kReasonBreakpoint, "breakpoint");
-    REASON_LLDB(StopInfo::kReasonSignalStop, "signal");
-    REASON_LLDB(StopInfo::kReasonTrap, "trap");
-    REASON_LLDB(StopInfo::kReasonException, "exception");
-#undef REASON_LLDB
   }
 
   if (mode == kCompatibilityModeLLDB) {
@@ -249,6 +275,42 @@ std::string StopCode::encodeRegisters() const {
   }
 
   return ss.str();
+}
+
+JSDictionary *StopCode::encodeJson() const {
+  JSDictionary *threadObj = JSDictionary::New();
+
+  threadObj->set("tid", JSInteger::New(ptid.tid));
+
+  if (!threadName.empty())
+    threadObj->set("name", JSString::New(threadName));
+
+  if (core)
+    threadObj->set("core", JSInteger::New(core));
+
+  threadObj->set("reason", JSString::New(reasonToString()));
+
+  JSDictionary *regSet = JSDictionary::New();
+  for (auto const &regval : registers) {
+    size_t regsize = regval.second.size << 3;
+
+    std::ostringstream keyStream;
+    std::ostringstream valStream;
+    keyStream << std::dec << regval.first;
+    valStream << HEX(regsize >> 2)
+#if defined(ENDIAN_BIG)
+              << regval.second.value
+#else
+              << (Swap64(regval.second.value) >> (64 - regsize))
+#endif
+        ;
+
+    regSet->set(keyStream.str(), JSString::New(valStream.str()));
+  }
+
+  threadObj->set("registers", regSet);
+
+  return threadObj;
 }
 
 std::string StopCode::encode(CompatibilityMode mode) const {

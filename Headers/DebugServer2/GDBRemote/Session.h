@@ -56,6 +56,8 @@ private:
   void Handle_I(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_i(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_k(ProtocolInterpreter::Handler const &, std::string const &);
+  void Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
+                           std::string const &);
   void Handle__M(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle__m(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_M(ProtocolInterpreter::Handler const &, std::string const &);

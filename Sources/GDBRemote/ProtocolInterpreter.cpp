@@ -111,6 +111,15 @@ void ProtocolInterpreter::onPacketData(std::string const &data, bool valid) {
     } else {
       command_end = 1;
     }
+  } else if (data[0] == 'j') {
+    //
+    // The commands starting with j are terminated with : (colon)
+    //
+    size_t end = data.find_first_of(":");
+    if (end != std::string::npos) {
+      command_end = end;
+      args_start = end + 1;
+    }
   } else {
     //
     // Any other command is long just one char.
