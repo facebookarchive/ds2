@@ -258,31 +258,12 @@ int main(int argc, char **argv) {
   std::string namedPipePath;
   RunMode mode = kRunModeNormal;
 
-  // Configuration options.
-  opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
-                 "output log message to the file specified");
-  opts.addOption(ds2::OptParse::boolOption, "debug-remote", 'R',
-                 "enable log for remote protocol packets");
-  opts.addOption(ds2::OptParse::boolOption, "debug", 'd',
-                 "enable debug log output");
-  opts.addOption(ds2::OptParse::boolOption, "no-colors", 'n',
-                 "disable colored output");
-  opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
-                 "keep the server alive after the client disconnects");
-
-  // Target debug options.
-  opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
-                 "attach to the name or PID specified");
   opts.addOption(ds2::OptParse::stringOption, "port", 'p',
                  "listen on the port specified");
-  opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
-                 "add an element to the environment before launch");
-  opts.addOption(ds2::OptParse::vectorOption, "unset-env", 'E',
-                 "remove an element from the environment before lauch");
-
-  // Non-debugserver options.
-  opts.addOption(ds2::OptParse::boolOption, "list-processes", 'L',
-                 "list processes debuggable by the current user");
+  opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
+                 "attach to the name or PID specified");
+  opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
+                 "keep the server alive after the client disconnects");
 
 #if !defined(OS_WIN32)
   // Platform mode.
@@ -291,6 +272,26 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "slave", 'S',
                  "run in slave mode (used from platform spawner)", true);
 #endif
+
+  // Target debug options.
+  opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
+                 "add an element to the environment before launch");
+  opts.addOption(ds2::OptParse::vectorOption, "unset-env", 'E',
+                 "remove an element from the environment before lauch");
+
+  // Logging options.
+  opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
+                 "output log message to the file specified");
+  opts.addOption(ds2::OptParse::boolOption, "debug-remote", 'R',
+                 "enable log for remote protocol packets");
+  opts.addOption(ds2::OptParse::boolOption, "debug", 'd',
+                 "enable debug log output");
+  opts.addOption(ds2::OptParse::boolOption, "no-colors", 'n',
+                 "disable colored output");
+
+  // Non-debugserver options.
+  opts.addOption(ds2::OptParse::boolOption, "list-processes", 'L',
+                 "list processes debuggable by the current user");
 
   // llgs-compat options.
   opts.addOption(ds2::OptParse::boolOption, "lldb-compat", 'l',
