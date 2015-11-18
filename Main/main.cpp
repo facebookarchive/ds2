@@ -289,7 +289,7 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "platform", 'P',
                  "execute in platform mode");
   opts.addOption(ds2::OptParse::boolOption, "slave", 'S',
-                 "run in slave mode (used from platform spawner)");
+                 "run in slave mode (used from platform spawner)", true);
 #endif
 
   // llgs-compat options.

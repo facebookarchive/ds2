@@ -94,7 +94,6 @@ usage: ds2 [OPTIONS] [PROGRAM [ARGUMENTS...]]
   -P, --platform            execute in platform mode
   -p, --port ARG            listen on the port specified
   -e, --set-env             add an element to the environment before launch
-  -S, --slave               run in slave mode (used from platform spawner)
   -E, --unset-env           remove an element from the environment before lauch
 ```
 
