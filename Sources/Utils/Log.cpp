@@ -24,7 +24,7 @@
 namespace {
 
 int sLogLevel;
-bool sColorsEnabled;
+bool sColorsEnabled = false;
 // stderr is handled a bit differently on Windows, especially when running
 // under powershell. We can simply use stdout for log output.
 #if defined(OS_WIN32)

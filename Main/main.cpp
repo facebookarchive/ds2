@@ -239,7 +239,6 @@ int main(int argc, char **argv) {
   int idx;
 
   ds2::Host::Platform::Initialize();
-  ds2::SetLogColorsEnabled(false);
 #if !defined(OS_WIN32)
   ds2::SetLogColorsEnabled(isatty(fileno(stderr)));
 #endif
