@@ -8,6 +8,7 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Utils/CompilerSupport.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Host/Platform.h"
 #if defined(OS_LINUX)
@@ -97,7 +98,7 @@ void vLog(int level, char const *classname, char const *funcname,
     color = "\x1b[0;35m";
     label = "PACKET  ";
   default:
-    break;
+    DS2_UNREACHABLE();
   }
 
   ss << ' ';
