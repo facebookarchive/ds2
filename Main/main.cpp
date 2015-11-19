@@ -280,7 +280,7 @@ int main(int argc, char **argv) {
 
   // Logging options.
   opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
-                 "output log message to the file specified");
+                 "output log messages to the file specified");
   opts.addOption(ds2::OptParse::boolOption, "debug-remote", 'R',
                  "enable log for remote protocol packets");
   opts.addOption(ds2::OptParse::boolOption, "debug", 'd',
