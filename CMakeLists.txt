@@ -226,10 +226,6 @@ else ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare")
   endif ()
 
-  if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
-    target_link_libraries(ds2 util procstat)
-  endif ()
-
   include(CheckFunctionExists)
   foreach (FUNC gettid personality posix_openpt wait4)
     string(TOUPPER "${FUNC}" UCFUNC)
@@ -246,7 +242,11 @@ else ()
   endif ()
 endif ()
 
-if (WIN32)
+if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+  target_link_libraries(ds2 util procstat)
+endif ()
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   target_link_libraries(ds2 psapi shlwapi ws2_32)
 endif ()
 
