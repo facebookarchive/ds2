@@ -242,6 +242,10 @@ else ()
   endif ()
 endif ()
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  target_link_libraries(ds2 dl)
+endif ()
+
 if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   target_link_libraries(ds2 util procstat)
 endif ()
