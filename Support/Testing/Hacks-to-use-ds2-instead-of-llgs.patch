@@ -11,26 +11,6 @@ index d6f9fd3..302b936 100755
  
      # Set SDKROOT if we are using an Apple SDK
      if platform_system == 'Darwin' and args.apple_sdk:
-diff --git a/test/tools/lldb-gdbserver/TestGdbRemoteRegisterState.py b/test/tools/lldb-gdbserver/TestGdbRemoteRegisterState.py
-index 895f73a..4e3f68d 100644
---- a/test/tools/lldb-gdbserver/TestGdbRemoteRegisterState.py
-+++ b/test/tools/lldb-gdbserver/TestGdbRemoteRegisterState.py
-@@ -100,6 +100,7 @@ class TestGdbRemoteRegisterState(gdbremote_testcase.GdbRemoteTestCaseBase):
- 
-     @llgs_test
-     @dwarf_test
-+    @unittest2.expectedFailure("Fails on travis only.")
-     def test_grp_register_save_restore_works_with_suffix_llgs_dwarf(self):
-         USE_THREAD_SUFFIX = True
-         self.init_llgs_test()
-@@ -118,6 +119,7 @@ class TestGdbRemoteRegisterState(gdbremote_testcase.GdbRemoteTestCaseBase):
- 
-     @llgs_test
-     @dwarf_test
-+    @unittest2.expectedFailure("Fails on travis only.")
-     def test_grp_register_save_restore_works_no_suffix_llgs_dwarf(self):
-         USE_THREAD_SUFFIX = False
-         self.init_llgs_test()
 diff --git a/test/tools/lldb-gdbserver/TestGdbRemoteThreadsInStopReply.py b/test/tools/lldb-gdbserver/TestGdbRemoteThreadsInStopReply.py
 index ac0a392..416f47d 100644
 --- a/test/tools/lldb-gdbserver/TestGdbRemoteThreadsInStopReply.py
