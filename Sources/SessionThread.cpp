@@ -8,7 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#include "SessionThread.h"
+#include "DebugServer2/SessionThread.h"
 
 using ds2::Host::QueueChannel;
 using ds2::GDBRemote::Session;

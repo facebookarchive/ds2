@@ -158,8 +158,10 @@ set(SUPPORT_COMMON_SOURCES
     Sources/CPUTypes.cpp
     Sources/ErrorCodes.cpp
     Sources/MessageQueue.cpp
+    Sources/SessionThread.cpp
     Sources/Utils/Log.cpp
     Sources/Utils/OptParse.cpp
+    Sources/main.cpp
     )
 
 set(SUPPORT_POSIX_SOURCES
@@ -192,14 +194,11 @@ set(DEBUGSERVER2_SOURCES
     ${SUPPORT_SOURCES}
     ${GDB_SOURCES}
     ${GDBREMOTE_SOURCES}
-    Main/main.cpp
-    Main/SessionThread.cpp
     )
 
 add_executable(ds2 ${DEBUGSERVER2_SOURCES})
 
 include_directories(Headers)
-include_directories(Main)
 
 if (MSVC)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /DSTRICT /wd4244 /wd4996")

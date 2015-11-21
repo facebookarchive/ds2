@@ -16,11 +16,10 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/QueueChannel.h"
 #include "DebugServer2/Host/Socket.h"
+#include "DebugServer2/SessionThread.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/OptParse.h"
 #include "DebugServer2/Utils/String.h"
-
-#include "SessionThread.h"
 
 #include <cstdio>
 #include <cstdlib>
