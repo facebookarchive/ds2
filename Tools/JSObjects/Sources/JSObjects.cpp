@@ -14,6 +14,7 @@
 
 #include <cassert>
 #include <csetjmp>
+#include <cstdlib>
 
 //
 // JSObject
