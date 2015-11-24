@@ -11,7 +11,7 @@
 #ifndef __regsgen_FlagSet_h
 #define __regsgen_FlagSet_h
 
-#include "JSObjects.h"
+#include "JSObjects/JSObjects.h"
 #include "Definitions.h"
 
 #include <sys/types.h>

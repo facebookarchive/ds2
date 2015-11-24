@@ -8,7 +8,9 @@
 // PATENTS file in the same directory.
 //
 
-#include "JSObjects.h"
+#include "JSObjects/JSObjects.h"
+
+#include "jsoncb.h"
 
 #include <cassert>
 #include <csetjmp>

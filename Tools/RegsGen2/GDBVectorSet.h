@@ -11,7 +11,7 @@
 #ifndef __regsgen_GDBVectorSet_h
 #define __regsgen_GDBVectorSet_h
 
-#include "JSObjects.h"
+#include "JSObjects/JSObjects.h"
 #include "Definitions.h"
 
 class GDBVectorSet {
