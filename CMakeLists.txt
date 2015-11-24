@@ -198,6 +198,9 @@ set(DEBUGSERVER2_SOURCES
 
 add_executable(ds2 ${DEBUGSERVER2_SOURCES})
 
+add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
+target_link_libraries(ds2 jsobjects)
+
 include_directories(Headers)
 
 if (MSVC)
