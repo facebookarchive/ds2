@@ -6,7 +6,7 @@ Windows support is still under active development.
 
 ## Requirements
 
-ds2 needs cmake and a C++11 compiler.
+ds2 needs cmake, a C++11 compiler, flex and bison.
 
 ## Building ds2
 
