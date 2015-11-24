@@ -119,6 +119,10 @@ protected:
   virtual ErrorCode onDeallocateMemory(Session &session,
                                        Address const &address);
 
+  virtual ErrorCode onQueryMemoryRegionInfo(Session &session,
+                                            Address const &address,
+                                            MemoryRegionInfo &info);
+
 protected:
   virtual ErrorCode onSetProgramArguments(Session &session,
                                           StringCollection const &args);

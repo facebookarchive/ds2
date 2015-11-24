@@ -745,6 +745,15 @@ ErrorCode DebugSessionImpl::onDeallocateMemory(Session &,
   return kSuccess;
 }
 
+ErrorCode DebugSessionImpl::onQueryMemoryRegionInfo(Session &,
+                                                    Address const &addr,
+                                                    MemoryRegionInfo &info) {
+  if (_process == nullptr)
+    return kErrorProcessNotFound;
+  else
+    return _process->getMemoryRegionInfo(addr, info);
+}
+
 ErrorCode
 DebugSessionImpl::onSetProgramArguments(Session &,
                                         StringCollection const &args) {
