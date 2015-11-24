@@ -193,7 +193,7 @@ bool RegisterTemplate::parse(JSDictionary const *d) {
   if (auto group = d->value<JSString>("gdb-group")) {
     if (group->value().empty()) {
       fprintf(stderr, "error: default GDB group name cannot be empty\n");
-      return nullptr;
+      return false;
     }
 
     _template.GDBGroup = group->value();
@@ -202,7 +202,7 @@ bool RegisterTemplate::parse(JSDictionary const *d) {
   if (auto parentSet = d->value<JSString>("parent-set")) {
     if (parentSet->value().empty()) {
       fprintf(stderr, "error: default parent set name cannot be empty\n");
-      return nullptr;
+      return false;
     }
 
     _template.ParentSetName = parentSet->value();
@@ -211,7 +211,7 @@ bool RegisterTemplate::parse(JSDictionary const *d) {
   if (auto parentElement = d->value<JSInteger>("parent-element")) {
     if (parentElement->value() < 0) {
       fprintf(stderr, "error: default parent element cannot be negative\n");
-      return nullptr;
+      return false;
     }
 
     _template.ParentElement = parentElement->value();
