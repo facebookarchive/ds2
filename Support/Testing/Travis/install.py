@@ -12,7 +12,7 @@
 import os
 from subprocess import check_call
 
-packages = ['cmake']
+packages = []
 
 linux_packages = { 'Linux-ARM':     'g++-arm-linux-gnueabi',
                    'Linux-X86':     'g++-4.8-multilib',
@@ -47,4 +47,5 @@ if os.getenv('LLGS_TESTS') == '1':
     packages.append('swig')
     packages.append('lldb-3.3')
 
-check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
+if len(packages) > 0:
+    check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)

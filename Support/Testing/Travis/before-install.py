@@ -12,7 +12,7 @@
 import os
 from subprocess import check_call
 
-repositories = ['ppa:andykimpe/cmake']
+repositories = []
 keys = []
 
 target = os.getenv('TARGET')

@@ -11,6 +11,14 @@
 
 set -eu
 
+# Get a recent cmake from cmake.org. All packages for Ubuntu 12.04 are too old.
+cd /tmp
+cmake_package="cmake-3.4.0-Linux-x86_64"
+wget --no-check-certificate "https://cmake.org/files/v3.4/$cmake_package.tar.gz"
+tar -xf "$cmake_package.tar.gz"
+export PATH="$PWD/$cmake_package/bin:$PATH"
+cd "$OLDPWD"
+
 cd "$(git rev-parse --show-toplevel)"
 
 cformat="clang-format-3.6"

@@ -8,7 +8,7 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 if ("${CMAKE_VERSION}" VERSION_GREATER "3.1.0")
   cmake_policy(SET CMP0054 NEW)
 endif ()
