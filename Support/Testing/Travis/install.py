@@ -12,12 +12,6 @@
 import os
 from subprocess import check_call
 
-packages = ['cmake']
-
-linux_packages = { 'Linux-ARM':     'g++-arm-linux-gnueabi',
-                   'Linux-X86':     'g++-4.8-multilib',
-                   'Linux-X86_64':  'g++-4.8' }
-
 android_toolchains = { 'Android-ARM':       'arm',
                        'Android-ARM64':     'aarch64',
                        'Android-X86':       'x86',
@@ -25,26 +19,6 @@ android_toolchains = { 'Android-ARM':       'arm',
 
 target = os.getenv('TARGET')
 
-if target == 'Style':
-    packages.append('clang-format-3.6')
-elif target == 'Registers':
-    packages.append('flex')
-    packages.append('bison')
-    packages.append('g++-4.8')
-    packages.append('clang-format-3.6')
-elif target in linux_packages:
-    # Install gcc even when using clang, so we can run llgs tests.
-    packages.append(linux_packages[target])
-    if os.getenv('CLANG') == '1':
-        packages.append('clang-3.6')
-elif target in android_toolchains:
-    # Android builds get the toolchain from AOSP.
+# Android builds get the toolchain from AOSP.
+if target in android_toolchains:
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
-
-# Running LLGS tests requires an install of lldb (for the tests to be able to
-# use the lldb python library without us building it).
-if os.getenv('LLGS_TESTS') == '1':
-    packages.append('swig')
-    packages.append('lldb-3.3')
-
-check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
