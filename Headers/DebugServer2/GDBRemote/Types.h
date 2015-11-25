@@ -66,6 +66,8 @@ public:
 private:
   std::string reasonToString() const;
   std::string encodeInfo(CompatibilityMode mode) const;
+  void encodeRegisters(std::map<std::string, std::string> &regs,
+                       bool hexIndex) const;
   std::string encodeRegisters() const;
 };
 

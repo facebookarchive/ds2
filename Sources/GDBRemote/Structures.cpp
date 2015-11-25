@@ -252,24 +252,42 @@ std::string StopCode::encodeInfo(CompatibilityMode mode) const {
   return ss.str();
 }
 
+void StopCode::encodeRegisters(std::map<std::string, std::string> &regs,
+                               bool hexIndex) const {
+  for (auto &reg : registers) {
+    std::stringstream regNum;
+    std::stringstream regVal;
+    size_t regsize = reg.second.size << 3;
+
+    if (hexIndex) {
+      regNum << HEX(2) << (reg.first & 0xff);
+    } else {
+      regNum << DEC << reg.first;
+    }
+
+#if defined(ENDIAN_BIG)
+    regVal << HEX(regsize >> 2) << reg.second.value;
+#else
+    regVal << HEX(regsize >> 2) << (Swap64(reg.second.value) >> (64 - regsize));
+#endif
+
+    std::pair<std::string, std::string> p(regNum.str(), regVal.str());
+    regs.insert(p);
+  }
+}
+
 std::string StopCode::encodeRegisters() const {
   std::ostringstream ss;
   bool first = true;
+  std::map<std::string, std::string> regs;
+  encodeRegisters(regs, true);
 
-  for (auto &regval : registers) {
+  for (auto &reg : regs) {
     if (!first) {
       ss << ';';
     }
 
-    size_t regsize = regval.second.size << 3;
-
-    ss << HEX(2) << (regval.first & 0xff) << ':' << HEX(regsize >> 2)
-#if defined(ENDIAN_BIG)
-       << regval.second.value
-#else
-       << (Swap64(regval.second.value) >> (64 - regsize))
-#endif
-        ;
+    ss << reg.first << ':' << reg.second;
 
     first = false;
   }
@@ -291,21 +309,11 @@ JSDictionary *StopCode::encodeJson() const {
   threadObj->set("reason", JSString::New(reasonToString()));
 
   JSDictionary *regSet = JSDictionary::New();
-  for (auto const &regval : registers) {
-    size_t regsize = regval.second.size << 3;
+  std::map<std::string, std::string> regs;
+  encodeRegisters(regs, false);
 
-    std::ostringstream keyStream;
-    std::ostringstream valStream;
-    keyStream << std::dec << regval.first;
-    valStream << HEX(regsize >> 2)
-#if defined(ENDIAN_BIG)
-              << regval.second.value
-#else
-              << (Swap64(regval.second.value) >> (64 - regsize))
-#endif
-        ;
-
-    regSet->set(keyStream.str(), JSString::New(valStream.str()));
+  for (auto const &reg : regs) {
+    regSet->set(reg.first, JSString::New(reg.second));
   }
 
   threadObj->set("registers", regSet);
