@@ -853,17 +853,15 @@ void Session::Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
     _ptids['c'] = _ptids['g'] = stop.ptid;
   }
 
-  JSArray *jsonObj = JSArray::New();
+  JSArray jsonObj;
   for (auto const &tid : stop.threads) {
     _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(kAnyProcessId, tid),
                                      true, stop);
-    jsonObj->append(stop.encodeJson());
+    jsonObj.append(stop.encodeJson());
   }
 
-  std::string jsonString = jsonObj->toString();
+  std::string jsonString = jsonObj.toString();
   send(jsonString.c_str(), false);
-
-  delete jsonObj;
 }
 
 //
