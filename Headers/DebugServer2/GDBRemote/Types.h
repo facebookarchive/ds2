@@ -14,7 +14,6 @@
 #include "DebugServer2/Architecture/RegisterLayout.h"
 #include "DebugServer2/GDBRemote/Base.h"
 #include "DebugServer2/Types.h"
-
 #include "JSObjects/JSObjects.h"
 
 #include <set>

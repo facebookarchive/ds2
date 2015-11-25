@@ -13,7 +13,6 @@
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/SwapEndian.h"
-
 #include "JSObjects/JSObjects.h"
 
 #include <cstdlib>
@@ -187,9 +186,9 @@ std::string StopCode::reasonToString() const {
     return "library";
   case StopInfo::kReasonReplayLog:
     return "replaylog";
+  default:
+    DS2_UNREACHABLE();
   }
-
-  return "";
 }
 
 std::string StopCode::encodeInfo(CompatibilityMode mode) const {
@@ -271,8 +270,7 @@ void StopCode::encodeRegisters(std::map<std::string, std::string> &regs,
     regVal << HEX(regsize >> 2) << (Swap64(reg.second.value) >> (64 - regsize));
 #endif
 
-    std::pair<std::string, std::string> p(regNum.str(), regVal.str());
-    regs.insert(p);
+    regs.insert(std::make_pair(regNum.str(), regVal.str()));
   }
 }
 
