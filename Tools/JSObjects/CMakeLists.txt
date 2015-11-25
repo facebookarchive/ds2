@@ -8,7 +8,7 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1.0)
 
 project(JSObjects)
 
@@ -24,20 +24,20 @@ BISON_TARGET(JSON_PARSER
              COMPILE_FLAGS --no-lines)
 ADD_FLEX_BISON_DEPENDENCY(JSON_SCANNER JSON_PARSER)
 
-add_library(jsobjects STATIC
-            ${BISON_JSON_PARSER_OUTPUTS}
-            ${FLEX_JSON_SCANNER_OUTPUTS}
-            Sources/libjson/json.c
-            Sources/libjson/qstring.c
-            Sources/JSObjects.cpp
-            )
+set(JSOBJECTS_SOURCES
+    ${BISON_JSON_PARSER_OUTPUTS}
+    ${FLEX_JSON_SCANNER_OUTPUTS}
+    Sources/JSObjects.cpp
+    Sources/libjson/json.c
+    Sources/libjson/qstring.c
+    )
 
+add_library(jsobjects STATIC ${JSOBJECTS_SOURCES})
 target_include_directories(jsobjects
                            PUBLIC ${JSObjects_SOURCE_DIR}/Headers
                            PRIVATE ${JSObjects_SOURCE_DIR}/Sources/libjson
-                           PRIVATE ${JSObjects_BINARY_DIR}
-                           )
-
-set(COMMON_FLAGS "-D_XOPEN_SOURCE=500 -Wall -Wextra -Wno-unused-parameter -Wno-unused-function")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 ${COMMON_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${COMMON_FLAGS}")
+                           PRIVATE ${JSObjects_BINARY_DIR})
+set_property(TARGET jsobjects PROPERTY C_STANDARD 99)
+set_property(TARGET jsobjects PROPERTY CXX_STANDARD 11)
+target_compile_options(jsobjects PRIVATE -Wall -Wextra -Wno-unused-parameter -Wno-unused-function)
+target_compile_definitions(jsobjects PRIVATE _XOPEN_SOURCE=500)

@@ -8,10 +8,8 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 2.8.12)
-if ("${CMAKE_VERSION}" VERSION_GREATER "3.1.0")
-  cmake_policy(SET CMP0054 NEW)
-endif ()
+cmake_minimum_required(VERSION 3.1.0)
+cmake_policy(SET CMP0054 NEW)
 
 project(DebugServer2)
 
@@ -30,7 +28,25 @@ elseif (ARCH_NAME MATCHES "AMD64")
   set(ARCH_NAME "X86_64")
 endif ()
 
-if (MSVC)
+if (${CMAKE_COMPILER_IS_GNUCXX}) # Clang or GCC
+  # Global options (these apply for other subprojects like JSObjects) and must
+  # be set before we include subdirectories.
+  if (STATIC)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
+  endif ()
+
+  if (PIE)
+    set(COMMON_FLAGS "${COMMON_FLAGS} -fpie")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
+  endif ()
+
+  if ("${ARCH_NAME}" STREQUAL "X86")
+    set(COMMON_FLAGS "${COMMON_FLAGS} -m32")
+  endif ()
+
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
+elseif (${CMAKE_CXX_COMPILER_ID} EQUAL "MSVC")
   if ("${CMAKE_GENERATOR}" MATCHES "ARM")
     set(ARCH_NAME "ARM")
   elseif ("${CMAKE_GENERATOR}" MATCHES "Win64")
@@ -197,52 +213,42 @@ set(DEBUGSERVER2_SOURCES
     )
 
 add_executable(ds2 ${DEBUGSERVER2_SOURCES})
+target_include_directories(ds2 PUBLIC Headers)
+set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
 
-add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
-target_link_libraries(ds2 jsobjects)
-
-include_directories(Headers)
-
-if (MSVC)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /DSTRICT /wd4244 /wd4996")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /DWIN32_LEAN_AND_MEAN /DNOMINMAX")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-else ()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wno-unused-parameter")
-
-  if (STATIC)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
-  endif ()
-
-  if (PIE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpie")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
-  endif ()
-
-  if ("${ARCH_NAME}" STREQUAL "X86")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32")
-  endif ()
-
-  if (WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DCINTERFACE")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare")
-  endif ()
-
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux" OR ${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
   include(CheckFunctionExists)
   foreach (FUNC gettid personality posix_openpt wait4)
     string(TOUPPER "${FUNC}" UCFUNC)
     CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${UCFUNC})
     if (HAVE_${UCFUNC})
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_${UCFUNC}")
+      target_compile_definitions(ds2 PRIVATE HAVE_${UCFUNC})
     endif ()
   endforeach ()
 
   include(CheckIncludeFile)
   CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
   if (HAVE_SYS_PERSONALITY_H)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DHAVE_SYS_PERSONALITY_H")
+    target_compile_definitions(ds2 PRIVATE HAVE_SYS_PERSONALITY_H)
   endif ()
 endif ()
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)
+endif ()
+
+if (${CMAKE_COMPILER_IS_GNUCXX})
+  target_compile_options(ds2 PRIVATE -Wall -Wextra -Wno-unused-parameter)
+  if (WIN32)
+    target_compile_options(ds2 PRIVATE -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare)
+  endif ()
+elseif (${CMAKE_CXX_COMPILER_ID} EQUAL "MSVC")
+  target_compile_options(ds2 PRIVATE /W3 /DSTRICT /wd4244 /wd4996)
+  target_compile_options(ds2 PRIVATE /MP)
+endif ()
+
+add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
+target_link_libraries(ds2 jsobjects)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   target_link_libraries(ds2 dl)
