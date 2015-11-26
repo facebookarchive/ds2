@@ -18,11 +18,11 @@ find_package(FLEX)
 FLEX_TARGET(JSON_SCANNER
             ${JSObjects_SOURCE_DIR}/Sources/libjson/tokenizer.l
             ${JSObjects_BINARY_DIR}/tokenizer.c
-            COMPILE_FLAGS "--header-file=${JSObjects_BINARY_DIR}/tokenizer.h")
+            COMPILE_FLAGS "--header-file=${JSObjects_BINARY_DIR}/tokenizer.h --nounistd --batch --never-interactive")
 BISON_TARGET(JSON_PARSER
              ${JSObjects_SOURCE_DIR}/Sources/libjson/parser.y
              ${JSObjects_BINARY_DIR}/parser.c
-             COMPILE_FLAGS --no-lines)
+             COMPILE_FLAGS "--no-lines")
 ADD_FLEX_BISON_DEPENDENCY(JSON_SCANNER JSON_PARSER)
 
 set(JSOBJECTS_SOURCES
