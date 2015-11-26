@@ -19,7 +19,9 @@
 #include "DebugServer2/Host/FreeBSD/ExtraWrappers.h"
 #endif
 
+#if defined(__ANDROID__)
 #include <dlfcn.h>
+#endif
 #include <sstream>
 
 namespace {
