@@ -40,5 +40,7 @@ target_include_directories(jsobjects
                            PRIVATE ${JSObjects_BINARY_DIR})
 set_property(TARGET jsobjects PROPERTY C_STANDARD 99)
 set_property(TARGET jsobjects PROPERTY CXX_STANDARD 11)
-target_compile_options(jsobjects PRIVATE -Wall -Wextra -Wno-unused-parameter -Wno-unused-function)
-target_compile_definitions(jsobjects PRIVATE _XOPEN_SOURCE=500)
+if (${CMAKE_COMPILER_IS_GNUCXX}) # Clang or GCC
+  target_compile_options(jsobjects PRIVATE -Wall -Wextra -Wno-unused-parameter -Wno-unused-function)
+  target_compile_definitions(jsobjects PRIVATE _XOPEN_SOURCE=500)
+endif ()
