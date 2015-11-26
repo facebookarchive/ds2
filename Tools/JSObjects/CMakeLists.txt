@@ -43,4 +43,7 @@ set_property(TARGET jsobjects PROPERTY CXX_STANDARD 11)
 if (${CMAKE_COMPILER_IS_GNUCXX}) # Clang or GCC
   target_compile_options(jsobjects PRIVATE -Wall -Wextra -Wno-unused-parameter -Wno-unused-function)
   target_compile_definitions(jsobjects PRIVATE _XOPEN_SOURCE=500)
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  target_compile_options(jsobjects PRIVATE /W3 /DSTRICT /wd4996)
+  target_compile_options(jsobjects PRIVATE /MP)
 endif ()
