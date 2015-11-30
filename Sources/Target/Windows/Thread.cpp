@@ -33,7 +33,7 @@ Thread::Thread(Process *process, ThreadId tid, HANDLE handle)
   //
   _state = kStopped;
   _stopInfo.event = StopInfo::kEventStop;
-  _stopInfo.reason = StopInfo::kReasonTrap;
+  _stopInfo.reason = StopInfo::kReasonNone;
 }
 
 Thread::~Thread() { CloseHandle(_handle); }

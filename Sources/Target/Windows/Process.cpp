@@ -68,46 +68,64 @@ bool Process::isAlive() const { return !_terminated; }
 
 ErrorCode Process::wait(int *status, bool hang) {
   DEBUG_EVENT de;
+  bool keepGoing = true;
 
-  BOOL result = WaitForDebugEvent(&de, hang ? INFINITE : 0);
-  if (!result)
-    return Platform::TranslateError();
+  while (keepGoing) {
+    BOOL result = WaitForDebugEvent(&de, hang ? INFINITE : 0);
+    if (!result)
+      return Platform::TranslateError();
 
-  switch (de.dwDebugEventCode) {
-  case CREATE_PROCESS_DEBUG_EVENT:
+    keepGoing = false;
+
+    switch (de.dwDebugEventCode) {
+    case CREATE_PROCESS_DEBUG_EVENT:
 #define CHECK_AND_CLOSE(HAN)                                                   \
   do {                                                                         \
     if ((de.u.CreateProcessInfo.HAN) != NULL)                                  \
       CloseHandle(de.u.CreateProcessInfo.HAN);                                 \
   } while (0)
-    CHECK_AND_CLOSE(hFile);
-    CHECK_AND_CLOSE(hProcess);
-    CHECK_AND_CLOSE(hThread);
+      CHECK_AND_CLOSE(hFile);
+      CHECK_AND_CLOSE(hProcess);
+      CHECK_AND_CLOSE(hThread);
 #undef CHECK_AND_CLOSE
-    return kSuccess;
+      return kSuccess;
 
-  case EXIT_PROCESS_DEBUG_EVENT:
-    _terminated = true;
-    return kSuccess;
+    case EXIT_PROCESS_DEBUG_EVENT:
+      _terminated = true;
+      return kSuccess;
 
-  case CREATE_THREAD_DEBUG_EVENT:
-    DS2LOG(Fatal, "debug event CREATE_THREAD");
-  case EXIT_THREAD_DEBUG_EVENT:
-    DS2LOG(Fatal, "debug event EXIT_THREAD");
-  case RIP_EVENT:
-    DS2LOG(Fatal, "debug event RIP");
+    case CREATE_THREAD_DEBUG_EVENT: {
+      auto threadHandle = de.u.CreateThread.hThread;
+      auto tid = GetThreadId(threadHandle);
+      auto thread = new Thread(this, tid, threadHandle);
+      resume();
+      keepGoing = true;
+    } break;
 
-  case EXCEPTION_DEBUG_EVENT:
-  case LOAD_DLL_DEBUG_EVENT:
-  case UNLOAD_DLL_DEBUG_EVENT:
-  case OUTPUT_DEBUG_STRING_EVENT: {
-    auto threadIt = _threads.find(de.dwThreadId);
-    DS2ASSERT(threadIt != _threads.end());
-    threadIt->second->updateState(de);
-  } break;
+    case EXIT_THREAD_DEBUG_EVENT: {
+      auto threadIt = _threads.find(de.dwThreadId);
+      DS2ASSERT(threadIt != _threads.end());
+      auto tid = threadIt->second->tid();
+      ContinueDebugEvent(_pid, tid, DBG_CONTINUE);
+      removeThread(threadIt->second->tid());
+      keepGoing = true;
+    } break;
 
-  default:
-    DS2BUG("unknown debug event code: %d", de.dwDebugEventCode);
+    case RIP_EVENT:
+      DS2LOG(Fatal, "debug event RIP");
+
+    case EXCEPTION_DEBUG_EVENT:
+    case LOAD_DLL_DEBUG_EVENT:
+    case UNLOAD_DLL_DEBUG_EVENT:
+    case OUTPUT_DEBUG_STRING_EVENT: {
+      auto threadIt = _threads.find(de.dwThreadId);
+      DS2ASSERT(threadIt != _threads.end());
+      threadIt->second->updateState(de);
+    } break;
+
+    default:
+      DS2BUG("unknown debug event code: %d", de.dwDebugEventCode);
+    }
   }
 
   return kSuccess;
