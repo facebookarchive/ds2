@@ -139,6 +139,7 @@ void vLog(int level, char const *classname, char const *funcname,
   case kLogLevelPacket:
     color = "\x1b[0;35m";
     label = "PACKET  ";
+    break;
   default:
     DS2_UNREACHABLE();
   }
