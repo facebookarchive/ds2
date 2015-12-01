@@ -1,4 +1,4 @@
-# ds2 [![Build Status](https://travis-ci.org/facebook/ds2.png?branch=master)](https://travis-ci.org/facebook/ds2)
+# ds2 [![Build Status](https://travis-ci.org/facebook/ds2.svg?branch=master)](https://travis-ci.org/facebook/ds2)
 
 ds2 is a debug server designed to be used with [LLDB](http://lldb.llvm.org/) to
 perform remote debugging of Linux, Android, FreeBSD and Windows targets.
