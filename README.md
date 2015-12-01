@@ -138,7 +138,7 @@ debugging.
 
 ## Join the ds2 community
 
-See the CONTRIBUTING.md file for how to help out.
+See the `CONTRIBUTING.md` file for how to help out.
 
 ## License
 
