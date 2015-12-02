@@ -12,7 +12,6 @@
 
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
-#include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -21,6 +20,7 @@
 #include <cstdio>
 #include <limits>
 #include <sys/ptrace.h>
+#include <sys/wait.h>
 
 #define super ds2::Host::POSIX::PTrace
 
@@ -46,8 +46,7 @@ ErrorCode PTrace::wait(ProcessThreadId const &ptid, bool hang, int *status) {
 
   int stat;
   pid_t ret;
-  struct rusage ru;
-  ret = wait4(pid, &stat, __WALL | (hang ? 0 : WNOHANG), &ru);
+  ret = waitpid(pid, &stat, __WALL | (hang ? 0 : WNOHANG));
   if (ret < 0)
     return kErrorProcessNotFound;
   DS2ASSERT(!hang || ret == pid);

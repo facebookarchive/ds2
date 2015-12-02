@@ -51,13 +51,6 @@ static inline int tkill(pid_t tid, int signo) {
   return ::syscall(__NR_tkill, tid, signo);
 }
 
-#if !defined(HAVE_WAIT4)
-static inline pid_t wait4(pid_t pid, int *stat_loc, int options,
-                          struct rusage *rusage) {
-  return ::syscall(__NR_wait4, pid, stat_loc, options, rusage);
-}
-#endif
-
 // We use ds2_snprintf and ds2_vsnprintf in ds2 code to make sure we don't use
 // the bogus vsnprintf provided in the MSVC runtime. The following two defines
 // allow us to avoid #ifdef conditionals accross the code.

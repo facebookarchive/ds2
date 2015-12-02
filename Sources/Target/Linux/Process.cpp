@@ -125,8 +125,7 @@ ErrorCode Process::attach(int waitStatus) {
   return kSuccess;
 }
 
-static pid_t blocking_wait4(pid_t pid, int *status, int flags,
-                            struct rusage *ru) {
+static pid_t blocking_waitpid(pid_t pid, int *status, int flags) {
   pid_t ret;
   sigset_t block_mask, org_mask, wake_mask;
 
@@ -137,7 +136,7 @@ static pid_t blocking_wait4(pid_t pid, int *status, int flags,
   sigprocmask(SIG_BLOCK, &block_mask, &org_mask);
 
   for (;;) {
-    ret = wait4(pid, status, flags, ru);
+    ret = ::waitpid(pid, status, flags);
     if (ret > 0 || (ret == -1 && errno != ECHILD))
       break;
 
@@ -169,7 +168,6 @@ ErrorCode Process::checkMemoryErrorCode(uint64_t address) {
 
 ErrorCode Process::wait(int *rstatus, bool hang) {
   int status, signal;
-  struct rusage rusage;
   ProcessInfo info;
   ThreadId tid;
 
@@ -177,7 +175,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
   DS2ASSERT(!_threads.empty());
 
   while (!_threads.empty()) {
-    tid = blocking_wait4(-1, &status, __WALL | (hang ? 0 : WNOHANG), &rusage);
+    tid = blocking_waitpid(-1, &status, __WALL | (hang ? 0 : WNOHANG));
     DS2LOG(Debug, "wait tid=%d status=%#x", tid, status);
 
     if (tid <= 0)

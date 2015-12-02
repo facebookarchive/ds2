@@ -30,7 +30,6 @@ private:
   struct Event {
     ProcessId pid;
     int status;
-    struct rusage ru;
   };
 
   typedef std::map<ProcessId, Event> EventsMap;
@@ -50,10 +49,8 @@ public:
 
 public:
   bool wait(std::set<ProcessId> const &pids, ProcessId &wpid, int &status,
-            struct rusage &ru, bool hang);
-
-  bool wait(ProcessId const &pid, ProcessId &wpid, int &status,
-            struct rusage &ru, bool hang);
+            bool hang);
+  bool wait(ProcessId const &pid, ProcessId &wpid, int &status, bool hang);
 
 private:
   void start();

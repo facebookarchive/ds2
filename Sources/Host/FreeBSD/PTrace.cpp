@@ -13,7 +13,6 @@
 
 #include "DebugServer2/Host/FreeBSD/PTrace.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>

@@ -32,17 +32,17 @@ AsyncProcessWaiter &AsyncProcessWaiter::Instance() {
 }
 
 bool AsyncProcessWaiter::wait(ProcessId const &pid, ProcessId &wpid,
-                              int &status, struct rusage &ru, bool hang) {
+                              int &status, bool hang) {
   if (pid <= 0)
     return false;
 
   std::set<ProcessId> pids;
   pids.insert(pid);
-  return wait(pids, wpid, status, ru, hang);
+  return wait(pids, wpid, status, hang);
 }
 
 bool AsyncProcessWaiter::wait(std::set<ProcessId> const &pids, ProcessId &wpid,
-                              int &status, struct rusage &ru, bool hang) {
+                              int &status, bool hang) {
   if (pids.empty())
     return false;
 
@@ -55,7 +55,6 @@ bool AsyncProcessWaiter::wait(std::set<ProcessId> const &pids, ProcessId &wpid,
       if (it != _events.end()) {
         wpid = it->second.pid;
         status = it->second.status;
-        ru = it->second.ru;
         _events.erase(it);
         return true;
       }
@@ -78,7 +77,7 @@ void AsyncProcessWaiter::run() {
   for (;;) {
     Event event;
 
-    pid_t pid = ::wait4(-1, &event.status, DEFAULT_WAIT_FLAGS, &event.ru);
+    pid_t pid = ::waitpid(-1, &event.status, DEFAULT_WAIT_FLAGS);
     if (pid < 0)
       break;
 

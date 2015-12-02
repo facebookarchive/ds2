@@ -218,7 +218,7 @@ set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
 
 if ("${CMAKE_SYSTEM_NAME}" MATCHES "Linux" OR "${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
   include(CheckFunctionExists)
-  foreach (FUNC gettid personality posix_openpt wait4)
+  foreach (FUNC gettid personality posix_openpt)
     string(TOUPPER "${FUNC}" UCFUNC)
     CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${UCFUNC})
     if (HAVE_${UCFUNC})
