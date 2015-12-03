@@ -140,7 +140,7 @@ ErrorCode DummySessionDelegateImpl::onQuerySymbol(Session &,
                                                   std::string const &,
                                                   std::string const &,
                                                   std::string &) {
-  return kSuccess;
+  return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryRegisterInfo(Session &, uint32_t,
