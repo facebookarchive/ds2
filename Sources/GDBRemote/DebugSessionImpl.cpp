@@ -102,14 +102,7 @@ DebugSessionImpl::onQuerySupported(Session &session,
   if (_process->isELFProcess()) {
     localFeatures.push_back(std::string("qXfer:auxv:read+"));
   }
-// qXfer:features:read seems buggy in ds2. When lldb requests register sets
-// through this command, it doesn't seem to be able to properly read them
-// afterwards. Disabling for now until we fix that bug.
-#if notyet
   localFeatures.push_back(std::string("qXfer:features:read+"));
-#else
-  localFeatures.push_back(std::string("qXfer:features:read-"));
-#endif
   if (_process->isELFProcess()) {
     localFeatures.push_back(std::string("qXfer:libraries-svr4:read+"));
   } else {
@@ -426,6 +419,7 @@ ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
   }
 
   if (reginfo.Def->ContainerRegisters != nullptr) {
+    info.containerRegisters.clear();
     for (size_t n = 0; reginfo.Def->ContainerRegisters[n] != nullptr; n++) {
       info.containerRegisters.push_back(
           reginfo.Def->ContainerRegisters[n]->LLDBRegisterNumber);
@@ -433,6 +427,7 @@ ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
   }
 
   if (reginfo.Def->InvalidatedRegisters != nullptr) {
+    info.invalidateRegisters.clear();
     for (size_t n = 0; reginfo.Def->InvalidatedRegisters[n] != nullptr; n++) {
       info.invalidateRegisters.push_back(
           reginfo.Def->InvalidatedRegisters[n]->LLDBRegisterNumber);
@@ -451,7 +446,8 @@ DebugSessionImpl::onQuerySharedLibrariesInfoAddress(Session &,
   return _process->getSharedLibraryInfoAddress(address);
 }
 
-ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
+ErrorCode DebugSessionImpl::onXferRead(Session &session,
+                                       std::string const &object,
                                        std::string const &annex,
                                        uint64_t offset, uint64_t length,
                                        std::string &buffer, bool &last) {
@@ -461,13 +457,41 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
 
   // TODO Split these generators into appropriate functions
   if (object == "features") {
-    Architecture::GDBDescriptor const *desc =
-        _process->getGDBRegistersDescriptor();
-    if (annex == "target.xml") {
-      buffer = Architecture::GDBGenerateXMLMain(*desc).substr(offset);
+    if (session.mode() == kCompatibilityModeLLDB) {
+      Architecture::LLDBDescriptor const *desc =
+          _process->getLLDBRegistersDescriptor();
+      if (annex == "target.xml") {
+        buffer = Architecture::LLDBGenerateXMLMain(*desc).substr(offset);
+      } else {
+        std::ostringstream ss;
+        ss << Architecture::GenerateXMLHeader();
+        ss << "<feature>" << std::endl;
+        RegisterInfo info;
+        std::string lastSet;
+        int setNum = 0;
+        for (uint32_t regno = 0;
+             onQueryRegisterInfo(session, regno, info) == kSuccess; ++regno) {
+          if (info.setName != annex) {
+            if (info.setName != lastSet) {
+              lastSet = info.setName;
+              setNum++;
+            }
+            continue;
+          }
+          ss << '\t' << info.encode(setNum) << '\n';
+        }
+        ss << "</feature>" << std::endl;
+        buffer = ss.str().substr(offset);
+      }
     } else {
-      buffer = Architecture::GDBGenerateXMLFeatureByFileName(*desc, annex)
-                   .substr(offset);
+      Architecture::GDBDescriptor const *desc =
+          _process->getGDBRegistersDescriptor();
+      if (annex == "target.xml") {
+        buffer = Architecture::GDBGenerateXMLMain(*desc).substr(offset);
+      } else {
+        buffer = Architecture::GDBGenerateXMLFeatureByFileName(*desc, annex)
+                     .substr(offset);
+      }
     }
   } else if (object == "auxv") {
     ErrorCode error = _process->getAuxiliaryVector(buffer);
