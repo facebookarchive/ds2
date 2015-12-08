@@ -55,6 +55,8 @@ static void androidLogcat(int level, char const *functag, char const *message) {
     CONVERT_LEVEL(ds2::kLogLevelError, ANDROID_LOG_ERROR)
     CONVERT_LEVEL(ds2::kLogLevelFatal, ANDROID_LOG_FATAL)
 #undef CONVERT_LEVEL
+  default:
+    DS2_UNREACHABLE();
   }
 
   static void *const androidLogLib = dlopen("liblog.so", RTLD_LAZY);
