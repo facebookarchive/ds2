@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Architecture/RegisterLayout.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/String.h"
 
 #include <cstring>
 #include <cstdlib>
@@ -24,6 +25,7 @@ using ds2::Architecture::GDBFeatureEntry;
 using ds2::Architecture::GDBVectorDef;
 using ds2::Architecture::GDBVectorUnion;
 using ds2::Architecture::GDBVectorUnionField;
+using ds2::Architecture::LLDBDescriptor;
 using ds2::Architecture::LLDBRegisterSet;
 using ds2::Architecture::RegisterDef;
 
@@ -41,9 +43,6 @@ public:
   std::string file(std::string const &filename) const;
   std::string feature(std::string const &identifier) const;
   std::string feature(size_t index) const;
-
-private:
-  void headers(std::ostringstream &s) const;
 
 private:
   void generateEntry(std::ostringstream &s, GDBFeatureEntry const &entry) const;
@@ -65,17 +64,20 @@ private:
   static size_t GetVectorCount(GDBEncoding const &enc, size_t vecsize,
                                size_t elsize);
 };
+
+class LLDBXMLGenerator {
+private:
+  LLDBDescriptor const *_desc;
+
+public:
+  LLDBXMLGenerator(LLDBDescriptor const &desc);
+
+public:
+  std::string main() const;
+};
 }
 
-GDBXMLGenerator::GDBXMLGenerator(GDBDescriptor const &desc) : _desc(&desc) {}
-
-void GDBXMLGenerator::headers(std::ostringstream &s) const {
-  s << "<?xml version=" << Quote("1.0") << "?>" << std::endl;
-  s << "<!DOCTYPE target SYSTEM " << Quote("gdb-target.dtd") << ">"
-    << std::endl;
-}
-
-std::string GDBXMLGenerator::Escape(std::string const &s) {
+static std::string escape(std::string const &s) {
   std::ostringstream os;
 
   if (s.find_first_of("<>&\"") != std::string::npos) {
@@ -105,23 +107,25 @@ std::string GDBXMLGenerator::Escape(std::string const &s) {
   return os.str();
 }
 
-std::string GDBXMLGenerator::Escape(int64_t value) {
+static std::string quote(std::string const &s) {
   std::ostringstream os;
-  os << value;
+  os << '"' << escape(s) << '"';
   return os.str();
 }
 
-std::string GDBXMLGenerator::Quote(std::string const &s) {
-  std::ostringstream os;
-  os << '"' << Escape(s) << '"';
-  return os.str();
-}
-
-std::string GDBXMLGenerator::Quote(int64_t value) {
+static std::string quote(int64_t value) {
   std::ostringstream os;
   os << '"' << value << '"';
   return os.str();
 }
+
+static void headers(std::ostringstream &s) {
+  s << "<?xml version=" << quote("1.0") << "?>" << std::endl;
+  s << "<!DOCTYPE target SYSTEM " << quote("gdb-target.dtd") << ">"
+    << std::endl;
+}
+
+GDBXMLGenerator::GDBXMLGenerator(GDBDescriptor const &desc) : _desc(&desc) {}
 
 std::string GDBXMLGenerator::main() const {
   std::ostringstream s;
@@ -131,20 +135,21 @@ std::string GDBXMLGenerator::main() const {
   s << "<target>" << std::endl;
   if (_desc->Architecture != nullptr &&
       strchr(_desc->Architecture, ':') != nullptr) {
-    s << '\t' << "<architecture>" << Escape(_desc->Architecture)
+    s << '\t' << "<architecture>" << escape(_desc->Architecture)
       << "</architecture>" << std::endl;
   }
   if (_desc->OSABI != nullptr) {
-    s << '\t' << "<osabi>" << Escape(_desc->OSABI) << "</osabi>" << std::endl;
+    s << '\t' << "<osabi>" << escape(_desc->OSABI) << "</osabi>" << std::endl;
   }
+
   for (size_t n = 0; n < _desc->Count; n++) {
     GDBFeature const *feature = _desc->Features[n];
 
     if (feature->FileName == nullptr) {
-      s << '\t' << "<feature name=" << Quote(feature->Identifier) << "/>"
+      s << '\t' << "<feature name=" << quote(feature->Identifier) << "/>"
         << std::endl;
     } else {
-      s << '\t' << "<xi:include href=" << Quote(feature->FileName) << "/>"
+      s << '\t' << "<xi:include href=" << quote(feature->FileName) << "/>"
         << std::endl;
     }
   }
@@ -199,7 +204,7 @@ std::string GDBXMLGenerator::GetType(GDBEncoding const &enc,
     return "int";
   case ds2::Architecture::kGDBEncodingSizedInteger:
     if (bitsize != 0)
-      return "int" + Escape(bitsize);
+      return "int" + ds2::ToString(bitsize);
     break;
   default:
     DS2ASSERT(0 && "invalid GDB encoding");
@@ -218,7 +223,7 @@ std::string GDBXMLGenerator::GetVectorType(GDBEncoding const &enc,
   case ds2::Architecture::kGDBEncodingInteger:
   case ds2::Architecture::kGDBEncodingSizedInteger:
     if (elsize != 0)
-      return "int" + Escape(elsize);
+      return "int" + ds2::ToString(elsize);
     break;
   default:
     DS2ASSERT(0 && "invalid encoding for GDB vector");
@@ -248,23 +253,23 @@ size_t GDBXMLGenerator::GetVectorCount(GDBEncoding const &enc, size_t vecsize,
 
 void GDBXMLGenerator::generateVector(std::ostringstream &s,
                                      GDBVectorDef const *def) const {
-  s << '\t' << "<vector id=" << Quote(def->Name) << ' ';
-  s << "type=" << Quote(GetVectorType(def->Encoding, def->ElementBitSize))
+  s << '\t' << "<vector id=" << quote(def->Name) << ' ';
+  s << "type=" << quote(GetVectorType(def->Encoding, def->ElementBitSize))
     << ' ';
   s << "count="
-    << Quote(GetVectorCount(def->Encoding, def->BitSize, def->ElementBitSize))
+    << quote(GetVectorCount(def->Encoding, def->BitSize, def->ElementBitSize))
     << ' ';
   s << "/>" << std::endl;
 }
 
 void GDBXMLGenerator::generateUnion(std::ostringstream &s,
                                     GDBVectorUnion const *def) const {
-  s << '\t' << "<union id=" << Quote(def->Name) << '>' << std::endl;
+  s << '\t' << "<union id=" << quote(def->Name) << '>' << std::endl;
   for (size_t n = 0; n < def->Count; n++) {
     GDBVectorUnionField const &fld = def->Fields[n];
     s << "\t\t"
-      << "<field name=" << Quote(fld.Name) << ' ' << "type="
-      << Quote(GetType(fld.Encoding,
+      << "<field name=" << quote(fld.Name) << ' ' << "type="
+      << quote(GetType(fld.Encoding,
                        fld.Def != nullptr ? fld.Def->Name : nullptr, 0))
       << ' ' << "/>" << std::endl;
   }
@@ -273,14 +278,14 @@ void GDBXMLGenerator::generateUnion(std::ostringstream &s,
 
 void GDBXMLGenerator::generateFlags(std::ostringstream &s,
                                     FlagSet const *set) const {
-  s << '\t' << "<flags id=" << Quote(set->Name)
-    << " size=" << Quote(set->BitSize >> 3) << '>' << std::endl;
+  s << '\t' << "<flags id=" << quote(set->Name)
+    << " size=" << quote(set->BitSize >> 3) << '>' << std::endl;
   for (size_t n = 0; n < set->Count; n++) {
     FlagDef const &def = set->Defs[n];
     s << "\t\t"
-      << "<field name=" << Quote(def.Name) << ' '
-      << "start=" << Quote(def.Start) << ' '
-      << "end=" << Quote(def.Start + def.Length - 1) << ' ' << "/>"
+      << "<field name=" << quote(def.Name) << ' '
+      << "start=" << quote(def.Start) << ' '
+      << "end=" << quote(def.Start + def.Length - 1) << ' ' << "/>"
       << std::endl;
   }
   s << '\t' << "</flags>" << std::endl;
@@ -289,21 +294,21 @@ void GDBXMLGenerator::generateFlags(std::ostringstream &s,
 void GDBXMLGenerator::generateRegister(std::ostringstream &s,
                                        RegisterDef const *def) const {
   s << '\t';
-  s << "<reg name=" << Quote(def->Name) << ' ';
+  s << "<reg name=" << quote(def->Name) << ' ';
   if (!(def->BitSize < 0)) {
-    s << "bitsize=" << Quote(def->BitSize) << ' ';
+    s << "bitsize=" << quote(def->BitSize) << ' ';
   }
   if (def->GDBEncoding.Encoding != ds2::Architecture::kGDBEncodingUnknown) {
-    s << "type=" << Quote(GetType(def->GDBEncoding.Encoding,
+    s << "type=" << quote(GetType(def->GDBEncoding.Encoding,
                                   def->GDBEncoding.Name, def->BitSize))
       << ' ';
   }
   if ((def->Flags & ds2::Architecture::kRegisterDefNoGDBRegisterNumber) == 0 &&
       !(def->GDBRegisterNumber < 0)) {
-    s << "regnum=" << Quote(def->GDBRegisterNumber) << ' ';
+    s << "regnum=" << quote(def->GDBRegisterNumber) << ' ';
   }
   if (def->GDBGroupName != nullptr) {
-    s << "group=" << Quote(def->GDBGroupName) << ' ';
+    s << "group=" << quote(def->GDBGroupName) << ' ';
   }
   s << "/>" << std::endl;
 }
@@ -335,11 +340,38 @@ std::string GDBXMLGenerator::feature(size_t index) const {
   std::ostringstream s;
   headers(s);
 
-  s << "<feature name=" << Quote(feature->Identifier) << ">" << std::endl;
+  s << "<feature name=" << quote(feature->Identifier) << ">" << std::endl;
   for (size_t n = 0; n < feature->Count; n++) {
     generateEntry(s, feature->Entries[n]);
   }
   s << "</feature>" << std::endl;
+
+  return s.str();
+}
+
+LLDBXMLGenerator::LLDBXMLGenerator(LLDBDescriptor const &desc) : _desc(&desc) {}
+
+std::string LLDBXMLGenerator::main() const {
+  std::ostringstream s;
+
+  headers(s);
+
+  s << "<target>" << std::endl;
+
+  for (size_t nset = 0; nset < _desc->Count; nset++) {
+    LLDBRegisterSet const *set = _desc->Sets[nset];
+    s << "\t<include href=" << quote(set->Name) << "/>" << std::endl;
+  }
+
+  s << '\t' << "<groups>" << '\n';
+  for (size_t nset = 0; nset < _desc->Count; nset++) {
+    LLDBRegisterSet const *set = _desc->Sets[nset];
+    s << "\t\t<group id=" << quote(nset) << " name=" << quote(set->Name) << "/>"
+      << std::endl;
+  }
+  s << "\t</groups>" << std::endl;
+
+  s << "</target>" << std::endl;
 
   return s.str();
 }
@@ -349,6 +381,12 @@ std::string GDBXMLGenerator::feature(size_t index) const {
 //
 namespace ds2 {
 namespace Architecture {
+
+std::string GenerateXMLHeader() {
+  std::ostringstream s;
+  headers(s);
+  return s.str();
+}
 
 std::string GDBGenerateXMLMain(GDBDescriptor const &desc) {
   return GDBXMLGenerator(desc).main();
@@ -367,6 +405,10 @@ std::string GDBGenerateXMLFeatureByFileName(GDBDescriptor const &desc,
 std::string GDBGenerateXMLFeatureByIdentifier(GDBDescriptor const &desc,
                                               std::string const &ident) {
   return GDBXMLGenerator(desc).feature(ident);
+}
+
+std::string LLDBGenerateXMLMain(LLDBDescriptor const &desc) {
+  return LLDBXMLGenerator(desc).main();
 }
 
 bool LLDBGetRegisterInfo(LLDBDescriptor const &desc, size_t index,

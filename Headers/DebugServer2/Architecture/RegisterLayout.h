@@ -174,8 +174,10 @@ typedef std::map<size_t, GPRegisterValue> GPRegisterStopMap;
 typedef std::vector<GPRegisterValue> GPRegisterValueVector;
 
 //
-// GDB XML Generation Functions
+// XML Generation Functions
 //
+
+std::string GenerateXMLHeader();
 
 std::string GDBGenerateXMLMain(GDBDescriptor const &desc);
 
@@ -187,6 +189,8 @@ std::string GDBGenerateXMLFeatureByFileName(GDBDescriptor const &desc,
 
 std::string GDBGenerateXMLFeatureByIdentifier(GDBDescriptor const &desc,
                                               std::string const &ident);
+
+std::string LLDBGenerateXMLMain(LLDBDescriptor const &lldbDesc);
 
 //
 // LLDB Register Information Functions
