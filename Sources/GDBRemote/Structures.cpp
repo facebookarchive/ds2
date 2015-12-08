@@ -12,6 +12,7 @@
 #include "DebugServer2/GDBRemote/Types.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/String.h"
 #include "DebugServer2/Utils/SwapEndian.h"
 #include "JSObjects/JSObjects.h"
 
@@ -537,8 +538,8 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
   return ss.str();
 }
 
-std::string RegisterInfo::encode() const {
-  std::ostringstream ss;
+std::string RegisterInfo::encode(int xmlSet) const {
+  bool xml = (xmlSet >= 0);
 
   char const *encodingName;
   switch (encoding) {
@@ -606,50 +607,76 @@ std::string RegisterInfo::encode() const {
     return std::string();
   }
 
-  ss << "name:" << registerName << ';';
-  if (!alternateName.empty()) {
-    ss << "alt-name:" << alternateName << ';';
-  }
-  ss << "bitsize:" << bitSize << ';';
-  ss << "offset:" << (byteOffset < 0 ? 0 : byteOffset) << ';';
-  if (encodingName != nullptr) {
-    ss << "encoding:" << encodingName << ';';
-  }
-  if (formatName != nullptr) {
-    ss << "format:" << formatName << ';';
-  }
+  std::vector<std::pair<std::string, std::string>> regInfo;
+
+  regInfo.push_back(std::make_pair("name", registerName));
+  if (!alternateName.empty())
+    regInfo.push_back(
+        std::make_pair(xml ? "altname" : "alt-name", alternateName));
+
+  regInfo.push_back(std::make_pair("bitsize", ds2::ToString(bitSize)));
+  regInfo.push_back(
+      std::make_pair("offset", ds2::ToString(byteOffset < 0 ? 0 : byteOffset)));
+
+  if (encodingName != nullptr)
+    regInfo.push_back(std::make_pair("encoding", encodingName));
+
+  if (formatName != nullptr)
+    regInfo.push_back(std::make_pair("format", formatName));
+
   if (!setName.empty()) {
-    ss << "set:" << setName << ';';
+    if (xml)
+      regInfo.push_back(std::make_pair("group_id", ds2::ToString(xmlSet)));
+    else
+      regInfo.push_back(std::make_pair("set", setName));
   }
-  if (!(gccRegisterIndex < 0)) {
-    ss << "gcc:" << gccRegisterIndex << ';';
-  }
-  if (!(dwarfRegisterIndex < 0)) {
-    ss << "dwarf:" << dwarfRegisterIndex << ';';
-  }
-  if (!genericName.empty()) {
-    ss << "generic:" << genericName << ';';
-  }
+
+  if (!(gccRegisterIndex < 0))
+    regInfo.push_back(std::make_pair(xml ? "gcc_regnum" : "gcc",
+                                     ds2::ToString(gccRegisterIndex)));
+
+  if (!(dwarfRegisterIndex < 0))
+    regInfo.push_back(std::make_pair(xml ? "dwarf_regnum" : "dwarf",
+                                     ds2::ToString(dwarfRegisterIndex)));
+
+  if (!genericName.empty())
+    regInfo.push_back(std::make_pair("generic", genericName));
+
   if (!containerRegisters.empty()) {
-    ss << "container-regs:";
+    std::ostringstream contStream;
     for (size_t n = 0; n < containerRegisters.size(); n++) {
-      if (n != 0) {
-        ss << ',';
-      }
-      ss << std::hex << containerRegisters[n] << std::dec;
+      if (n != 0)
+        contStream << ',';
+      contStream << std::hex << containerRegisters[n] << std::dec;
     }
-    ss << ';';
+    regInfo.push_back(std::make_pair(xml ? "value_regnums" : "container-regs",
+                                     contStream.str()));
   }
+
   if (!invalidateRegisters.empty()) {
-    ss << "invalidate-regs:";
+    std::ostringstream invStream;
     for (size_t n = 0; n < invalidateRegisters.size(); n++) {
-      if (n != 0) {
-        ss << ',';
-      }
-      ss << std::hex << invalidateRegisters[n] << std::dec;
+      if (n != 0)
+        invStream << ',';
+      invStream << std::hex << invalidateRegisters[n] << std::dec;
     }
-    ss << ';';
+    regInfo.push_back(std::make_pair(
+        xml ? "invalidate_regnums" : "invalidate-regs", invStream.str()));
   }
+
+  std::ostringstream ss;
+  if (xml)
+    ss << "<reg ";
+
+  for (auto const &entry : regInfo) {
+    if (xml)
+      ss << entry.first << "=" << '"' << entry.second << '"' << ' ';
+    else
+      ss << entry.first << ":" << entry.second << ";";
+  }
+
+  if (xml)
+    ss << "/>";
 
   return ss.str();
 }

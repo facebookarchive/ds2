@@ -152,7 +152,9 @@ struct RegisterInfo {
       : bitSize(0), byteOffset(-1), gccRegisterIndex(-1),
         encoding(kEncodingNone), format(kFormatNone) {}
 
-  std::string encode() const;
+  // xmlSet is the index of this set of registers in the
+  // list of register groups. If < 0, don't encode as xml
+  std::string encode(int xmlSet = -1) const;
 };
 
 struct HostInfo : ds2::HostInfo {
