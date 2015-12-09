@@ -19,8 +19,8 @@
 #include "DebugServer2/Host/FreeBSD/ExtraWrappers.h"
 #endif
 
-#if defined(__ANDROID__)
-#include <dlfcn.h>
+#if defined(ENABLE_LOGCAT)
+#include <android/log.h>
 #endif
 #include <sstream>
 
@@ -37,9 +37,7 @@ FILE *sOutputStream = stderr;
 #endif
 }
 
-#if defined(__ANDROID__)
-#include <android/log.h>
-
+#if defined(ENABLE_LOGCAT)
 static void androidLogcat(int level, char const *functag, char const *message) {
   android_LogPriority androidLevel;
 
@@ -59,16 +57,7 @@ static void androidLogcat(int level, char const *functag, char const *message) {
     DS2_UNREACHABLE();
   }
 
-  static void *const androidLogLib = dlopen("liblog.so", RTLD_LAZY);
-  if (androidLogLib == nullptr)
-    return;
-  static auto *const androidLogFunc =
-      reinterpret_cast<decltype(&__android_log_print)>(
-          dlsym(androidLogLib, "__android_log_print"));
-  if (androidLogFunc == nullptr)
-    return;
-
-  androidLogFunc(androidLevel, "ds2", "[%s] %s", functag, message);
+  __android_log_print(androidLevel, "ds2", "[%s] %s", functag, message);
 }
 #endif
 
@@ -106,7 +95,7 @@ void vLog(int level, char const *classname, char const *funcname,
     functag << classname << "::";
   functag << funcname;
 
-#if defined(__ANDROID__)
+#if defined(ENABLE_LOGCAT)
   // If we're on Android pollute logcat as well.
   androidLogcat(level, functag.str().c_str(), buffer.data());
 #endif

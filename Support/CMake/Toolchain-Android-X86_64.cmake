@@ -15,3 +15,4 @@ set(CMAKE_C_COMPILER /tmp/aosp-toolchain/x86_64-linux-android-4.9/bin/x86_64-lin
 set(CMAKE_CXX_COMPILER /tmp/aosp-toolchain/x86_64-linux-android-4.9/bin/x86_64-linux-android-g++)
 
 set(PIE 1)
+set(ENABLE_LOGCAT 1)

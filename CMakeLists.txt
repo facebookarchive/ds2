@@ -250,8 +250,9 @@ endif ()
 add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
 target_link_libraries(ds2 jsobjects)
 
-if ("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-  target_link_libraries(ds2 dl)
+if (${ENABLE_LOGCAT})
+  target_link_libraries(ds2 log)
+  target_compile_definitions(ds2 PRIVATE ENABLE_LOGCAT)
 endif ()
 
 if ("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")

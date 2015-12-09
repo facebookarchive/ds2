@@ -15,3 +15,4 @@ set(CMAKE_C_COMPILER /tmp/aosp-toolchain/arm-linux-androideabi-4.9/bin/arm-linux
 set(CMAKE_CXX_COMPILER /tmp/aosp-toolchain/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-g++)
 
 set(PIE 1)
+set(ENABLE_LOGCAT 1)
