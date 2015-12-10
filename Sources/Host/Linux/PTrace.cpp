@@ -181,12 +181,12 @@ ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
     length -= ncopy, nread += ncopy, words++;
   }
 
-  if (errno != 0)
-    return Platform::TranslateError();
-
   if (count != nullptr) {
     *count = nread;
   }
+
+  if (errno != 0)
+    return Platform::TranslateError();
 
   return kSuccess;
 }
