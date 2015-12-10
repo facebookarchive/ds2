@@ -73,9 +73,6 @@ void SetLogOutputStream(FILE *stream) { sOutputStream = stream; }
 
 void vLog(int level, char const *classname, char const *funcname,
           char const *format, va_list ap) {
-  if (sLogLevel > level)
-    return;
-
   std::stringstream ss;
 
   std::vector<char> buffer;
@@ -96,9 +93,13 @@ void vLog(int level, char const *classname, char const *funcname,
   functag << funcname;
 
 #if defined(ENABLE_LOGCAT)
+  if (level >= sLogLevel || level >= kLogLevelDebug)
   // If we're on Android pollute logcat as well.
   androidLogcat(level, functag.str().c_str(), buffer.data());
 #endif
+
+  if (level < sLogLevel)
+    return;
 
   ss << '[' << Host::Platform::GetCurrentProcessId() << ']';
   ss << '[' << functag.str() << ']';
