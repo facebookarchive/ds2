@@ -94,8 +94,8 @@ void vLog(int level, char const *classname, char const *funcname,
 
 #if defined(ENABLE_LOGCAT)
   if (level >= sLogLevel || level >= kLogLevelDebug)
-  // If we're on Android pollute logcat as well.
-  androidLogcat(level, functag.str().c_str(), buffer.data());
+    // If we're on Android pollute logcat as well.
+    androidLogcat(level, functag.str().c_str(), buffer.data());
 #endif
 
   if (level < sLogLevel)
