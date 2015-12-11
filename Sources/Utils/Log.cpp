@@ -57,7 +57,10 @@ static void androidLogcat(int level, char const *functag, char const *message) {
     DS2_UNREACHABLE();
   }
 
-  __android_log_print(androidLevel, "ds2", "[%s] %s", functag, message);
+  std::stringstream ss(message);
+  std::string line;
+  while (std::getline(ss, line, '\n'))
+    __android_log_print(androidLevel, "ds2", "[%s] %s", functag, line.c_str());
 }
 #endif
 
