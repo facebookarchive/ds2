@@ -12,6 +12,7 @@
 #define __DebugServer2_Support_Stringify_h
 
 #include "DebugServer2/Base.h"
+#include "DebugServer2/Constants.h"
 
 #if defined(OS_WIN32)
 #include "DebugServer2/Support/Windows/Stringify.h"
@@ -25,12 +26,17 @@ namespace ds2 {
 namespace Support {
 
 #if defined(OS_WIN32)
-using Windows::Stringify;
+class Stringify : public Windows::Stringify
 #elif defined(OS_LINUX) || defined(OS_FREEBSD)
-using POSIX::Stringify;
+class Stringify : public POSIX::Stringify
 #else
 #error "Target not supported."
+class Stringify
 #endif
+{
+public:
+  static char const *Error(ErrorCode error, bool dieOnFail = true);
+};
 }
 }
 

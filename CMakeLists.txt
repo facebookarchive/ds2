@@ -175,6 +175,7 @@ set(SUPPORT_COMMON_SOURCES
     Sources/ErrorCodes.cpp
     Sources/MessageQueue.cpp
     Sources/SessionThread.cpp
+    Sources/Support/Stringify.cpp
     Sources/Utils/Log.cpp
     Sources/Utils/OptParse.cpp
     Sources/main.cpp
