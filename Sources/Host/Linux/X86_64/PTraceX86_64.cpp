@@ -19,10 +19,6 @@
 
 #define super ds2::Host::POSIX::PTrace
 
-#if defined(__ANDROID__)
-#define mxcr_mask mxcsr_mask
-#endif
-
 namespace ds2 {
 namespace Host {
 namespace Linux {
