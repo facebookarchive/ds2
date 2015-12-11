@@ -14,6 +14,7 @@
 #include "DebugServer2/GDBRemote/DebugSessionImpl.h"
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -21,6 +22,7 @@
 #include <iomanip>
 
 using ds2::Host::Platform;
+using ds2::Support::Stringify;
 using ds2::Target::Thread;
 
 namespace ds2 {
@@ -830,8 +832,8 @@ DebugSessionImpl::onResume(Session &session,
         action.action == kResumeActionContinueWithSignal) {
       error = thread->resume(action.signal, action.address);
       if (error != kSuccess) {
-        DS2LOG(Warning, "cannot resume pid %d tid %d, error=%d",
-               _process->pid(), thread->tid(), error);
+        DS2LOG(Warning, "cannot resume pid %d tid %d, error=%s",
+               _process->pid(), thread->tid(), Stringify::Error(error));
         continue;
       }
       excluded.insert(thread);
@@ -839,8 +841,8 @@ DebugSessionImpl::onResume(Session &session,
                action.action == kResumeActionSingleStepWithSignal) {
       error = thread->step(action.signal, action.address);
       if (error != kSuccess) {
-        DS2LOG(Warning, "cannot step pid %d tid %d, error=%d", _process->pid(),
-               thread->tid(), error);
+        DS2LOG(Warning, "cannot step pid %d tid %d, error=%s", _process->pid(),
+               thread->tid(), Stringify::Error(error));
         continue;
       }
       excluded.insert(thread);
@@ -864,8 +866,8 @@ DebugSessionImpl::onResume(Session &session,
 
       error = _process->resume(globalAction.signal, excluded);
       if (error != kSuccess && error != kErrorAlreadyExist) {
-        DS2LOG(Warning, "cannot resume pid %d, error=%d", _process->pid(),
-               error);
+        DS2LOG(Warning, "cannot resume pid %d, error=%s", _process->pid(),
+               Stringify::Error(error));
       }
     } else if (globalAction.action == kResumeActionSingleStep ||
                globalAction.action == kResumeActionSingleStepWithSignal) {
@@ -873,8 +875,8 @@ DebugSessionImpl::onResume(Session &session,
       if (excluded.find(thread) == excluded.end()) {
         error = thread->step(globalAction.signal, globalAction.address);
         if (error != kSuccess) {
-          DS2LOG(Warning, "cannot step pid %d tid %d, error=%d",
-                 _process->pid(), thread->tid(), error);
+          DS2LOG(Warning, "cannot step pid %d tid %d, error=%s",
+                 _process->pid(), thread->tid(), Stringify::Error(error));
         }
       }
     } else {
