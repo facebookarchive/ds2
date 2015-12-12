@@ -173,6 +173,7 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
 
 ErrorCode Platform::TranslateError(int error) {
   switch (error) {
+  case EAGAIN:
   case EBUSY:
     return ds2::kErrorBusy;
   case ESRCH:
