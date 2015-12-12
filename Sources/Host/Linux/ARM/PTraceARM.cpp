@@ -11,6 +11,8 @@
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Support/Stringify.h"
+#include "DebugServer2/Utils/Log.h"
 
 #define super ds2::Host::POSIX::PTrace
 
@@ -18,6 +20,8 @@
 #include <asm/ptrace.h>
 #include <sys/uio.h>
 #include <elf.h>
+
+using ds2::Support::Stringify;
 
 namespace ds2 {
 namespace Host {
@@ -43,7 +47,8 @@ void PTrace::initCPUState(ProcessId pid) {
   //
   unsigned int value = 0;
   if (wrapPtrace(PTRACE_GETHBPREGS, pid, 0, &value) < 0) {
-    // printf("Hardware breakpoint support disabled: %s\n", strerror(errno));
+    DS2LOG(Info, "hardware breakpoint support disabled, error=%s",
+           Stringify::Errno(errno));
     return;
   }
 
