@@ -24,6 +24,7 @@ public:
   static char const *Signal(int signal, bool dieOnFail = true);
   static char const *SignalCode(int signal, int code, bool dieOnFail = true);
   static char const *Errno(int error, bool dieOnFail = true);
+  static char const *Ptrace(int code, bool dieOnFail = true);
 };
 }
 }
