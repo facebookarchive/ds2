@@ -31,6 +31,11 @@ namespace POSIX {
       return nullptr;
 
 char const *Stringify::Signal(int signal, bool dieOnFail) {
+  // SIGRTMIN can expand to a glibc call (not usable in a switch statement), so
+  // check for it first.
+  if (signal == SIGRTMIN)
+    return "SIGRTMIN";
+
   switch (signal) {
     DO_STRINGIFY(SIGHUP)
     DO_STRINGIFY(SIGINT)
