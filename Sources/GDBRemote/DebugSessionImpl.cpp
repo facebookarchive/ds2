@@ -460,23 +460,12 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
       buffer = Architecture::GDBGenerateXMLFeatureByFileName(*desc, annex)
                    .substr(offset);
     }
-    if (buffer.length() > length) {
-      buffer.resize(length);
-      last = false;
-    }
-    return kSuccess;
   } else if (object == "auxv") {
     ErrorCode error = _process->getAuxiliaryVector(buffer);
     if (error != kSuccess)
       return error;
 
     buffer = buffer.substr(offset);
-    if (buffer.length() > length) {
-      buffer.resize(length);
-      last = false;
-    }
-
-    return kSuccess;
   } else if (object == "threads") {
     std::ostringstream ss;
 
@@ -493,11 +482,6 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
     ss << "</threads>" << std::endl;
 
     buffer = ss.str().substr(offset);
-    if (buffer.length() > length) {
-      buffer.resize(length);
-      last = false;
-    }
-    return kSuccess;
   } else if (object == "libraries") {
     std::ostringstream ss;
 
@@ -517,12 +501,6 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
 
     ss << "</library-list>";
     buffer = ss.str().substr(offset);
-    if (buffer.length() > length) {
-      buffer.resize(length);
-      last = false;
-    }
-
-    return kSuccess;
   } else if (object == "libraries-svr4") {
     std::ostringstream ss;
     std::ostringstream sslibs;
@@ -554,16 +532,17 @@ ErrorCode DebugSessionImpl::onXferRead(Session &, std::string const &object,
       ss << sslibs.str();
       ss << "</library-list-svr4>";
       buffer = ss.str().substr(offset);
-      if (buffer.length() > length) {
-        buffer.resize(length);
-        last = false;
-      }
-
-      return kSuccess;
     }
+  } else {
+    return kErrorUnsupported;
   }
 
-  return kErrorUnsupported;
+  if (buffer.length() > length) {
+    buffer.resize(length);
+    last = false;
+  }
+
+  return kSuccess;
 }
 
 ErrorCode DebugSessionImpl::onReadGeneralRegisters(
