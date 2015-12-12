@@ -11,9 +11,13 @@
 #ifndef __DebugServer2_Host_Linux_PTrace_h
 #define __DebugServer2_Host_Linux_PTrace_h
 
+#include "DebugServer2/Host/POSIX/PTrace.h"
+#include "DebugServer2/Support/Stringify.h"
+#include "DebugServer2/Utils/Log.h"
+
 #include <sys/ptrace.h>
 
-#include "DebugServer2/Host/POSIX/PTrace.h"
+using ds2::Support::Stringify;
 
 namespace ds2 {
 namespace Host {
@@ -97,6 +101,8 @@ protected:
 #else
     typedef enum __ptrace_request ptrace_request_t;
 #endif
+    DS2LOG(Debug, "running ptrace command %s on pid %d",
+           Stringify::Ptrace(request, false), pid);
     return ::ptrace(static_cast<ptrace_request_t>(request), pid,
                     (void *)(uintptr_t)addr, (void *)(uintptr_t)data);
   }
