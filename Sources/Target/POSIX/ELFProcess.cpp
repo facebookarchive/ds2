@@ -170,7 +170,6 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
   ELFLinkMap<T> linkMap;
   T address;
   T linkMapAddress;
-  bool isMain = true;
 
   ErrorCode error =
       process->readMemory(addressToDPtr, &address, sizeof(address));
@@ -193,7 +192,6 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
       return error;
 
     SharedLibraryInfo shlib;
-    shlib.main = isMain;
     shlib.sections.clear();
     shlib.svr4.mapAddress = linkMapAddress;
     shlib.svr4.baseAddress = linkMap.baseAddress;
@@ -203,10 +201,11 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
     if (error != ds2::kSuccess)
       return error;
 
+    shlib.main = (process->loadBase() == linkMap.baseAddress);
+
     cb(shlib);
 
     linkMapAddress = linkMap.nextAddress;
-    isMain = false;
   }
 
   return ds2::kSuccess;
