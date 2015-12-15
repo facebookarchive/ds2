@@ -188,8 +188,6 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
 
   linkMapAddress = debug.mapAddress;
   while (linkMapAddress != 0) {
-    char nameBuffer[PATH_MAX + 1];
-
     error = ReadELFLinkMap(process, linkMapAddress, linkMap);
     if (error != ds2::kSuccess)
       return error;
@@ -201,16 +199,9 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
     shlib.svr4.baseAddress = linkMap.baseAddress;
     shlib.svr4.ldAddress = linkMap.ldAddress;
 
-    size_t nread = 0;
-    error =
-        process->readMemory(linkMap.nameAddress, nameBuffer, PATH_MAX, &nread);
-    if (error != ds2::kSuccess && nread == 0)
+    error = process->readString(linkMap.nameAddress, shlib.path, PATH_MAX);
+    if (error != ds2::kSuccess)
       return error;
-
-    if (strnlen(nameBuffer, nread) == nread)
-      return error;
-
-    shlib.path = nameBuffer;
 
     cb(shlib);
 
