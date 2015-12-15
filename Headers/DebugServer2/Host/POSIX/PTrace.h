@@ -40,6 +40,9 @@ public:
   virtual ErrorCode kill(ProcessThreadId const &ptid, int signal) = 0;
 
 public:
+  virtual ErrorCode readString(ProcessThreadId const &ptid,
+                               Address const &address, std::string &str,
+                               size_t length, size_t *nread = nullptr) = 0;
   virtual ErrorCode readMemory(ProcessThreadId const &ptid,
                                Address const &address, void *buffer,
                                size_t length, size_t *nread = nullptr) = 0;

@@ -133,9 +133,9 @@ ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {
   return kSuccess;
 }
 
-ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
-                             Address const &address, void *buffer,
-                             size_t length, size_t *count) {
+ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
+                            void *buffer, size_t length, size_t *count,
+                            bool null_term) {
   pid_t pid;
 
   if (!ptid.valid() || !address.valid())
@@ -147,6 +147,7 @@ ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
     pid = ptid.pid;
   }
 
+  bool foundNull = false;
   size_t nread = 0;
   uintptr_t base = address;
   uintptr_t *words = (uintptr_t *)buffer;
@@ -178,6 +179,11 @@ ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
     if (errno != 0)
       break;
 
+    if (null_term && strnlen((char *)words, ncopy) < ncopy) {
+      foundNull = true;
+      break;
+    }
+
     length -= ncopy, nread += ncopy, words++;
   }
 
@@ -188,7 +194,28 @@ ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
   if (errno != 0)
     return Platform::TranslateError();
 
+  if (null_term && !foundNull)
+    return kErrorNameTooLong;
+
   return kSuccess;
+}
+
+ErrorCode PTrace::readString(ProcessThreadId const &ptid,
+                             Address const &address, std::string &str,
+                             size_t length, size_t *count) {
+  char buffer[length];
+  ErrorCode err = readBytes(ptid, address, buffer, length, count, true);
+  if (err != kSuccess)
+    return err;
+
+  str = std::string(buffer);
+  return kSuccess;
+}
+
+ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
+                             Address const &address, void *buffer,
+                             size_t length, size_t *count) {
+  return readBytes(ptid, address, buffer, length, count, false);
 }
 
 ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,

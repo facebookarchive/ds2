@@ -77,6 +77,11 @@ ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
   return ptrace().resume(_pid, info, signal);
 }
 
+ErrorCode Process::readString(Address const &address, std::string &str,
+                              size_t length, size_t *count) {
+  return ptrace().readString(_pid, address, str, length, count);
+}
+
 ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
                               size_t *count) {
   return ptrace().readMemory(_pid, address, data, length, count);

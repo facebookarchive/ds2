@@ -153,6 +153,11 @@ ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
   return kSuccess;
 }
 
+ErrorCode Process::readString(Address const &address, std::string &str,
+                              size_t length, size_t *nread) {
+  return kErrorUnsupported;
+}
+
 ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
                               size_t *nread) {
   BOOL result =

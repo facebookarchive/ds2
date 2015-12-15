@@ -92,6 +92,8 @@ public:
   enumerateThreads(std::function<void(Thread *)> const &cb) const;
 
 public:
+  virtual ErrorCode readString(Address const &address, std::string &str,
+                               size_t length, size_t *nread = nullptr) = 0;
   virtual ErrorCode readMemory(Address const &address, void *buffer,
                                size_t length, size_t *nread = nullptr) = 0;
   virtual ErrorCode writeMemory(Address const &address, void const *buffer,

@@ -41,7 +41,15 @@ public:
 public:
   virtual ErrorCode kill(ProcessThreadId const &ptid, int signal);
 
+protected:
+  virtual ErrorCode readBytes(ProcessThreadId const &ptid,
+                              Address const &address, void *buffer,
+                              size_t length, size_t *nread, bool null_term);
+
 public:
+  virtual ErrorCode readString(ProcessThreadId const &ptid,
+                               Address const &address, std::string &str,
+                               size_t length, size_t *nread = nullptr);
   virtual ErrorCode readMemory(ProcessThreadId const &ptid,
                                Address const &address, void *buffer,
                                size_t length, size_t *nread = nullptr);

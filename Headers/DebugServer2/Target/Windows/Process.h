@@ -53,6 +53,8 @@ public:
          std::set<Thread *> const &excluded = std::set<Thread *>());
 
 public:
+  ErrorCode readString(Address const &address, std::string &str, size_t length,
+                       size_t *nread = nullptr);
   ErrorCode readMemory(Address const &address, void *data, size_t length,
                        size_t *nread = nullptr);
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,

@@ -422,6 +422,15 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
   return kErrorNotFound;
 }
 
+ErrorCode Process::readString(Address const &address, std::string &str,
+                              size_t length, size_t *count) {
+  if (_currentThread == nullptr)
+    return super::readString(address, str, length, count);
+
+  return ptrace().readString(_currentThread->tid(), address, str, length,
+                             count);
+}
+
 ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
                               size_t *count) {
   if (_currentThread == nullptr)

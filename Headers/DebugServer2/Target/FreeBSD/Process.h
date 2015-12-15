@@ -84,6 +84,8 @@ protected:
   ErrorCode attach(int waitStatus);
 
 public:
+  virtual ErrorCode readString(Address const &address, std::string &str,
+                               size_t length, size_t *nread = nullptr);
   virtual ErrorCode readMemory(Address const &address, void *data,
                                size_t length, size_t *count = nullptr);
   virtual ErrorCode writeMemory(Address const &address, void const *data,
