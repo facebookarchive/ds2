@@ -374,6 +374,8 @@ ErrorCode Platform::TranslateError(DWORD error) {
     return ds2::kErrorAlreadyExist;
   case ERROR_INVALID_PARAMETER:
     return ds2::kErrorInvalidArgument;
+  case ERROR_BAD_EXE_FORMAT:
+    return ds2::kErrorInvalidArgument;
   case ERROR_PARTIAL_COPY:
     return ds2::kErrorNoSpace;
   default:
