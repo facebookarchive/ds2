@@ -98,7 +98,7 @@ const char *Platform::GetHostName(bool fqdn) {
 
 char const *Platform::GetOSTypeName() { return "windows"; }
 
-char const *Platform::GetOSVendorName() { return "unknown"; }
+char const *Platform::GetOSVendorName() { return "pc"; }
 
 char const *Platform::GetOSVersion() {
   static char versionStr[32] = {'\0'};
