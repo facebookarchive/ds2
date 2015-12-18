@@ -39,6 +39,7 @@ protected:
 
 public:
   virtual ErrorCode attach(bool reattach = false);
+  virtual ErrorCode attach(ProcessId pid);
   virtual ErrorCode detach();
 
 public:
@@ -90,7 +91,7 @@ public:
 
 public:
   static Target::Process *Create(Host::ProcessSpawner &spawner);
-  static Target::Process *Attach(ProcessId pid) { return nullptr; }
+  static Target::Process *Attach(ProcessId pid);
 
 public:
   virtual ErrorCode getSharedLibraryInfoAddress(Address &address) {
