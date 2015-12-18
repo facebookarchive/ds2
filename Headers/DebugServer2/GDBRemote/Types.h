@@ -36,9 +36,7 @@ struct StopCode {
   enum Event {
     kSignal,
     kCleanExit,
-#if !defined(OS_WIN32)
     kSignalExit,
-#endif
   };
 
   Event event;

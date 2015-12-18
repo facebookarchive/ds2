@@ -358,11 +358,9 @@ std::string StopCode::encode(CompatibilityMode mode) const {
     ss << DEC;
     break;
 
-#if !defined(OS_WIN32)
   case kSignalExit:
     ss << 'X' << HEX(2) << (signal & 0xff) << DEC;
     break;
-#endif
 
   case kCleanExit:
     ss << 'W' << HEX(2) << (status & 0xff) << DEC;

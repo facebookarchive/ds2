@@ -72,12 +72,15 @@ ErrorCode Process::terminate() {
     return Platform::TranslateError();
 
   _terminated = true;
-  return kSuccess;
+  return detach();
 }
 
 bool Process::isAlive() const { return !_terminated; }
 
 ErrorCode Process::wait(int *status, bool hang) {
+  if (_terminated)
+    return kSuccess;
+
   DEBUG_EVENT de;
   bool keepGoing = true;
 
