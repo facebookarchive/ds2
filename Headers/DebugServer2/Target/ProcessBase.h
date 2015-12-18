@@ -27,6 +27,8 @@ namespace Target {
 class ProcessBase {
 public:
   enum { kFlagNewProcess = 0, kFlagAttachedProcess = (1 << 0) };
+  typedef std::map<ThreadId, Thread *> IdentityMap;
+
 
 protected:
   uint32_t _flags;
@@ -34,7 +36,7 @@ protected:
   ProcessInfo _info;
   Address _loadBase;
   Address _entryPoint;
-  ThreadBase::IdentityMap _threads;
+  IdentityMap _threads;
   Thread *_currentThread;
 
 protected:

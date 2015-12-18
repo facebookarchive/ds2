@@ -19,9 +19,6 @@ namespace Target {
 
 class ThreadBase {
 public:
-  typedef std::map<ThreadId, Thread *> IdentityMap;
-
-public:
   enum State { kInvalid, kRunning, kStepped, kStopped, kTerminated };
 
 protected:
