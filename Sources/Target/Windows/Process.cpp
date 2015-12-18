@@ -11,12 +11,12 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Process"
 
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <psapi.h>
+#include <tlhelp32.h>
 
 using ds2::Host::ProcessSpawner;
 using ds2::Host::Platform;
@@ -48,6 +48,79 @@ ErrorCode Process::initialize(ProcessId pid, HANDLE handle, ThreadId tid,
 
   _currentThread = new Thread(this, tid, threadHandle);
 
+  return kSuccess;
+}
+
+static ThreadId GetFirstThreadIdForProcess(ProcessId pid) {
+  HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+  if (snapshot == INVALID_HANDLE_VALUE)
+    return kAnyThreadId;
+
+  THREADENTRY32 threadEntry;
+  threadEntry.dwSize = sizeof(THREADENTRY32);
+
+  if (!Thread32First(snapshot, &threadEntry))
+    goto thread_fail;
+
+  do {
+    if (threadEntry.th32OwnerProcessID == pid) {
+      CloseHandle(snapshot);
+      return threadEntry.th32ThreadID;
+    }
+  } while (Thread32Next(snapshot, &threadEntry));
+
+thread_fail:
+  CloseHandle(snapshot);
+  return kAnyThreadId;
+}
+
+Target::Process *Process::Attach(ProcessId pid) {
+  if (pid < 0)
+    return nullptr;
+
+  Target::Process *process = new Target::Process;
+
+  ErrorCode error = process->attach(pid);
+  if (error != kSuccess)
+    goto fail;
+
+  HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
+  if (!handle)
+    goto fail;
+
+  ThreadId tid = GetFirstThreadIdForProcess(pid);
+  if (tid == kAnyThreadId)
+    goto proc_fail;
+
+  HANDLE threadHandle = OpenThread(THREAD_ALL_ACCESS, false, tid);
+  if (!threadHandle)
+    goto proc_fail;
+
+  error =
+      process->initialize(pid, handle, tid, threadHandle, kFlagAttachedProcess);
+  if (error != kSuccess)
+    goto init_fail;
+
+  return process;
+
+init_fail:
+  process->detach();
+  CloseHandle(threadHandle);
+
+proc_fail:
+  CloseHandle(handle);
+
+fail:
+  delete process;
+  return nullptr;
+}
+
+ErrorCode Process::attach(ProcessId pid) {
+  BOOL result = DebugActiveProcess(pid);
+  if (!result)
+    return Platform::TranslateError();
+
+  _flags |= kFlagAttachedProcess;
   return kSuccess;
 }
 

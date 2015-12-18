@@ -36,11 +36,10 @@ public:
 protected:
   virtual ErrorCode initialize(ProcessId pid, HANDLE handle, ThreadId tid,
                                HANDLE threadHandle, uint32_t flags);
+  virtual ErrorCode attach(ProcessId pid);
 
 public:
   virtual ErrorCode detach();
-
-public:
   virtual ErrorCode interrupt();
   virtual ErrorCode terminate();
   virtual bool isAlive() const;
@@ -89,7 +88,7 @@ public:
 
 public:
   static Target::Process *Create(Host::ProcessSpawner &spawner);
-  static Target::Process *Attach(ProcessId pid) { return nullptr; }
+  static Target::Process *Attach(ProcessId pid);
 
 public:
   virtual ErrorCode getSharedLibraryInfoAddress(Address &address) {
