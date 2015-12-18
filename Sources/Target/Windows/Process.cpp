@@ -53,7 +53,18 @@ ErrorCode Process::initialize(ProcessId pid, HANDLE handle, ThreadId tid,
 
 ErrorCode Process::attach(bool reattach) { return kErrorUnsupported; }
 
-ErrorCode Process::detach() { return kErrorUnsupported; }
+ErrorCode Process::detach() {
+  prepareForDetach();
+
+  BOOL result = DebugActiveProcessStop(_pid);
+  if (!result)
+    return Platform::TranslateError();
+
+  cleanup();
+  _flags &= ~kFlagAttachedProcess;
+
+  return kSuccess;
+}
 
 ErrorCode Process::terminate() {
   BOOL result = TerminateProcess(_handle, 0);
