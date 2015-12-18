@@ -135,7 +135,7 @@ ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {
 
 ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
                             void *buffer, size_t length, size_t *count,
-                            bool null_term) {
+                            bool nullTerm) {
   pid_t pid;
 
   if (!ptid.valid() || !address.valid())
@@ -179,7 +179,7 @@ ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
     if (errno != 0)
       break;
 
-    if (null_term && strnlen((char *)words, ncopy) < ncopy) {
+    if (nullTerm && strnlen((char *)words, ncopy) < ncopy) {
       foundNull = true;
       break;
     }
@@ -194,7 +194,7 @@ ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
   if (errno != 0)
     return Platform::TranslateError();
 
-  if (null_term && !foundNull)
+  if (nullTerm && !foundNull)
     return kErrorNameTooLong;
 
   return kSuccess;

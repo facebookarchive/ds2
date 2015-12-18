@@ -44,7 +44,7 @@ public:
 protected:
   virtual ErrorCode readBytes(ProcessThreadId const &ptid,
                               Address const &address, void *buffer,
-                              size_t length, size_t *nread, bool null_term);
+                              size_t length, size_t *nread, bool nullTerm);
 
 public:
   virtual ErrorCode readString(ProcessThreadId const &ptid,
