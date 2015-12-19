@@ -105,7 +105,7 @@ ErrorCode Process::attach(int waitStatus) {
           return;
 
         keepGoing = true;
-        Thread *thread = new Thread(this, tid);
+        auto thread = new Thread(this, tid);
         if (ptrace().attach(tid) == kSuccess) {
           int status;
           ptrace().wait(tid, true, &status);

@@ -132,7 +132,7 @@ Socket *Socket::accept() {
   ::fcntl(handle, F_SETFD, flags);
 #endif
 
-  Socket *client = new Socket(handle);
+  auto client = new Socket(handle);
   client->setNonBlocking();
   return client;
 }

@@ -103,7 +103,7 @@ ds2::Target::Process *Process::Attach(ProcessId pid) {
   //
   // Create the process.
   //
-  Target::Process *process = new Target::Process;
+  auto process = new Target::Process;
 
   //
   // And try to attach.
@@ -134,7 +134,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   //
   // Create the process.
   //
-  Target::Process *process = new Target::Process;
+  auto process = new Target::Process;
 
   error = spawner.run(
       [process]() { return process->ptrace().traceMe(true) == kSuccess; });

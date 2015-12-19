@@ -48,7 +48,7 @@ static bool gLLDBCompat = false;
 
 #if !defined(OS_WIN32)
 static void PlatformMain(int argc, char **argv, int port) {
-  Socket *server = new Socket;
+  auto server = new Socket;
 
   if (!server->create()) {
     DS2LOG(Error, "cannot create server socket on port %d: %s", port,
@@ -86,7 +86,7 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
 
   Session session(gLLDBCompat ? ds2::GDBRemote::kCompatibilityModeLLDB
                               : ds2::GDBRemote::kCompatibilityModeGDB);
-  QueueChannel *qchannel = new QueueChannel(client);
+  auto qchannel = new QueueChannel(client);
   SessionThread thread(qchannel, &session);
 
   session.setDelegate(impl);
@@ -105,7 +105,7 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
 static void DebugMain(ds2::StringCollection const &args,
                       ds2::EnvironmentBlock const &env, int attachPid, int port,
                       std::string const &namedPipePath) {
-  Socket *server = new Socket;
+  auto server = new Socket;
 
   if (!server->create()) {
     DS2LOG(Error, "cannot create server socket on port %d: %s", port,
@@ -151,7 +151,7 @@ static void DebugMain(ds2::StringCollection const &args,
 
 #if !defined(OS_WIN32)
 static void SlaveMain(int argc, char **argv) {
-  Socket *server = new Socket;
+  auto server = new Socket;
 
   if (!server->create())
     exit(EXIT_FAILURE);
