@@ -28,13 +28,13 @@ namespace GDBRemote {
 
 static std::string EscapeForTerm(std::string const &s) {
   std::ostringstream ss;
-  for (size_t n = 0; n < s.length(); n++) {
-    unsigned c = static_cast<unsigned>(s[n] & 0xff);
+  for (char n : s) {
+    unsigned c = static_cast<unsigned>(n & 0xff);
     if (c < 0x20 || c > 0x7f) {
       ss << "\\x" << std::hex << std::setw(2) << std::setfill('0') << c
          << std::dec;
     } else {
-      ss << s[n];
+      ss << n;
     }
   }
   return ss.str();

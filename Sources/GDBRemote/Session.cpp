@@ -3128,8 +3128,8 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     if (error != kSuccess) {
       ss << 'x';
     } else {
-      for (size_t n = 0; n < sizeof(digest); n++) {
-        ss << std::hex << std::setw(2) << std::setfill('0') << digest[n];
+      for (unsigned char n : digest) {
+        ss << std::hex << std::setw(2) << std::setfill('0') << n;
       }
     }
   } else if (op == "size") {

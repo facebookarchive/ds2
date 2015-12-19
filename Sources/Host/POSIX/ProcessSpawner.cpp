@@ -544,10 +544,10 @@ void ProcessSpawner::redirectionThread() {
       break;
   }
 
-  for (size_t n = 0; n < 3; n++) {
-    if (_descriptors[n].fd != -1) {
-      ::close(_descriptors[n].fd);
-      _descriptors[n].fd = -1;
+  for (auto &_descriptor : _descriptors) {
+    if (_descriptor.fd != -1) {
+      ::close(_descriptor.fd);
+      _descriptor.fd = -1;
     }
   }
 }

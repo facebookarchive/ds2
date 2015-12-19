@@ -41,9 +41,9 @@ static inline uint8_t HexToByte(char const *chars) {
 
 static inline std::string StringToHex(std::string const &str) {
   std::string result;
-  for (size_t n = 0; n < str.size(); n++) {
-    result += NibbleToHex(str[n] >> 4);
-    result += NibbleToHex(str[n] & 15);
+  for (char n : str) {
+    result += NibbleToHex(n >> 4);
+    result += NibbleToHex(n & 15);
   }
   return result;
 }

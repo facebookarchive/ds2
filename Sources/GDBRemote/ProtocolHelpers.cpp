@@ -17,8 +17,8 @@ namespace GDBRemote {
 
 uint8_t Checksum(std::string const &data) {
   uint8_t csum = 0;
-  for (size_t n = 0; n < data.length(); n++) {
-    csum += data[n];
+  for (char n : data) {
+    csum += n;
   }
   return csum;
 }

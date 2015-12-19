@@ -111,16 +111,16 @@ inline void JSObject::Indent(FILE *fp, size_t n) {
 inline std::string JSObject::QuoteString(std::string const &s) {
   std::string o;
 
-  for (size_t n = 0; n < s.length(); n++) {
-    if (static_cast<uint8_t>(s[n]) < 32) {
+  for (char n : s) {
+    if (static_cast<uint8_t>(n) < 32) {
       o += '\\';
-      o += "0123456789abcdef"[(s[n] >> 4) & 0xf];
-      o += "0123456789abcdef"[(s[n] >> 0) & 0xf];
+      o += "0123456789abcdef"[(n >> 4) & 0xf];
+      o += "0123456789abcdef"[(n >> 0) & 0xf];
     } else {
-      if (s[n] == '\"' || s[n] == '\\') {
+      if (n == '\"' || n == '\\') {
         o += '\\';
       }
-      o += s[n];
+      o += n;
     }
   }
 

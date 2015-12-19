@@ -79,8 +79,8 @@ std::string GDBXMLGenerator::Escape(std::string const &s) {
   std::ostringstream os;
 
   if (s.find_first_of("<>&\"") != std::string::npos) {
-    for (size_t n = 0; n < s.length(); n++) {
-      switch (s[n]) {
+    for (char n : s) {
+      switch (n) {
       case '<':
         os << "&lt;";
         break;
@@ -94,7 +94,7 @@ std::string GDBXMLGenerator::Escape(std::string const &s) {
         os << "&quot;";
         break;
       default:
-        os << s[n];
+        os << n;
         break;
       }
     }
