@@ -42,17 +42,17 @@ private:
 
 public:
   Socket();
-  ~Socket();
+  ~Socket() override;
 
 public:
-  void close();
+  void close() override;
 
 public:
   inline bool valid() const { return (_handle != INVALID_SOCKET); }
 
 public:
   inline bool listening() const { return (_state == kStateListening); }
-  inline virtual bool connected() const { return (_state == kStateConnected); }
+  inline bool connected() const override { return (_state == kStateConnected); }
 
 public:
   bool create();
@@ -69,14 +69,14 @@ public:
   std::string error() const;
 
 public:
-  bool wait(int ms = -1);
+  bool wait(int ms = -1) override;
 
 public:
   bool setNonBlocking();
 
 public:
-  ssize_t send(void const *buffer, size_t length);
-  ssize_t receive(void *buffer, size_t length);
+  ssize_t send(void const *buffer, size_t length) override;
+  ssize_t receive(void *buffer, size_t length) override;
 };
 }
 }

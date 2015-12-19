@@ -99,12 +99,12 @@ public:
   inline static JSInteger *New(int64_t value) { return new JSInteger(value); }
 
 public:
-  virtual JSObject::Type type() const { return JSInteger::JSType(); }
+  JSObject::Type type() const override { return JSInteger::JSType(); }
 
   static JSObject::Type JSType() { return JSObject::kTypeInteger; }
 
 public:
-  virtual bool equals(JSObject const *obj) const {
+  bool equals(JSObject const *obj) const override {
     if (JSObject::equals(obj))
       return true;
 
@@ -117,8 +117,8 @@ public:
   }
 
 protected:
-  virtual void dump1(FILE *fp, size_t indent, size_t) const;
-  virtual std::string toString1() const;
+  void dump1(FILE *fp, size_t indent, size_t) const override;
+  std::string toString1() const override;
 };
 
 class JSReal : public JSObject {
@@ -134,12 +134,12 @@ public:
   inline static JSReal *New(double value) { return new JSReal(value); }
 
 public:
-  virtual JSObject::Type type() const { return JSReal::JSType(); }
+  JSObject::Type type() const override { return JSReal::JSType(); }
 
   static JSObject::Type JSType() { return JSObject::kTypeReal; }
 
 public:
-  virtual bool equals(JSObject const *obj) const {
+  bool equals(JSObject const *obj) const override {
     if (JSObject::equals(obj))
       return true;
 
@@ -152,8 +152,8 @@ public:
   }
 
 protected:
-  virtual void dump1(FILE *fp, size_t indent, size_t) const;
-  virtual std::string toString1() const;
+  void dump1(FILE *fp, size_t indent, size_t) const override;
+  std::string toString1() const override;
 };
 
 class JSString : public JSObject {
@@ -171,12 +171,12 @@ public:
   }
 
 public:
-  virtual JSObject::Type type() const { return JSString::JSType(); }
+  JSObject::Type type() const override { return JSString::JSType(); }
 
   static JSObject::Type JSType() { return JSObject::kTypeString; }
 
 public:
-  virtual bool equals(JSObject const *obj) const {
+  bool equals(JSObject const *obj) const override {
     if (JSObject::equals(obj))
       return true;
 
@@ -189,8 +189,8 @@ public:
   }
 
 protected:
-  virtual void dump1(FILE *fp, size_t indent, size_t) const;
-  virtual std::string toString1() const;
+  void dump1(FILE *fp, size_t indent, size_t) const override;
+  std::string toString1() const override;
 };
 
 class JSBoolean : public JSObject {
@@ -217,12 +217,12 @@ public:
   inline bool value() const { return _value; }
 
 public:
-  virtual JSObject::Type type() const { return JSBoolean::JSType(); }
+  JSObject::Type type() const override { return JSBoolean::JSType(); }
 
   static JSObject::Type JSType() { return JSObject::kTypeBoolean; }
 
 public:
-  virtual bool equals(JSObject const *obj) const {
+  bool equals(JSObject const *obj) const override {
     if (JSObject::equals(obj))
       return true;
 
@@ -235,8 +235,8 @@ public:
   }
 
 protected:
-  virtual void dump1(FILE *fp, size_t indent, size_t) const;
-  virtual std::string toString1() const;
+  void dump1(FILE *fp, size_t indent, size_t) const override;
+  std::string toString1() const override;
 };
 
 class JSNull : public JSObject {
@@ -255,12 +255,12 @@ public:
   }
 
 public:
-  virtual JSObject::Type type() const { return JSNull::JSType(); }
+  JSObject::Type type() const override { return JSNull::JSType(); }
 
   static JSObject::Type JSType() { return JSObject::kTypeNull; }
 
 public:
-  virtual bool equals(JSObject const *obj) const {
+  bool equals(JSObject const *obj) const override {
     if (JSObject::equals(obj))
       return true;
 
@@ -273,8 +273,8 @@ public:
   }
 
 protected:
-  virtual void dump1(FILE *fp, size_t indent, size_t) const;
-  virtual std::string toString1() const;
+  void dump1(FILE *fp, size_t indent, size_t) const override;
+  std::string toString1() const override;
 };
 
 class JSArray : public JSObject {
@@ -314,12 +314,12 @@ public:
   inline Vector::const_iterator end() const { return _array.end(); }
 
 public:
-  virtual JSObject::Type type() const { return JSArray::JSType(); }
+  JSObject::Type type() const override { return JSArray::JSType(); }
 
   static JSObject::Type JSType() { return JSObject::kTypeArray; }
 
 public:
-  virtual bool equals(JSObject const *obj) const {
+  bool equals(JSObject const *obj) const override {
     if (JSObject::equals(obj))
       return true;
 
@@ -343,8 +343,8 @@ public:
   }
 
 public:
-  virtual void dump1(FILE *fp, size_t, size_t cindent) const;
-  virtual std::string toString1() const;
+  void dump1(FILE *fp, size_t, size_t cindent) const override;
+  std::string toString1() const override;
 };
 
 class JSDictionary : public JSObject {
@@ -398,12 +398,12 @@ public:
   inline KeyVector::const_iterator end() const { return _keys.end(); }
 
 public:
-  virtual JSObject::Type type() const { return JSDictionary::JSType(); }
+  JSObject::Type type() const override { return JSDictionary::JSType(); }
 
   static JSObject::Type JSType() { return JSObject::kTypeDictionary; }
 
 public:
-  virtual bool equals(JSObject const *obj) const {
+  bool equals(JSObject const *obj) const override {
     if (JSObject::equals(obj))
       return true;
 
@@ -427,15 +427,15 @@ public:
   }
 
 protected:
-  virtual void dump1(FILE *fp, size_t, size_t cindent) const;
-  virtual std::string toString1() const;
+  void dump1(FILE *fp, size_t, size_t cindent) const override;
+  std::string toString1() const override;
 
 public:
   static JSDictionary *Parse(std::string const &path);
   static JSDictionary *
   Parse(std::string const &path,
-        std::function<bool(unsigned, unsigned, std::string const &)> const &
-            error);
+        std::function<bool(unsigned, unsigned, std::string const &)> const
+            &error);
 
   static JSDictionary *Parse(FILE *fp);
   static JSDictionary *

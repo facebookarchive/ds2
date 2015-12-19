@@ -23,20 +23,20 @@ private:
 
 public:
   SoftwareBreakpointManager(Target::Process *process);
-  ~SoftwareBreakpointManager();
+  ~SoftwareBreakpointManager() override;
 
 protected:
-  virtual bool hit(Target::Thread *thread);
+  bool hit(Target::Thread *thread) override;
 
 public:
-  virtual void clear();
+  void clear() override;
 
 public:
-  virtual ErrorCode add(Address const &address, Type type, size_t size);
+  ErrorCode add(Address const &address, Type type, size_t size) override;
 
 protected:
-  virtual void enableLocation(Site const &site);
-  virtual void disableLocation(Site const &site);
+  void enableLocation(Site const &site) override;
+  void disableLocation(Site const &site) override;
 };
 }
 }

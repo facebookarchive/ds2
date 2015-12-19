@@ -27,7 +27,7 @@ public:
 
 public:
   QueueChannel(Channel *remote);
-  virtual ~QueueChannel();
+  ~QueueChannel() override;
 
 public:
   inline Channel *remote() const {
@@ -38,20 +38,20 @@ public:
   }
 
 public:
-  virtual void close();
+  void close() override;
 
 public:
-  virtual bool connected() const;
+  bool connected() const override;
 
 public:
-  virtual bool wait(int ms = -1);
+  bool wait(int ms = -1) override;
 
 public:
-  virtual ssize_t send(void const *buffer, size_t length);
-  virtual ssize_t receive(void *buffer, size_t length);
+  ssize_t send(void const *buffer, size_t length) override;
+  ssize_t receive(void *buffer, size_t length) override;
 
 public:
-  virtual bool receive(std::string &buffer);
+  bool receive(std::string &buffer) override;
 };
 }
 }

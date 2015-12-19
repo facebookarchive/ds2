@@ -39,115 +39,110 @@ public:
   DebugSessionImpl(StringCollection const &args, EnvironmentBlock const &env);
   DebugSessionImpl(int attachPid);
   DebugSessionImpl();
-  ~DebugSessionImpl();
+  ~DebugSessionImpl() override;
 
 protected:
-  virtual size_t getGPRSize() const;
+  size_t getGPRSize() const override;
 
 protected:
-  virtual ErrorCode onInterrupt(Session &session);
+  ErrorCode onInterrupt(Session &session) override;
 
 protected:
-  virtual ErrorCode onQuerySupported(Session &session,
-                                     Feature::Collection const &remoteFeatures,
-                                     Feature::Collection &localFeatures);
-  virtual ErrorCode onPassSignals(Session &session,
-                                  std::vector<int> const &signals);
-  virtual ErrorCode onProgramSignals(Session &session,
-                                     std::vector<int> const &signals);
-  virtual ErrorCode onNonStopMode(Session &session, bool enable);
+  ErrorCode onQuerySupported(Session &session,
+                             Feature::Collection const &remoteFeatures,
+                             Feature::Collection &localFeatures) override;
+  ErrorCode onPassSignals(Session &session,
+                          std::vector<int> const &signals) override;
+  ErrorCode onProgramSignals(Session &session,
+                             std::vector<int> const &signals) override;
+  ErrorCode onNonStopMode(Session &session, bool enable) override;
 
 protected:
-  virtual ErrorCode onQueryCurrentThread(Session &session,
-                                         ProcessThreadId &ptid);
-  virtual ErrorCode onThreadIsAlive(Session &session,
-                                    ProcessThreadId const &ptid);
-  virtual ErrorCode onQueryAttached(Session &session, ProcessId pid,
-                                    bool &attachedProcess);
-  virtual ErrorCode onQueryProcessInfo(Session &session, ProcessInfo &info);
-  virtual ErrorCode onQueryThreadStopInfo(Session &session,
-                                          ProcessThreadId const &ptid,
-                                          bool list, StopCode &stop);
+  ErrorCode onQueryCurrentThread(Session &session,
+                                 ProcessThreadId &ptid) override;
+  ErrorCode onThreadIsAlive(Session &session,
+                            ProcessThreadId const &ptid) override;
+  ErrorCode onQueryAttached(Session &session, ProcessId pid,
+                            bool &attachedProcess) override;
+  ErrorCode onQueryProcessInfo(Session &session, ProcessInfo &info) override;
+  ErrorCode onQueryThreadStopInfo(Session &session, ProcessThreadId const &ptid,
+                                  bool list, StopCode &stop) override;
 
-  virtual ErrorCode onQueryThreadList(Session &session, ProcessId pid,
-                                      ThreadId lastTid, ThreadId &tid);
-
-protected:
-  virtual ErrorCode onQueryRegisterInfo(Session &session, uint32_t regno,
-                                        RegisterInfo &info);
+  ErrorCode onQueryThreadList(Session &session, ProcessId pid, ThreadId lastTid,
+                              ThreadId &tid) override;
 
 protected:
-  virtual ErrorCode onQuerySharedLibrariesInfoAddress(Session &session,
-                                                      Address &address);
+  ErrorCode onQueryRegisterInfo(Session &session, uint32_t regno,
+                                RegisterInfo &info) override;
 
 protected:
-  virtual ErrorCode onXferRead(Session &session, std::string const &object,
-                               std::string const &annex, uint64_t offset,
-                               uint64_t length, std::string &buffer,
-                               bool &last);
+  ErrorCode onQuerySharedLibrariesInfoAddress(Session &session,
+                                              Address &address) override;
 
 protected:
-  virtual ErrorCode
+  ErrorCode onXferRead(Session &session, std::string const &object,
+                       std::string const &annex, uint64_t offset,
+                       uint64_t length, std::string &buffer,
+                       bool &last) override;
+
+protected:
+  ErrorCode
   onReadGeneralRegisters(Session &session, ProcessThreadId const &ptid,
-                         Architecture::GPRegisterValueVector &regs);
-  virtual ErrorCode onWriteGeneralRegisters(Session &session,
-                                            ProcessThreadId const &ptid,
-                                            std::vector<uint64_t> const &regs);
+                         Architecture::GPRegisterValueVector &regs) override;
+  ErrorCode onWriteGeneralRegisters(Session &session,
+                                    ProcessThreadId const &ptid,
+                                    std::vector<uint64_t> const &regs) override;
 
-  virtual ErrorCode onSaveRegisters(Session &session,
-                                    ProcessThreadId const &ptid, uint64_t &id);
-  virtual ErrorCode onRestoreRegisters(Session &session,
-                                       ProcessThreadId const &ptid,
-                                       uint64_t id);
+  ErrorCode onSaveRegisters(Session &session, ProcessThreadId const &ptid,
+                            uint64_t &id) override;
+  ErrorCode onRestoreRegisters(Session &session, ProcessThreadId const &ptid,
+                               uint64_t id) override;
 
-  virtual ErrorCode onReadRegisterValue(Session &session,
-                                        ProcessThreadId const &ptid,
-                                        uint32_t regno, std::string &value);
-  virtual ErrorCode onWriteRegisterValue(Session &session,
-                                         ProcessThreadId const &ptid,
-                                         uint32_t regno,
-                                         std::string const &value);
+  ErrorCode onReadRegisterValue(Session &session, ProcessThreadId const &ptid,
+                                uint32_t regno, std::string &value) override;
+  ErrorCode onWriteRegisterValue(Session &session, ProcessThreadId const &ptid,
+                                 uint32_t regno,
+                                 std::string const &value) override;
 
 protected:
-  virtual ErrorCode onReadMemory(Session &session, Address const &address,
-                                 size_t length, std::string &data);
-  virtual ErrorCode onWriteMemory(Session &session, Address const &address,
-                                  std::string const &data, size_t &nwritten);
+  ErrorCode onReadMemory(Session &session, Address const &address,
+                         size_t length, std::string &data) override;
+  ErrorCode onWriteMemory(Session &session, Address const &address,
+                          std::string const &data, size_t &nwritten) override;
 
-  virtual ErrorCode onAllocateMemory(Session &session, size_t size,
-                                     uint32_t permissions, Address &address);
-  virtual ErrorCode onDeallocateMemory(Session &session,
-                                       Address const &address);
+  ErrorCode onAllocateMemory(Session &session, size_t size,
+                             uint32_t permissions, Address &address) override;
+  ErrorCode onDeallocateMemory(Session &session,
+                               Address const &address) override;
 
-  virtual ErrorCode onQueryMemoryRegionInfo(Session &session,
-                                            Address const &address,
-                                            MemoryRegionInfo &info);
-
-protected:
-  virtual ErrorCode onSetProgramArguments(Session &session,
-                                          StringCollection const &args);
-  virtual ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid);
+  ErrorCode onQueryMemoryRegionInfo(Session &session, Address const &address,
+                                    MemoryRegionInfo &info) override;
 
 protected:
-  virtual ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
-                             StopCode &stop);
+  ErrorCode onSetProgramArguments(Session &session,
+                                  StringCollection const &args) override;
+  ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid) override;
 
 protected:
-  virtual ErrorCode onResume(Session &session,
-                             ThreadResumeAction::Collection const &actions,
-                             StopCode &stop);
-  virtual ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
-                                StopCode &stop);
-  virtual ErrorCode onDetach(Session &session, ProcessId pid, bool stopped);
+  ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
+                     StopCode &stop) override;
 
 protected:
-  virtual ErrorCode onInsertBreakpoint(Session &session, BreakpointType type,
-                                       Address const &address, uint32_t kind,
-                                       StringCollection const &conditions,
-                                       StringCollection const &commands,
-                                       bool persistentCommands);
-  virtual ErrorCode onRemoveBreakpoint(Session &session, BreakpointType type,
-                                       Address const &address, uint32_t kind);
+  ErrorCode onResume(Session &session,
+                     ThreadResumeAction::Collection const &actions,
+                     StopCode &stop) override;
+  ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
+                        StopCode &stop) override;
+  ErrorCode onDetach(Session &session, ProcessId pid, bool stopped) override;
+
+protected:
+  ErrorCode onInsertBreakpoint(Session &session, BreakpointType type,
+                               Address const &address, uint32_t kind,
+                               StringCollection const &conditions,
+                               StringCollection const &commands,
+                               bool persistentCommands) override;
+  ErrorCode onRemoveBreakpoint(Session &session, BreakpointType type,
+                               Address const &address, uint32_t kind) override;
 
 protected:
   Target::Thread *findThread(ProcessThreadId const &ptid) const;

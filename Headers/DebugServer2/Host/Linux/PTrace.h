@@ -24,22 +24,22 @@ struct PTracePrivateData;
 class PTrace : public POSIX::PTrace {
 public:
   PTrace();
-  virtual ~PTrace();
+  ~PTrace() override;
 
 public:
-  virtual ErrorCode wait(ProcessThreadId const &ptid, bool hang = true,
-                         int *status = nullptr);
+  ErrorCode wait(ProcessThreadId const &ptid, bool hang = true,
+                 int *status = nullptr) override;
 
 public:
-  virtual ErrorCode traceMe(bool disableASLR);
-  virtual ErrorCode traceThat(ProcessId pid);
+  ErrorCode traceMe(bool disableASLR) override;
+  ErrorCode traceThat(ProcessId pid) override;
 
 public:
-  virtual ErrorCode attach(ProcessId pid);
-  virtual ErrorCode detach(ProcessId pid);
+  ErrorCode attach(ProcessId pid) override;
+  ErrorCode detach(ProcessId pid) override;
 
 public:
-  virtual ErrorCode kill(ProcessThreadId const &ptid, int signal);
+  ErrorCode kill(ProcessThreadId const &ptid, int signal) override;
 
 protected:
   virtual ErrorCode readBytes(ProcessThreadId const &ptid,
@@ -47,39 +47,36 @@ protected:
                               size_t length, size_t *nread, bool nullTerm);
 
 public:
-  virtual ErrorCode readString(ProcessThreadId const &ptid,
-                               Address const &address, std::string &str,
-                               size_t length, size_t *nread = nullptr);
-  virtual ErrorCode readMemory(ProcessThreadId const &ptid,
-                               Address const &address, void *buffer,
-                               size_t length, size_t *nread = nullptr);
-  virtual ErrorCode writeMemory(ProcessThreadId const &ptid,
-                                Address const &address, void const *buffer,
-                                size_t length, size_t *nwritten = nullptr);
+  ErrorCode readString(ProcessThreadId const &ptid, Address const &address,
+                       std::string &str, size_t length,
+                       size_t *nread = nullptr) override;
+  ErrorCode readMemory(ProcessThreadId const &ptid, Address const &address,
+                       void *buffer, size_t length,
+                       size_t *nread = nullptr) override;
+  ErrorCode writeMemory(ProcessThreadId const &ptid, Address const &address,
+                        void const *buffer, size_t length,
+                        size_t *nwritten = nullptr) override;
 
 public:
-  virtual ErrorCode readCPUState(ProcessThreadId const &ptid,
-                                 ProcessInfo const &info,
-                                 Architecture::CPUState &state);
-  virtual ErrorCode writeCPUState(ProcessThreadId const &ptid,
-                                  ProcessInfo const &info,
-                                  Architecture::CPUState const &state);
+  ErrorCode readCPUState(ProcessThreadId const &ptid, ProcessInfo const &info,
+                         Architecture::CPUState &state) override;
+  ErrorCode writeCPUState(ProcessThreadId const &ptid, ProcessInfo const &info,
+                          Architecture::CPUState const &state) override;
 
 public:
-  virtual ErrorCode suspend(ProcessThreadId const &ptid);
+  ErrorCode suspend(ProcessThreadId const &ptid) override;
 
 public:
-  virtual ErrorCode step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
-                         int signal = 0, Address const &address = Address());
-  virtual ErrorCode resume(ProcessThreadId const &ptid,
-                           ProcessInfo const &pinfo, int signal = 0,
-                           Address const &address = Address());
+  ErrorCode step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
+                 int signal = 0, Address const &address = Address()) override;
+  ErrorCode resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
+                   int signal = 0, Address const &address = Address()) override;
 
 public:
-  virtual ErrorCode getEventPid(ProcessThreadId const &ptid, ProcessId &pid);
+  ErrorCode getEventPid(ProcessThreadId const &ptid, ProcessId &pid) override;
 
 public:
-  virtual ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si);
+  ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) override;
 
 protected:
   virtual ErrorCode readRegisterSet(ProcessThreadId const &ptid, int regSetCode,

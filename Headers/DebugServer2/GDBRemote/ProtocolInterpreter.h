@@ -70,8 +70,8 @@ private:
                              size_t &commandLength) const;
 
 public:
-  virtual void onPacketData(std::string const &data, bool valid);
-  virtual void onInvalidData(std::string const &data);
+  void onPacketData(std::string const &data, bool valid) override;
+  void onInvalidData(std::string const &data) override;
 
 public:
   inline std::vector<std::string> const &lastCommands() const {

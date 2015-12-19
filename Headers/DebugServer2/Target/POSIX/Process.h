@@ -26,27 +26,27 @@ protected:
   Process();
 
 public:
-  virtual ~Process();
+  ~Process() override;
 
 public:
-  virtual ErrorCode detach();
-  virtual ErrorCode interrupt();
-  virtual ErrorCode terminate();
-  virtual bool isAlive() const;
+  ErrorCode detach() override;
+  ErrorCode interrupt() override;
+  ErrorCode terminate() override;
+  bool isAlive() const override;
 
 public:
-  virtual ErrorCode suspend();
-  virtual ErrorCode
-  resume(int signal = 0,
-         std::set<Thread *> const &excluded = std::set<Thread *>());
+  ErrorCode suspend() override;
+  ErrorCode resume(int signal = 0,
+                   std::set<ds2::Target::Thread *> const &excluded =
+                       std::set<ds2::Target::Thread *>()) override;
 
 public:
   ErrorCode readString(Address const &address, std::string &str, size_t length,
-                       size_t *nread = nullptr);
+                       size_t *nread = nullptr) override;
   ErrorCode readMemory(Address const &address, void *data, size_t length,
-                       size_t *nread = nullptr);
+                       size_t *nread = nullptr) override;
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,
-                        size_t *nwritten = nullptr);
+                        size_t *nwritten = nullptr) override;
 
 public:
   void resetSignalPass();

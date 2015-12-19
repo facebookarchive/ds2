@@ -24,8 +24,8 @@ protected:
   Address _sharedLibraryInfoAddress;
 
 public:
-  virtual ErrorCode getAuxiliaryVector(std::string &auxv);
-  virtual uint64_t getAuxiliaryVectorValue(uint64_t type);
+  ErrorCode getAuxiliaryVector(std::string &auxv) override;
+  uint64_t getAuxiliaryVectorValue(uint64_t type) override;
 
 public:
   virtual ErrorCode getSharedLibraryInfoAddress(Address &address);
@@ -38,10 +38,10 @@ public:
           void(Support::ELFSupport::AuxiliaryVectorEntry const &)> const &cb);
 
 public:
-  virtual bool isELFProcess() const;
+  bool isELFProcess() const override;
 
 protected:
-  virtual ErrorCode updateInfo();
+  ErrorCode updateInfo() override;
   virtual ErrorCode updateAuxiliaryVector();
 };
 }

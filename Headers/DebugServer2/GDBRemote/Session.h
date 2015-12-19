@@ -29,7 +29,7 @@ public:
   Session(CompatibilityMode mode);
 
 public:
-  virtual CompatibilityMode mode() const { return _compatMode; }
+  CompatibilityMode mode() const override { return _compatMode; }
 
 private:
   void Handle_ControlC(ProtocolInterpreter::Handler const &,

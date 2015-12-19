@@ -24,220 +24,206 @@ protected:
   DummySessionDelegateImpl();
 
 protected: // General Information
-  virtual size_t getGPRSize() const;
+  size_t getGPRSize() const override;
 
 protected: // Common
-  virtual ErrorCode onEnableExtendedMode(Session &session);
-  virtual ErrorCode onSetBaudRate(Session &session, uint32_t speed);
-  virtual ErrorCode onToggleDebugFlag(Session &session);
+  ErrorCode onEnableExtendedMode(Session &session) override;
+  ErrorCode onSetBaudRate(Session &session, uint32_t speed) override;
+  ErrorCode onToggleDebugFlag(Session &session) override;
 
-  virtual ErrorCode onSetMaxPacketSize(Session &session, size_t size);
-  virtual ErrorCode onSetMaxPayloadSize(Session &session, size_t size);
+  ErrorCode onSetMaxPacketSize(Session &session, size_t size) override;
+  ErrorCode onSetMaxPayloadSize(Session &session, size_t size) override;
 
-  virtual void onSetLogging(Session &session, std::string const &mode,
-                            std::string const &filename,
-                            StringCollection const &flags);
+  void onSetLogging(Session &session, std::string const &mode,
+                    std::string const &filename,
+                    StringCollection const &flags) override;
 
-  virtual ErrorCode
+  ErrorCode
   onAllowOperations(Session &session,
-                    std::map<std::string, bool> const &operations);
-  virtual ErrorCode onQuerySupported(Session &session,
-                                     Feature::Collection const &remoteFeatures,
-                                     Feature::Collection &localFeatures);
+                    std::map<std::string, bool> const &operations) override;
+  ErrorCode onQuerySupported(Session &session,
+                             Feature::Collection const &remoteFeatures,
+                             Feature::Collection &localFeatures) override;
 
-  virtual ErrorCode onExecuteCommand(Session &session,
-                                     std::string const &command);
+  ErrorCode onExecuteCommand(Session &session,
+                             std::string const &command) override;
 
-  virtual ErrorCode onQueryServerVersion(Session &session,
-                                         ServerVersion &version);
-  virtual ErrorCode onQueryHostInfo(Session &session, HostInfo &info);
+  ErrorCode onQueryServerVersion(Session &session,
+                                 ServerVersion &version) override;
+  ErrorCode onQueryHostInfo(Session &session, HostInfo &info) override;
 
 protected: // Debugging Session
-  virtual ErrorCode onEnableControlAgent(Session &session, bool enable);
-  virtual ErrorCode onNonStopMode(Session &session, bool enable);
-  virtual ErrorCode onEnableBTSTracing(Session &session, bool enable);
+  ErrorCode onEnableControlAgent(Session &session, bool enable) override;
+  ErrorCode onNonStopMode(Session &session, bool enable) override;
+  ErrorCode onEnableBTSTracing(Session &session, bool enable) override;
 
-  virtual ErrorCode onPassSignals(Session &session,
-                                  std::vector<int> const &signals);
-  virtual ErrorCode onProgramSignals(Session &session,
-                                     std::vector<int> const &signals);
+  ErrorCode onPassSignals(Session &session,
+                          std::vector<int> const &signals) override;
+  ErrorCode onProgramSignals(Session &session,
+                             std::vector<int> const &signals) override;
 
-  virtual ErrorCode onQuerySymbol(Session &session, std::string const &name,
-                                  std::string const &value, std::string &next);
+  ErrorCode onQuerySymbol(Session &session, std::string const &name,
+                          std::string const &value, std::string &next) override;
 
-  virtual ErrorCode onQueryRegisterInfo(Session &session, uint32_t regno,
-                                        RegisterInfo &info);
+  ErrorCode onQueryRegisterInfo(Session &session, uint32_t regno,
+                                RegisterInfo &info) override;
 
-  virtual ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
-                             StopCode &stop);
-  virtual ErrorCode onAttach(Session &session, std::string const &name,
-                             AttachMode mode, StopCode &stop);
-  virtual ErrorCode onRunAttach(Session &session, std::string const &filename,
-                                StringCollection const &arguments,
-                                StopCode &stop);
-  virtual ErrorCode onDetach(Session &session, ProcessId pid, bool stopped);
-  virtual ErrorCode onQueryAttached(Session &session, ProcessId pid,
-                                    bool &attachedProcess);
-  virtual ErrorCode onQueryProcessInfo(Session &session, ProcessInfo &info);
+  ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
+                     StopCode &stop) override;
+  ErrorCode onAttach(Session &session, std::string const &name, AttachMode mode,
+                     StopCode &stop) override;
+  ErrorCode onRunAttach(Session &session, std::string const &filename,
+                        StringCollection const &arguments,
+                        StopCode &stop) override;
+  ErrorCode onDetach(Session &session, ProcessId pid, bool stopped) override;
+  ErrorCode onQueryAttached(Session &session, ProcessId pid,
+                            bool &attachedProcess) override;
+  ErrorCode onQueryProcessInfo(Session &session, ProcessInfo &info) override;
 
-  virtual ErrorCode onQueryHardwareWatchpointCount(Session &session,
-                                                   size_t &count);
+  ErrorCode onQueryHardwareWatchpointCount(Session &session,
+                                           size_t &count) override;
 
-  virtual ErrorCode onQuerySectionOffsets(Session &session, Address &text,
-                                          Address &data, bool &isSegment);
-  virtual ErrorCode onQuerySharedLibrariesInfoAddress(Session &session,
-                                                      Address &address);
-  virtual ErrorCode onQuerySharedLibraryInfo(Session &session,
-                                             std::string const &path,
-                                             std::string const &triple,
-                                             SharedLibraryInfo &info);
+  ErrorCode onQuerySectionOffsets(Session &session, Address &text,
+                                  Address &data, bool &isSegment) override;
+  ErrorCode onQuerySharedLibrariesInfoAddress(Session &session,
+                                              Address &address) override;
+  ErrorCode onQuerySharedLibraryInfo(Session &session, std::string const &path,
+                                     std::string const &triple,
+                                     SharedLibraryInfo &info) override;
 
-  virtual ErrorCode onRestart(Session &session, ProcessId pid);
-  virtual ErrorCode onInterrupt(Session &session);
-  virtual ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
-                                StopCode &stop);
-  virtual ErrorCode onTerminate(Session &session, ProcessId pid);
+  ErrorCode onRestart(Session &session, ProcessId pid) override;
+  ErrorCode onInterrupt(Session &session) override;
+  ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
+                        StopCode &stop) override;
+  ErrorCode onTerminate(Session &session, ProcessId pid) override;
 
-  virtual ErrorCode onSynchronizeThreadState(Session &session, ProcessId pid);
+  ErrorCode onSynchronizeThreadState(Session &session, ProcessId pid) override;
 
   //
   // If lastTid is kAllThreadId, it's the first request; if it's kAnyThreadId
   // the next of the previous request, in any other case the thread next to
   // the one specified.
   //
-  virtual ErrorCode onQueryThreadList(Session &session, ProcessId pid,
-                                      ThreadId lastTid, ThreadId &tid);
+  ErrorCode onQueryThreadList(Session &session, ProcessId pid, ThreadId lastTid,
+                              ThreadId &tid) override;
 
-  virtual ErrorCode onQueryThreadStopInfo(Session &session,
+  ErrorCode onQueryThreadStopInfo(Session &session, ProcessThreadId const &ptid,
+                                  bool list, StopCode &stop) override;
+
+  ErrorCode onQueryCurrentThread(Session &session,
+                                 ProcessThreadId &ptid) override;
+  ErrorCode onThreadIsAlive(Session &session,
+                            ProcessThreadId const &ptid) override;
+  ErrorCode onQueryThreadInfo(Session &session, ProcessThreadId const &ptid,
+                              uint32_t mode, void *info) override;
+
+  ErrorCode onQueryTLSAddress(Session &session, ProcessThreadId const &ptid,
+                              Address const &offset, Address const &linkMap,
+                              Address &address) override;
+  ErrorCode onQueryTIBAddress(Session &session, ProcessThreadId const &ptid,
+                              Address &address) override;
+
+  ErrorCode onEnableAsynchronousProfiling(Session &session,
                                           ProcessThreadId const &ptid,
-                                          bool list, StopCode &stop);
+                                          bool enabled, uint32_t interval,
+                                          uint32_t scanType) override;
+  ErrorCode onQueryProfileData(Session &session, ProcessThreadId const &ptid,
+                               uint32_t scanType, void *data) override;
 
-  virtual ErrorCode onQueryCurrentThread(Session &session,
-                                         ProcessThreadId &ptid);
-  virtual ErrorCode onThreadIsAlive(Session &session,
-                                    ProcessThreadId const &ptid);
-  virtual ErrorCode onQueryThreadInfo(Session &session,
-                                      ProcessThreadId const &ptid,
-                                      uint32_t mode, void *info);
+  ErrorCode onResume(Session &session,
+                     ThreadResumeAction::Collection const &actions,
+                     StopCode &stop) override;
 
-  virtual ErrorCode onQueryTLSAddress(Session &session,
-                                      ProcessThreadId const &ptid,
-                                      Address const &offset,
-                                      Address const &linkMap, Address &address);
-  virtual ErrorCode onQueryTIBAddress(Session &session,
-                                      ProcessThreadId const &ptid,
-                                      Address &address);
-
-  virtual ErrorCode onEnableAsynchronousProfiling(Session &session,
-                                                  ProcessThreadId const &ptid,
-                                                  bool enabled,
-                                                  uint32_t interval,
-                                                  uint32_t scanType);
-  virtual ErrorCode onQueryProfileData(Session &session,
-                                       ProcessThreadId const &ptid,
-                                       uint32_t scanType, void *data);
-
-  virtual ErrorCode onResume(Session &session,
-                             ThreadResumeAction::Collection const &actions,
-                             StopCode &stop);
-
-  virtual ErrorCode
+  ErrorCode
   onReadGeneralRegisters(Session &session, ProcessThreadId const &ptid,
-                         Architecture::GPRegisterValueVector &regs);
-  virtual ErrorCode onWriteGeneralRegisters(Session &session,
-                                            ProcessThreadId const &ptid,
-                                            std::vector<uint64_t> const &regs);
+                         Architecture::GPRegisterValueVector &regs) override;
+  ErrorCode onWriteGeneralRegisters(Session &session,
+                                    ProcessThreadId const &ptid,
+                                    std::vector<uint64_t> const &regs) override;
 
-  virtual ErrorCode onSaveRegisters(Session &session,
-                                    ProcessThreadId const &ptid, uint64_t &id);
-  virtual ErrorCode onRestoreRegisters(Session &session,
-                                       ProcessThreadId const &ptid,
-                                       uint64_t id);
+  ErrorCode onSaveRegisters(Session &session, ProcessThreadId const &ptid,
+                            uint64_t &id) override;
+  ErrorCode onRestoreRegisters(Session &session, ProcessThreadId const &ptid,
+                               uint64_t id) override;
 
-  virtual ErrorCode onReadRegisterValue(Session &session,
-                                        ProcessThreadId const &ptid,
-                                        uint32_t regno, std::string &value);
-  virtual ErrorCode onWriteRegisterValue(Session &session,
-                                         ProcessThreadId const &ptid,
-                                         uint32_t regno,
-                                         std::string const &value);
+  ErrorCode onReadRegisterValue(Session &session, ProcessThreadId const &ptid,
+                                uint32_t regno, std::string &value) override;
+  ErrorCode onWriteRegisterValue(Session &session, ProcessThreadId const &ptid,
+                                 uint32_t regno,
+                                 std::string const &value) override;
 
-  virtual ErrorCode onReadMemory(Session &session, Address const &address,
-                                 size_t length, std::string &data);
-  virtual ErrorCode onWriteMemory(Session &session, Address const &address,
-                                  std::string const &data, size_t &nwritten);
+  ErrorCode onReadMemory(Session &session, Address const &address,
+                         size_t length, std::string &data) override;
+  ErrorCode onWriteMemory(Session &session, Address const &address,
+                          std::string const &data, size_t &nwritten) override;
 
-  virtual ErrorCode onAllocateMemory(Session &session, size_t size,
-                                     uint32_t permissions, Address &address);
-  virtual ErrorCode onDeallocateMemory(Session &session,
-                                       Address const &address);
-  virtual ErrorCode onQueryMemoryRegionInfo(Session &session,
-                                            Address const &address,
-                                            MemoryRegionInfo &info);
+  ErrorCode onAllocateMemory(Session &session, size_t size,
+                             uint32_t permissions, Address &address) override;
+  ErrorCode onDeallocateMemory(Session &session,
+                               Address const &address) override;
+  ErrorCode onQueryMemoryRegionInfo(Session &session, Address const &address,
+                                    MemoryRegionInfo &info) override;
 
-  virtual ErrorCode onComputeCRC(Session &session, Address const &address,
-                                 size_t length, uint32_t &crc);
+  ErrorCode onComputeCRC(Session &session, Address const &address,
+                         size_t length, uint32_t &crc) override;
 
-  virtual ErrorCode onSearch(Session &session, Address const &address,
-                             std::string const &pattern, Address &location);
-  virtual ErrorCode onSearchBackward(Session &session, Address const &address,
-                                     uint32_t pattern, uint32_t mask,
-                                     Address &location);
+  ErrorCode onSearch(Session &session, Address const &address,
+                     std::string const &pattern, Address &location) override;
+  ErrorCode onSearchBackward(Session &session, Address const &address,
+                             uint32_t pattern, uint32_t mask,
+                             Address &location) override;
 
-  virtual ErrorCode onInsertBreakpoint(Session &session, BreakpointType type,
-                                       Address const &address, uint32_t kind,
-                                       StringCollection const &conditions,
-                                       StringCollection const &commands,
-                                       bool persistentCommands);
-  virtual ErrorCode onRemoveBreakpoint(Session &session, BreakpointType type,
-                                       Address const &address, uint32_t kind);
+  ErrorCode onInsertBreakpoint(Session &session, BreakpointType type,
+                               Address const &address, uint32_t kind,
+                               StringCollection const &conditions,
+                               StringCollection const &commands,
+                               bool persistentCommands) override;
+  ErrorCode onRemoveBreakpoint(Session &session, BreakpointType type,
+                               Address const &address, uint32_t kind) override;
 
-  virtual ErrorCode onXferRead(Session &session, std::string const &object,
-                               std::string const &annex, uint64_t offset,
-                               uint64_t length, std::string &buffer,
-                               bool &last);
-  virtual ErrorCode onXferWrite(Session &session, std::string const &object,
-                                std::string const &annex, uint64_t offset,
-                                std::string const &buffer, size_t &nwritten);
+  ErrorCode onXferRead(Session &session, std::string const &object,
+                       std::string const &annex, uint64_t offset,
+                       uint64_t length, std::string &buffer,
+                       bool &last) override;
+  ErrorCode onXferWrite(Session &session, std::string const &object,
+                        std::string const &annex, uint64_t offset,
+                        std::string const &buffer, size_t &nwritten) override;
 
 protected: // Platform Session
-  virtual ErrorCode onDisableASLR(Session &session, bool disable);
+  ErrorCode onDisableASLR(Session &session, bool disable) override;
 
-  virtual ErrorCode onSetEnvironmentVariable(Session &session,
-                                             std::string const &name,
-                                             std::string const &value);
-  virtual ErrorCode onSetWorkingDirectory(Session &session,
-                                          std::string const &path);
-  virtual ErrorCode onSetStdFile(Session &session, int fileno,
-                                 std::string const &path);
+  ErrorCode onSetEnvironmentVariable(Session &session, std::string const &name,
+                                     std::string const &value) override;
+  ErrorCode onSetWorkingDirectory(Session &session,
+                                  std::string const &path) override;
+  ErrorCode onSetStdFile(Session &session, int fileno,
+                         std::string const &path) override;
 
-  virtual ErrorCode onSetArchitecture(Session &session,
-                                      std::string const &architecture);
+  ErrorCode onSetArchitecture(Session &session,
+                              std::string const &architecture) override;
 
-  virtual ErrorCode onSetProgramArguments(Session &session,
-                                          StringCollection const &args);
+  ErrorCode onSetProgramArguments(Session &session,
+                                  StringCollection const &args) override;
 
-  virtual ErrorCode onExecuteProgram(Session &session,
-                                     std::string const &command,
-                                     uint32_t timeout,
-                                     std::string const &workingDirectory,
-                                     ProgramResult &result);
+  ErrorCode onExecuteProgram(Session &session, std::string const &command,
+                             uint32_t timeout,
+                             std::string const &workingDirectory,
+                             ProgramResult &result) override;
 
-  virtual ErrorCode onFileCreateDirectory(Session &session,
-                                          std::string const &path,
-                                          uint32_t mode);
+  ErrorCode onFileCreateDirectory(Session &session, std::string const &path,
+                                  uint32_t mode) override;
 
-  virtual ErrorCode onFileOpen(Session &session, std::string const &path,
-                               uint32_t flags, uint32_t mode, int &fd);
-  virtual ErrorCode onFileClose(Session &session, int fd);
-  virtual ErrorCode onFileRead(Session &session, int fd, size_t count,
-                               uint64_t offset, std::string &buffer);
-  virtual ErrorCode onFileWrite(Session &session, int fd, uint64_t offset,
-                                std::string const &buffer, size_t &nwritten);
+  ErrorCode onFileOpen(Session &session, std::string const &path,
+                       uint32_t flags, uint32_t mode, int &fd) override;
+  ErrorCode onFileClose(Session &session, int fd) override;
+  ErrorCode onFileRead(Session &session, int fd, size_t count, uint64_t offset,
+                       std::string &buffer) override;
+  ErrorCode onFileWrite(Session &session, int fd, uint64_t offset,
+                        std::string const &buffer, size_t &nwritten) override;
 
-  virtual ErrorCode onFileRemove(Session &session, std::string const &path);
-  virtual ErrorCode onFileReadLink(Session &session, std::string const &path,
-                                   std::string &resolved);
+  ErrorCode onFileRemove(Session &session, std::string const &path) override;
+  ErrorCode onFileReadLink(Session &session, std::string const &path,
+                           std::string &resolved) override;
 
 #if 0
     //
@@ -259,38 +245,36 @@ protected: // Platform Session
             int64_t offset, int whence, int64_t &newOffset);
 #endif
 
-  virtual ErrorCode onFileExists(Session &session, std::string const &path);
-  virtual ErrorCode onFileComputeMD5(Session &session, std::string const &path,
-                                     uint8_t digest[16]);
-  virtual ErrorCode onFileGetSize(Session &session, std::string const &path,
-                                  uint64_t &size);
+  ErrorCode onFileExists(Session &session, std::string const &path) override;
+  ErrorCode onFileComputeMD5(Session &session, std::string const &path,
+                             uint8_t digest[16]) override;
+  ErrorCode onFileGetSize(Session &session, std::string const &path,
+                          uint64_t &size) override;
 
-  virtual ErrorCode onQueryProcessList(Session &session,
-                                       ProcessInfoMatch const &match,
-                                       bool first, ProcessInfo &info);
-  virtual ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
-                                       ProcessInfo &info);
+  ErrorCode onQueryProcessList(Session &session, ProcessInfoMatch const &match,
+                               bool first, ProcessInfo &info) override;
+  ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
+                               ProcessInfo &info) override;
 
-  virtual ErrorCode onLaunchDebugServer(Session &session,
-                                        std::string const &host, uint16_t &port,
-                                        ProcessId &pid);
+  ErrorCode onLaunchDebugServer(Session &session, std::string const &host,
+                                uint16_t &port, ProcessId &pid) override;
 
-  virtual ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid);
+  ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid) override;
 
-  virtual ErrorCode onQueryUserName(Session &session, UserId const &uid,
-                                    std::string &name);
-  virtual ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
-                                     std::string &name);
-  virtual ErrorCode onQueryWorkingDirectory(Session &session,
-                                            std::string &workingDir);
+  ErrorCode onQueryUserName(Session &session, UserId const &uid,
+                            std::string &name) override;
+  ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
+                             std::string &name) override;
+  ErrorCode onQueryWorkingDirectory(Session &session,
+                                    std::string &workingDir) override;
 
 protected: // System Session
-  virtual void onReset(Session &session);
-  virtual ErrorCode onFlashErase(Session &session, Address const &address,
-                                 size_t length);
-  virtual ErrorCode onFlashWrite(Session &session, Address const &address,
-                                 std::string const &data);
-  virtual ErrorCode onFlashDone(Session &session);
+  void onReset(Session &session) override;
+  ErrorCode onFlashErase(Session &session, Address const &address,
+                         size_t length) override;
+  ErrorCode onFlashWrite(Session &session, Address const &address,
+                         std::string const &data) override;
+  ErrorCode onFlashDone(Session &session) override;
 };
 }
 }

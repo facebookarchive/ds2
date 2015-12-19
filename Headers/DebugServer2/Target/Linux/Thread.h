@@ -25,28 +25,28 @@ protected:
   Thread(Process *process, ThreadId tid);
 
 public:
-  virtual ~Thread();
+  ~Thread() override;
 
 public:
-  virtual ErrorCode terminate();
+  ErrorCode terminate() override;
 
 public:
-  virtual ErrorCode suspend();
+  ErrorCode suspend() override;
 
 public:
-  virtual ErrorCode step(int signal = 0, Address const &address = Address());
-  virtual ErrorCode resume(int signal = 0, Address const &address = Address());
+  ErrorCode step(int signal = 0, Address const &address = Address()) override;
+  ErrorCode resume(int signal = 0, Address const &address = Address()) override;
 
 public:
-  virtual ErrorCode readCPUState(Architecture::CPUState &state);
-  virtual ErrorCode writeCPUState(Architecture::CPUState const &state);
+  ErrorCode readCPUState(Architecture::CPUState &state) override;
+  ErrorCode writeCPUState(Architecture::CPUState const &state) override;
 
 protected:
-  virtual ErrorCode updateStopInfo(int waitStatus);
-  virtual void updateState();
+  ErrorCode updateStopInfo(int waitStatus) override;
+  void updateState() override;
 
 protected:
-  virtual ErrorCode prepareSoftwareSingleStep(Address const &address);
+  ErrorCode prepareSoftwareSingleStep(Address const &address) override;
 };
 }
 }

@@ -33,8 +33,8 @@ public:
   void start();
 
 protected:
-  virtual void onPacketData(std::string const &data, bool valid);
-  virtual void onInvalidData(std::string const &data);
+  void onPacketData(std::string const &data, bool valid) override;
+  void onInvalidData(std::string const &data) override;
 
 private:
   void run();

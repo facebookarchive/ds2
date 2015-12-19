@@ -35,51 +35,47 @@ public:
   PlatformSessionImpl();
 
 protected:
-  virtual ErrorCode onQueryProcessList(Session &session,
-                                       ProcessInfoMatch const &match,
-                                       bool first, ProcessInfo &info);
-  virtual ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
-                                       ProcessInfo &info);
+  ErrorCode onQueryProcessList(Session &session, ProcessInfoMatch const &match,
+                               bool first, ProcessInfo &info) override;
+  ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
+                               ProcessInfo &info) override;
 
-  virtual ErrorCode onExecuteProgram(Session &session,
-                                     std::string const &command,
-                                     uint32_t timeout,
-                                     std::string const &workingDirectory,
-                                     ProgramResult &result);
+  ErrorCode onExecuteProgram(Session &session, std::string const &command,
+                             uint32_t timeout,
+                             std::string const &workingDirectory,
+                             ProgramResult &result) override;
 
-  virtual ErrorCode onFileOpen(Session &session, std::string const &path,
-                               uint32_t flags, uint32_t mode, int &fd);
-  virtual ErrorCode onFileClose(Session &session, int fd);
+  ErrorCode onFileOpen(Session &session, std::string const &path,
+                       uint32_t flags, uint32_t mode, int &fd) override;
+  ErrorCode onFileClose(Session &session, int fd) override;
 
-  virtual ErrorCode onFileExists(Session &session, std::string const &path);
+  ErrorCode onFileExists(Session &session, std::string const &path) override;
 
 protected:
-  virtual ErrorCode onQueryUserName(Session &session, UserId const &uid,
-                                    std::string &name);
-  virtual ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
-                                     std::string &name);
-  virtual ErrorCode onQueryWorkingDirectory(Session &session,
-                                            std::string &workingDir);
+  ErrorCode onQueryUserName(Session &session, UserId const &uid,
+                            std::string &name) override;
+  ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
+                             std::string &name) override;
+  ErrorCode onQueryWorkingDirectory(Session &session,
+                                    std::string &workingDir) override;
 
 protected:
-  virtual ErrorCode onLaunchDebugServer(Session &session,
-                                        std::string const &host, uint16_t &port,
-                                        ProcessId &pid);
+  ErrorCode onLaunchDebugServer(Session &session, std::string const &host,
+                                uint16_t &port, ProcessId &pid) override;
 
 protected:
-  virtual ErrorCode onDisableASLR(Session &session, bool disable);
-  virtual ErrorCode onSetEnvironmentVariable(Session &session,
-                                             std::string const &name,
-                                             std::string const &value);
-  virtual ErrorCode onSetWorkingDirectory(Session &session,
-                                          std::string const &path);
-  virtual ErrorCode onSetStdFile(Session &session, int fileno,
-                                 std::string const &path);
-  virtual ErrorCode onSetArchitecture(Session &session,
-                                      std::string const &architecture);
-  virtual ErrorCode onSetProgramArguments(Session &session,
-                                          StringCollection const &args);
-  virtual ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid);
+  ErrorCode onDisableASLR(Session &session, bool disable) override;
+  ErrorCode onSetEnvironmentVariable(Session &session, std::string const &name,
+                                     std::string const &value) override;
+  ErrorCode onSetWorkingDirectory(Session &session,
+                                  std::string const &path) override;
+  ErrorCode onSetStdFile(Session &session, int fileno,
+                         std::string const &path) override;
+  ErrorCode onSetArchitecture(Session &session,
+                              std::string const &architecture) override;
+  ErrorCode onSetProgramArguments(Session &session,
+                                  StringCollection const &args) override;
+  ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid) override;
 
 private:
   void updateProcesses(ProcessInfoMatch const &match);
