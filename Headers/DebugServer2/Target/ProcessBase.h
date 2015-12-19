@@ -29,7 +29,6 @@ public:
   enum { kFlagNewProcess = 0, kFlagAttachedProcess = (1 << 0) };
   typedef std::map<ThreadId, Thread *> IdentityMap;
 
-
 protected:
   uint32_t _flags;
   ProcessId _pid;
