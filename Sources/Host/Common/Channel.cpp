@@ -13,7 +13,7 @@
 namespace ds2 {
 namespace Host {
 
-Channel::~Channel() {}
+Channel::~Channel() = default;
 
 bool Channel::send(std::string const &buffer) {
   if (!connected())

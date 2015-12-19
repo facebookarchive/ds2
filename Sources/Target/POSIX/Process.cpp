@@ -29,7 +29,7 @@ namespace POSIX {
 
 Process::Process() : Target::ProcessBase() {}
 
-Process::~Process() {}
+Process::~Process() = default;
 
 ErrorCode Process::detach() {
   prepareForDetach();

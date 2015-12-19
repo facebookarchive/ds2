@@ -163,6 +163,6 @@ bool SessionBase::sendError(ErrorCode code) {
 
 using ds2::GDBRemote::SessionDelegate;
 
-SessionDelegate::~SessionDelegate() {}
+SessionDelegate::~SessionDelegate() = default;
 }
 }

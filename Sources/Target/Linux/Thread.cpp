@@ -35,7 +35,7 @@ Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {
   _state = kStopped;
 }
 
-Thread::~Thread() {}
+Thread::~Thread() = default;
 
 ErrorCode Thread::terminate() {
   return process()->ptrace().kill(ProcessThreadId(process()->pid(), tid()),

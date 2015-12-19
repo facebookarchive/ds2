@@ -46,7 +46,7 @@ Process::Process()
     : super(), _breakpointManager(nullptr), _watchpointManager(nullptr),
       _terminated(false) {}
 
-Process::~Process() {}
+Process::~Process() = default;
 
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   //

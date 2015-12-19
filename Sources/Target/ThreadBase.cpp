@@ -19,7 +19,7 @@ ThreadBase::ThreadBase(Process *process, ThreadId tid)
   _process->insert(this);
 }
 
-ThreadBase::~ThreadBase() {}
+ThreadBase::~ThreadBase() = default;
 
 ErrorCode ThreadBase::prepareSoftwareSingleStep(Address const &) {
   return kErrorUnsupported;

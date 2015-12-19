@@ -17,9 +17,9 @@ namespace ds2 {
 namespace Host {
 namespace POSIX {
 
-PTrace::PTrace() {}
+PTrace::PTrace() = default;
 
-PTrace::~PTrace() {}
+PTrace::~PTrace() = default;
 
 ErrorCode PTrace::wait(ProcessThreadId const &ptid, bool hang, int *status) {
   if (ptid.pid <= kAnyProcessId || !(ptid.tid <= kAnyThreadId))
