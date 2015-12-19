@@ -61,7 +61,7 @@ protected:
   ErrorCode checkMemoryErrorCode(uint64_t address);
 
 public:
-  ErrorCode wait(int *status = nullptr, bool hang = true) override;
+  ErrorCode wait(int *rstatus = nullptr, bool hang = true) override;
 
 public:
   Host::POSIX::PTrace &ptrace() const override;
@@ -89,7 +89,7 @@ protected:
 
 public:
   ErrorCode readString(Address const &address, std::string &str, size_t length,
-                       size_t *nread = nullptr) override;
+                       size_t *count = nullptr) override;
   ErrorCode readMemory(Address const &address, void *data, size_t length,
                        size_t *count = nullptr) override;
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,

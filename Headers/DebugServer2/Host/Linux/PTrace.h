@@ -44,23 +44,23 @@ public:
 protected:
   virtual ErrorCode readBytes(ProcessThreadId const &ptid,
                               Address const &address, void *buffer,
-                              size_t length, size_t *nread, bool nullTerm);
+                              size_t length, size_t *count, bool nullTerm);
 
 public:
   ErrorCode readString(ProcessThreadId const &ptid, Address const &address,
                        std::string &str, size_t length,
-                       size_t *nread = nullptr) override;
+                       size_t *count = nullptr) override;
   ErrorCode readMemory(ProcessThreadId const &ptid, Address const &address,
                        void *buffer, size_t length,
-                       size_t *nread = nullptr) override;
+                       size_t *count = nullptr) override;
   ErrorCode writeMemory(ProcessThreadId const &ptid, Address const &address,
                         void const *buffer, size_t length,
-                        size_t *nwritten = nullptr) override;
+                        size_t *count = nullptr) override;
 
 public:
-  ErrorCode readCPUState(ProcessThreadId const &ptid, ProcessInfo const &info,
+  ErrorCode readCPUState(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                          Architecture::CPUState &state) override;
-  ErrorCode writeCPUState(ProcessThreadId const &ptid, ProcessInfo const &info,
+  ErrorCode writeCPUState(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                           Architecture::CPUState const &state) override;
 
 public:
@@ -73,7 +73,7 @@ public:
                    int signal = 0, Address const &address = Address()) override;
 
 public:
-  ErrorCode getEventPid(ProcessThreadId const &ptid, ProcessId &pid) override;
+  ErrorCode getEventPid(ProcessThreadId const &ptid, ProcessId &epid) override;
 
 public:
   ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) override;

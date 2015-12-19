@@ -289,7 +289,7 @@ std::string JSDictionary::toString1() const {
 
 static int _json_string(void *obj, char const *m, char const *s);
 static int _json_int(void *obj, char const *m, int i);
-static int _json_double(void *obj, char const *m, double d);
+static int _json_double(void *obj, char const *m, double r);
 static int _json_bool(void *obj, char const *m, int b);
 static int _json_null(void *obj, char const *m);
 static int _json_new_obj(void *obj, char const *m, void **obj_new,

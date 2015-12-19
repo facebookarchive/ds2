@@ -59,7 +59,7 @@ private:
   static std::string Quote(std::string const &s);
   static std::string Quote(int64_t value);
 
-  static std::string GetType(GDBEncoding const &enc, char const *name,
+  static std::string GetType(GDBEncoding const &enc, char const *encname,
                              size_t bitsize);
   static std::string GetVectorType(GDBEncoding const &enc, size_t elsize);
   static size_t GetVectorCount(GDBEncoding const &enc, size_t vecsize,

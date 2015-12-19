@@ -736,12 +736,12 @@ ErrorCode DebugSessionImpl::onDeallocateMemory(Session &,
 }
 
 ErrorCode DebugSessionImpl::onQueryMemoryRegionInfo(Session &,
-                                                    Address const &addr,
+                                                    Address const &address,
                                                     MemoryRegionInfo &info) {
   if (_process == nullptr)
     return kErrorProcessNotFound;
   else
-    return _process->getMemoryRegionInfo(addr, info);
+    return _process->getMemoryRegionInfo(address, info);
 }
 
 ErrorCode

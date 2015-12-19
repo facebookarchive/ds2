@@ -70,7 +70,7 @@ public:
   }
 
 public:
-  bool setEnvironment(EnvironmentBlock const &args);
+  bool setEnvironment(EnvironmentBlock const &env);
 
 public:
   bool redirectInputToConsole();

@@ -137,7 +137,7 @@ protected:
 
 protected:
   ErrorCode onInsertBreakpoint(Session &session, BreakpointType type,
-                               Address const &address, uint32_t kind,
+                               Address const &address, uint32_t size,
                                StringCollection const &conditions,
                                StringCollection const &commands,
                                bool persistentCommands) override;

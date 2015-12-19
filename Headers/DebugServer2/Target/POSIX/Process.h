@@ -42,11 +42,11 @@ public:
 
 public:
   ErrorCode readString(Address const &address, std::string &str, size_t length,
-                       size_t *nread = nullptr) override;
+                       size_t *count = nullptr) override;
   ErrorCode readMemory(Address const &address, void *data, size_t length,
-                       size_t *nread = nullptr) override;
+                       size_t *count = nullptr) override;
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,
-                        size_t *nwritten = nullptr) override;
+                        size_t *count = nullptr) override;
 
 public:
   void resetSignalPass();

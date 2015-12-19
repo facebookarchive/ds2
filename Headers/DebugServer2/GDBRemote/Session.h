@@ -233,7 +233,7 @@ private:
 private:
   bool parseAddress(Address &address, const char *ptr, char **eptr,
                     Endian endianness) const;
-  std::string formatAddress(Address const &address, Endian endian) const;
+  std::string formatAddress(Address const &address, Endian endianness) const;
 };
 }
 }
