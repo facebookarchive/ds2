@@ -419,7 +419,7 @@ static int _json_new_array(void *obj, char const *m, void **array_new,
 
 static int _json_array(void *obj, void *a) { return 0; }
 
-static void *_json_delete(void *obj) { return 0; }
+static void *_json_delete(void *obj) { return nullptr; }
 
 typedef std::function<bool(unsigned, unsigned, std::string const &)>
     ErrorFunction;
