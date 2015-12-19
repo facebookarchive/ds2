@@ -861,7 +861,7 @@ void Session::Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
   }
 
   std::string jsonString = jsonObj.toString();
-  send(jsonString.c_str(), false);
+  send(jsonString, false);
 }
 
 //
