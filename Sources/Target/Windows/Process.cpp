@@ -66,6 +66,14 @@ ErrorCode Process::detach() {
   return kSuccess;
 }
 
+ErrorCode Process::interrupt() {
+  BOOL result = DebugBreakProcess(_handle);
+  if (!result)
+    return Platform::TranslateError();
+
+  return kSuccess;
+}
+
 ErrorCode Process::terminate() {
   BOOL result = TerminateProcess(_handle, 0);
   if (!result)

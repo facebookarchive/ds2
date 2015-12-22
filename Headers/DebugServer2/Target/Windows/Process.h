@@ -42,7 +42,7 @@ public:
   virtual ErrorCode detach();
 
 public:
-  virtual ErrorCode interrupt() { return kErrorUnsupported; }
+  virtual ErrorCode interrupt();
   virtual ErrorCode terminate();
   virtual bool isAlive() const;
 
