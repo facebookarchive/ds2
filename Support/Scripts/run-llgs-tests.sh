@@ -36,4 +36,5 @@ rm -rf llvm/build
 mkdir -p llvm/build
 cd llvm/build
 cmake -DCMAKE_C_COMPILER="gcc-4.8" -DCMAKE_CXX_COMPILER="g++-4.8" -DLLDB_TEST_USER_ARGS="-p;TestGdbRemote" ..
+make -j4 lldb
 LLDB_DEBUGSERVER_PATH="$(pwd)/../../ds2" make check-lldb-single

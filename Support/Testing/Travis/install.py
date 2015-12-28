@@ -51,7 +51,6 @@ elif target in tizen_toolchains:
 # use the lldb python library without us building it).
 if os.getenv('LLGS_TESTS') == '1':
     packages.append('swig')
-    packages.append('lldb-3.3')
 
 if len(packages) > 0:
     check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
