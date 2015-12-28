@@ -88,8 +88,16 @@ make
 
 ### Compiling on Windows
 
-ds2 builds on Windows using MSVC. As with linux, use CMake to generate the
-build system, then use msbuild (or the script provided) to build the binary:
+ds2 builds on Windows using Visual Studio. You'll need:
+
+* Windows builds of CMake for which you can grab binaries
+  [here](https://cmake.org/download/);
+* flex and bison binaries -- easiest way to get these is to install them with
+  Cygwin and add that to your `PATH` (usually `C:\cygwin\bin`);
+* an install of Visual Studio -- we use VS2015, but VS2013 should work too.
+
+Then, as with linux, use CMake to generate the build system, then use msbuild
+(or the script provided) to build the binary:
 
 ```sh
 cd ds2
