@@ -78,7 +78,7 @@ Target::Process *Process::Attach(ProcessId pid) {
   if (pid < 0)
     return nullptr;
 
-  Target::Process *process = new Target::Process;
+  auto process = new Target::Process;
 
   ErrorCode error = process->attach(pid);
   if (error != kSuccess)
@@ -323,7 +323,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   //
   // Create the process.
   //
-  Target::Process *process = new Target::Process;
+  auto process = new Target::Process;
 
   error = spawner.run();
   if (error != kSuccess)

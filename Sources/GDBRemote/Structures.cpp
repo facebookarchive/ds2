@@ -295,7 +295,7 @@ std::string StopCode::encodeRegisters() const {
 }
 
 JSDictionary *StopCode::encodeJson() const {
-  JSDictionary *threadObj = JSDictionary::New();
+  auto threadObj = JSDictionary::New();
 
   threadObj->set("tid", JSInteger::New(ptid.tid));
 
@@ -307,7 +307,7 @@ JSDictionary *StopCode::encodeJson() const {
 
   threadObj->set("reason", JSString::New(reasonToString()));
 
-  JSDictionary *regSet = JSDictionary::New();
+  auto regSet = JSDictionary::New();
   std::map<std::string, std::string> regs;
   encodeRegisters(regs, false);
 

@@ -376,7 +376,7 @@ static int _json_null(void *obj, char const *m) {
 
 static int _json_new_obj(void *obj, char const *m, void **obj_new,
                          struct json_cb_t **cb) {
-  JSDictionary *dict = JSDictionary::New();
+  auto dict = JSDictionary::New();
   if (m == nullptr) {
     if (*reinterpret_cast<JSObject **>(obj) == nullptr) {
       *reinterpret_cast<JSObject **>(obj) = dict;
@@ -402,7 +402,7 @@ static int _json_obj(void *obj, void *o) { return 0; }
 
 static int _json_new_array(void *obj, char const *m, void **array_new,
                            struct json_cb_t **cb) {
-  JSArray *array = JSArray::New();
+  auto array = JSArray::New();
   if (JSArray *a = JSCastTo<JSArray>(reinterpret_cast<JSObject *>(obj))) {
     a->append(array);
   } else if (JSDictionary *d =

@@ -103,7 +103,7 @@ ErrorCode Process::attach(int waitStatus) {
           return;
 
         keep_going = true;
-        Thread *thread = new Thread(this, tid);
+        auto thread = new Thread(this, tid);
         if (ptrace().attach(tid) == kSuccess) {
           int status;
 
@@ -195,7 +195,7 @@ continue_waiting:
         if (threadIt != _threads.end())
           return;
 
-        Thread *thread = new Thread(this, tid);
+        auto thread = new Thread(this, tid);
         if (ptrace().attach(tid) == kSuccess) {
           int status;
 
