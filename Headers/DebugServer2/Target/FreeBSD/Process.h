@@ -32,7 +32,7 @@ protected:
 public:
   virtual ~Process();
 
-public:
+protected:
   virtual ErrorCode initialize(ProcessId pid, uint32_t flags);
   ErrorCode attach(int waitStatus);
 
