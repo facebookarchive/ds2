@@ -75,7 +75,7 @@ thread_fail:
 }
 
 Target::Process *Process::Attach(ProcessId pid) {
-  if (pid < 0)
+  if (pid <= 0)
     return nullptr;
 
   auto process = new Target::Process;
