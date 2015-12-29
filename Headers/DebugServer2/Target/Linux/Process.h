@@ -36,9 +36,6 @@ protected:
   ErrorCode initialize(ProcessId pid, uint32_t flags) override;
 
 public:
-  ErrorCode attach(bool reattach = false) override;
-
-public:
   ErrorCode terminate() override;
   bool isAlive() const override;
 

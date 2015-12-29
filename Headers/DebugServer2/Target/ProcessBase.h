@@ -74,7 +74,6 @@ protected:
   virtual void cleanup();
 
 public:
-  virtual ErrorCode attach(bool rettach = false) = 0;
   virtual ErrorCode detach() = 0;
 
 public:

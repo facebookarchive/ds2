@@ -36,9 +36,6 @@ public:
   virtual ErrorCode initialize(ProcessId pid, uint32_t flags);
 
 public:
-  virtual ErrorCode attach(bool reattach = false);
-
-public:
   virtual ErrorCode terminate();
 
 public:

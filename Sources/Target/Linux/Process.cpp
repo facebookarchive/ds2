@@ -66,8 +66,6 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   return attach(status);
 }
 
-ErrorCode Process::attach(bool reattach) { return attach(reattach ? 0 : -1); }
-
 ErrorCode Process::attach(int waitStatus) {
   if (waitStatus <= 0) {
     ErrorCode error = ptrace().attach(_pid);

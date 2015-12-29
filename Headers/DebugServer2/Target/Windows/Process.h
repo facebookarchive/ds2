@@ -38,7 +38,6 @@ protected:
                                HANDLE threadHandle, uint32_t flags);
 
 public:
-  virtual ErrorCode attach(bool reattach = false);
   virtual ErrorCode detach();
 
 public:

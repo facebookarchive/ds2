@@ -51,8 +51,6 @@ ErrorCode Process::initialize(ProcessId pid, HANDLE handle, ThreadId tid,
   return kSuccess;
 }
 
-ErrorCode Process::attach(bool reattach) { return kErrorUnsupported; }
-
 ErrorCode Process::detach() {
   prepareForDetach();
 
