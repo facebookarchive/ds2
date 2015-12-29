@@ -12,12 +12,14 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <cerrno>
 #include <cstring>
 #include <fcntl.h>
 #include <grp.h>
 #include <limits.h>
 #include <netdb.h>
 #include <pwd.h>
+#include <string>
 #include <unistd.h>
 
 #if defined(OS_FREEBSD)
