@@ -23,6 +23,9 @@ android_toolchains = { 'Android-ARM':       'arm',
                        'Android-X86':       'x86',
                        'Android-X86_64':    'x86' }
 
+tizen_toolchains = { 'Tizen-ARM':   'arm',
+                     'Tizen-X86':   'x86' }
+
 target = os.getenv('TARGET')
 
 if target == 'Style':
@@ -40,6 +43,9 @@ elif target in linux_packages:
 elif target in android_toolchains:
     # Android builds get the toolchain from AOSP.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
+elif target in tizen_toolchains:
+    # Tizen builds use the android toolchain and link statically.
+    check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % tizen_toolchains[target], shell=True)
 
 # Running LLGS tests requires an install of lldb (for the tests to be able to
 # use the lldb python library without us building it).
