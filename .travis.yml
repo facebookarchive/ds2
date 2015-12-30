@@ -20,6 +20,8 @@ env:
   - TARGET="Linux-ARM"
   - TARGET="Linux-X86"
   - TARGET="Linux-X86_64"
+  - TARGET="Tizen-ARM"
+  - TARGET="Tizen-X86"
   - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="0"
   - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="0" RELEASE="1"
   - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="1"
