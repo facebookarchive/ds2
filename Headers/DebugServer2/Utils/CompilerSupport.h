@@ -30,6 +30,12 @@
 #define DS2_ATTRIBUTE_PRINTF(FORMAT, START)
 #endif
 
+#if __has_attribute(weak)
+#define DS2_ATTRIBUTE_WEAK __attribute__((__weak__))
+#else
+#define DS2_ATTRIBUTE_WEAK
+#endif
+
 #if !defined(__clang__) && defined(_MSC_VER)
 #define DS2_UNREACHABLE() __assume(0)
 #elif __has_builtin(__builtin_unreachable) || __GNUC_PREREQ(4, 5)

@@ -11,6 +11,8 @@
 #ifndef __DebugServer2_Host_Linux_ExtraWrappers_h
 #define __DebugServer2_Host_Linux_ExtraWrappers_h
 
+#include "DebugServer2/Utils/CompilerSupport.h"
+
 #include <fcntl.h>
 // Older android native sysroots don't have sys/personality.h.
 #if defined(HAVE_SYS_PERSONALITY_H)
@@ -19,36 +21,26 @@
 #include <linux/personality.h>
 #undef personality
 #endif
-#include <sys/syscall.h>
 #include <unistd.h>
 
 #if defined(ARCH_X86) && defined(__ANDROID__)
 #include <sys/user.h>
 #endif
 
-#if !defined(HAVE_GETTID)
-static inline pid_t gettid() { return ::syscall(__NR_gettid); }
-#endif
+extern "C" {
 
-#if !defined(HAVE_PERSONALITY)
-static inline int personality(unsigned long persona) {
-  return ::syscall(__NR_personality, persona);
-}
-#endif
+pid_t gettid() DS2_ATTRIBUTE_WEAK;
 
-#if !defined(HAVE_POSIX_OPENPT)
-static inline int posix_openpt(int flags) { return ::open("/dev/ptmx", flags); }
-#endif
+int personality(unsigned long persona) DS2_ATTRIBUTE_WEAK;
+
+// Older android native sysroots don't have posix_openpt.
+int posix_openpt(int flags) DS2_ATTRIBUTE_WEAK;
 
 // No glibc wrapper for tgkill
-static inline int tgkill(pid_t pid, pid_t tid, int signo) {
-  return ::syscall(__NR_tgkill, pid, tid, signo);
-}
+int tgkill(pid_t pid, pid_t tid, int signo) DS2_ATTRIBUTE_WEAK;
 
 // No glibc wrapper for tkill
-static inline int tkill(pid_t tid, int signo) {
-  return ::syscall(__NR_tkill, tid, signo);
-}
+int tkill(pid_t tid, int signo) DS2_ATTRIBUTE_WEAK;
 
 // We use ds2_snprintf and ds2_vsnprintf in ds2 code to make sure we don't use
 // the bogus vsnprintf provided in the MSVC runtime. The following two defines
@@ -56,5 +48,6 @@ static inline int tkill(pid_t tid, int signo) {
 // See Headers/DebugServer2/Host/Windows/ExtraWrappers.h.
 #define ds2_snprintf snprintf
 #define ds2_vsnprintf vsnprintf
+}
 
 #endif // !__DebugServer2_Host_Linux_ExtraWrappers_h

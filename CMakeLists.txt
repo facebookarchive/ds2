@@ -97,6 +97,7 @@ set(HOST_POSIX_SOURCES
 
 set(HOST_Linux_SOURCES
     ${HOST_POSIX_SOURCES}
+    Sources/Host/Linux/ExtraWrappers.cpp
     Sources/Host/Linux/ProcFS.cpp
     Sources/Host/Linux/Platform.cpp
     Sources/Host/Linux/PTrace.cpp
@@ -218,15 +219,6 @@ target_include_directories(ds2 PUBLIC Headers)
 set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
 
 if ("${CMAKE_SYSTEM_NAME}" MATCHES "Linux" OR "${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
-  include(CheckFunctionExists)
-  foreach (FUNC gettid personality posix_openpt)
-    string(TOUPPER "${FUNC}" UCFUNC)
-    CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${UCFUNC})
-    if (HAVE_${UCFUNC})
-      target_compile_definitions(ds2 PRIVATE HAVE_${UCFUNC})
-    endif ()
-  endforeach ()
-
   include(CheckIncludeFile)
   CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
   if (HAVE_SYS_PERSONALITY_H)
