@@ -240,7 +240,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
 
 ErrorCode DebugSessionImpl::onQueryThreadStopInfo(Session &session,
                                                   ProcessThreadId const &ptid,
-                                                  bool list, StopCode &stop) {
+                                                  StopCode &stop) {
   Thread *thread = findThread(ptid);
   if (thread == nullptr)
     return kErrorProcessNotFound;

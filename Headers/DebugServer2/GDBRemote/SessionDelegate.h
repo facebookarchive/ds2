@@ -84,7 +84,7 @@ protected: // Debugging Session
   virtual ErrorCode onQueryProcessInfo(Session &session, ProcessInfo &info) = 0;
   virtual ErrorCode onQueryThreadStopInfo(Session &session,
                                           ProcessThreadId const &ptid,
-                                          bool list, StopCode &stop) = 0;
+                                          StopCode &stop) = 0;
 
   virtual ErrorCode onQueryHardwareWatchpointCount(Session &session,
                                                    size_t &count) = 0;

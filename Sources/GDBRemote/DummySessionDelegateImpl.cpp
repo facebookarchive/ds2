@@ -236,7 +236,7 @@ ErrorCode DummySessionDelegateImpl::onQueryCurrentThread(Session &,
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryThreadStopInfo(
-    Session &, ProcessThreadId const &, bool, StopCode &) {
+    Session &, ProcessThreadId const &, StopCode &) {
   return kErrorUnsupported;
 }
 

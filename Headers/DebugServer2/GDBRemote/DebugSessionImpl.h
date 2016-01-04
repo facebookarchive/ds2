@@ -66,7 +66,7 @@ protected:
                             bool &attachedProcess) override;
   ErrorCode onQueryProcessInfo(Session &session, ProcessInfo &info) override;
   ErrorCode onQueryThreadStopInfo(Session &session, ProcessThreadId const &ptid,
-                                  bool list, StopCode &stop) override;
+                                  StopCode &stop) override;
 
   ErrorCode onQueryThreadList(Session &session, ProcessId pid, ThreadId lastTid,
                               ThreadId &tid) override;

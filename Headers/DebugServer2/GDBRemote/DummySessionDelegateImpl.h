@@ -108,7 +108,7 @@ protected: // Debugging Session
                               ThreadId &tid) override;
 
   ErrorCode onQueryThreadStopInfo(Session &session, ProcessThreadId const &ptid,
-                                  bool list, StopCode &stop) override;
+                                  StopCode &stop) override;
 
   ErrorCode onQueryCurrentThread(Session &session,
                                  ProcessThreadId &ptid) override;

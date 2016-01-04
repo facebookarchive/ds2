@@ -277,7 +277,7 @@ void Session::Handle_QuestionMark(ProtocolInterpreter::Handler const &,
                                   std::string const &) {
   StopCode stop;
   ErrorCode error =
-      _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), false, stop);
+      _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), stop);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -840,7 +840,7 @@ void Session::Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
                                   std::string const &) {
   StopCode stop;
   ErrorCode error =
-      _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), true, stop);
+      _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), stop);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -856,7 +856,7 @@ void Session::Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
   JSArray jsonObj;
   for (auto const &tid : stop.threads) {
     _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(kAnyProcessId, tid),
-                                     true, stop);
+                                     stop);
     jsonObj.append(stop.encodeJson());
   }
 
@@ -2298,7 +2298,7 @@ void Session::Handle_qThreadStopInfo(ProtocolInterpreter::Handler const &,
   ptid.tid = strtoull(args.c_str(), nullptr, 16);
 
   StopCode stop;
-  ErrorCode error = _delegate->onQueryThreadStopInfo(*this, ptid, true, stop);
+  ErrorCode error = _delegate->onQueryThreadStopInfo(*this, ptid, stop);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -3278,7 +3278,7 @@ void Session::Handle_vStopped(ProtocolInterpreter::Handler const &,
                               std::string const &) {
   StopCode stop;
   ErrorCode error =
-      _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), true, stop);
+      _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), stop);
   if (error != kSuccess && error != kErrorNotFound) {
     sendError(error);
     return;
