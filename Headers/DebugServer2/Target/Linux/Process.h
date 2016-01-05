@@ -34,6 +34,7 @@ public:
 
 protected:
   ErrorCode initialize(ProcessId pid, uint32_t flags) override;
+  ErrorCode attach(int waitStatus);
 
 public:
   ErrorCode terminate() override;
@@ -80,9 +81,6 @@ protected:
                          uint32_t flags = 0);
   ErrorCode writeCPUState(ThreadId tid, Architecture::CPUState const &state,
                           uint32_t flags = 0);
-
-protected:
-  ErrorCode attach(int waitStatus);
 
 public:
   ErrorCode readString(Address const &address, std::string &str, size_t length,

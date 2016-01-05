@@ -34,6 +34,7 @@ public:
 
 public:
   virtual ErrorCode initialize(ProcessId pid, uint32_t flags);
+  ErrorCode attach(int waitStatus);
 
 public:
   virtual ErrorCode terminate();
@@ -76,9 +77,6 @@ protected:
                          uint32_t flags = 0);
   ErrorCode writeCPUState(ThreadId tid, Architecture::CPUState const &state,
                           uint32_t flags = 0);
-
-protected:
-  ErrorCode attach(int waitStatus);
 
 public:
   virtual ErrorCode readString(Address const &address, std::string &str,
