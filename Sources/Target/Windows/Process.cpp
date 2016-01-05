@@ -80,8 +80,8 @@ Target::Process *Process::Attach(ProcessId pid) {
 
   auto process = new Target::Process;
 
-  ErrorCode error = process->attach(pid);
-  if (error != kSuccess)
+  BOOL result = DebugActiveProcess(pid);
+  if (!result)
     goto fail;
 
   HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
@@ -96,7 +96,7 @@ Target::Process *Process::Attach(ProcessId pid) {
   if (!threadHandle)
     goto proc_fail;
 
-  error =
+  ErrorCode error =
       process->initialize(pid, handle, tid, threadHandle, kFlagAttachedProcess);
   if (error != kSuccess)
     goto init_fail;
@@ -113,15 +113,6 @@ proc_fail:
 fail:
   delete process;
   return nullptr;
-}
-
-ErrorCode Process::attach(ProcessId pid) {
-  BOOL result = DebugActiveProcess(pid);
-  if (!result)
-    return Platform::TranslateError();
-
-  _flags |= kFlagAttachedProcess;
-  return kSuccess;
 }
 
 ErrorCode Process::detach() {

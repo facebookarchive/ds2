@@ -36,7 +36,6 @@ public:
 protected:
   virtual ErrorCode initialize(ProcessId pid, HANDLE handle, ThreadId tid,
                                HANDLE threadHandle, uint32_t flags);
-  virtual ErrorCode attach(ProcessId pid);
 
 public:
   virtual ErrorCode detach();
