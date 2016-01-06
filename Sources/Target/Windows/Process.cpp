@@ -78,25 +78,30 @@ Target::Process *Process::Attach(ProcessId pid) {
   if (pid <= 0)
     return nullptr;
 
+  BOOL result;
+  HANDLE handle, threadHandle;
+  ThreadId tid;
+  ErrorCode error;
+
   auto process = new Target::Process;
 
-  BOOL result = DebugActiveProcess(pid);
+  result = DebugActiveProcess(pid);
   if (!result)
     goto fail;
 
-  HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
+  handle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
   if (!handle)
     goto fail;
 
-  ThreadId tid = GetFirstThreadIdForProcess(pid);
+  tid = GetFirstThreadIdForProcess(pid);
   if (tid == kAnyThreadId)
     goto proc_fail;
 
-  HANDLE threadHandle = OpenThread(THREAD_ALL_ACCESS, false, tid);
+  threadHandle = OpenThread(THREAD_ALL_ACCESS, false, tid);
   if (!threadHandle)
     goto proc_fail;
 
-  ErrorCode error =
+  error =
       process->initialize(pid, handle, tid, threadHandle, kFlagAttachedProcess);
   if (error != kSuccess)
     goto init_fail;
