@@ -57,16 +57,18 @@ static ThreadId GetFirstThreadIdForProcess(ProcessId pid) {
     return kAnyThreadId;
 
   THREADENTRY32 threadEntry;
-  threadEntry.dwSize = sizeof(THREADENTRY32);
 
+  threadEntry.dwSize = sizeof(THREADENTRY32);
   if (!Thread32First(snapshot, &threadEntry))
     goto thread_fail;
 
   do {
+    DS2ASSERT(threadEntry.dwSize >= sizeof(THREADENTRY32));
     if (threadEntry.th32OwnerProcessID == pid) {
       CloseHandle(snapshot);
       return threadEntry.th32ThreadID;
     }
+    threadEntry.dwSize = sizeof(THREADENTRY32);
   } while (Thread32Next(snapshot, &threadEntry));
 
 thread_fail:
