@@ -8,7 +8,13 @@
 ## PATENTS file in the same directory.
 ##
 
-language: cpp
+sudo: required
+dist: trusty
+branches:
+  only:
+    - master
+matrix:
+  fast_finish: true
 
 env:
   - TARGET="Style"
@@ -26,13 +32,6 @@ env:
   - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="0" RELEASE="1"
   - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="1"
   - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="1" RELEASE="1"
-
-matrix:
-  fast_finish: true
-
-branches:
-  only:
-    - master
 
 before_install: ./Support/Testing/Travis/before-install.py
 install:        ./Support/Testing/Travis/install.py
