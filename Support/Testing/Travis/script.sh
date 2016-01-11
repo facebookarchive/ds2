@@ -13,6 +13,7 @@ set -eu
 
 # Get a recent cmake from cmake.org. All packages for Ubuntu 12.04 are too old.
 cd /tmp
+
 cmake_package="cmake-3.4.0-Linux-x86_64"
 wget --no-check-certificate "https://cmake.org/files/v3.4/$cmake_package.tar.gz"
 tar -xf "$cmake_package.tar.gz"
@@ -21,7 +22,7 @@ cd "$OLDPWD"
 
 cd "$(git rev-parse --show-toplevel)"
 
-cformat="clang-format-3.7"
+cformat="/tmp/llvm/build/bin/clang-format"
 
 check_dirty() {
   dirty=($(git status -s | awk '{ print $2 }'))
@@ -49,7 +50,7 @@ if [[ "$TARGET" = "Registers" ]]; then
   check_dirty "Generated sources up to date." "Generated sources out of date."
 fi
 
-mkdir build && cd build
+mkdir -p build && cd build
 
 if [[ "${CLANG-}" = "1" ]]; then
   cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}-Clang.cmake")
@@ -65,5 +66,6 @@ cmake "${cmake_options[@]}" ..
 make
 
 if [[ -n "${LLGS_TESTS-}" ]]; then
+  cp ds2 /tmp/ds2
   ../Support/Scripts/run-llgs-tests.sh
 fi

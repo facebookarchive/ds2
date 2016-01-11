@@ -13,27 +13,21 @@
 # against ds2. It requires a few hacks in the testing infra to adapt to the
 # differences between ds2 and lldb-gdbserver.
 
-LLVM_REPO="https://github.com/llvm-mirror/llvm.git"
-CLANG_REPO="https://github.com/llvm-mirror/clang.git"
-LLDB_REPO="https://github.com/llvm-mirror/lldb.git"
-UPSTREAM_BRANCH="release_36"
-
 source "$(dirname "$0")/common.sh"
 
 [ "$(uname)" == "Linux" ] || die "The lldb-gdbserver test suite requires a Linux host environment."
 [ -x "./ds2" ]            || die "Unable to find a ds2 binary in the current directory."
 
-git_clone "$LLVM_REPO"  llvm              "$UPSTREAM_BRANCH"
-git_clone "$CLANG_REPO" llvm/tools/clang  "$UPSTREAM_BRANCH"
-git_clone "$LLDB_REPO"  llvm/tools/lldb   "$UPSTREAM_BRANCH"
+lldb_path="/tmp/llvm/tools/lldb"
 
 for p in "Hacks-to-use-ds2-instead-of-llgs"; do
   echo "Applying $p.patch"
-  patch -d "llvm/tools/lldb" -p1 <"$(dirname "$0")/../Testing/$p.patch"
+#  patch -d "llvm/tools/lldb" -p1 <"$(dirname "$0")/../Testing/$p.patch"
+  patch -d "$lldb_path" -p1 <"$(dirname "$0")/../Testing/$p.patch"
 done
 
-rm -rf llvm/build
-mkdir -p llvm/build
-cd llvm/build
-cmake -DCMAKE_C_COMPILER="gcc-4.8" -DCMAKE_CXX_COMPILER="g++-4.8" -DLLDB_TEST_USER_ARGS="-p;TestGdbRemote" ..
-LLDB_DEBUGSERVER_PATH="$(pwd)/../../ds2" make check-lldb-single
+
+
+cd "$lldb_path/test"
+#cmake -DCMAKE_C_COMPILER="gcc-4.8" -DCMAKE_CXX_COMPILER="g++-4.8" -DLLDB_TEST_USER_ARGS="-p;TestGdbRemote" ..
+LLDB_DEBUGSERVER_PATH="/tmp/ds2" timeout -s QUIT 4m python2.7 dotest.py -q --arch=x86_64 --executable /tmp/llvm/build/bin/lldb -s /tmp/llvm/build/lldb-test-traces -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -p TestGdbRemote
