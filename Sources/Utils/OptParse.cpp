@@ -34,6 +34,7 @@ int OptParse::parse(int argc, char **argv, std::string &host, int &port,
 
   int idx;
 
+  host.clear();
   // Skip argv[0] which contains the program name,
   // and argv[1] which contains the run mode
   idx = 2;
@@ -87,6 +88,16 @@ int OptParse::parse(int argc, char **argv, std::string &host, int &port,
           break;
         }
       }
+    } else if (host.empty()) {
+      std::string addrString(argv[idx]);
+      auto splitPos = addrString.find(":");
+      CHECK(splitPos != std::string::npos);
+      if (!splitPos)
+        host = "localhost";
+      else
+        host = addrString.substr(0, splitPos).c_str();
+
+      port = atoi(addrString.substr(splitPos + 1).c_str());
     } else {
       // End of options.
       break;
@@ -120,7 +131,7 @@ void OptParse::usageDie(std::string const &message) {
     fprintf(outStream, "error: %s\n", message.c_str());
   }
 
-  fprintf(outStream, "usage: %s [RUN_MODE] [OPTIONS] [PROGRAM [ARGUMENTS...]]\n", "ds2");
+  fprintf(outStream, "usage: %s [RUN_MODE] [OPTIONS] [[HOST]:PORT] [PROGRAM [ARGUMENTS...]]\n", "ds2");
 
   size_t help_align = 0;
 

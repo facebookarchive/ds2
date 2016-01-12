@@ -253,6 +253,7 @@ int main(int argc, char **argv) {
 
   int attachPid = -1;
   int port = -1;
+  std::string host;
   std::string namedPipePath;
   RunMode mode = kRunModeNormal;
 
@@ -270,8 +271,6 @@ int main(int argc, char **argv) {
     opts.usageDie("first argument must be [g]dbserver or [p]latform");
   }
 
-  opts.addOption(ds2::OptParse::stringOption, "port", 'p',
-                 "listen on the port specified");
   opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
                  "attach to the name or PID specified");
   opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
@@ -345,10 +344,6 @@ int main(int argc, char **argv) {
 
   if (!opts.getString("attach").empty()) {
     attachPid = atoi(opts.getString("attach").c_str());
-  }
-
-  if (!opts.getString("port").empty()) {
-    port = atoi(opts.getString("port").c_str());
   }
 
   if (opts.getBool("list-processes")) {
