@@ -9,6 +9,8 @@
 //
 
 #include "DebugServer2/Host/Socket.h"
+#include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/String.h"
 #if defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #endif
@@ -135,6 +137,41 @@ Socket *Socket::accept() {
   auto client = new Socket(handle);
   client->setNonBlocking();
   return client;
+}
+
+bool Socket::connect(std::string &host, uint16_t port) {
+  struct addrinfo hints;
+  struct addrinfo *result, *results;
+  ::memset(&hints, 0, sizeof hints);
+  hints.ai_family = AF_INET;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_protocol = IPPROTO_TCP;
+
+  std::string port_str = ds2::ToString(port);
+
+  int res = ::getaddrinfo(host.c_str(), port_str.c_str(), &hints, &results);
+  if (res != 0) {
+    _lastError = SOCK_ERRNO;
+    return false;
+  }
+
+  SOCKET handle;
+  for (result = results; result != NULL; result = result->ai_next) {
+    handle = ::connect(_handle, result->ai_addr, result->ai_addrlen);
+    if (handle != INVALID_SOCKET)
+      break;
+  }
+  if (handle == INVALID_SOCKET) {
+    _lastError = SOCK_ERRNO;
+    return false;
+  }
+
+  freeaddrinfo(results);
+
+  _state = kStateConnected;
+  setNonBlocking();
+
+  return true;
 }
 
 bool Socket::setNonBlocking() {
