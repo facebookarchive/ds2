@@ -41,6 +41,12 @@ int OptParse::parse(int argc, char **argv, std::string &host, int &port,
 
   while (idx < argc) {
     if (argv[idx][0] == '-' && argv[idx][1] == '-') {
+      // program name may be preceeded by "--"
+      if (argv[idx][2] == '\0') {
+        ++idx;
+        break;
+      }
+
       // Long option.
       auto it = _options.find(argv[idx] + 2);
       CHECK(it != _options.end());
@@ -132,7 +138,7 @@ void OptParse::usageDie(std::string const &message) {
   }
 
   fprintf(outStream, "usage: %s [%s] [%s] [%s] [%s]\n", "ds2", "RUN_MODE",
-          "OPTIONS", "[HOST]:PORT", "PROGRAM [ARGUMENTS...]");
+          "OPTIONS", "[HOST]:PORT", "-- PROGRAM [ARGUMENTS...]");
 
   size_t help_align = 0;
 
