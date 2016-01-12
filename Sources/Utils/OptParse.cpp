@@ -41,27 +41,40 @@ int OptParse::parse(int argc, char **argv, std::string &host, int &port,
 
   while (idx < argc) {
     if (argv[idx][0] == '-' && argv[idx][1] == '-') {
+      std::string argStr(argv[idx]);
       // program name may be preceeded by "--"
-      if (argv[idx][2] == '\0') {
+      if (argStr == "--") {
         ++idx;
         break;
       }
 
+      argStr = argStr.substr(2);
+
+      std::string argVal;
+      auto split = argStr.find("=");
+      if (split != std::string::npos) {
+        argVal = argStr.substr(split + 1);
+        argStr = argStr.substr(0, split);
+      }
+
       // Long option.
-      auto it = _options.find(argv[idx] + 2);
+      auto it = _options.find(argStr);
       CHECK(it != _options.end());
+
+      if (it->second.type != boolOption && argVal.empty()) {
+        CHECK(idx + 1 < argc);
+        argVal = std::string(argv[++idx]);
+      }
 
       switch (it->second.type) {
       case boolOption:
         it->second.values.boolValue = true;
         break;
       case stringOption:
-        CHECK(idx + 1 < argc);
-        it->second.values.stringValue = argv[++idx];
+        it->second.values.stringValue = argVal;
         break;
       case vectorOption:
-        CHECK(idx + 1 < argc);
-        it->second.values.vectorValue.push_back(argv[++idx]);
+        it->second.values.vectorValue.push_back(argVal);
         break;
       }
     } else if (argv[idx][0] == '-') {
