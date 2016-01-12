@@ -14,7 +14,7 @@ from subprocess import check_call
 
 packages = []
 
-linux_packages = { 'Linux-ARM':     'g++-arm-linux-gnueabi',
+linux_packages = { 'Linux-ARM':     'g++-4.7-arm-linux-gnueabi',
                    'Linux-X86':     'g++-4.8-multilib',
                    'Linux-X86_64':  'g++-4.8' }
 
@@ -28,18 +28,15 @@ tizen_toolchains = { 'Tizen-ARM':   'arm',
 
 target = os.getenv('TARGET')
 
-if target == 'Style':
-    packages.append('clang-format-3.7')
-elif target == 'Registers':
+if target == 'Registers':
     packages.append('flex')
     packages.append('bison')
     packages.append('g++-4.8')
-    packages.append('clang-format-3.7')
 elif target in linux_packages:
     # Install gcc even when using clang, so we can run llgs tests.
     packages.append(linux_packages[target])
-    if os.getenv('CLANG') == '1':
-        packages.append('clang-3.7')
+#    if os.getenv('CLANG') == '1':
+#        packages.append('clang-3.7')
 elif target in android_toolchains:
     # Android builds get the toolchain from AOSP.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
@@ -51,7 +48,12 @@ elif target in tizen_toolchains:
 # use the lldb python library without us building it).
 if os.getenv('LLGS_TESTS') == '1':
     packages.append('swig')
-    packages.append('lldb-3.3')
 
 if len(packages) > 0:
     check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
+
+check_call('wget https://github.com/github/git-lfs/releases/download/v1.1.0/git-lfs-linux-386-1.1.0.tar.gz -O /tmp/git-lfs-1.1.0.tar.gz', shell=True)
+check_call('tar zxf /tmp/git-lfs-1.1.0.tar.gz -C /tmp && cd /tmp/git-lfs-1.1.0 && sudo ./install.sh && cd -', shell=True)
+check_call('sudo git lfs install && sudo git lfs pull > /tmp/lfs-pull.log && cat /tmp/lfs-pull.log', shell=True)
+
+check_call('tar zxf ./Support/Testing/Travis/LFS/llvm_release_37.tar.gz -C /tmp', shell=True)
