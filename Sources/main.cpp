@@ -44,7 +44,7 @@ using ds2::GDBRemote::SlaveSessionImpl;
 
 static uint16_t gDefaultPort = 12345;
 static bool gKeepAlive = false;
-static bool gLLDBCompat = false;
+static bool gGDBCompat = false;
 
 #if !defined(OS_WIN32)
 static void PlatformMain(int argc, char **argv, int port) {
@@ -84,8 +84,8 @@ static void PlatformMain(int argc, char **argv, int port) {
 static void RunDebugServer(Socket *server, SessionDelegate *impl) {
   Socket *client = server->accept();
 
-  Session session(gLLDBCompat ? ds2::GDBRemote::kCompatibilityModeLLDB
-                              : ds2::GDBRemote::kCompatibilityModeGDB);
+  Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
+                             : ds2::GDBRemote::kCompatibilityModeLLDB);
   auto qchannel = new QueueChannel(client);
   SessionThread thread(qchannel, &session);
 
@@ -298,8 +298,8 @@ int main(int argc, char **argv) {
                  "list processes debuggable by the current user");
 
   // llgs-compat options.
-  opts.addOption(ds2::OptParse::boolOption, "lldb-compat", 'l',
-                 "force ds2 to run in lldb compat mode");
+  opts.addOption(ds2::OptParse::boolOption, "gdb-compat", 'g',
+                 "force ds2 to run in gdb compat mode");
   opts.addOption(ds2::OptParse::stringOption, "named-pipe", 'N',
                  "determine a port dynamically and write back to FIFO");
   opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
@@ -365,7 +365,7 @@ int main(int argc, char **argv) {
   // This option forces ds2 to operate in lldb compatibilty mode. When not
   // specified, we assume we are talking to a GDB remote until we detect
   // otherwise.
-  gLLDBCompat = opts.getBool("lldb-compat");
+  gGDBCompat = opts.getBool("gdb-compat");
 
   // This is used for llgs testing. We determine a port number dynamically and
   // write it back to the FIFO passed as argument for the test harness to use
@@ -380,7 +380,7 @@ int main(int argc, char **argv) {
   // server without any of those two things, and wait for an "A" command that
   // specifies the command line to use to launch the inferior.
   //
-  if (mode == kRunModeNormal && argc == 0 && attachPid < 0 && !gLLDBCompat) {
+  if (mode == kRunModeNormal && argc == 0 && attachPid < 0 && gGDBCompat) {
     opts.usageDie("either a program or target PID is required");
   }
 
