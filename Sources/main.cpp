@@ -48,7 +48,8 @@ static bool gKeepAlive = false;
 static bool gGDBCompat = false;
 
 #if !defined(OS_WIN32)
-static void PlatformMain(int argc, char **argv, int port) {
+static void PlatformMain(int argc, char **argv, int port, std::string &host,
+                         bool reverse) {
   auto server = new Socket;
 
   if (!server->create()) {
@@ -57,22 +58,26 @@ static void PlatformMain(int argc, char **argv, int port) {
     exit(EXIT_FAILURE);
   }
 
-  if (!server->listen(port)) {
+  if (!reverse && !server->listen(port)) {
     DS2LOG(Error, "error: failed to listen: %s", server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Info, "listening on port %d", port);
+  if (!reverse)
+    DS2LOG(Info, "listening on port %d", port);
 
   PlatformSessionImpl impl;
 
   do {
-    Socket *client = server->accept();
+    if (reverse && !server->connect(host, port)) {
+      DS2LOG(Error, "reverse connect failed: %s", server->error().c_str());
+      exit(EXIT_FAILURE);
+    }
 
     // Platform mode implies that we are talking to an LLDB remote.
     Session session(ds2::GDBRemote::kCompatibilityModeLLDB);
     session.setDelegate(&impl);
-    session.create(client);
+    session.create(reverse ? server : server->accept());
 
     while (session.receive(/*cooked=*/false))
       ;
@@ -82,12 +87,16 @@ static void PlatformMain(int argc, char **argv, int port) {
 }
 #endif
 
-static void RunDebugServer(Socket *server, SessionDelegate *impl) {
-  Socket *client = server->accept();
+static void RunDebugServer(Socket *server, SessionDelegate *impl, uint16_t port,
+                           std::string &host, bool reverse) {
+  if (reverse && !server->connect(host, port)) {
+    DS2LOG(Error, "reverse connect failed: %s", server->error().c_str());
+    exit(EXIT_FAILURE);
+  }
 
   Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
                              : ds2::GDBRemote::kCompatibilityModeLLDB);
-  auto qchannel = new QueueChannel(client);
+  auto qchannel = new QueueChannel(reverse ? server : server->accept());
   SessionThread thread(qchannel, &session);
 
   session.setDelegate(impl);
@@ -105,6 +114,7 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
 
 static void DebugMain(ds2::StringCollection const &args,
                       ds2::EnvironmentBlock const &env, int attachPid, int port,
+                      std::string &host, bool reverse,
                       std::string const &namedPipePath) {
   auto server = new Socket;
 
@@ -114,12 +124,13 @@ static void DebugMain(ds2::StringCollection const &args,
     exit(EXIT_FAILURE);
   }
 
-  if (!server->listen(port)) {
+  if (!reverse && !server->listen(port)) {
     DS2LOG(Error, "failed to listen: %s", server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Info, "listening on port %d", server->port());
+  if (!reverse)
+    DS2LOG(Info, "listening on port %d", server->port());
 
   if (!namedPipePath.empty()) {
     std::string portStr = ds2::ToString(server->port());
@@ -144,20 +155,20 @@ static void DebugMain(ds2::StringCollection const &args,
     else
       impl = new DebugSessionImpl();
 
-    RunDebugServer(server, impl);
+    RunDebugServer(server, impl, port, host, reverse);
 
     delete impl;
   } while (gKeepAlive);
 }
 
 #if !defined(OS_WIN32)
-static void SlaveMain(int argc, char **argv) {
+static void SlaveMain(int argc, char **argv, std::string &host, bool reverse) {
   auto server = new Socket;
 
   if (!server->create())
     exit(EXIT_FAILURE);
 
-  if (!server->listen(0))
+  if (!reverse && !server->listen(0))
     exit(EXIT_FAILURE);
 
   uint16_t port = server->port();
@@ -183,7 +194,7 @@ static void SlaveMain(int argc, char **argv) {
     open("/dev/null", O_RDONLY);
     open("/dev/null", O_WRONLY);
 
-    RunDebugServer(server, new SlaveSessionImpl);
+    RunDebugServer(server, new SlaveSessionImpl, port, host, reverse);
   } else {
     //
     // Write to the standard output to let know our parent
@@ -257,6 +268,7 @@ int main(int argc, char **argv) {
   std::string host = gDefaultHost;
   std::string namedPipePath;
   RunMode mode = kRunModeNormal;
+  bool reverse = false;
 
   if (argc < 2)
     opts.usageDie("first argument must be [g]dbserver or [p]latform");
@@ -276,6 +288,8 @@ int main(int argc, char **argv) {
                  "attach to the name or PID specified");
   opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
                  "keep the server alive after the client disconnects");
+  opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
+                 "connect to back to debugger at [HOST]:PORT");
 
   // Target debug options.
   opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
@@ -286,7 +300,7 @@ int main(int argc, char **argv) {
   // Logging options.
   opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
                  "output log messages to the file specified");
-  opts.addOption(ds2::OptParse::boolOption, "debug-remote", 'R',
+  opts.addOption(ds2::OptParse::boolOption, "debug-remote", 'D',
                  "enable log for remote protocol packets");
   opts.addOption(ds2::OptParse::boolOption, "debug", 'd',
                  "enable debug log output");
@@ -347,6 +361,8 @@ int main(int argc, char **argv) {
     attachPid = atoi(opts.getString("attach").c_str());
   }
 
+  reverse = opts.getBool("reverse-connect");
+
   if (opts.getBool("list-processes")) {
     ListProcesses();
   }
@@ -392,11 +408,11 @@ int main(int argc, char **argv) {
   switch (mode) {
 #if !defined(OS_WIN32)
   case kRunModePlatform:
-    PlatformMain(argc, argv, port);
+    PlatformMain(argc, argv, port, host, reverse);
     break;
 
   case kRunModeSlave:
-    SlaveMain(argc, argv);
+    SlaveMain(argc, argv, host, reverse);
     break;
 #endif
 
@@ -417,8 +433,7 @@ int main(int argc, char **argv) {
     for (auto const &e : opts.getVector("unset-env")) {
       env.erase(e);
     }
-
-    DebugMain(args, env, attachPid, port, namedPipePath);
+    DebugMain(args, env, attachPid, port, host, reverse, namedPipePath);
   } break;
   }
 

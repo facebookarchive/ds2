@@ -13,6 +13,8 @@
 # against ds2. It requires a few hacks in the testing infra to adapt to the
 # differences between ds2 and lldb-gdbserver.
 
+tests=(GdbRemote StubReverseConnect)
+
 LLDB_REPO="https://github.com/llvm-mirror/lldb.git"
 UPSTREAM_BRANCH="release_37"
 
@@ -49,4 +51,7 @@ done
 
 cd "$lldb_path/test"
 lldb_exe="$(which lldb-3.7)"
-LLDB_DEBUGSERVER_PATH="/tmp/ds2" python2.7 dotest.py -q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -p TestGdbRemote -m
+
+for test in ${tests[@]}; do
+  LLDB_DEBUGSERVER_PATH="/tmp/ds2" python2.7 dotest.py -q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -p "$test" -m
+done
