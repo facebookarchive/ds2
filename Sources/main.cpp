@@ -256,20 +256,26 @@ int main(int argc, char **argv) {
   std::string namedPipePath;
   RunMode mode = kRunModeNormal;
 
+  if (argc < 2)
+    opts.usageDie("first argument must be [g]dbserver or [p]latform");
+
+  std::string modeString(argv[1]);
+  if (modeString == "g" || modeString == "gdbserver") {
+    mode = kRunModeNormal;
+  } else if (modeString == "p" || modeString == "platform") {
+    mode = kRunModePlatform;
+  } else if (modeString == "s" || modeString == "slave") {
+    mode = kRunModeSlave;
+  } else {
+    opts.usageDie("first argument must be [g]dbserver or [p]latform");
+  }
+
   opts.addOption(ds2::OptParse::stringOption, "port", 'p',
                  "listen on the port specified");
   opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
                  "attach to the name or PID specified");
   opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
                  "keep the server alive after the client disconnects");
-
-#if !defined(OS_WIN32)
-  // Platform mode.
-  opts.addOption(ds2::OptParse::boolOption, "platform", 'P',
-                 "execute in platform mode");
-  opts.addOption(ds2::OptParse::boolOption, "slave", 'S',
-                 "run in slave mode (used from platform spawner)", true);
-#endif
 
   // Target debug options.
   opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
@@ -301,7 +307,7 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "setsid", 's',
                  "make ds2 run in its own session (no-op)", true);
 
-  idx = opts.parse(argc, argv);
+  idx = opts.parse(argc, argv, host, port, mode == kRunModeSlave);
 
   if (!opts.getString("log-output").empty()) {
     FILE *stream = fopen(opts.getString("log-output").c_str(), "a");
@@ -349,19 +355,12 @@ int main(int argc, char **argv) {
     ListProcesses();
   }
 
-#if !defined(OS_WIN32)
-  if (opts.getBool("platform")) {
-    mode = kRunModePlatform;
+  if (mode == kRunModePlatform) {
     //
     // The platform spawner should stay alive by default.
     //
     gKeepAlive = true;
   }
-
-  if (opts.getBool("slave")) {
-    mode = kRunModeSlave;
-  }
-#endif
 
   // This option forces ds2 to operate in lldb compatibilty mode. When not
   // specified, we assume we are talking to a GDB remote until we detect

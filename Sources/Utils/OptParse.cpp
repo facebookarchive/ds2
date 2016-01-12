@@ -23,7 +23,8 @@ void OptParse::addOption(OptionType type, std::string const &name,
   _options[name] = {shortName, type, {false, "", {}}, help, hidden};
 }
 
-int OptParse::parse(int argc, char **argv) {
+int OptParse::parse(int argc, char **argv, std::string &host, int &port,
+                    bool slave) {
 #define CHECK(COND)                                                            \
   do {                                                                         \
     if (!(COND)) {                                                             \
@@ -33,8 +34,9 @@ int OptParse::parse(int argc, char **argv) {
 
   int idx;
 
-  // Skip argv[0] which contains the program name.
-  idx = 1;
+  // Skip argv[0] which contains the program name,
+  // and argv[1] which contains the run mode
+  idx = 2;
 
   while (idx < argc) {
     if (argv[idx][0] == '-' && argv[idx][1] == '-') {
@@ -93,6 +95,8 @@ int OptParse::parse(int argc, char **argv) {
     ++idx;
   }
 
+  CHECK(!host.empty() || slave);
+
   return idx;
 #undef CHECK
 }
@@ -116,7 +120,7 @@ void OptParse::usageDie(std::string const &message) {
     fprintf(outStream, "error: %s\n", message.c_str());
   }
 
-  fprintf(outStream, "usage: %s [OPTIONS] [PROGRAM [ARGUMENTS...]]\n", "ds2");
+  fprintf(outStream, "usage: %s [RUN_MODE] [OPTIONS] [PROGRAM [ARGUMENTS...]]\n", "ds2");
 
   size_t help_align = 0;
 
