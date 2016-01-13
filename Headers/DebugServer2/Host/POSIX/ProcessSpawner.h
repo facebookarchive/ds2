@@ -99,6 +99,7 @@ public:
   ErrorCode run(std::function<bool()> preExecAction = []() { return true; });
   ErrorCode wait();
   bool isRunning() const;
+  void flushAndExit();
 
 public:
   inline ProcessId pid() const { return _pid; }
