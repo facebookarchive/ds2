@@ -30,7 +30,6 @@ for p in "Hacks-to-use-ds2-instead-of-llgs"; do
 done
 
 python_base="/usr/lib/x86_64-linux-gnu"
-export PYTHONPATH="$python_base/python2.7/site-packages"
 
 if [ ! -e "$PYTHONPATH" ] ; then
   sudo cp -r /usr/lib/llvm-3.7/lib/python2.7 "$python_base"
