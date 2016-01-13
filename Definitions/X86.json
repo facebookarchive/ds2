@@ -539,7 +539,12 @@
                 "x87-flags",
                 "sse-flags",
                 "sse-mask",
-                "x87-regs",
+                "x87-regs"
+            ]
+        },
+        {
+            "description" : "Advanced Vector Extensions",
+            "sets"        : [
                 "avx-regs",
                 "sse-regs"
             ]

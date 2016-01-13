@@ -162,17 +162,24 @@ RegisterDef const *const lldb_reg_defs_1[] = {
     &reg_def_fioff, &reg_def_foseg,     &reg_def_fooff, &reg_def_fop,
     &reg_def_mxcsr, &reg_def_mxcsrmask, &reg_def_st0,   &reg_def_st1,
     &reg_def_st2,   &reg_def_st3,       &reg_def_st4,   &reg_def_st5,
-    &reg_def_st6,   &reg_def_st7,       &reg_def_ymm0,  &reg_def_ymm1,
-    &reg_def_ymm2,  &reg_def_ymm3,      &reg_def_ymm4,  &reg_def_ymm5,
-    &reg_def_ymm6,  &reg_def_ymm7,      &reg_def_xmm0,  &reg_def_xmm1,
-    &reg_def_xmm2,  &reg_def_xmm3,      &reg_def_xmm4,  &reg_def_xmm5,
-    &reg_def_xmm6,  &reg_def_xmm7,      nullptr};
+    &reg_def_st6,   &reg_def_st7,       nullptr};
 
-LLDBRegisterSet const lldb_reg_set_1 = {"Floating Point Registers", 34,
+LLDBRegisterSet const lldb_reg_set_1 = {"Floating Point Registers", 18,
                                         lldb_reg_defs_1};
 
-LLDBRegisterSet const *const lldb_reg_sets[] = {&lldb_reg_set_0,
-                                                &lldb_reg_set_1, nullptr};
+// LLDB Register Set (Advanced Vector Extensions)
+
+RegisterDef const *const lldb_reg_defs_2[] = {
+    &reg_def_ymm0, &reg_def_ymm1, &reg_def_ymm2, &reg_def_ymm3, &reg_def_ymm4,
+    &reg_def_ymm5, &reg_def_ymm6, &reg_def_ymm7, &reg_def_xmm0, &reg_def_xmm1,
+    &reg_def_xmm2, &reg_def_xmm3, &reg_def_xmm4, &reg_def_xmm5, &reg_def_xmm6,
+    &reg_def_xmm7, nullptr};
+
+LLDBRegisterSet const lldb_reg_set_2 = {"Advanced Vector Extensions", 16,
+                                        lldb_reg_defs_2};
+
+LLDBRegisterSet const *const lldb_reg_sets[] = {
+    &lldb_reg_set_0, &lldb_reg_set_1, &lldb_reg_set_2, nullptr};
 
 //
 // GDB Features
@@ -1699,7 +1706,7 @@ namespace ds2 {
 namespace Architecture {
 namespace X86 {
 
-LLDBDescriptor const LLDB = {2, lldb_reg_sets};
+LLDBDescriptor const LLDB = {3, lldb_reg_sets};
 GDBDescriptor const GDB = {"i386:i386", "GNU/Linux", 3, gdb_features};
 }
 }
