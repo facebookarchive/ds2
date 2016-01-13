@@ -11,10 +11,10 @@ index 55cff08..64f9f97 100644
          # Gather threads from stop notification when QThreadsInStopReply is not enabled.
          stop_reply_threads = self.gather_stop_reply_threads(None, thread_count)
 diff --git a/test/tools/lldb-server/gdbremote_testcase.py b/test/tools/lldb-server/gdbremote_testcase.py
-index c3a1cca..cb7b85f 100644
+index c3a1cca..3ba8d3d 100644
 --- a/test/tools/lldb-server/gdbremote_testcase.py
 +++ b/test/tools/lldb-server/gdbremote_testcase.py
-@@ -753,8 +746,6 @@ class GdbRemoteTestCaseBase(TestBase):
+@@ -753,8 +753,6 @@ class GdbRemoteTestCaseBase(TestBase):
                      raise Exception("malformed stub feature: final character {} not in expected set (+,-,?)".format(supported_type))
                  supported_dict[key] = supported_type 
              # Ensure we know the supported element

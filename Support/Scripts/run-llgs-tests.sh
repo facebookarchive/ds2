@@ -13,7 +13,7 @@
 # against ds2. It requires a few hacks in the testing infra to adapt to the
 # differences between ds2 and lldb-gdbserver.
 
-tests=(GdbRemote StubReverseConnect)
+tests=(GdbRemote StubReverseConnect LldbGdbServer)
 
 LLDB_REPO="https://github.com/llvm-mirror/lldb.git"
 UPSTREAM_BRANCH="release_37"
@@ -26,9 +26,10 @@ source "$(dirname "$0")/common.sh"
 lldb_path="/tmp/lldb"
 git_clone "$LLDB_REPO" "$lldb_path"   "$UPSTREAM_BRANCH"
 
-for p in "Hacks-to-use-ds2-instead-of-llgs"; do
-  echo "Applying $p.patch"
-  patch -d "$lldb_path" -p1 <"$(dirname "$0")/../Testing/$p.patch"
+cd "$(dirname "$0")/../Testing"
+for p in $( ls *.patch ) ; do
+  echo "Applying $p"
+  patch -d "$lldb_path" -p1 < "$p"
 done
 
 python_base="/usr/lib/x86_64-linux-gnu"
