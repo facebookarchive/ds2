@@ -48,6 +48,15 @@ if [ ! -e "_lldb.so" ] ; then
   done
 fi
 
+# This should be set by .travis.yml, warning for local runs
+if [ "$PYTHONPATH" != "$(lldb-3.7 -P)" ] ; then
+  echo "*************************************************"
+  echo "Python path environment variable not set properly."
+  echo "If you see errors importing lldb in python,"
+  echo "set PYTHONPATH to result from command \"lldb-3.7 -P\""
+  echo "*************************************************"
+fi
+
 cd "$lldb_path/test"
 lldb_exe="$(which lldb-3.7)"
 LLDB_DEBUGSERVER_PATH="/tmp/ds2" python2.7 dotest.py -q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -p TestGdbRemote -m
