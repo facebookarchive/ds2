@@ -911,6 +911,9 @@ DebugSessionImpl::onResume(Session &session,
       session,
       ProcessThreadId(_process->pid(), _process->currentThread()->tid()), stop);
 
+  if (stop.event == StopCode::kCleanExit || stop.event == StopCode::kSignalExit)
+    _spawner.flushAndExit();
+
 ret:
   _resumeSessionLock.lock();
   _resumeSession = nullptr;
