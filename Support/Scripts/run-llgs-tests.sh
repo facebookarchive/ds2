@@ -31,14 +31,23 @@ done
 
 python_base="/usr/lib/x86_64-linux-gnu"
 export PYTHONPATH="$python_base/python2.7/site-packages"
-sudo cp -r /usr/lib/llvm-3.7/lib/python2.7 "$python_base"
-sudo ln -s "$python_base/liblldb-3.7.so" "$python_base/liblldb.so"
+
+if [ ! -e "$PYTHONPATH" ] ; then
+  sudo cp -r /usr/lib/llvm-3.7/lib/python2.7 "$python_base"
+fi
+
+if [ ! -e "$python_base/liblldb.so" ] ; then
+  sudo ln -s "$python_base/liblldb-3.7.so" "$python_base/liblldb.so"
+fi
+
 cd "$python_base/python2.7/site-packages/lldb"
-for path in $( ls *.so* ); do
-  new_link="$(readlink "$path" | sed 's/x86_64-linux-gnu//g')"
-  sudo rm "$path"
-  sudo ln -s "$new_link" "$path"
-done
+if [ ! -e "_lldb.so" ] ; then
+  for path in $( ls *.so* ); do
+    new_link="$(readlink "$path" | sed 's/x86_64-linux-gnu//g')"
+    sudo rm "$path"
+    sudo ln -s "$new_link" "$path"
+  done
+fi
 
 cd "$lldb_path/test"
 lldb_exe="$(which lldb-3.7)"

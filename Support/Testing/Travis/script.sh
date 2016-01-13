@@ -14,8 +14,12 @@ set -eu
 # Get a recent cmake from cmake.org. All packages for Ubuntu 12.04 are too old.
 cd /tmp
 cmake_package="cmake-3.4.0-Linux-x86_64"
-wget --no-check-certificate "https://cmake.org/files/v3.4/$cmake_package.tar.gz"
+
+if [ ! -e "$cmake_package.tar.gz" ] ; then
+  wget --no-check-certificate "https://cmake.org/files/v3.4/$cmake_package.tar.gz"
+fi
 tar -xf "$cmake_package.tar.gz"
+
 export PATH="$PWD/$cmake_package/bin:$PATH"
 cd "$OLDPWD"
 
@@ -49,7 +53,7 @@ if [[ "$TARGET" = "Registers" ]]; then
   check_dirty "Generated sources up to date." "Generated sources out of date."
 fi
 
-mkdir build && cd build
+mkdir -p build && cd build
 
 if [[ "${CLANG-}" = "1" ]]; then
   cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}-Clang.cmake")
