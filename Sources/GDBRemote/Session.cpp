@@ -1841,6 +1841,12 @@ void Session::Handle_qLaunchSuccess(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_qMemoryRegionInfo(ProtocolInterpreter::Handler const &,
                                        std::string const &args) {
+  // This is just a query packet
+  if (args.empty()) {
+    sendOK();
+    return;
+  }
+
   uint64_t address = strtoull(args.c_str(), nullptr, 16);
   MemoryRegionInfo info;
   ErrorCode error = _delegate->onQueryMemoryRegionInfo(*this, address, info);
