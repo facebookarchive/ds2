@@ -80,7 +80,7 @@ DebugSessionImpl::onQuerySupported(Session &session,
   // TODO PacketSize should be respected
   localFeatures.push_back(std::string("PacketSize=3fff"));
   localFeatures.push_back(std::string("ConditionalBreakpoints-"));
-  if (_process->breakpointManager() != nullptr) {
+  if (_process && _process->breakpointManager() != nullptr) {
     localFeatures.push_back(std::string("BreakpointCommands+"));
   } else {
     localFeatures.push_back(std::string("BreakpointCommands-"));
@@ -99,11 +99,11 @@ DebugSessionImpl::onQuerySupported(Session &session,
   localFeatures.push_back(std::string("qXfer:siginfo:read-"));
   localFeatures.push_back(std::string("qXfer:siginfo:write-"));
 #endif
-  if (_process->isELFProcess()) {
+  if (_process && _process->isELFProcess()) {
     localFeatures.push_back(std::string("qXfer:auxv:read+"));
   }
   localFeatures.push_back(std::string("qXfer:features:read+"));
-  if (_process->isELFProcess()) {
+  if (_process && _process->isELFProcess()) {
     localFeatures.push_back(std::string("qXfer:libraries-svr4:read+"));
   } else {
     localFeatures.push_back(std::string("qXfer:libraries:read+"));
