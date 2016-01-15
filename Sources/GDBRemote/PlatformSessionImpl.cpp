@@ -141,7 +141,7 @@ ErrorCode PlatformSessionImpl::onLaunchDebugServer(Session &session,
   StringCollection args;
 
   ps.setExecutable(Platform::GetSelfExecutablePath());
-  args.push_back("--slave");
+  args.push_back("slave");
   if (GetLogLevel() == kLogLevelDebug)
     args.push_back("--debug-remote");
   ps.setArguments(args);

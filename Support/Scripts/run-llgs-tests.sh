@@ -13,27 +13,50 @@
 # against ds2. It requires a few hacks in the testing infra to adapt to the
 # differences between ds2 and lldb-gdbserver.
 
-LLVM_REPO="https://github.com/llvm-mirror/llvm.git"
-CLANG_REPO="https://github.com/llvm-mirror/clang.git"
 LLDB_REPO="https://github.com/llvm-mirror/lldb.git"
-UPSTREAM_BRANCH="release_36"
+UPSTREAM_BRANCH="release_37"
 
 source "$(dirname "$0")/common.sh"
 
 [ "$(uname)" == "Linux" ] || die "The lldb-gdbserver test suite requires a Linux host environment."
 [ -x "./ds2" ]            || die "Unable to find a ds2 binary in the current directory."
 
-git_clone "$LLVM_REPO"  llvm              "$UPSTREAM_BRANCH"
-git_clone "$CLANG_REPO" llvm/tools/clang  "$UPSTREAM_BRANCH"
-git_clone "$LLDB_REPO"  llvm/tools/lldb   "$UPSTREAM_BRANCH"
+lldb_path="/tmp/lldb"
+git_clone "$LLDB_REPO" "$lldb_path"   "$UPSTREAM_BRANCH"
 
 for p in "Hacks-to-use-ds2-instead-of-llgs"; do
   echo "Applying $p.patch"
-  patch -d "llvm/tools/lldb" -p1 <"$(dirname "$0")/../Testing/$p.patch"
+  patch -d "$lldb_path" -p1 <"$(dirname "$0")/../Testing/$p.patch"
 done
 
-rm -rf llvm/build
-mkdir -p llvm/build
-cd llvm/build
-cmake -DCMAKE_C_COMPILER="gcc-4.8" -DCMAKE_CXX_COMPILER="g++-4.8" -DLLDB_TEST_USER_ARGS="-p;TestGdbRemote" ..
-LLDB_DEBUGSERVER_PATH="$(pwd)/../../ds2" make check-lldb-single
+python_base="/usr/lib/x86_64-linux-gnu"
+
+if [ ! -e "$PYTHONPATH" ] ; then
+  sudo cp -r /usr/lib/llvm-3.7/lib/python2.7 "$python_base"
+fi
+
+if [ ! -e "$python_base/liblldb.so" ] ; then
+  sudo ln -s "$python_base/liblldb-3.7.so" "$python_base/liblldb.so"
+fi
+
+cd "$python_base/python2.7/site-packages/lldb"
+if [ ! -e "_lldb.so" ] ; then
+  for path in $( ls *.so* ); do
+    new_link="$(readlink "$path" | sed 's/x86_64-linux-gnu//g')"
+    sudo rm "$path"
+    sudo ln -s "$new_link" "$path"
+  done
+fi
+
+# This should be set by .travis.yml, warning for local runs
+if [ "$PYTHONPATH" != "$(lldb-3.7 -P)" ] ; then
+  echo "*************************************************"
+  echo "Python path environment variable not set properly."
+  echo "If you see errors importing lldb in python,"
+  echo "set PYTHONPATH to result from command \"lldb-3.7 -P\""
+  echo "*************************************************"
+fi
+
+cd "$lldb_path/test"
+lldb_exe="$(which lldb-3.7)"
+LLDB_DEBUGSERVER_PATH="/tmp/ds2" python2.7 dotest.py -q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -p TestGdbRemote -m

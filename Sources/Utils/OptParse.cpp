@@ -23,7 +23,8 @@ void OptParse::addOption(OptionType type, std::string const &name,
   _options[name] = {shortName, type, {false, "", {}}, help, hidden};
 }
 
-int OptParse::parse(int argc, char **argv) {
+int OptParse::parse(int argc, char **argv, std::string &host, int &port,
+                    bool slave) {
 #define CHECK(COND)                                                            \
   do {                                                                         \
     if (!(COND)) {                                                             \
@@ -33,26 +34,47 @@ int OptParse::parse(int argc, char **argv) {
 
   int idx;
 
-  // Skip argv[0] which contains the program name.
-  idx = 1;
+  host.clear();
+  // Skip argv[0] which contains the program name,
+  // and argv[1] which contains the run mode
+  idx = 2;
 
   while (idx < argc) {
     if (argv[idx][0] == '-' && argv[idx][1] == '-') {
+      std::string argStr(argv[idx]);
+      // program name may be preceeded by "--"
+      if (argStr == "--") {
+        ++idx;
+        break;
+      }
+
+      argStr = argStr.substr(2);
+
+      std::string argVal;
+      auto split = argStr.find("=");
+      if (split != std::string::npos) {
+        argVal = argStr.substr(split + 1);
+        argStr = argStr.substr(0, split);
+      }
+
       // Long option.
-      auto it = _options.find(argv[idx] + 2);
+      auto it = _options.find(argStr);
       CHECK(it != _options.end());
+
+      if (it->second.type != boolOption && argVal.empty()) {
+        CHECK(idx + 1 < argc);
+        argVal = std::string(argv[++idx]);
+      }
 
       switch (it->second.type) {
       case boolOption:
         it->second.values.boolValue = true;
         break;
       case stringOption:
-        CHECK(idx + 1 < argc);
-        it->second.values.stringValue = argv[++idx];
+        it->second.values.stringValue = argVal;
         break;
       case vectorOption:
-        CHECK(idx + 1 < argc);
-        it->second.values.vectorValue.push_back(argv[++idx]);
+        it->second.values.vectorValue.push_back(argVal);
         break;
       }
     } else if (argv[idx][0] == '-') {
@@ -85,6 +107,16 @@ int OptParse::parse(int argc, char **argv) {
           break;
         }
       }
+    } else if (host.empty()) {
+      std::string addrString(argv[idx]);
+      auto splitPos = addrString.find(":");
+      CHECK(splitPos != std::string::npos);
+      if (!splitPos)
+        host = "localhost";
+      else
+        host = addrString.substr(0, splitPos).c_str();
+
+      port = atoi(addrString.substr(splitPos + 1).c_str());
     } else {
       // End of options.
       break;
@@ -92,6 +124,8 @@ int OptParse::parse(int argc, char **argv) {
 
     ++idx;
   }
+
+  CHECK(!host.empty() || slave);
 
   return idx;
 #undef CHECK
@@ -116,7 +150,8 @@ void OptParse::usageDie(std::string const &message) {
     fprintf(outStream, "error: %s\n", message.c_str());
   }
 
-  fprintf(outStream, "usage: %s [OPTIONS] [PROGRAM [ARGUMENTS...]]\n", "ds2");
+  fprintf(outStream, "usage: %s [%s] [%s] [%s] [%s]\n", "ds2", "RUN_MODE",
+          "OPTIONS", "[HOST]:PORT", "-- PROGRAM [ARGUMENTS...]");
 
   size_t help_align = 0;
 

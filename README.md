@@ -12,7 +12,7 @@ Windows support is still under active development.
 
 Launch ds2 with something like:
 
-    $ ./ds2 --port 4242 ./TestSimpleOutput
+    $ ./ds2 gdbserver localhost:4242 ./TestSimpleOutput
 
 ds2 is now ready to accept connections on port 4242 from lldb.
 
@@ -41,18 +41,16 @@ ds2 is now ready to accept connections on port 4242 from lldb.
 ds2 accepts the following options:
 
 ```
-usage: ds2 [OPTIONS] [PROGRAM [ARGUMENTS...]]
+usage: ds2 [RUN_MODE] [OPTIONS] [[HOST]:PORT] [-- PROGRAM [ARGUMENTS...]]
   -a, --attach ARG          attach to the name or PID specified
-  -R, --debug-remote        enable remote packet log output
-  -d, --debug               enable debug output
+  -d, --debug               enable debug log output
+  -R, --debug-remote        enable log for remote protocol packets
+  -g, --gdb-compat          force ds2 to run in gdb compat mode
   -k, --keep-alive          keep the server alive after the client disconnects
   -L, --list-processes      list processes debuggable by the current user
-  -l, --lldb-compat         force ds2 to run in lldb compat mode
-  -o, --log-output ARG      output log message to the file specified
+  -o, --log-output ARG      output log messages to the file specified
   -N, --named-pipe ARG      determine a port dynamically and write back to FIFO
   -n, --no-colors           disable colored output
-  -P, --platform            execute in platform mode
-  -p, --port ARG            listen on the port specified
   -e, --set-env             add an element to the environment before launch
   -E, --unset-env           remove an element from the environment before lauch
 ```
@@ -61,8 +59,8 @@ After building ds2 for your target, run it with the binary to debug, or attach
 to an already running process. Then, start LLDB as usual and attach to the ds2
 instance with the `gdb-remote` command.
 
-ds2 listens on port 12345 by default; `--port` can be used to specify the port
-number to use.
+The run mode and port number must be specified, where run mode is either
+[g]dbserver or [p]latform. In most cases, the [g]dbserver option is desired.
 
 ## Building ds2
 
