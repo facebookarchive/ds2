@@ -50,6 +50,15 @@ done
 
 cd "$lldb_path/test"
 lldb_exe="$(which lldb-3.7)"
+args="-q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -m"
 for test in ${tests[@]}; do
-  LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py -q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -p "$test" -m
+  for attempt in 0 1; do
+    if [ $attempt -ne 0 ]; then
+      echo "Failed test suite: Test$test, retrying"
+    fi
+
+    if LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args -p "$test"; then
+      break
+    fi
+  done
 done
