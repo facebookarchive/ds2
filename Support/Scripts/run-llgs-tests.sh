@@ -13,7 +13,7 @@
 # against ds2. It requires a few hacks in the testing infra to adapt to the
 # differences between ds2 and lldb-gdbserver.
 
-tests=(GdbRemote StubReverseConnect LldbGdbServer)
+tests=(GdbRemote StubReverseConnect LldbGdbServer Help Settings)
 
 LLDB_REPO="https://github.com/llvm-mirror/lldb.git"
 UPSTREAM_BRANCH="release_37"
