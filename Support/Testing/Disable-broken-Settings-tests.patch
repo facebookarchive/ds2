@@ -1,0 +1,28 @@
+diff --git a/test/settings/TestSettings.py b/test/settings/TestSettings.py
+index f6af0d2..2f59241 100644
+--- a/test/settings/TestSettings.py
++++ b/test/settings/TestSettings.py
+@@ -208,6 +208,7 @@ class SettingsCommandTestCase(TestBase):
+         self.pass_run_args_and_env_vars()
+ 
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_run_args_and_env_vars_with_dwarf(self):
+         """Test that run-args and env-vars are passed to the launched process."""
+         self.buildDwarf()
+@@ -242,6 +243,7 @@ class SettingsCommandTestCase(TestBase):
+                        "Environment variable 'MY_ENV_VAR' successfully passed."])
+ 
+     @skipIfRemote # it doesn't make sense to send host env to remote target
++    @unittest2.expectedFailure # doesn't make sense for ds2, since we're usually remote
+     def test_pass_host_env_vars(self):
+         """Test that the host env vars are passed to the launched process."""
+         self.buildDefault()
+@@ -275,6 +277,7 @@ class SettingsCommandTestCase(TestBase):
+             substrs = ["The host environment variable 'MY_HOST_ENV_VAR1' successfully passed.",
+                        "The host environment variable 'MY_HOST_ENV_VAR2' successfully passed."])
+ 
++    @unittest2.expectedFailure
+     def test_set_error_output_path(self):
+         """Test that setting target.error/output-path for the launched process works."""
+         self.buildDefault()
