@@ -34,7 +34,7 @@ env:
 ############################
 # LLDB Unit tests - x86    #
 ############################
-  - TARGET="Linux-X86"      LLDB_TESTS="StubReverseConnect"
+  - TARGET="Linux-X86"      LLDB_TESTS="Stub"
   - TARGET="Linux-X86"      LLDB_TESTS="LldbGdbServer"
   - TARGET="Linux-X86"      LLDB_TESTS="Help"
   - TARGET="Linux-X86"      LLDB_TESTS="Settings"
@@ -43,7 +43,7 @@ env:
 ############################
 # LLDB Unit tests - x86_64 #
 ############################
-  - TARGET="Linux-X86_64"   LLDB_TESTS="StubReverseConnect"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="Stub"
   - TARGET="Linux-X86_64"   LLDB_TESTS="LldbGdbServer"
   - TARGET="Linux-X86_64"   LLDB_TESTS="Help"
   - TARGET="Linux-X86_64"   LLDB_TESTS="Settings"
