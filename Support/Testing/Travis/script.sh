@@ -69,6 +69,5 @@ cmake "${cmake_options[@]}" ..
 make
 
 if [[ -n "${LLGS_TESTS-}" ]]; then
-  cp ds2 /tmp/ds2
   ../Support/Scripts/run-llgs-tests.sh
 fi
