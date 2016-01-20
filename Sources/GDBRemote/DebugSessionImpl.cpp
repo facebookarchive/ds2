@@ -80,11 +80,7 @@ DebugSessionImpl::onQuerySupported(Session &session,
   // TODO PacketSize should be respected
   localFeatures.push_back(std::string("PacketSize=3fff"));
   localFeatures.push_back(std::string("ConditionalBreakpoints-"));
-  if (_process->breakpointManager() != nullptr) {
-    localFeatures.push_back(std::string("BreakpointCommands+"));
-  } else {
-    localFeatures.push_back(std::string("BreakpointCommands-"));
-  }
+  localFeatures.push_back(std::string("BreakpointCommands+"));
   localFeatures.push_back(std::string("multiprocess+"));
   localFeatures.push_back(std::string("QPassSignals+"));
   localFeatures.push_back(std::string("QStartNoAckMode+"));
@@ -99,15 +95,13 @@ DebugSessionImpl::onQuerySupported(Session &session,
   localFeatures.push_back(std::string("qXfer:siginfo:read-"));
   localFeatures.push_back(std::string("qXfer:siginfo:write-"));
 #endif
-  if (_process->isELFProcess()) {
-    localFeatures.push_back(std::string("qXfer:auxv:read+"));
-  }
+#if !defined(OS_WIN32)
+  localFeatures.push_back(std::string("qXfer:auxv:read+"));
+  localFeatures.push_back(std::string("qXfer:libraries-svr4:read+"));
+#else
+  localFeatures.push_back(std::string("qXfer:libraries:read+"));
+#endif
   localFeatures.push_back(std::string("qXfer:features:read+"));
-  if (_process->isELFProcess()) {
-    localFeatures.push_back(std::string("qXfer:libraries-svr4:read+"));
-  } else {
-    localFeatures.push_back(std::string("qXfer:libraries:read+"));
-  }
   localFeatures.push_back(std::string("qXfer:osdata:read+"));
   localFeatures.push_back(std::string("qXfer:threads:read+"));
   // Disable unsupported tracepoints
@@ -916,6 +910,9 @@ DebugSessionImpl::onResume(Session &session,
   error = queryStopCode(
       session,
       ProcessThreadId(_process->pid(), _process->currentThread()->tid()), stop);
+
+  if (stop.event == StopCode::kCleanExit || stop.event == StopCode::kSignalExit)
+    _spawner.flushAndExit();
 
 ret:
   _resumeSessionLock.lock();

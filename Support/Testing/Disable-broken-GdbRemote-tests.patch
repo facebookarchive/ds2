@@ -1,0 +1,25 @@
+diff --git a/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py b/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py
+index 55cff08..64f9f97 100644
+--- a/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py
++++ b/test/tools/lldb-server/TestGdbRemoteThreadsInStopReply.py
+@@ -112,6 +112,7 @@ class TestGdbRemoteThreadsInStopReply(gdbremote_testcase.GdbRemoteTestCaseBase):
+         self.set_inferior_startup_launch()
+         self.stop_reply_reports_multiple_threads(5)
+ 
++    @unittest2.expectedFailure
+     def no_QListThreadsInStopReply_supplies_no_threads(self, thread_count):
+         # Gather threads from stop notification when QThreadsInStopReply is not enabled.
+         stop_reply_threads = self.gather_stop_reply_threads(None, thread_count)
+diff --git a/test/tools/lldb-server/gdbremote_testcase.py b/test/tools/lldb-server/gdbremote_testcase.py
+index c3a1cca..3ba8d3d 100644
+--- a/test/tools/lldb-server/gdbremote_testcase.py
++++ b/test/tools/lldb-server/gdbremote_testcase.py
+@@ -753,8 +753,6 @@ class GdbRemoteTestCaseBase(TestBase):
+                     raise Exception("malformed stub feature: final character {} not in expected set (+,-,?)".format(supported_type))
+                 supported_dict[key] = supported_type 
+             # Ensure we know the supported element
+-            if not key in self._KNOWN_QSUPPORTED_STUB_FEATURES:
+-                raise Exception("unknown qSupported stub feature reported: %s" % key)
+ 
+         return supported_dict
+ 

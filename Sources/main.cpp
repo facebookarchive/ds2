@@ -43,11 +43,13 @@ using ds2::GDBRemote::DebugSessionImpl;
 using ds2::GDBRemote::SlaveSessionImpl;
 
 static uint16_t gDefaultPort = 12345;
+static std::string gDefaultHost = "localhost";
 static bool gKeepAlive = false;
-static bool gLLDBCompat = false;
+static bool gGDBCompat = false;
 
 #if !defined(OS_WIN32)
-static void PlatformMain(int argc, char **argv, int port) {
+static void PlatformMain(int argc, char **argv, int port, std::string &host,
+                         bool reverse) {
   auto server = new Socket;
 
   if (!server->create()) {
@@ -56,22 +58,26 @@ static void PlatformMain(int argc, char **argv, int port) {
     exit(EXIT_FAILURE);
   }
 
-  if (!server->listen(port)) {
+  if (!reverse && !server->listen(port)) {
     DS2LOG(Error, "error: failed to listen: %s", server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Info, "listening on port %d", port);
+  if (!reverse)
+    DS2LOG(Info, "listening on port %d", port);
 
   PlatformSessionImpl impl;
 
   do {
-    Socket *client = server->accept();
+    if (reverse && !server->connect(host, port)) {
+      DS2LOG(Error, "reverse connect failed: %s", server->error().c_str());
+      exit(EXIT_FAILURE);
+    }
 
     // Platform mode implies that we are talking to an LLDB remote.
     Session session(ds2::GDBRemote::kCompatibilityModeLLDB);
     session.setDelegate(&impl);
-    session.create(client);
+    session.create(reverse ? server : server->accept());
 
     while (session.receive(/*cooked=*/false))
       ;
@@ -81,12 +87,16 @@ static void PlatformMain(int argc, char **argv, int port) {
 }
 #endif
 
-static void RunDebugServer(Socket *server, SessionDelegate *impl) {
-  Socket *client = server->accept();
+static void RunDebugServer(Socket *server, SessionDelegate *impl, uint16_t port,
+                           std::string &host, bool reverse) {
+  if (reverse && !server->connect(host, port)) {
+    DS2LOG(Error, "reverse connect failed: %s", server->error().c_str());
+    exit(EXIT_FAILURE);
+  }
 
-  Session session(gLLDBCompat ? ds2::GDBRemote::kCompatibilityModeLLDB
-                              : ds2::GDBRemote::kCompatibilityModeGDB);
-  auto qchannel = new QueueChannel(client);
+  Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
+                             : ds2::GDBRemote::kCompatibilityModeLLDB);
+  auto qchannel = new QueueChannel(reverse ? server : server->accept());
   SessionThread thread(qchannel, &session);
 
   session.setDelegate(impl);
@@ -104,6 +114,7 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
 
 static void DebugMain(ds2::StringCollection const &args,
                       ds2::EnvironmentBlock const &env, int attachPid, int port,
+                      std::string &host, bool reverse,
                       std::string const &namedPipePath) {
   auto server = new Socket;
 
@@ -113,12 +124,13 @@ static void DebugMain(ds2::StringCollection const &args,
     exit(EXIT_FAILURE);
   }
 
-  if (!server->listen(port)) {
+  if (!reverse && !server->listen(port)) {
     DS2LOG(Error, "failed to listen: %s", server->error().c_str());
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Info, "listening on port %d", server->port());
+  if (!reverse)
+    DS2LOG(Info, "listening on port %d", server->port());
 
   if (!namedPipePath.empty()) {
     std::string portStr = ds2::ToString(server->port());
@@ -143,20 +155,20 @@ static void DebugMain(ds2::StringCollection const &args,
     else
       impl = new DebugSessionImpl();
 
-    RunDebugServer(server, impl);
+    RunDebugServer(server, impl, port, host, reverse);
 
     delete impl;
   } while (gKeepAlive);
 }
 
 #if !defined(OS_WIN32)
-static void SlaveMain(int argc, char **argv) {
+static void SlaveMain(int argc, char **argv, std::string &host, bool reverse) {
   auto server = new Socket;
 
   if (!server->create())
     exit(EXIT_FAILURE);
 
-  if (!server->listen(0))
+  if (!reverse && !server->listen(0))
     exit(EXIT_FAILURE);
 
   uint16_t port = server->port();
@@ -182,7 +194,7 @@ static void SlaveMain(int argc, char **argv) {
     open("/dev/null", O_RDONLY);
     open("/dev/null", O_WRONLY);
 
-    RunDebugServer(server, new SlaveSessionImpl);
+    RunDebugServer(server, new SlaveSessionImpl, port, host, reverse);
   } else {
     //
     // Write to the standard output to let know our parent
@@ -253,23 +265,31 @@ int main(int argc, char **argv) {
 
   int attachPid = -1;
   int port = -1;
+  std::string host = gDefaultHost;
   std::string namedPipePath;
   RunMode mode = kRunModeNormal;
+  bool reverse = false;
 
-  opts.addOption(ds2::OptParse::stringOption, "port", 'p',
-                 "listen on the port specified");
+  if (argc < 2)
+    opts.usageDie("first argument must be [g]dbserver or [p]latform");
+
+  std::string modeString(argv[1]);
+  if (modeString == "g" || modeString == "gdbserver") {
+    mode = kRunModeNormal;
+  } else if (modeString == "p" || modeString == "platform") {
+    mode = kRunModePlatform;
+  } else if (modeString == "s" || modeString == "slave") {
+    mode = kRunModeSlave;
+  } else {
+    opts.usageDie("first argument must be [g]dbserver or [p]latform");
+  }
+
   opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
                  "attach to the name or PID specified");
   opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
                  "keep the server alive after the client disconnects");
-
-#if !defined(OS_WIN32)
-  // Platform mode.
-  opts.addOption(ds2::OptParse::boolOption, "platform", 'P',
-                 "execute in platform mode");
-  opts.addOption(ds2::OptParse::boolOption, "slave", 'S',
-                 "run in slave mode (used from platform spawner)", true);
-#endif
+  opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
+                 "connect to back to debugger at [HOST]:PORT");
 
   // Target debug options.
   opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
@@ -280,7 +300,7 @@ int main(int argc, char **argv) {
   // Logging options.
   opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
                  "output log messages to the file specified");
-  opts.addOption(ds2::OptParse::boolOption, "debug-remote", 'R',
+  opts.addOption(ds2::OptParse::boolOption, "debug-remote", 'D',
                  "enable log for remote protocol packets");
   opts.addOption(ds2::OptParse::boolOption, "debug", 'd',
                  "enable debug log output");
@@ -292,16 +312,16 @@ int main(int argc, char **argv) {
                  "list processes debuggable by the current user");
 
   // llgs-compat options.
-  opts.addOption(ds2::OptParse::boolOption, "lldb-compat", 'l',
-                 "force ds2 to run in lldb compat mode");
+  opts.addOption(ds2::OptParse::boolOption, "gdb-compat", 'g',
+                 "force ds2 to run in gdb compat mode");
   opts.addOption(ds2::OptParse::stringOption, "named-pipe", 'N',
                  "determine a port dynamically and write back to FIFO");
   opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
                  "use native registers (no-op)", true);
-  opts.addOption(ds2::OptParse::boolOption, "setsid", 's',
+  opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
                  "make ds2 run in its own session (no-op)", true);
 
-  idx = opts.parse(argc, argv);
+  idx = opts.parse(argc, argv, host, port, mode == kRunModeSlave);
 
   if (!opts.getString("log-output").empty()) {
     FILE *stream = fopen(opts.getString("log-output").c_str(), "a");
@@ -341,32 +361,23 @@ int main(int argc, char **argv) {
     attachPid = atoi(opts.getString("attach").c_str());
   }
 
-  if (!opts.getString("port").empty()) {
-    port = atoi(opts.getString("port").c_str());
-  }
+  reverse = opts.getBool("reverse-connect");
 
   if (opts.getBool("list-processes")) {
     ListProcesses();
   }
 
-#if !defined(OS_WIN32)
-  if (opts.getBool("platform")) {
-    mode = kRunModePlatform;
+  if (mode == kRunModePlatform) {
     //
     // The platform spawner should stay alive by default.
     //
     gKeepAlive = true;
   }
 
-  if (opts.getBool("slave")) {
-    mode = kRunModeSlave;
-  }
-#endif
-
   // This option forces ds2 to operate in lldb compatibilty mode. When not
   // specified, we assume we are talking to a GDB remote until we detect
   // otherwise.
-  gLLDBCompat = opts.getBool("lldb-compat");
+  gGDBCompat = opts.getBool("gdb-compat");
 
   // This is used for llgs testing. We determine a port number dynamically and
   // write it back to the FIFO passed as argument for the test harness to use
@@ -381,7 +392,7 @@ int main(int argc, char **argv) {
   // server without any of those two things, and wait for an "A" command that
   // specifies the command line to use to launch the inferior.
   //
-  if (mode == kRunModeNormal && argc == 0 && attachPid < 0 && !gLLDBCompat) {
+  if (mode == kRunModeNormal && argc == 0 && attachPid < 0 && gGDBCompat) {
     opts.usageDie("either a program or target PID is required");
   }
 
@@ -397,11 +408,11 @@ int main(int argc, char **argv) {
   switch (mode) {
 #if !defined(OS_WIN32)
   case kRunModePlatform:
-    PlatformMain(argc, argv, port);
+    PlatformMain(argc, argv, port, host, reverse);
     break;
 
   case kRunModeSlave:
-    SlaveMain(argc, argv);
+    SlaveMain(argc, argv, host, reverse);
     break;
 #endif
 
@@ -422,8 +433,7 @@ int main(int argc, char **argv) {
     for (auto const &e : opts.getVector("unset-env")) {
       env.erase(e);
     }
-
-    DebugMain(args, env, attachPid, port, namedPipePath);
+    DebugMain(args, env, attachPid, port, host, reverse, namedPipePath);
   } break;
   }
 
