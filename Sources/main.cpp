@@ -298,7 +298,7 @@ int main(int argc, char **argv) {
                  "determine a port dynamically and write back to FIFO");
   opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
                  "use native registers (no-op)", true);
-  opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
+  opts.addOption(ds2::OptParse::boolOption, "setsid", 's',
                  "make ds2 run in its own session (no-op)", true);
 
   idx = opts.parse(argc, argv);
