@@ -139,17 +139,16 @@ Socket *Socket::accept() {
   return client;
 }
 
-bool Socket::connect(std::string &host, uint16_t port) {
+bool Socket::connect(char const *host, uint16_t port) {
   struct addrinfo hints;
   struct addrinfo *result, *results;
+
   ::memset(&hints, 0, sizeof hints);
   hints.ai_family = AF_INET;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = IPPROTO_TCP;
 
-  std::string port_str = ds2::ToString(port);
-
-  int res = ::getaddrinfo(host.c_str(), port_str.c_str(), &hints, &results);
+  int res = ::getaddrinfo(host, ds2::ToString(port).c_str(), &hints, &results);
   if (res != 0) {
     _lastError = SOCK_ERRNO;
     return false;
@@ -166,7 +165,7 @@ bool Socket::connect(std::string &host, uint16_t port) {
     return false;
   }
 
-  freeaddrinfo(results);
+  ::freeaddrinfo(results);
 
   _state = kStateConnected;
   setNonBlocking();

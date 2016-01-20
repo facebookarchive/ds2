@@ -61,7 +61,7 @@ public:
   bool listen(char const *address, uint16_t port);
   inline bool listen(uint16_t port) { return listen(nullptr, port); }
   Socket *accept();
-  bool connect(std::string &host, uint16_t port);
+  bool connect(char const *host, uint16_t port);
 
 public:
   uint16_t port() const;
