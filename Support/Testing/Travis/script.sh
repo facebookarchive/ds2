@@ -68,6 +68,6 @@ fi
 cmake "${cmake_options[@]}" ..
 make
 
-if [[ -n "${LLGS_TESTS-}" ]]; then
+if [[ -n "${LLDB_TESTS-}" ]]; then
   ../Support/Scripts/run-llgs-tests.sh
 fi

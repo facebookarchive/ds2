@@ -28,10 +28,14 @@ env:
   - TARGET="Linux-X86_64"
   - TARGET="Tizen-ARM"
   - TARGET="Tizen-X86"
-  - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="0"
-  - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="0" RELEASE="1"
-  - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="1"
-  - TARGET="Linux-X86_64"   LLGS_TESTS="1"  CLANG="1" RELEASE="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="StubReverseConnect"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="LldbGdbServer"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="Help"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="Settings"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="GdbRemote"  CLANG="0"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="GdbRemote"  CLANG="0" RELEASE="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="GdbRemote"  CLANG="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="GdbRemote"  CLANG="1" RELEASE="1"
 
 before_install: ./Support/Testing/Travis/before-install.py
 install:        ./Support/Testing/Travis/install.py
