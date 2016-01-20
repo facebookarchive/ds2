@@ -28,7 +28,7 @@ top="$(pwd)"
 lldb_path="$top/lldb"
 git_clone "$LLDB_REPO" "$lldb_path"   "$UPSTREAM_BRANCH"
 
-for p in $( ls "$(dirname "$0")/../Testing/*.patch" ) ; do
+for p in $top/../Support/Testing/*.patch ; do
   echo "Applying $p"
   patch -d "$lldb_path" -p1 < "$p"
 done
