@@ -30,7 +30,7 @@ public:
                  std::string const &help = std::string(), bool hidden = false);
 
 public:
-  int parse(int argc, char **argv);
+  int parse(int argc, char **argv, std::string &host, std::string &port);
 
 public:
   bool getBool(std::string const &name);

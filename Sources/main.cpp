@@ -43,8 +43,9 @@ using ds2::GDBRemote::DebugSessionImpl;
 using ds2::GDBRemote::SlaveSessionImpl;
 
 static std::string gDefaultPort = "12345";
+static std::string gDefaultHost = "localhost";
 static bool gKeepAlive = false;
-static bool gLLDBCompat = false;
+static bool gGDBCompat = false;
 
 #if !defined(OS_WIN32)
 static void PlatformMain(int argc, char **argv, char const *port) {
@@ -84,8 +85,8 @@ static void PlatformMain(int argc, char **argv, char const *port) {
 static void RunDebugServer(Socket *server, SessionDelegate *impl) {
   Socket *client = server->accept();
 
-  Session session(gLLDBCompat ? ds2::GDBRemote::kCompatibilityModeLLDB
-                              : ds2::GDBRemote::kCompatibilityModeGDB);
+  Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
+                             : ds2::GDBRemote::kCompatibilityModeLLDB);
   auto qchannel = new QueueChannel(client);
   SessionThread thread(qchannel, &session);
 
@@ -253,23 +254,31 @@ int main(int argc, char **argv) {
 
   int attachPid = -1;
   std::string port = gDefaultPort;
+  std::string host = gDefaultHost;
   std::string namedPipePath;
   RunMode mode = kRunModeNormal;
 
-  opts.addOption(ds2::OptParse::stringOption, "port", 'p',
-                 "listen on the port specified");
+  if (argc < 2)
+    opts.usageDie("first argument must be g[dbserver] or p[latform]");
+
+  switch (argv[1][0]) {
+    case 'g':
+      mode = kRunModeNormal;
+      break;
+    case 'p':
+      mode = kRunModePlatform;
+      break;
+    case 's':
+      mode = kRunModeSlave;
+      break;
+    default:
+      opts.usageDie("first argument must be g[dbserver] or p[latform]");
+  }
+
   opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
                  "attach to the name or PID specified");
   opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
                  "keep the server alive after the client disconnects");
-
-#if !defined(OS_WIN32)
-  // Platform mode.
-  opts.addOption(ds2::OptParse::boolOption, "platform", 'P',
-                 "execute in platform mode");
-  opts.addOption(ds2::OptParse::boolOption, "slave", 'S',
-                 "run in slave mode (used from platform spawner)", true);
-#endif
 
   // Target debug options.
   opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
@@ -292,16 +301,16 @@ int main(int argc, char **argv) {
                  "list processes debuggable by the current user");
 
   // llgs-compat options.
-  opts.addOption(ds2::OptParse::boolOption, "lldb-compat", 'l',
-                 "force ds2 to run in lldb compat mode");
+  opts.addOption(ds2::OptParse::boolOption, "gdb-compat", 'g',
+                 "force ds2 to run in gdb compat mode");
   opts.addOption(ds2::OptParse::stringOption, "named-pipe", 'N',
                  "determine a port dynamically and write back to FIFO");
   opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
                  "use native registers (no-op)", true);
-  opts.addOption(ds2::OptParse::boolOption, "setsid", 's',
+  opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
                  "make ds2 run in its own session (no-op)", true);
 
-  idx = opts.parse(argc, argv);
+  idx = opts.parse(argc, argv, host, port);
 
   if (!opts.getString("log-output").empty()) {
     FILE *stream = fopen(opts.getString("log-output").c_str(), "a");
@@ -341,32 +350,21 @@ int main(int argc, char **argv) {
     attachPid = atoi(opts.getString("attach").c_str());
   }
 
-  if (!opts.getString("port").empty()) {
-    port = opts.getString("port");
-  }
-
   if (opts.getBool("list-processes")) {
     ListProcesses();
   }
 
-#if !defined(OS_WIN32)
-  if (opts.getBool("platform")) {
-    mode = kRunModePlatform;
+  if (mode == kRunModePlatform) {
     //
     // The platform spawner should stay alive by default.
     //
     gKeepAlive = true;
   }
 
-  if (opts.getBool("slave")) {
-    mode = kRunModeSlave;
-  }
-#endif
-
   // This option forces ds2 to operate in lldb compatibilty mode. When not
   // specified, we assume we are talking to a GDB remote until we detect
   // otherwise.
-  gLLDBCompat = opts.getBool("lldb-compat");
+  gGDBCompat = opts.getBool("gdb-compat");
 
   // This is used for llgs testing. We determine a port number dynamically and
   // write it back to the FIFO passed as argument for the test harness to use
@@ -381,7 +379,7 @@ int main(int argc, char **argv) {
   // server without any of those two things, and wait for an "A" command that
   // specifies the command line to use to launch the inferior.
   //
-  if (mode == kRunModeNormal && argc == 0 && attachPid < 0 && !gLLDBCompat) {
+  if (mode == kRunModeNormal && argc == 0 && attachPid < 0 && gGDBCompat) {
     opts.usageDie("either a program or target PID is required");
   }
 
