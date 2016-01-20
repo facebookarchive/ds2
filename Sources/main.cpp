@@ -158,6 +158,8 @@ static void DebugMain(ds2::StringCollection const &args,
 
     delete impl;
   } while (gKeepAlive);
+
+  exit(EXIT_SUCCESS);
 }
 
 #if !defined(OS_WIN32)
