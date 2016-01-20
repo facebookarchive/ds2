@@ -47,9 +47,9 @@ elif target in tizen_toolchains:
     # Tizen builds use the android toolchain and link statically.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % tizen_toolchains[target], shell=True)
 
-# Running LLGS tests requires an install of lldb (for the tests to be able to
+# Running LLDB tests requires an install of lldb (for the tests to be able to
 # use the lldb python library without us building it).
-if os.getenv('LLGS_TESTS') == '1':
+if os.getenv('LLDB_TESTS') != None:
     packages.append('swig')
     packages.append('lldb-3.7')
     packages.append('liblldb-3.7')

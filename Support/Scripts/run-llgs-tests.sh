@@ -13,8 +13,6 @@
 # against ds2. It requires a few hacks in the testing infra to adapt to the
 # differences between ds2 and lldb-gdbserver.
 
-tests=(GdbRemote StubReverseConnect LldbGdbServer Help Settings)
-
 LLDB_REPO="https://github.com/llvm-mirror/lldb.git"
 UPSTREAM_BRANCH="release_37"
 
@@ -23,7 +21,7 @@ source "$(dirname "$0")/common.sh"
 top="$(pwd)"
 
 [ "$(uname)" == "Linux" ] || die "The lldb-gdbserver test suite requires a Linux host environment."
-[ -x "$top/ds2" ]            || die "Unable to find a ds2 binary in the current directory."
+[ -x "$top/ds2" ]         || die "Unable to find a ds2 binary in the current directory."
 
 lldb_path="$top/lldb"
 git_clone "$LLDB_REPO" "$lldb_path"   "$UPSTREAM_BRANCH"
@@ -50,15 +48,18 @@ done
 
 cd "$lldb_path/test"
 lldb_exe="$(which lldb-3.7)"
-args="-q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -m"
-for test in ${tests[@]}; do
-  for attempt in 0 1; do
-    if [ $attempt -ne 0 ]; then
-      echo "Failed test suite: Test$test, retrying"
-    fi
 
-    if LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args -p "$test"; then
-      break
-    fi
-  done
+args="-q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -m"
+if [ "$LLDB_TESTS" != "all" ]; then
+  args="$args -p $LLDB_TESTS"
+fi
+
+for attempt in 0 1; do
+  if [ $attempt -ne 0 ]; then
+    echo "Failed test suite: Test$LLDB_TESTS, retrying"
+  fi
+
+  if LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args; then
+    break
+  fi
 done
