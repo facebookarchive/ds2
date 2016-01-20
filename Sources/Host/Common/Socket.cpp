@@ -78,7 +78,7 @@ void Socket::close() {
   _lastError = 0;
 }
 
-bool Socket::listen(char const *address, uint16_t port) {
+bool Socket::listen(char const *address, char const *port) {
   if (!valid())
     return false;
 
@@ -91,16 +91,22 @@ bool Socket::listen(char const *address, uint16_t port) {
   ::setsockopt(_handle, SOL_SOCKET, SO_LINGER,
                reinterpret_cast<char *>(&linger), sizeof(linger));
 
-  struct sockaddr_in sin;
-  memset(&sin, 0, sizeof(sin));
-  sin.sin_family = AF_INET;
-  sin.sin_addr.s_addr = (address == nullptr || address[0] == '\0')
-                            ? INADDR_ANY
-                            : ::inet_addr(address);
-  sin.sin_port = htons(port);
+  struct addrinfo hints, *result;
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_INET;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
+  hints.ai_protocol = IPPROTO_TCP;
 
-  if (::bind(_handle, reinterpret_cast<struct sockaddr *>(&sin), sizeof(sin)) <
-      0) {
+  int res = ::getaddrinfo(address, port, &hints, &result);
+  if (res != 0) {
+    _lastError = SOCK_ERRNO;
+    return false;
+  }
+
+  res = ::bind(_handle, result->ai_addr, result->ai_addrlen);
+  freeaddrinfo(result);
+  if (res < 0) {
     _lastError = SOCK_ERRNO;
     return false;
   }
@@ -139,7 +145,7 @@ Socket *Socket::accept() {
   return client;
 }
 
-bool Socket::connect(char const *host, uint16_t port) {
+bool Socket::connect(char const *host, char const *port) {
   struct addrinfo hints;
   struct addrinfo *result, *results;
 
@@ -148,7 +154,7 @@ bool Socket::connect(char const *host, uint16_t port) {
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = IPPROTO_TCP;
 
-  int res = ::getaddrinfo(host, ds2::ToString(port).c_str(), &hints, &results);
+  int res = ::getaddrinfo(host, port, &hints, &results);
   if (res != 0) {
     _lastError = SOCK_ERRNO;
     return false;

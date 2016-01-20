@@ -42,16 +42,16 @@ using ds2::GDBRemote::PlatformSessionImpl;
 using ds2::GDBRemote::DebugSessionImpl;
 using ds2::GDBRemote::SlaveSessionImpl;
 
-static uint16_t gDefaultPort = 12345;
+static std::string gDefaultPort = "12345";
 static bool gKeepAlive = false;
 static bool gLLDBCompat = false;
 
 #if !defined(OS_WIN32)
-static void PlatformMain(int argc, char **argv, int port) {
+static void PlatformMain(int argc, char **argv, char const *port) {
   auto server = new Socket;
 
   if (!server->create()) {
-    DS2LOG(Error, "cannot create server socket on port %d: %s", port,
+    DS2LOG(Error, "cannot create server socket on port %s: %s", port,
            server->error().c_str());
     exit(EXIT_FAILURE);
   }
@@ -61,7 +61,7 @@ static void PlatformMain(int argc, char **argv, int port) {
     exit(EXIT_FAILURE);
   }
 
-  DS2LOG(Info, "listening on port %d", port);
+  DS2LOG(Info, "listening on port %s", port);
 
   PlatformSessionImpl impl;
 
@@ -103,12 +103,13 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl) {
 }
 
 static void DebugMain(ds2::StringCollection const &args,
-                      ds2::EnvironmentBlock const &env, int attachPid, int port,
+                      ds2::EnvironmentBlock const &env, int attachPid,
+                      char const *port,
                       std::string const &namedPipePath) {
   auto server = new Socket;
 
   if (!server->create()) {
-    DS2LOG(Error, "cannot create server socket on port %d: %s", port,
+    DS2LOG(Error, "cannot create server socket on port %s: %s", port,
            server->error().c_str());
     exit(EXIT_FAILURE);
   }
@@ -121,14 +122,13 @@ static void DebugMain(ds2::StringCollection const &args,
   DS2LOG(Info, "listening on port %d", server->port());
 
   if (!namedPipePath.empty()) {
-    std::string portStr = ds2::ToString(server->port());
     FILE *namedPipe = fopen(namedPipePath.c_str(), "a");
     if (namedPipe == nullptr) {
       DS2LOG(Error, "unable to open %s: %s", namedPipePath.c_str(),
              strerror(errno));
     } else {
       // Write the null terminator to the file. This follows the llgs behavior.
-      fwrite(portStr.c_str(), 1, portStr.length() + 1, namedPipe);
+      fwrite(port, 1, strlen(port) + 1, namedPipe);
       fclose(namedPipe);
     }
   }
@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
   };
 
   int attachPid = -1;
-  int port = -1;
+  std::string port = gDefaultPort;
   std::string namedPipePath;
   RunMode mode = kRunModeNormal;
 
@@ -342,7 +342,7 @@ int main(int argc, char **argv) {
   }
 
   if (!opts.getString("port").empty()) {
-    port = atoi(opts.getString("port").c_str());
+    port = opts.getString("port");
   }
 
   if (opts.getBool("list-processes")) {
@@ -385,19 +385,16 @@ int main(int argc, char **argv) {
     opts.usageDie("either a program or target PID is required");
   }
 
-  if (port < 0) {
+  if (port == gDefaultPort && !namedPipePath.empty()) {
     // If we have a named pipe, set the port to 0 to indicate that we should
     // dynamically allocate it and write it back to the FIFO.
-    if (namedPipePath.empty())
-      port = gDefaultPort;
-    else
-      port = 0;
+    port = "0";
   }
 
   switch (mode) {
 #if !defined(OS_WIN32)
   case kRunModePlatform:
-    PlatformMain(argc, argv, port);
+    PlatformMain(argc, argv, port.c_str());
     break;
 
   case kRunModeSlave:
@@ -423,7 +420,7 @@ int main(int argc, char **argv) {
       env.erase(e);
     }
 
-    DebugMain(args, env, attachPid, port, namedPipePath);
+    DebugMain(args, env, attachPid, port.c_str(), namedPipePath);
   } break;
   }
 

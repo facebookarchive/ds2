@@ -58,10 +58,10 @@ public:
   bool create();
 
 public:
-  bool listen(char const *address, uint16_t port);
-  inline bool listen(uint16_t port) { return listen(nullptr, port); }
+  bool listen(char const *address, char const *port);
+  inline bool listen(char const *port) { return listen(nullptr, port); }
   Socket *accept();
-  bool connect(char const *host, uint16_t port);
+  bool connect(char const *host, char const *port);
 
 public:
   uint16_t port() const;
