@@ -19,6 +19,9 @@ matrix:
 env:
   - TARGET="Style"
   - TARGET="Registers"
+############################
+# Build targets            #
+############################
   - TARGET="Android-ARM"
   - TARGET="Android-ARM64"
   - TARGET="Android-X86"
@@ -28,6 +31,18 @@ env:
   - TARGET="Linux-X86_64"
   - TARGET="Tizen-ARM"
   - TARGET="Tizen-X86"
+############################
+# LLDB Unit tests - x86    #
+############################
+  - TARGET="Linux-X86"      LLDB_TESTS="StubReverseConnect"
+  - TARGET="Linux-X86"      LLDB_TESTS="LldbGdbServer"
+  - TARGET="Linux-X86"      LLDB_TESTS="Help"
+  - TARGET="Linux-X86"      LLDB_TESTS="Settings"
+  - TARGET="Linux-X86"      LLDB_TESTS="GdbRemote"  CLANG="0"
+  - TARGET="Linux-X86"      LLDB_TESTS="GdbRemote"  CLANG="0" RELEASE="1"
+############################
+# LLDB Unit tests - x86_64 #
+############################
   - TARGET="Linux-X86_64"   LLDB_TESTS="StubReverseConnect"
   - TARGET="Linux-X86_64"   LLDB_TESTS="LldbGdbServer"
   - TARGET="Linux-X86_64"   LLDB_TESTS="Help"
