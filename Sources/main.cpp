@@ -87,8 +87,8 @@ static void PlatformMain(int argc, char **argv, char const *port,
 }
 #endif
 
-static void RunDebugServer(Socket *server, SessionDelegate *impl, char const *port,
-                           char const *host, bool reverse) {
+static void RunDebugServer(Socket *server, SessionDelegate *impl,
+                           char const *port, char const *host, bool reverse) {
   if (reverse && !server->connect(host, port)) {
     DS2LOG(Error, "reverse connect failed: %s", server->error().c_str());
     exit(EXIT_FAILURE);
@@ -273,17 +273,17 @@ int main(int argc, char **argv) {
     opts.usageDie("first argument must be g[dbserver] or p[latform]");
 
   switch (argv[1][0]) {
-    case 'g':
-      mode = kRunModeNormal;
-      break;
-    case 'p':
-      mode = kRunModePlatform;
-      break;
-    case 's':
-      mode = kRunModeSlave;
-      break;
-    default:
-      opts.usageDie("first argument must be g[dbserver] or p[latform]");
+  case 'g':
+    mode = kRunModeNormal;
+    break;
+  case 'p':
+    mode = kRunModePlatform;
+    break;
+  case 's':
+    mode = kRunModeSlave;
+    break;
+  default:
+    opts.usageDie("first argument must be g[dbserver] or p[latform]");
   }
 
   opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
@@ -434,7 +434,8 @@ int main(int argc, char **argv) {
     for (auto const &e : opts.getVector("unset-env")) {
       env.erase(e);
     }
-    DebugMain(args, env, attachPid, port.c_str(), host.c_str(), reverse, namedPipePath);
+    DebugMain(args, env, attachPid, port.c_str(), host.c_str(), reverse,
+              namedPipePath);
   } break;
   }
 
