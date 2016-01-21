@@ -1,0 +1,12 @@
+diff --git a/test/functionalities/recursion/TestValueObjectRecursion.py b/test/functionalities/recursion/TestValueObjectRecursion.py
+index 42724d5..aadcccd 100644
+--- a/test/functionalities/recursion/TestValueObjectRecursion.py
++++ b/test/functionalities/recursion/TestValueObjectRecursion.py
+@@ -20,6 +20,7 @@ class ValueObjectRecursionTestCase(TestBase):
+         self.recursive_vo_commands()
+ 
+     @dwarf_test
++    @skipIfLinux # this hangs with ds2
+     def test_with_dwarf_and_run_command(self):
+         """Test that deeply nested ValueObjects still work."""
+         self.buildDwarf()
