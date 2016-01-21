@@ -34,29 +34,15 @@ env:
 ############################
 # LLDB Unit tests - x86    #
 ############################
-  - TARGET="Linux-X86"      LLDB_TESTS="Stub"
-  - TARGET="Linux-X86"      LLDB_TESTS="Registers"
-  - TARGET="Linux-X86"      LLDB_TESTS="Functions"
-  - TARGET="Linux-X86"      LLDB_TESTS="Breakpoint"
-  - TARGET="Linux-X86"      LLDB_TESTS="LldbGdbServer"
-  - TARGET="Linux-X86"      LLDB_TESTS="Help"
-  - TARGET="Linux-X86"      LLDB_TESTS="Settings"
-  - TARGET="Linux-X86"      LLDB_TESTS="GdbRemote"  CLANG="0"
-  - TARGET="Linux-X86"      LLDB_TESTS="GdbRemote"  CLANG="0" RELEASE="1"
+  - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="0"
+  - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="0" RELEASE="1"
 ############################
 # LLDB Unit tests - x86_64 #
 ############################
-  - TARGET="Linux-X86_64"   LLDB_TESTS="Stub"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="Registers"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="Functions"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="Breakpoint"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="LldbGdbServer"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="Help"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="Settings"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="GdbRemote"  CLANG="0"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="GdbRemote"  CLANG="0" RELEASE="1"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="GdbRemote"  CLANG="1"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="GdbRemote"  CLANG="1" RELEASE="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="0"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="0" RELEASE="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="1" RELEASE="1"
 
 before_install: ./Support/Testing/Travis/before-install.py
 install:        ./Support/Testing/Travis/install.py
