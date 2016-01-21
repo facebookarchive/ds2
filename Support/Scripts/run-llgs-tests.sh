@@ -32,18 +32,21 @@ for p in $top/../Support/Testing/*.patch ; do
 done
 
 python_base="$top/lib"
+
+export LD_LIBRARY_PATH=$python_base
 export PYTHONPATH="$python_base/python2.7/site-packages"
 
 # Sync lldb libs to local build dir
 rsync -a /usr/lib/x86_64-linux-gnu/       "$python_base"
-rsync -a /usr/lib/llvm-3.7/lib/python2.7  "$python_base"
+rsync -a /usr/lib/llvm-3.7/lib/python2.7/ "$python_base/python2.7"
 rsync -a "$python_base/liblldb-3.7.so"    "$python_base/liblldb.so"
 
 # Fix broken python lldb symlinks
 cd "$PYTHONPATH/lldb"
 for path in $( ls *.so* ); do
-  new_link="$(readlink "$path" | sed 's/x86_64-linux-gnu//g')"
-  rsync -a "$new_link" "$path"
+  new_link="$(readlink "$path" | sed 's,x86_64-linux-gnu/,,g')"
+  rm "$path"
+  ln -s "$new_link" "$path"
 done
 
 cd "$lldb_path/test"
