@@ -1,0 +1,12 @@
+diff --git a/test/python_api/target/TestTargetAPI.py b/test/python_api/target/TestTargetAPI.py
+index 22909ad..3b54d1b 100644
+--- a/test/python_api/target/TestTargetAPI.py
++++ b/test/python_api/target/TestTargetAPI.py
+@@ -84,6 +84,7 @@ class TargetAPITestCase(TestBase):
+     @python_api_test
+     @dwarf_test
+     @expectedFailureDarwin("llvm.org/pr20273")
++    @unittest2.expectedFailure
+     def test_launch_new_process_and_redirect_stdout_with_dwarf(self):
+         """Exercise SBTarget.Launch() API."""
+         self.buildDwarf()
