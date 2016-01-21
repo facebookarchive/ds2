@@ -53,9 +53,25 @@ done
 cd "$lldb_path/test"
 lldb_exe="$(which lldb-3.7)"
 
+# If LLDB_TESTS = "all", we run the full lldb test suite
+# If LLDB_TESTS is a number in [1:10], we run a subset of lldb tests from testConfig.txt
+# If LLDB_TESTS is any other value, we run the set of lldb tests which regex matches the value
 args="-q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -m"
 if [ "$LLDB_TESTS" != "all" ]; then
-  args="$args -p $LLDB_TESTS"
+  found=false
+  while read line
+  do
+    if $found ; then
+      args="$args -p $line"
+      break
+    elif [ "$line" == "*$LLDB_TESTS*" ]; then
+      found=true
+    fi
+  done < "$testPath/Config/testConfig.txt"
+
+  if ! $found ; then
+    args="$args -p $LLDB_TESTS"
+  fi
 fi
 
 for attempt in 0 1; do
