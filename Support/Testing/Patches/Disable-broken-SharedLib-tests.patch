@@ -1,0 +1,12 @@
+diff --git a/test/lang/c/shared_lib/TestSharedLib.py b/test/lang/c/shared_lib/TestSharedLib.py
+index ddc8643..bdd302a 100644
+--- a/test/lang/c/shared_lib/TestSharedLib.py
++++ b/test/lang/c/shared_lib/TestSharedLib.py
+@@ -16,6 +16,7 @@ class SharedLibTestCase(TestBase):
+         self.expr()
+ 
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_expr_with_dwarf(self):
+         """Test that types work when defined in a shared library and forward-declared in the main executable"""
+         self.buildDwarf()
