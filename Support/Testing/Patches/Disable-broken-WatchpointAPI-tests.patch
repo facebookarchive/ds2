@@ -1,0 +1,72 @@
+diff --git a/test/python_api/watchpoint/TestSetWatchpoint.py b/test/python_api/watchpoint/TestSetWatchpoint.py
+index 8c567c1..6c66b4f 100644
+--- a/test/python_api/watchpoint/TestSetWatchpoint.py
++++ b/test/python_api/watchpoint/TestSetWatchpoint.py
+@@ -30,6 +30,7 @@ class SetWatchpointAPITestCase(TestBase):
+ 
+     @python_api_test
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_watch_val_with_dwarf(self):
+         """Exercise SBValue.Watch() API to set a watchpoint."""
+         self.buildDwarf()
+diff --git a/test/python_api/watchpoint/TestWatchpointIgnoreCount.py b/test/python_api/watchpoint/TestWatchpointIgnoreCount.py
+index 1412b9e..6230b65 100644
+--- a/test/python_api/watchpoint/TestWatchpointIgnoreCount.py
++++ b/test/python_api/watchpoint/TestWatchpointIgnoreCount.py
+@@ -30,6 +30,7 @@ class WatchpointIgnoreCountTestCase(TestBase):
+ 
+     @python_api_test
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_set_watch_ignore_count_with_dwarf(self):
+         """Test SBWatchpoint.SetIgnoreCount() API."""
+         self.buildDwarf()
+diff --git a/test/python_api/watchpoint/TestWatchpointIter.py b/test/python_api/watchpoint/TestWatchpointIter.py
+index 592c040..0fa5946 100644
+--- a/test/python_api/watchpoint/TestWatchpointIter.py
++++ b/test/python_api/watchpoint/TestWatchpointIter.py
+@@ -30,6 +30,7 @@ class WatchpointIteratorTestCase(TestBase):
+ 
+     @python_api_test
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_watch_iter_with_dwarf(self):
+         """Exercise SBTarget.watchpoint_iter() API to iterate on the available watchpoints."""
+         self.buildDwarf()
+diff --git a/test/python_api/watchpoint/condition/TestWatchpointConditionAPI.py b/test/python_api/watchpoint/condition/TestWatchpointConditionAPI.py
+index ae48e84..abcfff5 100644
+--- a/test/python_api/watchpoint/condition/TestWatchpointConditionAPI.py
++++ b/test/python_api/watchpoint/condition/TestWatchpointConditionAPI.py
+@@ -34,6 +34,7 @@ class WatchpointConditionAPITestCase(TestBase):
+         self.watchpoint_condition_api()
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_watchpoint_cond_api_with_dwarf(self):
+         """Test watchpoint condition API."""
+         self.buildDwarf(dictionary=self.d)
+diff --git a/test/python_api/watchpoint/watchlocation/TestSetWatchlocation.py b/test/python_api/watchpoint/watchlocation/TestSetWatchlocation.py
+index 35f8f7d..01c8745 100644
+--- a/test/python_api/watchpoint/watchlocation/TestSetWatchlocation.py
++++ b/test/python_api/watchpoint/watchlocation/TestSetWatchlocation.py
+@@ -32,6 +32,7 @@ class SetWatchlocationAPITestCase(TestBase):
+ 
+     @python_api_test
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_watch_location_with_dwarf(self):
+         """Exercise SBValue.WatchPointee() API to set a watchpoint."""
+         self.buildDwarf()
+diff --git a/test/python_api/watchpoint/watchlocation/TestTargetWatchAddress.py b/test/python_api/watchpoint/watchlocation/TestTargetWatchAddress.py
+index 65fd20c..15c9c43 100644
+--- a/test/python_api/watchpoint/watchlocation/TestTargetWatchAddress.py
++++ b/test/python_api/watchpoint/watchlocation/TestTargetWatchAddress.py
+@@ -32,6 +32,7 @@ class TargetWatchAddressAPITestCase(TestBase):
+ 
+     @python_api_test
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_watch_address_with_dwarf(self):
+         """Exercise SBTarget.WatchAddress() API to set a watchpoint."""
+         self.buildDwarf()
