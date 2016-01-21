@@ -211,7 +211,7 @@ static void SlaveMain(int argc, char **argv) {
 }
 #endif
 
-static void ListProcesses() {
+DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
   printf("Processes running on %s:\n\n", Platform::GetHostName());
   printf("%s\n%s\n", "PID    USER       ARCH    NAME",
          "====== ========== ======= ============================");
