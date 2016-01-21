@@ -48,50 +48,43 @@ static bool gKeepAlive = false;
 static bool gGDBCompat = false;
 
 #if !defined(OS_WIN32)
-static void PlatformMain(int argc, char **argv, char const *port,
-                         char const *host, bool reverse) {
+static int PlatformMain(char const *port, char const *host) {
   auto server = new Socket;
 
   if (!server->create()) {
     DS2LOG(Error, "cannot create server socket on port %s: %s", port,
            server->error().c_str());
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
 
-  if (!reverse && !server->listen(port)) {
+  if (!server->listen(port)) {
     DS2LOG(Error, "error: failed to listen: %s", server->error().c_str());
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
 
-  if (!reverse)
-    DS2LOG(Info, "listening on port %s", port);
+  DS2LOG(Info, "listening on port %s", port);
 
   PlatformSessionImpl impl;
 
   do {
-    if (reverse && !server->connect(host, port)) {
-      DS2LOG(Error, "reverse connect failed: %s", server->error().c_str());
-      exit(EXIT_FAILURE);
-    }
-
     // Platform mode implies that we are talking to an LLDB remote.
     Session session(ds2::GDBRemote::kCompatibilityModeLLDB);
     session.setDelegate(&impl);
-    session.create(reverse ? server : server->accept());
+    session.create(server->accept());
 
     while (session.receive(/*cooked=*/false))
-      ;
+      continue;
   } while (gKeepAlive);
 
-  exit(EXIT_SUCCESS);
+  return EXIT_SUCCESS;
 }
 #endif
 
-static void RunDebugServer(Socket *server, SessionDelegate *impl,
-                           char const *port, char const *host, bool reverse) {
+static int RunDebugServer(Socket *server, SessionDelegate *impl,
+                          char const *port, char const *host, bool reverse) {
   if (reverse && !server->connect(host, port)) {
     DS2LOG(Error, "reverse connect failed: %s", server->error().c_str());
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
 
   Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
@@ -103,30 +96,29 @@ static void RunDebugServer(Socket *server, SessionDelegate *impl,
   session.create(qchannel);
 
   DS2LOG(Debug, "DEBUG SERVER STARTED");
-
   thread.start();
-
   while (session.receive(/*cooked=*/true))
-    ;
-
+    continue;
   DS2LOG(Debug, "DEBUG SERVER KILLED");
+
+  return EXIT_SUCCESS;
 }
 
-static void DebugMain(ds2::StringCollection const &args,
-                      ds2::EnvironmentBlock const &env, int attachPid,
-                      char const *port, char const *host, bool reverse,
-                      std::string const &namedPipePath) {
+static int DebugMain(ds2::StringCollection const &args,
+                     ds2::EnvironmentBlock const &env, int attachPid,
+                     char const *port, char const *host, bool reverse,
+                     std::string const &namedPipePath) {
   auto server = new Socket;
 
   if (!server->create()) {
     DS2LOG(Error, "cannot create server socket on port %s: %s", port,
            server->error().c_str());
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
 
   if (!reverse && !server->listen(port)) {
     DS2LOG(Error, "failed to listen: %s", server->error().c_str());
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
 
   if (!reverse)
@@ -155,29 +147,29 @@ static void DebugMain(ds2::StringCollection const &args,
     else
       impl = new DebugSessionImpl();
 
-    RunDebugServer(server, impl, port, host, reverse);
+    return RunDebugServer(server, impl, port, host, reverse);
 
     delete impl;
   } while (gKeepAlive);
 
-  exit(EXIT_SUCCESS);
+  return EXIT_SUCCESS;
 }
 
 #if !defined(OS_WIN32)
-static void SlaveMain(int argc, char **argv) {
+static int SlaveMain() {
   auto server = new Socket;
 
   if (!server->create())
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
 
   if (!server->listen(0))
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
 
   uint16_t port = server->port();
 
   pid_t pid = ::fork();
   if (pid < 0)
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
 
   if (pid == 0) {
     //
@@ -196,7 +188,8 @@ static void SlaveMain(int argc, char **argv) {
     open("/dev/null", O_RDONLY);
     open("/dev/null", O_WRONLY);
 
-    RunDebugServer(server, new SlaveSessionImpl, nullptr, nullptr, false);
+    return RunDebugServer(server, new SlaveSessionImpl, nullptr, nullptr,
+                          false);
   } else {
     //
     // Write to the standard output to let know our parent
@@ -207,7 +200,7 @@ static void SlaveMain(int argc, char **argv) {
     DS2LOG(Info, "listening on port %u pid %d", port, pid);
   }
 
-  exit(EXIT_SUCCESS);
+  return EXIT_SUCCESS;
 }
 #endif
 
@@ -367,15 +360,16 @@ int main(int argc, char **argv) {
   }
 
   reverse = opts.getBool("reverse-connect");
+  if (mode != kRunModeNormal && reverse) {
+    opts.usageDie("reverse connection only supported in gdbserver mode");
+  }
 
   if (opts.getBool("list-processes")) {
     ListProcesses();
   }
 
   if (mode == kRunModePlatform) {
-    //
     // The platform spawner should stay alive by default.
-    //
     gKeepAlive = true;
   }
 
@@ -391,14 +385,33 @@ int main(int argc, char **argv) {
 
   argc -= idx, argv += idx;
 
-  //
+  ds2::StringCollection args(&argv[0], &argv[argc]);
+  ds2::EnvironmentBlock env;
+
+  Platform::GetCurrentEnvironment(env);
+
+  for (auto const &e : opts.getVector("set-env")) {
+    char const *arg = e.c_str();
+    char const *equal = strchr(arg, '=');
+    if (equal == nullptr || equal == arg)
+      DS2LOG(Fatal, "invalid environment value: %s", arg);
+    env[std::string(arg, equal)] = equal + 1;
+  }
+
+  for (auto const &e : opts.getVector("unset-env")) {
+    env.erase(e);
+  }
+
   // We need a process to attach to or a command line so we can launch it,
   // unless we are in lldb compat mode, which implies we can launch the debug
   // server without any of those two things, and wait for an "A" command that
   // specifies the command line to use to launch the inferior.
-  //
-  if (mode == kRunModeNormal && argc == 0 && attachPid < 0 && gGDBCompat) {
+  if (mode == kRunModeNormal && gGDBCompat && args.empty() && attachPid < 0) {
     opts.usageDie("either a program or target PID is required");
+  }
+
+  if (mode != kRunModeNormal && argc != 0) {
+    opts.usageDie("PROGRAM and ARGUMENTS only supported in gdbserver mode");
   }
 
   if (port.empty()) {
@@ -411,40 +424,16 @@ int main(int argc, char **argv) {
   }
 
   switch (mode) {
+  case kRunModeNormal:
+    return DebugMain(args, env, attachPid, port.c_str(), host.c_str(), reverse,
+                     namedPipePath);
 #if !defined(OS_WIN32)
   case kRunModePlatform:
-    PlatformMain(argc, argv, port.c_str(), host.c_str(), reverse);
-    break;
-
+    return PlatformMain(port.c_str(), host.c_str());
   case kRunModeSlave:
-    if (reverse)
-      DS2LOG(Warning, "Reverse connect not supported in slave mode");
-    SlaveMain(argc, argv);
-    break;
+    return SlaveMain();
 #endif
-
-  case kRunModeNormal: {
-    ds2::StringCollection args(&argv[0], &argv[argc]);
-    ds2::EnvironmentBlock env;
-
-    Platform::GetCurrentEnvironment(env);
-
-    for (auto const &e : opts.getVector("set-env")) {
-      char const *arg = e.c_str();
-      char const *equal = strchr(arg, '=');
-      if (equal == nullptr || equal == arg)
-        DS2LOG(Fatal, "invalid environment value: %s", arg);
-      env[std::string(arg, equal)] = equal + 1;
-    }
-
-    for (auto const &e : opts.getVector("unset-env")) {
-      env.erase(e);
-    }
-    DebugMain(args, env, attachPid, port.c_str(), host.c_str(), reverse,
-              namedPipePath);
-  } break;
+  default:
+    DS2BUG("invalid run mode: %d", mode);
   }
-
-  exit(EXIT_FAILURE);
-  return -1;
 }
