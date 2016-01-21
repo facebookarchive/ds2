@@ -266,8 +266,8 @@ int main(int argc, char **argv) {
   };
 
   int attachPid = -1;
-  std::string port = gDefaultPort;
-  std::string host = gDefaultHost;
+  std::string port;
+  std::string host;
   std::string namedPipePath;
   RunMode mode = kRunModeNormal;
   bool reverse = false;
@@ -401,10 +401,13 @@ int main(int argc, char **argv) {
     opts.usageDie("either a program or target PID is required");
   }
 
-  if (port == gDefaultPort && !namedPipePath.empty()) {
+  if (port.empty()) {
     // If we have a named pipe, set the port to 0 to indicate that we should
     // dynamically allocate it and write it back to the FIFO.
-    port = "0";
+    port = namedPipePath.empty() ? gDefaultPort : "0";
+  }
+  if (host.empty()) {
+    host = gDefaultHost;
   }
 
   switch (mode) {

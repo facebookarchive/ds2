@@ -34,7 +34,6 @@ int OptParse::parse(int argc, char **argv, std::string &host,
 
   int idx;
 
-  host.clear();
   // Skip argv[0] which contains the program name,
   // and argv[1] which contains the run mode
   idx = 2;
