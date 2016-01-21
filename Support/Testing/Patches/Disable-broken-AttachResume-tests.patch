@@ -1,0 +1,12 @@
+diff --git a/test/functionalities/attach_resume/TestAttachResume.py b/test/functionalities/attach_resume/TestAttachResume.py
+index 9837687..053e7d8 100644
+--- a/test/functionalities/attach_resume/TestAttachResume.py
++++ b/test/functionalities/attach_resume/TestAttachResume.py
+@@ -25,6 +25,7 @@ class AttachResumeTestCase(TestBase):
+ 
+     @expectedFlakeyLinux('llvm.org/pr19478') # intermittent ~2/14 runs
+     @skipIfRemote
++    @unittest2.expectedFailure
+     def process_attach_continue_interrupt_detach(self):
+         """Test attach/continue/interrupt/detach"""
+ 
