@@ -1,0 +1,12 @@
+diff --git a/test/python_api/signals/TestSignalsAPI.py b/test/python_api/signals/TestSignalsAPI.py
+index 8d05d37..eb5a067 100644
+--- a/test/python_api/signals/TestSignalsAPI.py
++++ b/test/python_api/signals/TestSignalsAPI.py
+@@ -13,6 +13,7 @@ class SignalsAPITestCase(TestBase):
+ 
+     @python_api_test
+     @expectedFlakeyLinux # this test fails 1/100 dosep runs
++    @unittest2.expectedFailure
+     def test_ignore_signal(self):
+         """Test Python SBUnixSignals.Suppress/Stop/Notify() API."""
+         self.buildDefault()
