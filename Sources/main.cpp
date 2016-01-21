@@ -133,13 +133,14 @@ static void DebugMain(ds2::StringCollection const &args,
     DS2LOG(Info, "listening on port %d", server->port());
 
   if (!namedPipePath.empty()) {
+    std::string portStr = ds2::ToString(server->port());
     FILE *namedPipe = fopen(namedPipePath.c_str(), "a");
     if (namedPipe == nullptr) {
       DS2LOG(Error, "unable to open %s: %s", namedPipePath.c_str(),
              strerror(errno));
     } else {
       // Write the null terminator to the file. This follows the llgs behavior.
-      fwrite(port, 1, strlen(port) + 1, namedPipe);
+      fwrite(portStr.c_str(), 1, portStr.length() + 1, namedPipe);
       fclose(namedPipe);
     }
   }
