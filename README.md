@@ -51,7 +51,7 @@ usage: ds2 [RUN_MODE] [OPTIONS] [[HOST]:PORT] [-- PROGRAM [ARGUMENTS...]]
   -o, --log-output ARG       output log messages to the file specified
   -N, --named-pipe ARG       determine a port dynamically and write back to FIFO
   -n, --no-colors            disable colored output
-  -R, --reverse-connect      connect to back to debugger at [HOST]:PORT
+  -R, --reverse-connect      connect back to the debugger at [HOST]:PORT
   -e, --set-env              add an element to the environment before launch
   -E, --unset-env            remove an element from the environment before lauch
 ```

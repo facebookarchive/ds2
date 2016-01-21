@@ -294,7 +294,7 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
                  "keep the server alive after the client disconnects");
   opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
-                 "connect to back to debugger at [HOST]:PORT");
+                 "connect back to the debugger at [HOST]:PORT");
 
   // Target debug options.
   opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
