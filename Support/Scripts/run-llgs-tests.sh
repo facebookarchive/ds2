@@ -53,13 +53,7 @@ done
 cd "$lldb_path/test"
 lldb_exe="$(which lldb-3.7)"
 
-args="-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -m"
-
-if [[ "${CLANG-}" = "1" ]]; then
-  args="$args -C $(which clang-3.7)"
-else
-  args="$args -C $(which gcc-4.8)"
-fi
+args="-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C $(which gcc-4.8) -m"
 
 if [ "$TARGET" = "Linux-X86_64" ]; then
   args="$args --arch=x86_64"
@@ -68,17 +62,7 @@ elif [ "$TARGET" = "Linux-X86" ]; then
 fi
 
 if [ "$LLDB_TESTS" != "all" ]; then
-  args="$args -p $LLDB_TESTS"
+  LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args -p $LLDB_TESTS
+else
+  LLDB_TEST_TIMEOUT=45m LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dosep.py -o "$args"
 fi
-
-for attempt in 0 1; do
-  if [ $attempt -ne 0 ]; then
-    echo "Failed test suite: Test$LLDB_TESTS, retrying"
-  fi
-
-  if LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args; then
-    exit 0
-  fi
-done
-
-exit 1
