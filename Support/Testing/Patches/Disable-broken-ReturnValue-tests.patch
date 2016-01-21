@@ -1,0 +1,12 @@
+diff --git a/test/functionalities/return-value/TestReturnValue.py b/test/functionalities/return-value/TestReturnValue.py
+index 8791b88..5854197 100644
+--- a/test/functionalities/return-value/TestReturnValue.py
++++ b/test/functionalities/return-value/TestReturnValue.py
+@@ -24,6 +24,7 @@ class ReturnValueTestCase(TestBase):
+     @expectedFailurei386
+     @python_api_test
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_with_dwarf_python(self):
+         """Test getting return values from stepping out."""
+         self.buildDwarf()
