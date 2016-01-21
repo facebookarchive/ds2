@@ -1,0 +1,12 @@
+diff --git a/test/functionalities/thread/create_after_attach/TestCreateAfterAttach.py b/test/functionalities/thread/create_after_attach/TestCreateAfterAttach.py
+index 0b1d1d0..0c853af 100644
+--- a/test/functionalities/thread/create_after_attach/TestCreateAfterAttach.py
++++ b/test/functionalities/thread/create_after_attach/TestCreateAfterAttach.py
+@@ -36,6 +36,7 @@ class CreateAfterAttachTestCase(TestBase):
+     @skipIfRemote
+     @skipIfWindows # Windows doesn't have fork.
+     @expectedFlakeyLinux("llvm.org/pr16229") # 1/100 dosep, build 3546, clang-3.5 x84_64
++    @skipIfLinux # hangs with ds2
+     def test_create_after_attach_with_dwarf_and_fork(self):
+         """Test thread creation after process attach."""
+         self.buildDwarf(dictionary=self.getBuildFlags(use_cpp11=False))
