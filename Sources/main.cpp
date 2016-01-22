@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include <iomanip>
+#include <memory>
 #include <set>
 #include <string>
 #if !defined(OS_WIN32)
@@ -47,20 +48,38 @@ static std::string gDefaultHost = "localhost";
 static bool gKeepAlive = false;
 static bool gGDBCompat = false;
 
+// This function creates and initializes a socket than can be either a client
+// (if reverse is true), or a server (if reverse is false) that will then need
+// to be accept()'d on.
+Socket *CreateSocket(char const *host, char const *port, bool reverse) {
+  auto socket = new Socket;
+
+  if (!socket->create()) {
+    DS2LOG(Fatal, "cannot create socket: %s", socket->error().c_str());
+  }
+
+  if (reverse) {
+    if (!socket->connect(host, port)) {
+      DS2LOG(Fatal, "cannot connect to [%s:%s]: %s", host, port,
+             socket->error().c_str());
+    } else {
+      DS2LOG(Info, "connected to [%s:%s]", host, port);
+    }
+  } else {
+    if (!socket->listen(host, port)) {
+      DS2LOG(Fatal, "cannot listen on [%s:%s]: %s", host, port,
+             socket->error().c_str());
+    } else {
+      DS2LOG(Info, "listening on [%s:%s]", host, port);
+    }
+  }
+
+  return socket;
+}
+
 #if !defined(OS_WIN32)
 static int PlatformMain(char const *host, char const *port) {
-  auto server = new Socket;
-
-  if (!server->create()) {
-    DS2LOG(Fatal, "cannot create server socket on port %s: %s", port,
-           server->error().c_str());
-  }
-
-  if (!server->listen(host, port)) {
-    DS2LOG(Fatal, "error: failed to listen: %s", server->error().c_str());
-  }
-
-  DS2LOG(Info, "listening on port %s", port);
+  auto server = std::unique_ptr<Socket>(CreateSocket(host, port, false));
 
   PlatformSessionImpl impl;
 
@@ -68,7 +87,8 @@ static int PlatformMain(char const *host, char const *port) {
     // Platform mode implies that we are talking to an LLDB remote.
     Session session(ds2::GDBRemote::kCompatibilityModeLLDB);
     session.setDelegate(&impl);
-    session.create(server->accept());
+    auto client = std::unique_ptr<Socket>(server->accept());
+    session.create(client.get());
 
     while (session.receive(/*cooked=*/false))
       continue;
@@ -78,15 +98,10 @@ static int PlatformMain(char const *host, char const *port) {
 }
 #endif
 
-static int RunDebugServer(Socket *server, SessionDelegate *impl,
-                          char const *host, char const *port, bool reverse) {
-  if (reverse && !server->connect(host, port)) {
-    DS2LOG(Fatal, "reverse connect failed: %s", server->error().c_str());
-  }
-
+static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
   Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
                              : ds2::GDBRemote::kCompatibilityModeLLDB);
-  auto qchannel = new QueueChannel(reverse ? server : server->accept());
+  auto qchannel = new QueueChannel(socket);
   SessionThread thread(qchannel, &session);
 
   session.setDelegate(impl);
@@ -105,22 +120,12 @@ static int DebugMain(ds2::StringCollection const &args,
                      ds2::EnvironmentBlock const &env, int attachPid,
                      char const *host, char const *port, bool reverse,
                      std::string const &namedPipePath) {
-  auto server = new Socket;
-
-  if (!server->create()) {
-    DS2LOG(Fatal, "cannot create server socket on port %s: %s", port,
-           server->error().c_str());
-  }
-
-  if (!reverse && !server->listen(host, port)) {
-    DS2LOG(Fatal, "failed to listen: %s", server->error().c_str());
-  }
-
-  if (!reverse)
-    DS2LOG(Info, "listening on port %d", server->port());
+  // Use a shared_ptr here so we can easily copy it before calling
+  // RunDebugServer below, if this is a reverse connect case.
+  auto socket = std::shared_ptr<Socket>(CreateSocket(host, port, reverse));
 
   if (!namedPipePath.empty()) {
-    std::string portStr = ds2::ToString(server->port());
+    std::string portStr = ds2::ToString(socket->port());
     FILE *namedPipe = fopen(namedPipePath.c_str(), "a");
     if (namedPipe == nullptr) {
       DS2LOG(Error, "unable to open %s: %s", namedPipePath.c_str(),
@@ -142,7 +147,8 @@ static int DebugMain(ds2::StringCollection const &args,
     else
       impl = new DebugSessionImpl();
 
-    return RunDebugServer(server, impl, host, port, reverse);
+    auto client = reverse ? socket : std::shared_ptr<Socket>(socket->accept());
+    return RunDebugServer(client.get(), impl);
 
     delete impl;
   } while (gKeepAlive);
@@ -152,14 +158,7 @@ static int DebugMain(ds2::StringCollection const &args,
 
 #if !defined(OS_WIN32)
 static int SlaveMain() {
-  auto server = new Socket;
-
-  if (!server->create())
-    return EXIT_FAILURE;
-
-  if (!server->listen(0))
-    return EXIT_FAILURE;
-
+  auto server = std::unique_ptr<Socket>(CreateSocket("localhost", "0", false));
   uint16_t port = server->port();
 
   pid_t pid = ::fork();
@@ -183,16 +182,14 @@ static int SlaveMain() {
     open("/dev/null", O_RDONLY);
     open("/dev/null", O_WRONLY);
 
-    return RunDebugServer(server, new SlaveSessionImpl, nullptr, nullptr,
-                          false);
+    auto client = std::unique_ptr<Socket>(server->accept());
+    return RunDebugServer(client.get(), new SlaveSessionImpl);
   } else {
     //
     // Write to the standard output to let know our parent
     // where we're listening.
     //
     fprintf(stdout, "%u %d\n", port, pid);
-
-    DS2LOG(Info, "listening on port %u pid %d", port, pid);
   }
 
   return EXIT_SUCCESS;
