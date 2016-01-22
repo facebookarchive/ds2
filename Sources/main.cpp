@@ -56,7 +56,7 @@ static int PlatformMain(char const *port, char const *host) {
            server->error().c_str());
   }
 
-  if (!server->listen(port)) {
+  if (!server->listen(host, port)) {
     DS2LOG(Fatal, "error: failed to listen: %s", server->error().c_str());
   }
 
@@ -112,7 +112,7 @@ static int DebugMain(ds2::StringCollection const &args,
            server->error().c_str());
   }
 
-  if (!reverse && !server->listen(port)) {
+  if (!reverse && !server->listen(host, port)) {
     DS2LOG(Fatal, "failed to listen: %s", server->error().c_str());
   }
 
