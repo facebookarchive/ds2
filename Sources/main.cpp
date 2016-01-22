@@ -162,8 +162,9 @@ static int SlaveMain() {
   uint16_t port = server->port();
 
   pid_t pid = ::fork();
-  if (pid < 0)
-    return EXIT_FAILURE;
+  if (pid < 0) {
+    DS2LOG(Fatal, "cannot fork: %s", strerror(errno));
+  }
 
   if (pid == 0) {
     //
