@@ -22,6 +22,7 @@ namespace Host {
 class ProcessSpawner {
 protected:
   enum RedirectMode {
+    kRedirectUnset,
     kRedirectConsole,
     kRedirectNull,
     kRedirectFile,
@@ -38,7 +39,7 @@ protected:
     std::string path;
     int fd;
 
-    RedirectDescriptor() : mode(kRedirectConsole), delegate(nullptr), fd(-1) {}
+    RedirectDescriptor() : mode(kRedirectUnset), delegate(nullptr), fd(-1) {}
   };
 
 protected:
