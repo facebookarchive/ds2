@@ -117,7 +117,7 @@ bool ProcessSpawner::setWorkingDirectory(std::string const &path) {
 // Console redirection
 //
 bool ProcessSpawner::redirectInputToConsole() {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[0].mode != kRedirectUnset)
     return false;
 
   _descriptors[0].mode = kRedirectConsole;
@@ -128,7 +128,7 @@ bool ProcessSpawner::redirectInputToConsole() {
 }
 
 bool ProcessSpawner::redirectOutputToConsole() {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[1].mode != kRedirectUnset)
     return false;
 
   _descriptors[1].mode = kRedirectConsole;
@@ -139,7 +139,7 @@ bool ProcessSpawner::redirectOutputToConsole() {
 }
 
 bool ProcessSpawner::redirectErrorToConsole() {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[2].mode != kRedirectUnset)
     return false;
 
   _descriptors[2].mode = kRedirectConsole;
@@ -153,7 +153,7 @@ bool ProcessSpawner::redirectErrorToConsole() {
 // Null redirection
 //
 bool ProcessSpawner::redirectInputToNull() {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[0].mode != kRedirectUnset)
     return false;
 
   _descriptors[0].mode = kRedirectNull;
@@ -164,7 +164,7 @@ bool ProcessSpawner::redirectInputToNull() {
 }
 
 bool ProcessSpawner::redirectOutputToNull() {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[1].mode != kRedirectUnset)
     return false;
 
   _descriptors[1].mode = kRedirectNull;
@@ -175,7 +175,7 @@ bool ProcessSpawner::redirectOutputToNull() {
 }
 
 bool ProcessSpawner::redirectErrorToNull() {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[2].mode != kRedirectUnset)
     return false;
 
   _descriptors[2].mode = kRedirectNull;
@@ -189,7 +189,7 @@ bool ProcessSpawner::redirectErrorToNull() {
 // File redirection
 //
 bool ProcessSpawner::redirectInputToFile(std::string const &path) {
-  if (_pid != 0 || path.empty())
+  if (_pid != 0 || path.empty() || _descriptors[0].mode != kRedirectUnset)
     return false;
 
   _descriptors[0].mode = kRedirectFile;
@@ -200,7 +200,7 @@ bool ProcessSpawner::redirectInputToFile(std::string const &path) {
 }
 
 bool ProcessSpawner::redirectOutputToFile(std::string const &path) {
-  if (_pid != 0 || path.empty())
+  if (_pid != 0 || path.empty() || _descriptors[1].mode != kRedirectUnset)
     return false;
 
   _descriptors[1].mode = kRedirectFile;
@@ -211,7 +211,7 @@ bool ProcessSpawner::redirectOutputToFile(std::string const &path) {
 }
 
 bool ProcessSpawner::redirectErrorToFile(std::string const &path) {
-  if (_pid != 0 || path.empty())
+  if (_pid != 0 || path.empty() || _descriptors[2].mode != kRedirectUnset)
     return false;
 
   _descriptors[2].mode = kRedirectFile;
@@ -225,7 +225,7 @@ bool ProcessSpawner::redirectErrorToFile(std::string const &path) {
 // Buffer redirection
 //
 bool ProcessSpawner::redirectOutputToBuffer() {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[1].mode != kRedirectUnset)
     return false;
 
   _descriptors[1].mode = kRedirectBuffer;
@@ -236,7 +236,7 @@ bool ProcessSpawner::redirectOutputToBuffer() {
 }
 
 bool ProcessSpawner::redirectErrorToBuffer() {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[2].mode != kRedirectUnset)
     return false;
 
   _descriptors[2].mode = kRedirectBuffer;
@@ -250,7 +250,7 @@ bool ProcessSpawner::redirectErrorToBuffer() {
 // Delegate redirection
 //
 bool ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[1].mode != kRedirectUnset)
     return false;
 
   _descriptors[1].mode = kRedirectDelegate;
@@ -261,7 +261,7 @@ bool ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
 }
 
 bool ProcessSpawner::redirectErrorToDelegate(RedirectDelegate delegate) {
-  if (_pid != 0)
+  if (_pid != 0 || _descriptors[2].mode != kRedirectUnset)
     return false;
 
   _descriptors[2].mode = kRedirectDelegate;
@@ -287,6 +287,9 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
 
   for (size_t n = 0; n < 3; n++) {
     switch (_descriptors[n].mode) {
+    // intentional fall-through to kRedirectConsole
+    case kRedirectUnset:
+      _descriptors[n].mode = kRedirectConsole;
     case kRedirectConsole:
       // do nothing
       break;
