@@ -366,9 +366,8 @@ int main(int argc, char **argv) {
     gKeepAlive = true;
   }
 
-  // This option forces ds2 to operate in lldb compatibilty mode. When not
-  // specified, we assume we are talking to a GDB remote until we detect
-  // otherwise.
+  // By default, ds2 operates in LLDB compatibilty mode unless explicitely
+  // required to be in GDB mode.
   gGDBCompat = opts.getBool("gdb-compat");
 
   // This is used for llgs testing. We determine a port number dynamically and
