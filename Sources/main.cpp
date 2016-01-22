@@ -48,7 +48,7 @@ static bool gKeepAlive = false;
 static bool gGDBCompat = false;
 
 #if !defined(OS_WIN32)
-static int PlatformMain(char const *port, char const *host) {
+static int PlatformMain(char const *host, char const *port) {
   auto server = new Socket;
 
   if (!server->create()) {
@@ -79,7 +79,7 @@ static int PlatformMain(char const *port, char const *host) {
 #endif
 
 static int RunDebugServer(Socket *server, SessionDelegate *impl,
-                          char const *port, char const *host, bool reverse) {
+                          char const *host, char const *port, bool reverse) {
   if (reverse && !server->connect(host, port)) {
     DS2LOG(Fatal, "reverse connect failed: %s", server->error().c_str());
   }
@@ -103,7 +103,7 @@ static int RunDebugServer(Socket *server, SessionDelegate *impl,
 
 static int DebugMain(ds2::StringCollection const &args,
                      ds2::EnvironmentBlock const &env, int attachPid,
-                     char const *port, char const *host, bool reverse,
+                     char const *host, char const *port, bool reverse,
                      std::string const &namedPipePath) {
   auto server = new Socket;
 
@@ -142,7 +142,7 @@ static int DebugMain(ds2::StringCollection const &args,
     else
       impl = new DebugSessionImpl();
 
-    return RunDebugServer(server, impl, port, host, reverse);
+    return RunDebugServer(server, impl, host, port, reverse);
 
     delete impl;
   } while (gKeepAlive);
@@ -420,11 +420,11 @@ int main(int argc, char **argv) {
 
   switch (mode) {
   case kRunModeNormal:
-    return DebugMain(args, env, attachPid, port.c_str(), host.c_str(), reverse,
+    return DebugMain(args, env, attachPid, host.c_str(), port.c_str(), reverse,
                      namedPipePath);
 #if !defined(OS_WIN32)
   case kRunModePlatform:
-    return PlatformMain(port.c_str(), host.c_str());
+    return PlatformMain(host.c_str(), port.c_str());
   case kRunModeSlave:
     return SlaveMain();
 #endif
