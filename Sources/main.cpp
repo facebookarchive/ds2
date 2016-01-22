@@ -52,14 +52,12 @@ static int PlatformMain(char const *port, char const *host) {
   auto server = new Socket;
 
   if (!server->create()) {
-    DS2LOG(Error, "cannot create server socket on port %s: %s", port,
+    DS2LOG(Fatal, "cannot create server socket on port %s: %s", port,
            server->error().c_str());
-    return EXIT_FAILURE;
   }
 
   if (!server->listen(port)) {
-    DS2LOG(Error, "error: failed to listen: %s", server->error().c_str());
-    return EXIT_FAILURE;
+    DS2LOG(Fatal, "error: failed to listen: %s", server->error().c_str());
   }
 
   DS2LOG(Info, "listening on port %s", port);
@@ -83,8 +81,7 @@ static int PlatformMain(char const *port, char const *host) {
 static int RunDebugServer(Socket *server, SessionDelegate *impl,
                           char const *port, char const *host, bool reverse) {
   if (reverse && !server->connect(host, port)) {
-    DS2LOG(Error, "reverse connect failed: %s", server->error().c_str());
-    return EXIT_FAILURE;
+    DS2LOG(Fatal, "reverse connect failed: %s", server->error().c_str());
   }
 
   Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
@@ -111,14 +108,12 @@ static int DebugMain(ds2::StringCollection const &args,
   auto server = new Socket;
 
   if (!server->create()) {
-    DS2LOG(Error, "cannot create server socket on port %s: %s", port,
+    DS2LOG(Fatal, "cannot create server socket on port %s: %s", port,
            server->error().c_str());
-    return EXIT_FAILURE;
   }
 
   if (!reverse && !server->listen(port)) {
-    DS2LOG(Error, "failed to listen: %s", server->error().c_str());
-    return EXIT_FAILURE;
+    DS2LOG(Fatal, "failed to listen: %s", server->error().c_str());
   }
 
   if (!reverse)
