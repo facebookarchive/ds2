@@ -275,19 +275,6 @@ int main(int argc, char **argv) {
     opts.usageDie("first argument must be g[dbserver] or p[latform]");
   }
 
-  opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
-                 "attach to the name or PID specified");
-  opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
-                 "keep the server alive after the client disconnects");
-  opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
-                 "connect back to the debugger at [HOST]:PORT");
-
-  // Target debug options.
-  opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
-                 "add an element to the environment before launch");
-  opts.addOption(ds2::OptParse::vectorOption, "unset-env", 'E',
-                 "remove an element from the environment before lauch");
-
   // Logging options.
   opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
                  "output log messages to the file specified");
@@ -302,7 +289,19 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "list-processes", 'L',
                  "list processes debuggable by the current user");
 
-  // llgs-compat options.
+  // Target debug options.
+  opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
+                 "add an element to the environment before launch");
+  opts.addOption(ds2::OptParse::vectorOption, "unset-env", 'E',
+                 "remove an element from the environment before lauch");
+  opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
+                 "attach to the name or PID specified");
+  opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
+                 "connect back to the debugger at [HOST]:PORT");
+  opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
+                 "keep the server alive after the client disconnects");
+
+  // lldb-server compatibility options.
   opts.addOption(ds2::OptParse::boolOption, "gdb-compat", 'g',
                  "force ds2 to run in gdb compat mode");
   opts.addOption(ds2::OptParse::stringOption, "named-pipe", 'N',
@@ -313,7 +312,9 @@ int main(int argc, char **argv) {
                  "make ds2 run in its own session (no-op)", true);
 
   idx = opts.parse(argc, argv, host, port);
+  argc -= idx, argv += idx;
 
+  // Logging options.
   if (!opts.getString("log-output").empty()) {
     FILE *stream = fopen(opts.getString("log-output").c_str(), "a");
     if (stream == nullptr) {
@@ -321,13 +322,10 @@ int main(int argc, char **argv) {
              opts.getString("log-output").c_str(), strerror(errno));
     } else {
 #if !defined(OS_WIN32)
-      //
-      // Note(sas): When ds2 is spawned by the app, it will run with the
-      // app's user/group ID, and will create its log file owned by the
-      // app. By default, the permissions will be 0600 (rw-------) which
-      // makes us unable to get the log files. chmod() them to be able to
-      // access them.
-      //
+      // When ds2 is spawned by an app (e.g.: on Android), it will run with the
+      // app's user/group ID, and will create its log file owned by the app. By
+      // default, the permissions will be 0600 (rw-------) which makes us
+      // unable to get the log files. chmod() them to be able to access them.
       fchmod(fileno(stream), 0644);
 #endif
       ds2::SetLogColorsEnabled(false);
@@ -346,66 +344,72 @@ int main(int argc, char **argv) {
     ds2::SetLogColorsEnabled(false);
   }
 
-  gKeepAlive = opts.getBool("keep-alive");
+  // Non-debugserver options.
+  if (opts.getBool("list-processes")) {
+    ListProcesses();
+  }
+
+  // Target debug options and program arguments.
+  ds2::StringCollection args(&argv[0], &argv[argc]);
+  if (mode != kRunModeNormal && !args.empty()) {
+    opts.usageDie("PROGRAM and ARGUMENTS only supported in gdbserver mode");
+  }
+
+  ds2::EnvironmentBlock env;
+  Platform::GetCurrentEnvironment(env);
+
+  for (auto const &e : opts.getVector("set-env")) {
+    char const *arg = e.c_str();
+    char const *equal = strchr(arg, '=');
+    if (equal == nullptr || equal == arg) {
+      DS2LOG(Error, "trying to add invalid environment value '%s', skipping",
+             e.c_str());
+      continue;
+    }
+    env[std::string(arg, equal)] = equal + 1;
+  }
+
+  for (auto const &e : opts.getVector("unset-env")) {
+    if (env.find(e) == env.end()) {
+      DS2LOG(Warning, "trying to remove '%s' not present in the environment",
+             e.c_str());
+      continue;
+    }
+    env.erase(e);
+  }
 
   if (!opts.getString("attach").empty()) {
     attachPid = atoi(opts.getString("attach").c_str());
   }
 
-  reverse = opts.getBool("reverse-connect");
-  if (mode != kRunModeNormal && reverse) {
-    opts.usageDie("reverse connection only supported in gdbserver mode");
-  }
-
-  if (opts.getBool("list-processes")) {
-    ListProcesses();
-  }
-
+  gKeepAlive = opts.getBool("keep-alive");
   if (mode == kRunModePlatform) {
     // The platform spawner should stay alive by default.
     gKeepAlive = true;
   }
 
-  // By default, ds2 operates in LLDB compatibilty mode unless explicitely
-  // required to be in GDB mode.
+  reverse = opts.getBool("reverse-connect");
+  if (mode != kRunModeNormal && reverse) {
+    opts.usageDie("reverse-connect only supported in gdbserver mode");
+  }
+
+  // lldb-server compatibilty options.
   gGDBCompat = opts.getBool("gdb-compat");
+  if (mode == kRunModeNormal && gGDBCompat && args.empty() && attachPid < 0) {
+    // In GDB compatibility mode, we need a process to attach to or a command
+    // line so we can launch it.
+    // In LLDB mode, we can launch the debug server without any of those two
+    // things, and wait for an "A" command that specifies the command line to
+    // use to launch the inferior.
+    opts.usageDie("either a program or target PID is required in gdb mode");
+  }
 
   // This is used for llgs testing. We determine a port number dynamically and
   // write it back to the FIFO passed as argument for the test harness to use
   // it.
   namedPipePath = opts.getString("named-pipe");
 
-  argc -= idx, argv += idx;
-
-  ds2::StringCollection args(&argv[0], &argv[argc]);
-  ds2::EnvironmentBlock env;
-
-  Platform::GetCurrentEnvironment(env);
-
-  for (auto const &e : opts.getVector("set-env")) {
-    char const *arg = e.c_str();
-    char const *equal = strchr(arg, '=');
-    if (equal == nullptr || equal == arg)
-      DS2LOG(Fatal, "invalid environment value: %s", arg);
-    env[std::string(arg, equal)] = equal + 1;
-  }
-
-  for (auto const &e : opts.getVector("unset-env")) {
-    env.erase(e);
-  }
-
-  // We need a process to attach to or a command line so we can launch it,
-  // unless we are in lldb compat mode, which implies we can launch the debug
-  // server without any of those two things, and wait for an "A" command that
-  // specifies the command line to use to launch the inferior.
-  if (mode == kRunModeNormal && gGDBCompat && args.empty() && attachPid < 0) {
-    opts.usageDie("either a program or target PID is required");
-  }
-
-  if (mode != kRunModeNormal && argc != 0) {
-    opts.usageDie("PROGRAM and ARGUMENTS only supported in gdbserver mode");
-  }
-
+  // Default host and port options.
   if (port.empty()) {
     // If we have a named pipe, set the port to 0 to indicate that we should
     // dynamically allocate it and write it back to the FIFO.
