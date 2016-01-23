@@ -86,6 +86,10 @@ protected:
                        bool &last) override;
 
 protected:
+  ErrorCode onSetStdFile(Session &session, int fileno,
+                         std::string const &path) override;
+
+protected:
   ErrorCode
   onReadGeneralRegisters(Session &session, ProcessThreadId const &ptid,
                          Architecture::GPRegisterValueVector &regs) override;
