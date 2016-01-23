@@ -572,6 +572,29 @@ ErrorCode DebugSessionImpl::onXferRead(Session &session,
   return kSuccess;
 }
 
+ErrorCode DebugSessionImpl::onSetStdFile(Session &, int fileno,
+                                         std::string const &path) {
+  bool success = false;
+  switch (fileno) {
+  case 0:
+    success = _spawner.redirectInputToFile(path);
+    break;
+  case 1:
+    success = _spawner.redirectOutputToFile(path);
+    break;
+  case 2:
+    success = _spawner.redirectErrorToFile(path);
+    break;
+  default:
+    break;
+  }
+
+  if (success)
+    return kSuccess;
+
+  return kErrorInvalidArgument;
+}
+
 ErrorCode DebugSessionImpl::onReadGeneralRegisters(
     Session &, ProcessThreadId const &ptid,
     Architecture::GPRegisterValueVector &regs) {
