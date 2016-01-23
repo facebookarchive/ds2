@@ -1,0 +1,104 @@
+diff --git a/test/functionalities/watchpoint/hello_watchlocation/TestWatchLocation.py b/test/functionalities/watchpoint/hello_watchlocation/TestWatchLocation.py
+index b70b4f1..106c216 100644
+--- a/test/functionalities/watchpoint/hello_watchlocation/TestWatchLocation.py
++++ b/test/functionalities/watchpoint/hello_watchlocation/TestWatchLocation.py
+@@ -23,6 +23,7 @@ class HelloWatchLocationTestCase(TestBase):
+ 
+     @expectedFailureFreeBSD("llvm.org/pr18832")
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_hello_watchlocation_with_dwarf(self):
+         """Test watching a location with '-s size' option."""
+         self.buildDwarf(dictionary=self.d)
+diff --git a/test/functionalities/watchpoint/hello_watchpoint/TestMyFirstWatchpoint.py b/test/functionalities/watchpoint/hello_watchpoint/TestMyFirstWatchpoint.py
+index b43228a..b9ed2a2 100644
+--- a/test/functionalities/watchpoint/hello_watchpoint/TestMyFirstWatchpoint.py
++++ b/test/functionalities/watchpoint/hello_watchpoint/TestMyFirstWatchpoint.py
+@@ -23,6 +23,7 @@ class HelloWatchpointTestCase(TestBase):
+         self.hello_watchpoint()
+ 
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_hello_watchpoint_with_dwarf_using_watchpoint_set(self):
+         """Test a simple sequence of watchpoint creation and watchpoint hit."""
+         self.buildDwarf(dictionary=self.d)
+diff --git a/test/functionalities/watchpoint/step_over_watchpoint/TestStepOverWatchpoint.py b/test/functionalities/watchpoint/step_over_watchpoint/TestStepOverWatchpoint.py
+index d4bccf9..05974f8 100644
+--- a/test/functionalities/watchpoint/step_over_watchpoint/TestStepOverWatchpoint.py
++++ b/test/functionalities/watchpoint/step_over_watchpoint/TestStepOverWatchpoint.py
+@@ -21,6 +21,7 @@ class TestStepOverWatchpoint(TestBase):
+         self.step_over_watchpoint()
+ 
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_with_dwarf(self):
+         """Test stepping over watchpoints."""
+         self.buildDwarf()
+diff --git a/test/functionalities/watchpoint/watchpoint_commands/command/TestWatchpointCommandLLDB.py b/test/functionalities/watchpoint/watchpoint_commands/command/TestWatchpointCommandLLDB.py
+index 025d1f4..d336587 100644
+--- a/test/functionalities/watchpoint/watchpoint_commands/command/TestWatchpointCommandLLDB.py
++++ b/test/functionalities/watchpoint/watchpoint_commands/command/TestWatchpointCommandLLDB.py
+@@ -34,6 +34,7 @@ class WatchpointLLDBCommandTestCase(TestBase):
+         self.watchpoint_command()
+ 
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_watchpoint_command_with_dwarf(self):
+         """Test 'watchpoint command'."""
+         self.buildDwarf(dictionary=self.d)
+@@ -49,6 +50,7 @@ class WatchpointLLDBCommandTestCase(TestBase):
+         self.watchpoint_command_can_disable_a_watchpoint()
+ 
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_watchpoint_command_can_disable_a_watchpoint_with_dwarf(self):
+         """Test that 'watchpoint command' action can disable a watchpoint after it is triggered."""
+         self.buildDwarf(dictionary=self.d)
+diff --git a/test/functionalities/watchpoint/watchpoint_commands/command/TestWatchpointCommandPython.py b/test/functionalities/watchpoint/watchpoint_commands/command/TestWatchpointCommandPython.py
+index 0c6066d..3782a47 100644
+--- a/test/functionalities/watchpoint/watchpoint_commands/command/TestWatchpointCommandPython.py
++++ b/test/functionalities/watchpoint/watchpoint_commands/command/TestWatchpointCommandPython.py
+@@ -35,6 +35,7 @@ class WatchpointPythonCommandTestCase(TestBase):
+ 
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @unittest2.expectedFailure
+     def test_watchpoint_command_with_dwarf(self):
+         """Test 'watchpoint command'."""
+         self.buildDwarf(dictionary=self.d)
+diff --git a/test/functionalities/watchpoint/watchpoint_commands/condition/TestWatchpointConditionCmd.py b/test/functionalities/watchpoint/watchpoint_commands/condition/TestWatchpointConditionCmd.py
+index 21e1d99..7e22fcd 100644
+--- a/test/functionalities/watchpoint/watchpoint_commands/condition/TestWatchpointConditionCmd.py
++++ b/test/functionalities/watchpoint/watchpoint_commands/condition/TestWatchpointConditionCmd.py
+@@ -34,6 +34,7 @@ class WatchpointConditionCmdTestCase(TestBase):
+         self.watchpoint_condition()
+ 
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_watchpoint_cond_with_dwarf(self):
+         """Test watchpoint condition."""
+         self.buildDwarf(dictionary=self.d)
+diff --git a/test/functionalities/watchpoint/watchpoint_events/TestWatchpointEvents.py b/test/functionalities/watchpoint/watchpoint_events/TestWatchpointEvents.py
+index 25f10a9..7ac61e9 100644
+--- a/test/functionalities/watchpoint/watchpoint_events/TestWatchpointEvents.py
++++ b/test/functionalities/watchpoint/watchpoint_events/TestWatchpointEvents.py
+@@ -20,6 +20,7 @@ class TestWatchpointEvents (TestBase):
+ 
+     @python_api_test
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_with_dwarf_and_python_api(self):
+         """Test that adding, deleting and modifying watchpoints sends the appropriate events."""
+         self.buildDwarf()
+diff --git a/test/functionalities/watchpoint/watchpoint_set_command/TestWatchLocationWithWatchSet.py b/test/functionalities/watchpoint/watchpoint_set_command/TestWatchLocationWithWatchSet.py
+index fa32db6..ed5d7fd 100644
+--- a/test/functionalities/watchpoint/watchpoint_set_command/TestWatchLocationWithWatchSet.py
++++ b/test/functionalities/watchpoint/watchpoint_set_command/TestWatchLocationWithWatchSet.py
+@@ -22,6 +22,7 @@ class WatchLocationUsingWatchpointSetTestCase(TestBase):
+ 
+     @expectedFailureFreeBSD('llvm.org/pr18832')
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_watchlocation_with_dwarf_using_watchpoint_set(self):
+         """Test watching a location with 'watchpoint set expression -w write -s size' option."""
+         self.buildDwarf()

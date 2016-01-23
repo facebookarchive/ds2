@@ -1,0 +1,20 @@
+diff --git a/test/functionalities/avoids-fd-leak/TestFdLeak.py b/test/functionalities/avoids-fd-leak/TestFdLeak.py
+index 96480ad..7a81f29 100644
+--- a/test/functionalities/avoids-fd-leak/TestFdLeak.py
++++ b/test/functionalities/avoids-fd-leak/TestFdLeak.py
+@@ -22,6 +22,7 @@ class AvoidsFdLeakTestCase(TestBase):
+     @expectedFailure(lambda x: sys.version_info >= (2, 7, 8), "bugs.freebsd.org/197376") # python random leaks fd
+     @skipIfWindows # The check for descriptor leakage needs to be implemented differently here.
+     @skipIfTargetAndroid() # Android have some other file descriptors open by the shell
++    @unittest2.expectedFailure
+     def test_fd_leak_log (self):
+         self.do_test(["log enable -f '/dev/null' lldb commands"])
+ 
+@@ -45,6 +46,7 @@ class AvoidsFdLeakTestCase(TestBase):
+     @expectedFlakeyLinux
+     @skipIfWindows # The check for descriptor leakage needs to be implemented differently here.
+     @skipIfTargetAndroid() # Android have some other file descriptors open by the shell
++    @unittest2.expectedFailure
+     def test_fd_leak_multitarget (self):
+         self.buildDefault()
+         exe = os.path.join (os.getcwd(), "a.out")
