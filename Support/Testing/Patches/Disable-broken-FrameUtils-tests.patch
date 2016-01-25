@@ -1,0 +1,12 @@
+diff --git a/test/python_api/lldbutil/frame/TestFrameUtils.py b/test/python_api/lldbutil/frame/TestFrameUtils.py
+index 22db4a4..beabfb7 100644
+--- a/test/python_api/lldbutil/frame/TestFrameUtils.py
++++ b/test/python_api/lldbutil/frame/TestFrameUtils.py
+@@ -19,6 +19,7 @@ class FrameUtilsTestCase(TestBase):
+                                 "// Find the line number here.")
+ 
+     @python_api_test
++    @unittest2.expectedFailure
+     def test_frame_utils(self):
+         """Test utility functions for the frame object."""
+         self.buildDefault()

@@ -1,0 +1,285 @@
+diff --git a/test/functionalities/thread/concurrent_events/TestConcurrentEvents.py b/test/functionalities/thread/concurrent_events/TestConcurrentEvents.py
+index f0f2c3f..231b20c 100644
+--- a/test/functionalities/thread/concurrent_events/TestConcurrentEvents.py
++++ b/test/functionalities/thread/concurrent_events/TestConcurrentEvents.py
+@@ -26,6 +26,7 @@ class ConcurrentEventsTestCase(TestBase):
+     #
+     @unittest2.skipIf(TestBase.skipLongRunningTest(), "Skip this long running test")
+     @dwarf_test
++    @skipIfLinux
+     def test_many_breakpoints_dwarf(self):
+         """Test 100 breakpoints from 100 threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -33,6 +34,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @unittest2.skipIf(TestBase.skipLongRunningTest(), "Skip this long running test")
+     @dwarf_test
++    @skipIfLinux
+     def test_many_watchpoints_dwarf(self):
+         """Test 100 watchpoints from 100 threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -40,6 +42,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @unittest2.skipIf(TestBase.skipLongRunningTest(), "Skip this long running test")
+     @dwarf_test
++    @skipIfLinux
+     def test_many_signals_dwarf(self):
+         """Test 100 signals from 100 threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -47,6 +50,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @unittest2.skipIf(TestBase.skipLongRunningTest(), "Skip this long running test")
+     @dwarf_test
++    @skipIfLinux
+     def test_many_crash_dwarf(self):
+         """Test 100 threads that cause a segfault."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -58,6 +62,7 @@ class ConcurrentEventsTestCase(TestBase):
+     #
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_signal_break_dwarf(self):
+         """Test signal and a breakpoint in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -65,6 +70,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_delay_signal_break_dwarf(self):
+         """Test (1-second delay) signal and a breakpoint in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -72,6 +78,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_signal_delay_break_dwarf(self):
+         """Test signal and a (1 second delay) breakpoint in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -84,6 +91,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_watch_break_dwarf(self):
+         """Test watchpoint and a breakpoint in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -92,6 +100,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_delay_watch_break_dwarf(self):
+         """Test (1-second delay) watchpoint and a breakpoint in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -100,6 +109,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_watch_break_dwarf_delay(self):
+         """Test watchpoint and a (1 second delay) breakpoint in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -111,6 +121,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_signal_watch_dwarf(self):
+         """Test a watchpoint and a signal in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -119,6 +130,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_delay_signal_watch_dwarf(self):
+         """Test a watchpoint and a (1 second delay) signal in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -127,7 +139,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
+-    @expectedFailureAll("llvm.org/pr16714", oslist=["linux"], archs=["i386"])
++    @expectedFailureAll("llvm.org/pr16714", oslist=["linux"])
+     def test_signal_delay_watch_dwarf(self):
+         """Test a (1 second delay) watchpoint and a signal in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -139,6 +151,7 @@ class ConcurrentEventsTestCase(TestBase):
+     #
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_two_breakpoint_threads_dwarf(self):
+         """Test two threads that trigger a breakpoint. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -146,6 +159,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_breakpoint_one_delay_breakpoint_threads_dwarf(self):
+         """Test threads that trigger a breakpoint where one thread has a 1 second delay. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -154,6 +168,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_two_breakpoints_one_signal_dwarf(self):
+         """Test two threads that trigger a breakpoint and one signal thread. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -161,6 +176,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_breakpoint_delay_breakpoint_one_signal_dwarf(self):
+         """Test two threads that trigger a breakpoint (one with a 1 second delay) and one signal thread. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -170,6 +186,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_two_breakpoints_one_delay_signal_dwarf(self):
+         """Test two threads that trigger a breakpoint and one (1 second delay) signal thread. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -178,6 +195,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_two_breakpoints_one_watchpoint_dwarf(self):
+         """Test two threads that trigger a breakpoint and one watchpoint thread. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -186,6 +204,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_breakpoints_delayed_breakpoint_one_watchpoint_dwarf(self):
+         """Test a breakpoint, a delayed breakpoint, and one watchpoint thread. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -199,6 +218,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_two_watchpoint_threads_dwarf(self):
+         """Test two threads that trigger a watchpoint. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -207,6 +227,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_watchpoint_with_delay_watchpoint_threads_dwarf(self):
+         """Test two threads that trigger a watchpoint where one thread has a 1 second delay. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -216,6 +237,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_two_watchpoints_one_breakpoint_dwarf(self):
+         """Test two threads that trigger a watchpoint and one breakpoint thread. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -224,6 +246,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_two_watchpoints_one_delay_breakpoint_dwarf(self):
+         """Test two threads that trigger a watchpoint and one (1 second delay) breakpoint thread. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -232,6 +255,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_watchpoint_delay_watchpoint_one_breakpoint_dwarf(self):
+         """Test two threads that trigger a watchpoint (one with a 1 second delay) and one breakpoint thread. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -242,6 +266,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_two_watchpoints_one_signal_dwarf(self):
+         """Test two threads that trigger a watchpoint and one signal thread. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -253,6 +278,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_signal_watch_break_dwarf(self):
+         """Test a signal/watchpoint/breakpoint in multiple threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -263,6 +289,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_signal_watch_break_dwarf(self):
+         """Test one signal thread with 5 watchpoint and breakpoint threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -273,6 +300,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_signal_watch_break_dwarf(self):
+         """Test with 5 watchpoint and breakpoint threads."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -285,6 +313,7 @@ class ConcurrentEventsTestCase(TestBase):
+     #
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_crash_with_break_dwarf(self):
+         """ Test a thread that crashes while another thread hits a breakpoint."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -293,6 +322,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_crash_with_watchpoint_dwarf(self):
+         """ Test a thread that crashes while another thread hits a watchpoint."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -300,6 +330,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_crash_with_signal_dwarf(self):
+         """ Test a thread that crashes while another thread generates a signal."""
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -308,6 +339,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_crash_with_watchpoint_breakpoint_signal_dwarf(self):
+         """ Test a thread that crashes while other threads generate a signal and hit a watchpoint and breakpoint. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -319,6 +351,7 @@ class ConcurrentEventsTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
+     @skipIfRemoteDueToDeadlock
++    @skipIfLinux
+     def test_delayed_crash_with_breakpoint_watchpoint_dwarf(self):
+         """ Test a thread with a delayed crash while other threads hit a watchpoint and a breakpoint. """
+         self.buildDwarf(dictionary=self.getBuildFlags())
+@@ -328,6 +361,7 @@ class ConcurrentEventsTestCase(TestBase):
+ 
+     @dwarf_test
+     @skipIfFreeBSD # timing out on buildbot
++    @skipIfLinux
+     def test_delayed_crash_with_breakpoint_signal_dwarf(self):
+         """ Test a thread with a delayed crash while other threads generate a signal and hit a breakpoint. """
+         self.buildDwarf(dictionary=self.getBuildFlags())

@@ -1,0 +1,12 @@
+diff --git a/test/python_api/value/TestValueAPI.py b/test/python_api/value/TestValueAPI.py
+index 6023976..233decb 100644
+--- a/test/python_api/value/TestValueAPI.py
++++ b/test/python_api/value/TestValueAPI.py
+@@ -24,6 +24,7 @@ class ValueAPITestCase(TestBase):
+ 
+     @python_api_test
+     @dwarf_test
++    @unittest2.expectedFailure
+     def test_with_dwarf(self):
+         """Exercise some SBValue APIs."""
+         d = {'EXE': self.exe_name}

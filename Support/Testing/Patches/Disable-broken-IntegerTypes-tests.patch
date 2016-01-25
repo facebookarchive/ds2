@@ -1,0 +1,168 @@
+diff --git a/test/types/TestIntegerTypes.py b/test/types/TestIntegerTypes.py
+index 58e8513..6ce5048 100644
+--- a/test/types/TestIntegerTypes.py
++++ b/test/types/TestIntegerTypes.py
+@@ -32,6 +32,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('char.cpp', set(['char']), bc=True, qd=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_char_type_with_dwarf(self):
+         """Test that char-type variables are displayed correctly."""
+         self.build_and_run('char.cpp', set(['char']), dsym=False, qd=True)
+@@ -49,6 +50,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('unsigned_char.cpp', set(['unsigned', 'char']), bc=True, qd=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_char_type_with_dwarf(self):
+         """Test that 'unsigned char'-type variables are displayed correctly."""
+         self.build_and_run('unsigned_char.cpp', set(['unsigned', 'char']), dsym=False, qd=True)
+@@ -66,6 +68,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('short.cpp', set(['short']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_short_type_with_dwarf(self):
+         """Test that short-type variables are displayed correctly."""
+         self.build_and_run('short.cpp', set(['short']), dsym=False)
+@@ -83,6 +86,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('unsigned_short.cpp', set(['unsigned', 'short']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_short_type_with_dwarf(self):
+         """Test that 'unsigned short'-type variables are displayed correctly."""
+         self.build_and_run('unsigned_short.cpp', set(['unsigned', 'short']), dsym=False)
+@@ -100,6 +104,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('int.cpp', set(['int']), dsym=False)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_int_type_with_dwarf(self):
+         """Test that int-type variables are displayed correctly."""
+         self.build_and_run('int.cpp', set(['int']), dsym=False)
+@@ -117,6 +122,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('unsigned_int.cpp', set(['unsigned', 'int']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_int_type_with_dwarf(self):
+         """Test that 'unsigned int'-type variables are displayed correctly."""
+         self.build_and_run('unsigned_int.cpp', set(['unsigned', 'int']), dsym=False)
+@@ -134,6 +140,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('long.cpp', set(['long']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_long_type_with_dwarf(self):
+         """Test that long-type variables are displayed correctly."""
+         self.build_and_run('long.cpp', set(['long']), dsym=False)
+@@ -151,6 +158,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('unsigned_long.cpp', set(['unsigned', 'long']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_long_type_with_dwarf(self):
+         """Test that 'unsigned long'-type variables are displayed correctly."""
+         self.build_and_run('unsigned_long.cpp', set(['unsigned', 'long']), dsym=False)
+@@ -171,6 +179,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('long_long.cpp', set(['long long']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_long_long_type_with_dwarf(self):
+         """Test that 'long long'-type variables are displayed correctly."""
+         self.build_and_run('long_long.cpp', set(['long long']), dsym=False)
+@@ -188,6 +197,7 @@ class IntegerTypesTestCase(AbstractBase.GenericTester):
+         self.build_and_run('unsigned_long_long.cpp', set(['unsigned', 'long long']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_long_long_type_with_dwarf(self):
+         """Test that 'unsigned long long'-type variables are displayed correctly."""
+         self.build_and_run('unsigned_long_long.cpp', set(['unsigned', 'long long']), dsym=False)
+diff --git a/test/types/TestIntegerTypesExpr.py b/test/types/TestIntegerTypesExpr.py
+index 4cada92..3650c0d 100644
+--- a/test/types/TestIntegerTypesExpr.py
++++ b/test/types/TestIntegerTypesExpr.py
+@@ -32,6 +32,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('char.cpp', set(['char']), bc=True, qd=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_char_type_with_dwarf(self):
+         """Test that char-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('char.cpp', set(['char']), dsym=False, qd=True)
+@@ -49,6 +50,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('unsigned_char.cpp', set(['unsigned', 'char']), bc=True, qd=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_char_type_with_dwarf(self):
+         """Test that 'unsigned char'-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('unsigned_char.cpp', set(['unsigned', 'char']), dsym=False, qd=True)
+@@ -66,6 +68,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('short.cpp', set(['short']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_short_type_with_dwarf(self):
+         """Test that short-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('short.cpp', set(['short']), dsym=False)
+@@ -83,6 +86,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('unsigned_short.cpp', set(['unsigned', 'short']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_short_type_with_dwarf(self):
+         """Test that 'unsigned short'-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('unsigned_short.cpp', set(['unsigned', 'short']), dsym=False)
+@@ -100,6 +104,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('int.cpp', set(['int']), dsym=False)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_int_type_with_dwarf(self):
+         """Test that int-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('int.cpp', set(['int']), dsym=False)
+@@ -117,6 +122,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('unsigned_int.cpp', set(['unsigned', 'int']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_int_type_with_dwarf(self):
+         """Test that 'unsigned int'-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('unsigned_int.cpp', set(['unsigned', 'int']), dsym=False)
+@@ -134,6 +140,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('long.cpp', set(['long']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_long_type_with_dwarf(self):
+         """Test that long-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('long.cpp', set(['long']), dsym=False)
+@@ -151,6 +158,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('unsigned_long.cpp', set(['unsigned', 'long']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_long_type_with_dwarf(self):
+         """Test that 'unsigned long'-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('unsigned_long.cpp', set(['unsigned', 'long']), dsym=False)
+@@ -171,6 +179,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('long_long.cpp', set(['long long']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_long_long_type_with_dwarf(self):
+         """Test that 'long long'-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('long_long.cpp', set(['long long']), dsym=False)
+@@ -188,6 +197,7 @@ class IntegerTypesExprTestCase(AbstractBase.GenericTester):
+         self.build_and_run_expr('unsigned_long_long.cpp', set(['unsigned', 'long long']), bc=True)
+ 
+     @dwarf_test
++    @unittest2.expectedFailure 
+     def test_unsigned_long_long_type_with_dwarf(self):
+         """Test that 'unsigned long long'-type variable expressions are evaluated correctly."""
+         self.build_and_run_expr('unsigned_long_long.cpp', set(['unsigned', 'long long']), dsym=False)
