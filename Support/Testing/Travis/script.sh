@@ -63,6 +63,8 @@ fi
 
 if [[ "${RELEASE-}" = "1" ]]; then
   cmake_options+=(-DCMAKE_BUILD_TYPE="Release")
+else
+  cmake_options+=(-DCMAKE_BUILD_TYPE="Debug")
 fi
 
 cmake "${cmake_options[@]}" ..
