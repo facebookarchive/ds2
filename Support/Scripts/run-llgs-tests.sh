@@ -58,12 +58,4 @@ if [ "$LLDB_TESTS" != "all" ]; then
   args="$args -p $LLDB_TESTS"
 fi
 
-for attempt in 0 1; do
-  if [ $attempt -ne 0 ]; then
-    echo "Failed test suite: Test$LLDB_TESTS, retrying"
-  fi
-
-  if LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args; then
-    break
-  fi
-done
+LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args
