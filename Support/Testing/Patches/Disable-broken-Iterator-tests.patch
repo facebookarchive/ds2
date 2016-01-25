@@ -1,0 +1,12 @@
+diff --git a/test/python_api/lldbutil/iter/TestLLDBIterator.py b/test/python_api/lldbutil/iter/TestLLDBIterator.py
+index 4d32d6d..2fe4eed 100644
+--- a/test/python_api/lldbutil/iter/TestLLDBIterator.py
++++ b/test/python_api/lldbutil/iter/TestLLDBIterator.py
+@@ -32,6 +32,7 @@ class LLDBIteratorTestCase(TestBase):
+         self.lldb_iter_breakpoint()
+ 
+     @python_api_test
++    @unittest2.expectedFailure
+     def test_lldb_iter_frame(self):
+         """Test iterator works correctly for SBProcess->SBThread->SBFrame."""
+         self.buildDefault()
