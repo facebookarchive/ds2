@@ -52,7 +52,20 @@ done
 cd "$lldb_path/test"
 lldb_exe="$(which lldb-3.7)"
 
-args="-q --arch=x86_64 --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C /usr/bin/cc -m"
+args="-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -m"
+
+if [[ "${CLANG-}" = "1" ]]; then
+  args="$args -C $(which clang-3.7)"
+else
+  args="$args -C $(which gcc-4.8)"
+fi
+
+if [ "$TARGET" = "Linux-X86_64" ]; then
+  args="$args --arch=x86_64"
+elif [ "$TARGET" = "Linux-X86" ]; then
+  args="$args --arch=i386"
+fi
+
 if [ "$LLDB_TESTS" != "all" ]; then
   args="$args -p $LLDB_TESTS"
 fi
