@@ -36,6 +36,7 @@ bool Channel::receive(std::string &buffer) {
     ssize_t nrecvd = receive(&buffer[size], chunk);
     if (nrecvd == 0)
       break;
+    buffer.resize(size + nrecvd);
 
     total += nrecvd;
   }
