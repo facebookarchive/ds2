@@ -70,7 +70,7 @@ char const *Stringify::Signal(int signal, bool dieOnFail) {
     DO_STRINGIFY(SIGPWR)
     DO_STRINGIFY(SIGSTKFLT)
 #endif
-    DO_DEFAULT("unknown signal", signal);
+    DO_DEFAULT("unknown signal", signal)
   }
 }
 
@@ -86,7 +86,7 @@ char const *Stringify::SignalCode(int signal, int code, bool dieOnFail) {
       DO_STRINGIFY(ILL_PRVREG)
       DO_STRINGIFY(ILL_COPROC)
       DO_STRINGIFY(ILL_BADSTK)
-      DO_DEFAULT("unknown code", code);
+      DO_DEFAULT("unknown code", code)
     };
 
   case SIGBUS:
@@ -94,17 +94,17 @@ char const *Stringify::SignalCode(int signal, int code, bool dieOnFail) {
       DO_STRINGIFY(BUS_ADRALN)
       DO_STRINGIFY(BUS_ADRERR)
       DO_STRINGIFY(BUS_OBJERR)
-      DO_DEFAULT("unknown code", code);
+      DO_DEFAULT("unknown code", code)
     };
 
   case SIGSEGV:
     switch (code) {
       DO_STRINGIFY(SEGV_MAPERR)
       DO_STRINGIFY(SEGV_ACCERR)
-      DO_DEFAULT("unknown code", code);
+      DO_DEFAULT("unknown code", code)
     };
 
-    DO_DEFAULT("unknown signal", signal);
+    DO_DEFAULT("unknown signal", signal)
   }
 }
 
@@ -243,7 +243,7 @@ char const *Stringify::Errno(int error, bool dieOnFail) {
     DO_STRINGIFY(EUNATCH)
     DO_STRINGIFY(EXFULL)
 #endif
-    DO_DEFAULT("unknown error", error);
+    DO_DEFAULT("unknown error", error)
   }
 }
 
@@ -285,7 +285,7 @@ char const *Stringify::Ptrace(int code, bool dieOnFail) {
     DO_STRINGIFY(PTRACE_SYSCALL)
     DO_STRINGIFY(PTRACE_TRACEME)
 #endif
-    DO_DEFAULT("unknown ptrace command", code);
+    DO_DEFAULT("unknown ptrace command", code)
   }
 }
 }
