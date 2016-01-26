@@ -94,6 +94,8 @@ ErrorCode PTrace::attach(ProcessId pid) {
   if (pid <= kAnyProcessId)
     return kErrorProcessNotFound;
 
+  DS2LOG(Debug, "attaching to pid %llu", (unsigned long long)pid);
+
   if (wrapPtrace(PTRACE_ATTACH, pid, nullptr, nullptr) < 0)
     return Platform::TranslateError();
 
