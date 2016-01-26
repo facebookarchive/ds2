@@ -63,6 +63,8 @@ for attempt in 0 1; do
   fi
 
   if LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args; then
-    break
+    exit 0
   fi
 done
+
+exit 1
