@@ -467,12 +467,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
 
   FILE *fp = ProcFS::OpenFILE(_pid, "maps");
   if (fp == nullptr) {
-    switch (errno) {
-    case ESRCH:
-      return kErrorProcessNotFound;
-    default:
-      return kErrorUnsupported;
-    }
+    return Platform::TranslateError();
   }
 
   uint64_t last = 0;
