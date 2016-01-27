@@ -12,7 +12,7 @@ Windows support is still under active development.
 
 Launch ds2 with something like:
 
-    $ ./ds2 gdbserver localhost:4242 ./TestSimpleOutput
+    $ ./ds2 gdbserver localhost:4242 /path/to/TestSimpleOutput
 
 ds2 is now ready to accept connections on port 4242 from lldb.
 
@@ -20,7 +20,7 @@ ds2 is now ready to accept connections on port 4242 from lldb.
 
     $ lldb /path/to/TestSimpleOutput
     Current executable set to '/path/to/TestSimpleOutput' (x86_64).
-    (lldb) gdb-remote sas-ubuntu-vm.local:4242
+    (lldb) gdb-remote localhost:4242
     Process 8336 stopped
     * thread #1: tid = 8336, 0x00007ffff7ddb2d0, name = 'TestSimpleOutput', stop reason = signal SIGTRAP
         frame #0: 0x00007ffff7ddb2d0
