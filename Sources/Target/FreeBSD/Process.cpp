@@ -410,7 +410,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
   info.clear();
   ProcStat::GetProcessMap(_pid, map);
 
-  for (MemoryRegionInfo i : map) {
+  for (auto const &i : map) {
     if (address >= i.start && address <= (i.start + i.length)) {
       info = i;
       return kSuccess;
