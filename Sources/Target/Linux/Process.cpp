@@ -474,15 +474,24 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
   bool found = false;
 
   while (!found) {
-    char buf[128];
+    // Each line can contain one path and some additional addresses and
+    // such, so PATH_MAX * 2 should be enough.
+    char buf[PATH_MAX * 2];
     unsigned long long start, end;
-    char r, w, x;
+    char r, w, x, p;
+    unsigned long long offset;
+    unsigned int devMinor, devMajor;
+    unsigned long long inode;
+    int nread;
 
     if (std::fgets(buf, sizeof(buf), fp) == nullptr)
       break;
 
-    if (std::sscanf(buf, "%llx-%llx %c%c%c", &start, &end, &r, &w, &x) != 5)
+    if (std::sscanf(buf, "%llx-%llx %c%c%c%c %llx %x:%x %llu %n", &start, &end,
+                    &r, &w, &x, &p, &offset, &devMinor, &devMajor, &inode,
+                    &nread) != 10) {
       continue;
+    }
 
     if (address >= last && address <= start) {
       //
@@ -504,6 +513,11 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
         info.protection |= ds2::kProtectionWrite;
       if (x == 'x')
         info.protection |= ds2::kProtectionExecute;
+      while (buf[nread] != '\0' && std::isspace(buf[nread]))
+        ++nread;
+      info.backingFile = buf + nread;
+      info.backingFileOffset = offset;
+      info.backingFileInode = inode;
       found = true;
     } else {
       last = end;
