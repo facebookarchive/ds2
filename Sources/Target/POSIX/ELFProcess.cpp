@@ -259,22 +259,18 @@ ErrorCode ELFProcess::updateInfo() {
 
   ErrorCode error;
 
-  //
   // This is tricky, we don't know the load base, and to
   // do so we need to update the auxiliary vector, but
   // in order to interpret it we need to determine first
   // if it's 32 or 64bits. In this point of the code
   // we don't have idea of what is our target platform,
   // so we'll do an empirical test.
-  //
   if (!_loadBase.valid() || !_entryPoint.valid()) {
     error = updateAuxiliaryVector();
     if (error != kSuccess && error != kErrorAlreadyExist)
       return error;
 
-    //
     // Hack to use enumerateAuxiliaryVector before information is set.
-    //
     _info.pid = _pid;
 
     bool possibly32 = false;
@@ -294,23 +290,40 @@ ErrorCode ELFProcess::updateInfo() {
 
     _entryPoint = getAuxiliaryVectorValue(AT_ENTRY);
 
-    //
     // Query the memory region information to know where
     // is the load base.
-    //
     MemoryRegionInfo mri;
+    MemoryRegionInfo prevMri;
     error = getMemoryRegionInfo(_entryPoint, mri);
+    if (error != kSuccess)
+      goto mri_error;
 
-    //
+    // For some reason, on Android 5.1 and up some ELF segments get loaded in
+    // memory multiple smaller contiguous regions instead of being loaded as a
+    // single big mapping.
+    // This means we can't properly identify the beginning of the segment by
+    // just looking at the start address of the mapping; we have to inspect
+    // contiguous mappings instead and see if they are contiguous in the input
+    // file and then take the start address of the first mapping of the segment
+    // we're inspecting.
+    do {
+      prevMri = mri;
+      error = getMemoryRegionInfo(mri.start - 1, mri);
+      if (error != kSuccess)
+        goto mri_error;
+    } while (mri.backingFile == prevMri.backingFile &&
+             mri.backingFileInode == prevMri.backingFileInode &&
+             mri.protection == prevMri.protection &&
+             mri.backingFileOffset + mri.length == prevMri.backingFileOffset);
+
+    _loadBase = prevMri.start;
+
+  mri_error:
     // Restore the hack.
-    //
     _info.pid = kAnyProcessId;
     _info.cpuType = kCPUTypeAny;
 
-    if (error != kSuccess)
-      return error;
-
-    _loadBase = mri.start;
+    return error;
   }
 
   //
