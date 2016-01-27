@@ -1,0 +1,26 @@
+diff --git a/test/dotest.py b/test/dotest.py
+index 4969304..3ea3fbf 100755
+--- a/test/dotest.py
++++ b/test/dotest.py
+@@ -1011,8 +1011,7 @@ def setupSysPath():
+         # If our lldb supports the -P option, use it to find the python path:
+         init_in_python_dir = os.path.join('lldb', '__init__.py')
+ 
+-        lldb_dash_p_result = subprocess.check_output([lldbtest_config.lldbExec, "-P"], stderr=subprocess.STDOUT)
+-
++        lldb_dash_p_result = os.environ.get("PYTHONPATH")
+         if lldb_dash_p_result and not lldb_dash_p_result.startswith(("<", "lldb: invalid option:")) \
+ 							  and not lldb_dash_p_result.startswith("Traceback"):
+             lines = lldb_dash_p_result.splitlines()
+diff --git a/test/functionalities/plugins/commands/TestPluginCommands.py b/test/functionalities/plugins/commands/TestPluginCommands.py
+index 7f796b8..d2863aa 100644
+--- a/test/functionalities/plugins/commands/TestPluginCommands.py
++++ b/test/functionalities/plugins/commands/TestPluginCommands.py
+@@ -22,6 +22,7 @@ class PluginCommandTestCase(TestBase):
+     @expectedFailureFreeBSD('llvm.org/pr17430')
+     @skipIfNoSBHeaders
+     @skipIfHostIncompatibleWithRemote # Requires a compatible arch and platform to link against the host's built lldb lib.
++    @unittest2.expectedFailure
+     def test_load_plugin(self):
+         """Test that plugins that load commands work correctly."""
+ 

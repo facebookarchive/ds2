@@ -55,10 +55,15 @@ fi
 
 mkdir -p build && cd build
 
-if [[ "${CLANG-}" = "1" ]]; then
-  cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}-Clang.cmake")
-else
-  cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake")
+# CentOS uses different compiler names than Ubuntu, so we can only use the
+# toolchain files on Ubuntu In addition, clang-3.7 is also not available for
+# CentOS
+if grep -q "Ubuntu" "/etc/issue"; then
+  if [[ "${CLANG-}" = "1" ]]; then
+    cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}-Clang.cmake")
+  else
+    cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake")
+  fi
 fi
 
 if [[ "${RELEASE-}" = "1" ]]; then
@@ -71,5 +76,5 @@ cmake "${cmake_options[@]}" ..
 make
 
 if [[ -n "${LLDB_TESTS-}" ]]; then
-  ../Support/Scripts/run-llgs-tests.sh
+  ../Support/Scripts/run-lldb-tests.sh
 fi
