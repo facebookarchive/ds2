@@ -36,6 +36,8 @@ env:
 ############################
   - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="0"
   - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="0" RELEASE="1"
+  - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="1"
+  - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="1" RELEASE="1"
 ############################
 # LLDB Unit tests - x86_64 #
 ############################
