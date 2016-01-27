@@ -19,6 +19,7 @@ UPSTREAM_BRANCH="release_37"
 source "$(dirname "$0")/common.sh"
 
 top="$(pwd)"
+testPath="$top/../Support/Testing"
 
 [ "$(uname)" == "Linux" ] || die "The lldb-gdbserver test suite requires a Linux host environment."
 [ -x "$top/ds2" ]         || die "Unable to find a ds2 binary in the current directory."
@@ -26,7 +27,7 @@ top="$(pwd)"
 lldb_path="$top/lldb"
 git_clone "$LLDB_REPO" "$lldb_path"   "$UPSTREAM_BRANCH"
 
-for p in $top/../Support/Testing/*.patch ; do
+for p in $testPath/Patches/*.patch ; do
   echo "Applying $p"
   patch -d "$lldb_path" -p1 < "$p"
 done
@@ -52,13 +53,7 @@ done
 cd "$lldb_path/test"
 lldb_exe="$(which lldb-3.7)"
 
-args="-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -m"
-
-if [[ "${CLANG-}" = "1" ]]; then
-  args="$args -C $(which clang-3.7)"
-else
-  args="$args -C $(which gcc-4.8)"
-fi
+args="-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C $(which gcc-4.8) -m"
 
 if [ "$TARGET" = "Linux-X86_64" ]; then
   args="$args --arch=x86_64"
@@ -67,17 +62,7 @@ elif [ "$TARGET" = "Linux-X86" ]; then
 fi
 
 if [ "$LLDB_TESTS" != "all" ]; then
-  args="$args -p $LLDB_TESTS"
+  LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args -p $LLDB_TESTS
+else
+  LLDB_TEST_TIMEOUT=45m LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dosep.py -o "$args"
 fi
-
-for attempt in 0 1; do
-  if [ $attempt -ne 0 ]; then
-    echo "Failed test suite: Test$LLDB_TESTS, retrying"
-  fi
-
-  if LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args; then
-    exit 0
-  fi
-done
-
-exit 1
