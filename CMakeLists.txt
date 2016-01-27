@@ -28,7 +28,7 @@ elseif (ARCH_NAME MATCHES "AMD64")
   set(ARCH_NAME "X86_64")
 endif ()
 
-if (${CMAKE_COMPILER_IS_GNUCXX}) # Clang or GCC
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # Global options (these apply for other subprojects like JSObjects) and must
   # be set before we include subdirectories.
   if (STATIC)
@@ -230,7 +230,7 @@ if ("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
   target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)
 endif ()
 
-if (${CMAKE_COMPILER_IS_GNUCXX})
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(ds2 PRIVATE -Wall -Wextra -Wno-unused-parameter)
   if (WIN32)
     target_compile_options(ds2 PRIVATE -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare)
