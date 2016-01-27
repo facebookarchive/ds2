@@ -288,6 +288,11 @@ struct MemoryRegionInfo {
   Address start;
   uint64_t length;
   uint32_t protection;
+#if defined(OS_LINUX)
+  std::string backingFile;
+  uint64_t backingFileOffset;
+  uint64_t backingFileInode;
+#endif
 
   MemoryRegionInfo() { clear(); }
 
@@ -295,6 +300,11 @@ struct MemoryRegionInfo {
     start.clear();
     length = 0;
     protection = 0;
+#if defined(OS_LINUX)
+    backingFile.clear();
+    backingFileOffset = 0;
+    backingFileInode = 0;
+#endif
   }
 };
 
