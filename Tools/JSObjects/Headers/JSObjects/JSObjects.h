@@ -305,7 +305,7 @@ public:
 
 public:
   inline void append(JSObject *obj) {
-    _array.push_back(std::move(UniquePtr(obj)));
+    _array.push_back(UniquePtr(obj));
   }
 
 public:
@@ -389,7 +389,7 @@ public:
     if (_map.find(key) == _map.end()) {
       _keys.push_back(key);
     }
-    _map.insert(std::make_pair(key, std::move(UniquePtr(obj))));
+    _map.insert(std::make_pair(key, UniquePtr(obj)));
   }
 
 public:
