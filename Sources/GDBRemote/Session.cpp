@@ -838,9 +838,10 @@ void Session::Handle_i(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
                                   std::string const &) {
-  StopCode stop;
+  StopCode processStop;
+  std::vector<StopCode> stops;
   ErrorCode error =
-      _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), stop);
+      _delegate->fetchStopInfoForAllThreads(*this, stops, processStop);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -850,18 +851,15 @@ void Session::Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
     //
     // Update the 'c' and 'g' ptids.
     //
-    _ptids['c'] = _ptids['g'] = stop.ptid;
+    _ptids['c'] = _ptids['g'] = processStop.ptid;
   }
 
   JSArray jsonObj;
-  for (auto const &tid : stop.threads) {
-    _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(kAnyProcessId, tid),
-                                     stop);
+  for (auto const &stop : stops) {
     jsonObj.append(stop.encodeJson());
   }
 
-  std::string jsonString = jsonObj.toString();
-  send(jsonString, false);
+  send(jsonObj.toString(), false);
 }
 
 //
@@ -2310,14 +2308,21 @@ void Session::Handle_qThreadStopInfo(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
-
   if (_compatMode != kCompatibilityModeLLDB) {
     //
     // Update the 'c' and 'g' ptids.
     //
     _ptids['c'] = _ptids['g'] = stop.ptid;
   }
+
+  JSArray threadsStopInfo;
+  error = _delegate->createThreadsStopInfo(*this, threadsStopInfo);
+  if (error != kSuccess) {
+    sendError(error);
+    return;
+  }
+
+  send(stop.encodeWithAllThreads(_compatMode, threadsStopInfo));
 }
 
 //

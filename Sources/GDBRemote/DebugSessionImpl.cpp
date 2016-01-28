@@ -1076,5 +1076,37 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
 
   return kSuccess;
 }
+
+ErrorCode DebugSessionImpl::fetchStopInfoForAllThreads(
+    Session &session, std::vector<StopCode> &stops, StopCode &processStop) {
+  ErrorCode error =
+      onQueryThreadStopInfo(session, ProcessThreadId(), processStop);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  for (auto const &tid : processStop.threads) {
+    StopCode stop;
+    onQueryThreadStopInfo(session, ProcessThreadId(kAnyProcessId, tid), stop);
+    stops.push_back(stop);
+  }
+
+  return kSuccess;
+}
+
+ErrorCode DebugSessionImpl::createThreadsStopInfo(Session &session,
+                                                  JSArray &threadsStopInfo) {
+  StopCode processStop;
+  std::vector<StopCode> stops;
+  ErrorCode error = fetchStopInfoForAllThreads(session, stops, processStop);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  for (auto const &stop : stops) {
+    threadsStopInfo.append(stop.encodeBriefJson());
+  }
+  return kSuccess;
+}
 }
 }

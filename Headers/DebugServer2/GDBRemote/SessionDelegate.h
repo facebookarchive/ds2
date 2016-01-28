@@ -208,6 +208,11 @@ protected: // Debugging Session
                                 std::string const &annex, uint64_t offset,
                                 std::string const &buffer,
                                 size_t &nwritten) = 0;
+  virtual ErrorCode fetchStopInfoForAllThreads(Session &session,
+                                               std::vector<StopCode> &stops,
+                                               StopCode &processStop) = 0;
+  virtual ErrorCode createThreadsStopInfo(Session &session,
+                                          JSArray &threadsStopInfo) = 0;
 
 protected: // Platform Session
   virtual ErrorCode onDisableASLR(Session &session, bool disable) = 0;
