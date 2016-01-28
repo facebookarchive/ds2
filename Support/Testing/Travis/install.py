@@ -9,7 +9,7 @@
 ## PATENTS file in the same directory.
 ##
 
-import os
+import os, platform
 from subprocess import check_call
 
 packages = []
@@ -36,10 +36,13 @@ elif target == 'Registers':
     packages.append('g++-4.8')
     packages.append('clang-format-3.7')
 elif target in linux_packages:
-    # Install gcc even when using clang, so we can run llgs tests.
-    packages.append(linux_packages[target])
-    if os.getenv('CLANG') == '1':
-        packages.append('clang-3.7')
+    if "CentOS Linux" in platform.linux_distribution():
+        packages.append('gcc')
+    else:
+        # Install gcc even when using clang, so we can run llgs tests.
+        packages.append(linux_packages[target])
+        if os.getenv('CLANG') == '1':
+            packages.append('clang-3.7')
 elif target in android_toolchains:
     # Android builds get the toolchain from AOSP.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
@@ -51,9 +54,18 @@ elif target in tizen_toolchains:
 # use the lldb python library without us building it).
 if os.getenv('LLDB_TESTS') != None:
     packages.append('swig')
-    packages.append('lldb-3.7')
-    packages.append('liblldb-3.7')
-    packages.append('python-lldb-3.7')
+    if "CentOS Linux" in platform.linux_distribution():
+        packages.append('libedit-devel')
+        packages.append('libxml2-devel')
+        packages.append('ncurses-devel')
+        packages.append('python-devel')
+    else:
+        packages.append('lldb-3.7')
+        packages.append('liblldb-3.7')
+        packages.append('python-lldb-3.7')
 
 if len(packages) > 0:
-    check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
+    if "CentOS Linux" in platform.linux_distribution():
+        check_call('sudo yum install -y "%s"' % '" "'.join(packages), shell=True)
+    else:
+        check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
