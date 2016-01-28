@@ -39,3 +39,12 @@ git_clone() {
         die "'$dst' exists and is not a git repository."
     fi
 }
+
+num_cpus() {
+  num_cpus=$(grep -c "^processor" /proc/cpuinfo)
+  echo $(($num_cpus * 5 / 4))
+}
+
+same_dir() {
+  [ "$(realpath "$1")" = "$(realpath "$2")" ]
+}

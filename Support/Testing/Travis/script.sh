@@ -11,21 +11,36 @@
 
 set -eu
 
-# Get a recent cmake from cmake.org. All packages for Ubuntu 12.04 are too old.
-cd /tmp
 cmake_package="cmake-3.4.0-Linux-x86_64"
+cformat="clang-format-3.7"
+top="$(git rev-parse --show-toplevel)"
 
-if [ ! -e "$cmake_package.tar.gz" ] ; then
-  wget --no-check-certificate "https://cmake.org/files/v3.4/$cmake_package.tar.gz"
+source "$top/Support/Scripts/common.sh"
+
+# If we're at the root of the repository, create a build directory and go
+# there; otherwise, assume that we're already in the build directory the user
+# wants to use.
+if same_dir "$PWD" "$top"; then
+  mkdir -p build && cd build
 fi
-tar -xf "$cmake_package.tar.gz"
+
+# Get a recent cmake from cmake.org. All packages for Ubuntu 12.04 are too old.
+if [ ! -d "/tmp/$cmake_package/bin" ]; then
+  cd /tmp
+
+  if [ ! -e "$cmake_package.tar.gz" ] ; then
+    wget --no-check-certificate "https://cmake.org/files/v3.4/$cmake_package.tar.gz"
+  fi
+
+  tar -xf "$cmake_package.tar.gz"
+
+  cd "$OLDPWD"
+fi
 
 export PATH="$PWD/$cmake_package/bin:$PATH"
-cd "$OLDPWD"
 
-cd "$(git rev-parse --show-toplevel)"
-
-cformat="clang-format-3.7"
+# Go to the root of the repo to check style and register files.
+cd "$top"
 
 check_dirty() {
   dirty=($(git status -s | awk '{ print $2 }'))
@@ -53,7 +68,8 @@ if [[ "$TARGET" = "Registers" ]]; then
   check_dirty "Generated sources up to date." "Generated sources out of date."
 fi
 
-mkdir -p build && cd build
+# Go back to the build tree where we started.
+cd "$OLDPWD"
 
 # CentOS uses different compiler names than Ubuntu, so we can only use the
 # toolchain files on Ubuntu In addition, clang-3.7 is also not available for
@@ -72,9 +88,9 @@ else
   cmake_options+=(-DCMAKE_BUILD_TYPE="Debug")
 fi
 
-cmake "${cmake_options[@]}" ..
-make
+cmake "${cmake_options[@]}" "$top"
+make -j$(num_cpus)
 
 if [[ -n "${LLDB_TESTS-}" ]]; then
-  ../Support/Scripts/run-lldb-tests.sh
+  "$top/Support/Scripts/run-lldb-tests.sh"
 fi

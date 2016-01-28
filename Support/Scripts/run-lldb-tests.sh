@@ -12,44 +12,41 @@
 # This script runs the full lldb test suite found in the LLDB repository
 # against ds2. It requires a few hacks in the testing infra to disable
 # broken unit tests.
-  
+
 REPO_BASE="https://github.com/llvm-mirror"
 UPSTREAM_BRANCH="release_37"
 
-source "$(dirname "$0")/common.sh"
+top="$(git rev-parse --show-toplevel)"
+build_dir="$PWD"
 
-top="$(pwd)"
+source "$top/Support/Scripts/common.sh"
 
 [ "$(uname)" == "Linux" ] || die "The lldb test suite requires a Linux host environment."
-[ -x "$top/ds2" ]         || die "Unable to find a ds2 binary in the current directory."
+[ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
 
 if [ -s "/etc/centos-release" ]; then
-
-  llvm_path="$top/llvm"
-  git_clone "$REPO_BASE/llvm.git"  "$llvm_path" "$UPSTREAM_BRANCH"
-  git_clone "$REPO_BASE/lldb.git"  "$llvm_path/tools/lldb" "$UPSTREAM_BRANCH"
+  llvm_path="$build_dir/llvm"
+  git_clone "$REPO_BASE/llvm.git"  "$llvm_path"             "$UPSTREAM_BRANCH"
+  git_clone "$REPO_BASE/lldb.git"  "$llvm_path/tools/lldb"  "$UPSTREAM_BRANCH"
   git_clone "$REPO_BASE/clang.git" "$llvm_path/tools/clang" "$UPSTREAM_BRANCH"
 
-  num_cpus=$(grep -c "^processor" /proc/cpuinfo)
-  let num_cpus=$num_cpus*5/4
   mkdir -p "$llvm_path/build"
   cd "$llvm_path/build"
   cmake ..
-  make -j$num_cpus
+  make -j$(num_cpus)
 
   export PYTHONPATH="$llvm_path/build/lib64/python2.7/site-packages"
 
-  patch -d "$llvm_path/tools/lldb" -p1 < "$top/../Support/Testing/Pythonpath-hack.patch"
+  patch -d "$llvm_path/tools/lldb" -p1 <"$top/Support/Testing/Pythonpath-hack.patch"
 
-  cd $top
-  lldb_exe="$top/llvm/build/bin/lldb"
-  lldb_path="$top/llvm/tools/lldb"
+  lldb_exe="$llvm_path/build/bin/lldb"
+  lldb_path="$llvm_path/tools/lldb"
   cc_exe="$(which gcc)"
-elif grep -q "Ubuntu" "/etc/issue" ; then
-  lldb_path="$top/lldb"
-  git_clone "$REPO_BASE/lldb.git" "$lldb_path"   "$UPSTREAM_BRANCH"
+elif grep -q "Ubuntu" "/etc/issue"; then
+  lldb_path="$build_dir/lldb"
+  git_clone "$REPO_BASE/lldb.git" "$lldb_path" "$UPSTREAM_BRANCH"
 
-  python_base="$top/lib"
+  python_base="$build_dir/lib"
 
   export LD_LIBRARY_PATH=$python_base
   export PYTHONPATH="$python_base/python2.7/site-packages"
@@ -67,33 +64,29 @@ elif grep -q "Ubuntu" "/etc/issue" ; then
     ln -s "$new_link" "$path"
   done
 
-  cd $top
   lldb_exe="$(which lldb-3.7)"
-  lldb_path="$top/lldb"
   cc_exe="$(which gcc-4.8)"
 else
-  echo "Testing is only supported on CentOS and Ubuntu"
-  exit 1
+  die "Testing is only supported on CentOS and Ubuntu."
 fi
 
-testPath="$top/../Support/Testing"
-
+testPath="$top/Support/Testing"
 for p in $testPath/Patches/*.patch ; do
   echo "Applying $p"
-  patch -d "$lldb_path" -p1 < "$p"
+  patch -d "$lldb_path" -p1 <"$p"
 done
 
 cd "$lldb_path/test"
 args="-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C $cc_exe -m"
 
-if [ "$TARGET" = "Linux-X86_64" ]; then
+if [[ "${TARGET-}" = "Linux-X86_64" || "$(uname -m)" = "x86_64" ]]; then
   args="$args --arch=x86_64"
-elif [ "$TARGET" = "Linux-X86" ]; then
+elif [[ "${TARGET-}" = "Linux-X86" || "$(uname -m)" =~ "i[3-6]86" ]]; then
   args="$args --arch=i386"
 fi
 
 if [ "$LLDB_TESTS" != "all" ]; then
-  LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dotest.py $args -p $LLDB_TESTS
+  LLDB_DEBUGSERVER_PATH="$build_dir/ds2" python2.7 dotest.py $args -p $LLDB_TESTS
 else
-  LLDB_TEST_TIMEOUT=45m LLDB_DEBUGSERVER_PATH="$top/ds2" python2.7 dosep.py -o "$args"
+  LLDB_TEST_TIMEOUT=45m LLDB_DEBUGSERVER_PATH="$build_dir/ds2" python2.7 dosep.py -o "$args"
 fi
