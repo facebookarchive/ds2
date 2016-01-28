@@ -155,6 +155,12 @@ protected:
   ErrorCode queryStopCode(Session &session, ProcessThreadId const &ptid,
                           StopCode &stop) const;
 
+protected:
+  ErrorCode fetchStopInfoForAllThreads(Session &session,
+                                       std::vector<StopCode> &stops,
+                                       StopCode &processStop);
+  ErrorCode createThreadsStopInfo(Session &session, JSArray &threadsStopInfo);
+
 private:
   ErrorCode spawnProcess(StringCollection const &args,
                          EnvironmentBlock const &env);

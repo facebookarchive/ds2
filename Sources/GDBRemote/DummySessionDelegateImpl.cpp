@@ -569,5 +569,16 @@ ErrorCode DummySessionDelegateImpl::onFlashWrite(Session &, Address const &,
 ErrorCode DummySessionDelegateImpl::onFlashDone(Session &) {
   return kErrorUnsupported;
 }
+
+ErrorCode DummySessionDelegateImpl::fetchStopInfoForAllThreads(
+    Session &session, std::vector<StopCode> &stops, StopCode &processStop) {
+  return kErrorUnsupported;
+}
+
+ErrorCode
+DummySessionDelegateImpl::createThreadsStopInfo(Session &session,
+                                                JSArray &threadsStopInfo) {
+  return kErrorUnsupported;
+}
 }
 }

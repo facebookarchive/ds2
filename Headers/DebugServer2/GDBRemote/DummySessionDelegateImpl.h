@@ -188,6 +188,11 @@ protected: // Debugging Session
   ErrorCode onXferWrite(Session &session, std::string const &object,
                         std::string const &annex, uint64_t offset,
                         std::string const &buffer, size_t &nwritten) override;
+  ErrorCode fetchStopInfoForAllThreads(Session &session,
+                                       std::vector<StopCode> &stops,
+                                       StopCode &processStop) override;
+  ErrorCode createThreadsStopInfo(Session &session,
+                                  JSArray &threadsStopInfo) override;
 
 protected: // Platform Session
   ErrorCode onDisableASLR(Session &session, bool disable) override;

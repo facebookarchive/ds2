@@ -58,7 +58,10 @@ public:
 
 public:
   std::string encode(CompatibilityMode mode) const;
+  std::string encodeWithAllThreads(CompatibilityMode mode,
+                                   const JSArray &threadsStopInfo) const;
   JSDictionary *encodeJson() const;
+  JSDictionary *encodeBriefJson() const;
 
 private:
   std::string reasonToString() const;
