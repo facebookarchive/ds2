@@ -24,8 +24,8 @@ if same_dir "$PWD" "$top"; then
   mkdir -p build && cd build
 fi
 
-# Get a recent cmake from cmake.org. All packages for Ubuntu 12.04 are too old.
-if [ ! -d "/tmp/$cmake_package/bin" ]; then
+# Get a recent cmake from cmake.org; packages for Ubuntu are too old.
+if grep -q "Ubuntu" "/etc/issue" && [ ! -d "/tmp/$cmake_package/bin" ]; then
   cd /tmp
 
   if [ ! -e "$cmake_package.tar.gz" ] ; then
