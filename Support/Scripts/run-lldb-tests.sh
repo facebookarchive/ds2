@@ -85,6 +85,12 @@ elif [[ "${TARGET-}" = "Linux-X86" || "$(uname -m)" =~ "i[3-6]86" ]]; then
   args="$args --arch=i386"
 fi
 
+# If this is a developer run (not running on Travis with a $TARGET), run all
+# tests by default.
+if [ -z "${TARGET-}" ]; then
+  LLDB_TESTS="${LLDB_TESTS-all}"
+fi
+
 if [ "$LLDB_TESTS" != "all" ]; then
   LLDB_DEBUGSERVER_PATH="$build_dir/ds2" python2.7 dotest.py $args -p $LLDB_TESTS
 else
