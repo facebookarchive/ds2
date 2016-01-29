@@ -123,6 +123,8 @@ protected:
                                     MemoryRegionInfo &info) override;
 
 protected:
+  ErrorCode onSetEnvironmentVariable(Session &session, std::string const &name,
+                                     std::string const &value) override;
   ErrorCode onSetProgramArguments(Session &session,
                                   StringCollection const &args) override;
   ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid) override;

@@ -572,6 +572,15 @@ ErrorCode DebugSessionImpl::onXferRead(Session &session,
   return kSuccess;
 }
 
+ErrorCode DebugSessionImpl::onSetEnvironmentVariable(Session &,
+                                                     std::string const &key,
+                                                     std::string const &value) {
+  if (!_spawner.addEnvironment(key, value))
+    return kErrorInvalidArgument;
+
+  return kSuccess;
+}
+
 ErrorCode DebugSessionImpl::onSetStdFile(Session &, int fileno,
                                          std::string const &path) {
   bool success = false;
@@ -1023,13 +1032,17 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
   DS2LOG(Debug, "spawning process with args:");
   for (auto const &arg : args)
     DS2LOG(Debug, "  %s", arg.c_str());
-  DS2LOG(Debug, "and with environment:");
-  for (auto const &val : env)
-    DS2LOG(Debug, "  %s=%s", val.first.c_str(), val.second.c_str());
 
   _spawner.setExecutable(args[0]);
   _spawner.setArguments(StringCollection(args.begin() + 1, args.end()));
-  _spawner.setEnvironment(env);
+
+  if (!env.empty()) {
+    DS2LOG(Debug, "and with environment:");
+    for (auto const &val : env)
+      DS2LOG(Error, "  %s=%s", val.first.c_str(), val.second.c_str());
+
+    _spawner.setEnvironment(env);
+  }
 
   auto outputDelegate = [this](void *buf, size_t size) {
     const char *cbuf = static_cast<char *>(buf);
