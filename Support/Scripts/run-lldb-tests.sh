@@ -79,16 +79,22 @@ done
 cd "$lldb_path/test"
 args="-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C $cc_exe -m"
 
-if [[ "${TARGET-}" = "Linux-X86_64" || "$(uname -m)" = "x86_64" ]]; then
-  args="$args --arch=x86_64"
-elif [[ "${TARGET-}" = "Linux-X86" || "$(uname -m)" =~ "i[3-6]86" ]]; then
-  args="$args --arch=i386"
-fi
-
-# If this is a developer run (not running on Travis with a $TARGET), run all
-# tests by default.
-if [ -z "${TARGET-}" ]; then
+if [ -n "${TARGET-}" ]; then
+  if [[ "${TARGET}" = "Linux-X86_64" ]]; then
+    args="$args --arch=x86_64"
+  elif [[ "${TARGET}" = "Linux-X86" ]]; then
+    args="$args --arch=i386"
+  fi
+else
+  # If this is a developer run (not running on Travis with a $TARGET), run all
+  # tests by default.
   LLDB_TESTS="${LLDB_TESTS-all}"
+
+  if [[ "$(uname -m)" = "x86_64" ]]; then
+    args="$args --arch=x86_64"
+  elif [[ "$(uname -m)" =~ "i[3-6]86" ]]; then
+    args="$args --arch=i386"
+  fi
 fi
 
 if [ "$LLDB_TESTS" != "all" ]; then
