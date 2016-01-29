@@ -72,6 +72,7 @@ public:
 
 public:
   bool setEnvironment(EnvironmentBlock const &env);
+  bool addEnvironment(std::string const &key, std::string const &val);
 
 public:
   bool redirectInputToConsole();
