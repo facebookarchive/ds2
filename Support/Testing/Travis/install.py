@@ -64,6 +64,9 @@ if os.getenv('LLDB_TESTS') != None:
         packages.append('liblldb-3.7')
         packages.append('python-lldb-3.7')
 
+if "Ubuntu" in platform.linux_distribution():
+    packages.append('realpath')
+
 if len(packages) > 0:
     if "CentOS Linux" in platform.linux_distribution():
         check_call('sudo yum install -y "%s"' % '" "'.join(packages), shell=True)
