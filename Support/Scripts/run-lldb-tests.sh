@@ -30,16 +30,19 @@ if [ -s "/etc/centos-release" ]; then
   git_clone "$REPO_BASE/lldb.git"  "$llvm_path/tools/lldb"  "$UPSTREAM_BRANCH"
   git_clone "$REPO_BASE/clang.git" "$llvm_path/tools/clang" "$UPSTREAM_BRANCH"
 
-  mkdir -p "$llvm_path/build"
-  cd "$llvm_path/build"
-  cmake ..
+  llvm_build="$llvm_path/build"
+  mkdir -p "$llvm_build"
+  cd "$llvm_build"
+  if [ ! -f "$llvm_build/Makefile" ]; then
+    cmake ..
+  fi
   make -j$(num_cpus)
 
-  export PYTHONPATH="$llvm_path/build/lib64/python2.7/site-packages"
+  export PYTHONPATH="$llvm_build/lib64/python2.7/site-packages"
 
   patch -d "$llvm_path/tools/lldb" -p1 <"$top/Support/Testing/Pythonpath-hack.patch"
 
-  lldb_exe="$llvm_path/build/bin/lldb"
+  lldb_exe="$llvm_build/bin/lldb"
   lldb_path="$llvm_path/tools/lldb"
   cc_exe="$(which gcc)"
 elif grep -q "Ubuntu" "/etc/issue"; then
