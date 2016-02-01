@@ -48,4 +48,4 @@ env:
 
 before_install: ./Support/Testing/Travis/before-install.py
 install:        ./Support/Testing/Travis/install.py
-script:         ./Support/Testing/Travis/script.sh
+script:         travis_retry ./Support/Testing/Travis/script.sh
