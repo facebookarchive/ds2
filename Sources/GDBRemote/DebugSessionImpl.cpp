@@ -1039,7 +1039,7 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
   if (!env.empty()) {
     DS2LOG(Debug, "and with environment:");
     for (auto const &val : env)
-      DS2LOG(Error, "  %s=%s", val.first.c_str(), val.second.c_str());
+      DS2LOG(Debug, "  %s=%s", val.first.c_str(), val.second.c_str());
 
     _spawner.setEnvironment(env);
   }
