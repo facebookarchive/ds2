@@ -445,9 +445,8 @@ ErrorCode DebugSessionImpl::onXferRead(Session &session,
                                        std::string const &annex,
                                        uint64_t offset, uint64_t length,
                                        std::string &buffer, bool &last) {
-  DS2LOG(Info, "object='%s' annex='%s' offset=%#llx length=%#llx",
-         object.c_str(), annex.c_str(), (unsigned long long)offset,
-         (unsigned long long)length);
+  DS2LOG(Info, "object='%s' annex='%s' offset=%#" PRIx64 " length=%#" PRIx64,
+         object.c_str(), annex.c_str(), offset, length);
 
   // TODO Split these generators into appropriate functions
   if (object == "features") {
@@ -816,7 +815,7 @@ ErrorCode DebugSessionImpl::onAttach(Session &session, ProcessId pid,
   if (mode != kAttachNow)
     return kErrorInvalidArgument;
 
-  DS2LOG(Info, "attaching to pid %u", pid);
+  DS2LOG(Info, "attaching to pid %" PRIu64, (uint64_t)pid);
   _process = Target::Process::Attach(pid);
   DS2LOG(Debug, "_process=%p", _process);
   if (_process == nullptr)
@@ -861,8 +860,8 @@ DebugSessionImpl::onResume(Session &session,
 
     Thread *thread = findThread(action.ptid);
     if (thread == nullptr) {
-      DS2LOG(Warning, "pid %d tid %d not found", action.ptid.pid,
-             action.ptid.tid);
+      DS2LOG(Warning, "pid %" PRIu64 " tid %" PRIu64 " not found",
+             (uint64_t)action.ptid.pid, (uint64_t)action.ptid.tid);
       continue;
     }
 
@@ -870,8 +869,10 @@ DebugSessionImpl::onResume(Session &session,
         action.action == kResumeActionContinueWithSignal) {
       error = thread->resume(action.signal, action.address);
       if (error != kSuccess) {
-        DS2LOG(Warning, "cannot resume pid %d tid %d, error=%s",
-               _process->pid(), thread->tid(), Stringify::Error(error));
+        DS2LOG(Warning,
+               "cannot resume pid %" PRIu64 " tid %" PRIu64 ", error=%s",
+               (uint64_t)_process->pid(), (uint64_t)thread->tid(),
+               Stringify::Error(error));
         continue;
       }
       excluded.insert(thread);
@@ -879,15 +880,16 @@ DebugSessionImpl::onResume(Session &session,
                action.action == kResumeActionSingleStepWithSignal) {
       error = thread->step(action.signal, action.address);
       if (error != kSuccess) {
-        DS2LOG(Warning, "cannot step pid %d tid %d, error=%s", _process->pid(),
-               thread->tid(), Stringify::Error(error));
+        DS2LOG(Warning, "cannot step pid %" PRIu64 " tid %" PRIu64 ", error=%s",
+               (uint64_t)_process->pid(), (uint64_t)thread->tid(),
+               Stringify::Error(error));
         continue;
       }
       excluded.insert(thread);
     } else {
-      DS2LOG(Warning,
-             "cannot resume pid %d tid %d, action %d not yet implemented",
-             _process->pid(), thread->tid(), action.action);
+      DS2LOG(Warning, "cannot resume pid %" PRIu64 " tid %" PRIu64
+                      ", action %d not yet implemented",
+             (uint64_t)_process->pid(), (uint64_t)thread->tid(), action.action);
       continue;
     }
   }
@@ -904,8 +906,8 @@ DebugSessionImpl::onResume(Session &session,
 
       error = _process->resume(globalAction.signal, excluded);
       if (error != kSuccess && error != kErrorAlreadyExist) {
-        DS2LOG(Warning, "cannot resume pid %d, error=%s", _process->pid(),
-               Stringify::Error(error));
+        DS2LOG(Warning, "cannot resume pid %" PRIu64 ", error=%s",
+               (uint64_t)_process->pid(), Stringify::Error(error));
       }
     } else if (globalAction.action == kResumeActionSingleStep ||
                globalAction.action == kResumeActionSingleStepWithSignal) {
@@ -913,13 +915,16 @@ DebugSessionImpl::onResume(Session &session,
       if (excluded.find(thread) == excluded.end()) {
         error = thread->step(globalAction.signal, globalAction.address);
         if (error != kSuccess) {
-          DS2LOG(Warning, "cannot step pid %d tid %d, error=%s",
-                 _process->pid(), thread->tid(), Stringify::Error(error));
+          DS2LOG(Warning,
+                 "cannot step pid %" PRIu64 " tid %" PRIu64 ", error=%s",
+                 (uint64_t)_process->pid(), (uint64_t)thread->tid(),
+                 Stringify::Error(error));
         }
       }
     } else {
-      DS2LOG(Warning, "cannot resume pid %d, action %d not yet implemented",
-             _process->pid(), globalAction.action);
+      DS2LOG(Warning,
+             "cannot resume pid %" PRIu64 ", action %d not yet implemented",
+             (uint64_t)_process->pid(), globalAction.action);
     }
   }
 

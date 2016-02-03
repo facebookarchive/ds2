@@ -217,7 +217,7 @@ ErrorCode Process::wait(int *status, bool hang) {
     } break;
 
     default:
-      DS2BUG("unknown debug event code: %d", de.dwDebugEventCode);
+      DS2BUG("unknown debug event code: %lu", de.dwDebugEventCode);
     }
   }
 
@@ -233,12 +233,12 @@ ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
         thread->state() == Thread::kStepped) {
       Architecture::CPUState state;
       thread->readCPUState(state);
-      DS2LOG(Debug, "resuming tid %d from pc %#llx", thread->tid(),
-             (unsigned long long)state.pc());
+      DS2LOG(Debug, "resuming tid %I64u from pc %#I64x",
+             (uint64_t)thread->tid(), (uint64_t)state.pc());
       ErrorCode error = thread->resume(signal);
       if (error != kSuccess) {
-        DS2LOG(Warning, "failed resuming tid %d, error=%d", thread->tid(),
-               error);
+        DS2LOG(Warning, "failed resuming tid %I64u, error=%d",
+               (uint64_t)thread->tid(), error);
       }
     }
   });
@@ -329,7 +329,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   if (error != kSuccess)
     goto fail;
 
-  DS2LOG(Debug, "created process %d", spawner.pid());
+  DS2LOG(Debug, "created process %I64u", (uint64_t)spawner.pid());
 
   //
   // Wait the process.

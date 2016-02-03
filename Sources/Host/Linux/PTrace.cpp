@@ -94,7 +94,7 @@ ErrorCode PTrace::attach(ProcessId pid) {
   if (pid <= kAnyProcessId)
     return kErrorProcessNotFound;
 
-  DS2LOG(Debug, "attaching to pid %llu", (unsigned long long)pid);
+  DS2LOG(Debug, "attaching to pid %" PRIu64, (uint64_t)pid);
 
   if (wrapPtrace(PTRACE_ATTACH, pid, nullptr, nullptr) < 0)
     return Platform::TranslateError();
@@ -106,7 +106,7 @@ ErrorCode PTrace::detach(ProcessId pid) {
   if (pid <= kAnyProcessId)
     return kErrorProcessNotFound;
 
-  DS2LOG(Debug, "detaching from pid %llu", (unsigned long long)pid);
+  DS2LOG(Debug, "detaching from pid %" PRIu64, (uint64_t)pid);
 
   if (wrapPtrace(PTRACE_DETACH, pid, nullptr, nullptr) < 0)
     return Platform::TranslateError();

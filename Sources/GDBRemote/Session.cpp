@@ -731,8 +731,8 @@ void Session::Handle_H(ProtocolInterpreter::Handler const &,
   _ptids[command] = ptid;
   sendOK();
 
-  DS2LOG(Debug, "setting command '%c' to pid %d tid %d", command, ptid.pid,
-         ptid.tid);
+  DS2LOG(Debug, "setting command '%c' to pid %" PRIu64 " tid %" PRIu64, command,
+         (uint64_t)ptid.pid, (uint64_t)ptid.tid);
 }
 
 //

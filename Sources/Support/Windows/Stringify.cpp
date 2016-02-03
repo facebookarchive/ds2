@@ -22,7 +22,7 @@ namespace Windows {
 #define DO_DEFAULT(MESSAGE, VALUE)                                             \
   default:                                                                     \
     if (dieOnFail)                                                             \
-      DS2BUG(MESSAGE ": %#x", VALUE);                                          \
+      DS2BUG(MESSAGE ": %#lx", VALUE);                                         \
     else                                                                       \
       return nullptr;
 

@@ -158,8 +158,8 @@ void ProcessBase::insert(ThreadBase *thread) {
            .second)
     return;
 
-  DS2LOG(Info, "[New Thread %p (LWP %llu)]", thread,
-         (unsigned long long)thread->tid());
+  DS2LOG(Info, "[New Thread %p (LWP %" PRIu64 ")]", thread,
+         (uint64_t)thread->tid());
 }
 
 void ProcessBase::removeThread(ThreadId tid) {
@@ -170,8 +170,8 @@ void ProcessBase::removeThread(ThreadId tid) {
   Thread *thread = it->second;
   _threads.erase(it);
 
-  DS2LOG(Info, "[Thread %p (LWP %llu) exited]", thread,
-         (unsigned long long)thread->tid());
+  DS2LOG(Info, "[Thread %p (LWP %" PRIu64 ") exited]", thread,
+         (uint64_t)thread->tid());
 
   delete thread;
 }
@@ -200,7 +200,7 @@ ErrorCode ProcessBase::afterResume() {
   if (!isAlive())
     return kSuccess;
 
-  DS2LOG(Info, "process still alive, _pid=%d", _pid);
+  DS2LOG(Info, "process still alive, _pid=%" PRIu64, (uint64_t)_pid);
 
   BreakpointManager *bpm = breakpointManager();
 
@@ -212,8 +212,8 @@ ErrorCode ProcessBase::afterResume() {
 
     for (auto it : _threads) {
       if (bpm->hit(it.second)) {
-        DS2LOG(Info, "hit breakpoint for tid %llu",
-               (unsigned long long)it.second->tid());
+        DS2LOG(Info, "hit breakpoint for tid %" PRIu64,
+               (uint64_t)it.second->tid());
       }
     }
   }

@@ -335,9 +335,9 @@ ErrorCode Process::suspend() {
     if (thread->state() != Thread::kRunning) {
       thread->readCPUState(state);
     }
-    DS2LOG(Debug, "tid %d state %d at pc %#llx", thread->tid(), thread->state(),
-           thread->state() == Thread::kStopped ? (unsigned long long)state.pc()
-                                               : 0);
+    DS2LOG(Debug, "tid %d state %d at pc %#" PRIx64, thread->tid(),
+           thread->state(),
+           thread->state() == Thread::kStopped ? (uint64_t)state.pc() : 0);
     if (thread->state() == Thread::kRunning) {
       ErrorCode error;
 
@@ -345,8 +345,8 @@ ErrorCode Process::suspend() {
       error = thread->suspend();
 
       if (error == kSuccess) {
-        DS2LOG(Debug, "suspended tid %d at pc %#llx", thread->tid(),
-               (unsigned long long)state.pc());
+        DS2LOG(Debug, "suspended tid %d at pc %#" PRIx64, thread->tid(),
+               (uint64_t)state.pc());
         thread->readCPUState(state);
       } else if (error == kErrorProcessNotFound) {
         //

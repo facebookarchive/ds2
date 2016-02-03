@@ -347,9 +347,9 @@ ErrorCode Process::suspend() {
     if (thread->state() != Thread::kRunning) {
       thread->readCPUState(state);
     }
-    DS2LOG(Debug, "tid %d state %d at pc %#llx", thread->tid(), thread->state(),
-           thread->state() == Thread::kStopped ? (unsigned long long)state.pc()
-                                               : 0);
+    DS2LOG(Debug, "tid %d state %d at pc %#" PRIx64, thread->tid(),
+           thread->state(),
+           thread->state() == Thread::kStopped ? (uint64_t)state.pc() : 0);
     if (thread->state() == Thread::kRunning) {
       ErrorCode error;
 
@@ -357,8 +357,8 @@ ErrorCode Process::suspend() {
       error = thread->suspend();
 
       if (error == kSuccess) {
-        DS2LOG(Debug, "suspended tid %d at pc %#llx", thread->tid(),
-               (unsigned long long)state.pc());
+        DS2LOG(Debug, "suspended tid %d at pc %#" PRIx64, thread->tid(),
+               (uint64_t)state.pc());
         thread->readCPUState(state);
       } else if (error == kErrorProcessNotFound) {
         //
@@ -390,8 +390,8 @@ ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
         thread->state() == Thread::kStepped) {
       Architecture::CPUState state;
       thread->readCPUState(state);
-      DS2LOG(Debug, "resuming tid %d from pc %#llx", thread->tid(),
-             (unsigned long long)state.pc());
+      DS2LOG(Debug, "resuming tid %d from pc %#" PRIx64, thread->tid(),
+             (uint64_t)state.pc());
       ErrorCode error = thread->resume(signal);
       if (error != kSuccess) {
         DS2LOG(Warning, "failed resuming tid %d, error=%d", thread->tid(),
@@ -477,19 +477,20 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
     // Each line can contain one path and some additional addresses and
     // such, so PATH_MAX * 2 should be enough.
     char buf[PATH_MAX * 2];
-    unsigned long long start, end;
+    uint64_t start, end;
     char r, w, x, p;
-    unsigned long long offset;
+    uint64_t offset;
     unsigned int devMinor, devMajor;
-    unsigned long long inode;
+    uint64_t inode;
     int nread;
 
     if (std::fgets(buf, sizeof(buf), fp) == nullptr)
       break;
 
-    if (std::sscanf(buf, "%llx-%llx %c%c%c%c %llx %x:%x %llu %n", &start, &end,
-                    &r, &w, &x, &p, &offset, &devMinor, &devMajor, &inode,
-                    &nread) != 10) {
+    if (std::sscanf(buf, "%" PRIx64 "-%" PRIx64 " %c%c%c%c %" PRIx64
+                         " %x:%x %" PRIu64 " %n",
+                    &start, &end, &r, &w, &x, &p, &offset, &devMinor, &devMajor,
+                    &inode, &nread) != 10) {
       continue;
     }
 

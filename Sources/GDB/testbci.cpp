@@ -103,7 +103,7 @@ int main() {
   if (err == ByteCodeInterpreter::kSuccess) {
     int64_t value;
     if (vm.top(value)) {
-      printf("Result=%#llx\n", (long long)value);
+      printf("Result=%#" PRIx64 "\n", (uint64_t)value);
     }
   }
 }

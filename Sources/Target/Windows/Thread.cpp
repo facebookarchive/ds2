@@ -85,7 +85,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonBreakpoint;
     DS2LOG(
-        Debug, "exception from inferior, code=%s, address=%#" PRIxPTR,
+        Debug, "exception from inferior, code=%s, address=%p",
         Stringify::ExceptionCode(de.u.Exception.ExceptionRecord.ExceptionCode),
         de.u.Exception.ExceptionRecord.ExceptionAddress);
     break;
@@ -131,7 +131,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     } while (c != '\0');
 
   skip_name:
-    DS2LOG(Debug, "new DLL loaded: %s, base=%#" PRIxPTR,
+    DS2LOG(Debug, "new DLL loaded: %s, base=%p",
            Host::Platform::WideToNarrowString(name).c_str(),
            de.u.LoadDll.lpBaseOfDll);
 
@@ -144,7 +144,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   } break;
 
   case UNLOAD_DLL_DEBUG_EVENT:
-    DS2LOG(Debug, "DLL unloaded, base=%#" PRIxPTR, de.u.UnloadDll.lpBaseOfDll);
+    DS2LOG(Debug, "DLL unloaded, base=%p", de.u.UnloadDll.lpBaseOfDll);
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonLibraryUnload;
@@ -157,7 +157,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     break;
 
   default:
-    DS2BUG("unknown debug event code: %d", de.dwDebugEventCode);
+    DS2BUG("unknown debug event code: %lu", de.dwDebugEventCode);
   }
 }
 }
