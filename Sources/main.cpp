@@ -265,12 +265,14 @@ int main(int argc, char **argv) {
   case 'g':
     mode = kRunModeNormal;
     break;
+#if !defined(OS_WIN32)
   case 'p':
     mode = kRunModePlatform;
     break;
   case 's':
     mode = kRunModeSlave;
     break;
+#endif
   default:
     opts.usageDie("first argument must be g[dbserver] or p[latform]");
   }
@@ -383,10 +385,12 @@ int main(int argc, char **argv) {
   }
 
   gKeepAlive = opts.getBool("keep-alive");
+#if !defined(OS_WIN32)
   if (mode == kRunModePlatform) {
     // The platform spawner should stay alive by default.
     gKeepAlive = true;
   }
+#endif
 
   reverse = opts.getBool("reverse-connect");
   if (mode != kRunModeNormal && reverse) {
