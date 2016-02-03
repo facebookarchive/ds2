@@ -160,7 +160,7 @@ bool Socket::connect(char const *host, char const *port) {
     return false;
   }
 
-  SOCKET handle;
+  SOCKET handle = INVALID_SOCKET;
   for (result = results; result != NULL; result = result->ai_next) {
     handle = ::connect(_handle, result->ai_addr, result->ai_addrlen);
     if (handle != INVALID_SOCKET)
