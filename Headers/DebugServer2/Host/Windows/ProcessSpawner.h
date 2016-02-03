@@ -78,6 +78,7 @@ public:
   ErrorCode run(std::function<bool()> preExecAction = []() { return true; });
   ErrorCode wait() { return kErrorUnsupported; }
   bool isRunning() const { return false; }
+  void flushAndExit() {}
 
 public:
   inline ProcessId pid() const { return _pid; }
