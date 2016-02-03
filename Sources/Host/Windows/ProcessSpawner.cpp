@@ -49,6 +49,15 @@ bool ProcessSpawner::setEnvironment(EnvironmentBlock const &env) {
   return true;
 }
 
+bool ProcessSpawner::addEnvironment(std::string const &key,
+                                    std::string const &val) {
+  if (_pid != 0)
+    return false;
+
+  _environment[key] = val;
+  return true;
+}
+
 bool ProcessSpawner::setWorkingDirectory(std::string const &path) {
   if (_pid != 0)
     return false;
