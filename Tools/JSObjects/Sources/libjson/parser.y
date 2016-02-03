@@ -30,7 +30,7 @@ struct parse_state_t;
 %pure-parser
 %error-verbose
 %parse-param {void *scanner} 
-%parse-param {struct parse_state_t *ps} 
+%parse-param {void *ps}
 %lex-param {void *scanner}
 
 %union value {
