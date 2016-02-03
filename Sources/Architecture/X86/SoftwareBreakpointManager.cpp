@@ -59,9 +59,7 @@ bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
     if (thread->writeCPUState(state) != kSuccess)
       abort();
 
-#if !defined(NDEBUG)
     uint64_t ex = state.pc();
-#endif
     thread->readCPUState(state);
     DS2ASSERT(ex == state.pc());
 
