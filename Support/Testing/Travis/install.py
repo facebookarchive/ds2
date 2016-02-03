@@ -43,6 +43,8 @@ elif target in linux_packages:
         packages.append(linux_packages[target])
         if os.getenv('CLANG') == '1':
             packages.append('clang-3.7')
+elif target == 'MinGW-X86':
+    packages.append('g++-mingw-w64-i686')
 elif target in android_toolchains:
     # Android builds get the toolchain from AOSP.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
