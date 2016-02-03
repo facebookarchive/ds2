@@ -530,13 +530,14 @@ void ProcessSpawner::redirectionThread() {
       }
 
       size_t index;
-      RedirectDescriptor *descriptor;
+      RedirectDescriptor *descriptor = nullptr;
       for (index = 0; index < 3; index++) {
         if (_descriptors[index].fd == pfds[n].fd) {
-          descriptor = _descriptors + index;
+          descriptor = &_descriptors[index];
           break;
         }
       }
+      DS2ASSERT(descriptor != nullptr);
 
       if (pfds[n].events & POLLIN) {
         if (pfds[n].revents & POLLIN) {
