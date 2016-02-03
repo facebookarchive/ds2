@@ -60,7 +60,11 @@ void Log(int level, char const *classname, char const *funcname,
     }                                                                          \
   } while (0)
 #else
-#define DS2ASSERT(COND) (void)0
+#define DS2ASSERT(COND)                                                        \
+  do {                                                                         \
+    if (!(COND))                                                               \
+      DS2_UNREACHABLE();                                                       \
+  } while (0)
 #endif
 
 #if defined(__clang__) || defined(__GNUC__)
