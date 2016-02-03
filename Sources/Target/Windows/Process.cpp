@@ -188,7 +188,9 @@ ErrorCode Process::wait(int *status, bool hang) {
     case CREATE_THREAD_DEBUG_EVENT: {
       auto threadHandle = de.u.CreateThread.hThread;
       auto tid = GetThreadId(threadHandle);
-      auto thread = new Thread(this, tid, threadHandle);
+      // No need to save the new thread pointer, as it gets added automatically
+      // to the process.
+      new Thread(this, tid, threadHandle);
       resume();
       keepGoing = true;
     } break;
