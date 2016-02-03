@@ -93,7 +93,9 @@ struct StopInfo {
     kEventNone,
     kEventStop,
     kEventExit,
+#if !defined(OS_WIN32)
     kEventKill,
+#endif
   };
 
   enum Reason {
