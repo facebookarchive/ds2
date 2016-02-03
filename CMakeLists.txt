@@ -232,6 +232,11 @@ endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(ds2 PRIVATE -Wall -Wextra -Wno-unused-parameter)
+  # This should be enabled by default but clang has a couple of additional
+  # warnings we need to take care of first.
+  if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    target_compile_options(ds2 PRIVATE -Werror)
+  endif ()
   if (WIN32)
     target_compile_options(ds2 PRIVATE -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare)
   endif ()
