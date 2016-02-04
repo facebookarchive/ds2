@@ -170,7 +170,10 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
   ELFLinkMap<T> linkMap;
   T address;
   T linkMapAddress;
-  bool isMain = true;
+  // FIXME: main executable detection is disabled because this causes some
+  // issues when using the mozzloader. LLDB seems to be fine with us not
+  // marking any object as being the main executable anyway.
+  bool isMain = false;
 
   ErrorCode error =
       process->readMemory(addressToDPtr, &address, sizeof(address));
