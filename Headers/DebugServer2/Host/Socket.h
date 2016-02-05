@@ -54,8 +54,8 @@ public:
   inline bool listening() const { return (_state == kStateListening); }
   inline bool connected() const override { return (_state == kStateConnected); }
 
-public:
-  bool create();
+protected:
+  bool create(int af);
 
 public:
   bool listen(char const *address, char const *port);

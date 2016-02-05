@@ -54,10 +54,6 @@ static bool gGDBCompat = false;
 Socket *CreateSocket(char const *host, char const *port, bool reverse) {
   auto socket = new Socket;
 
-  if (!socket->create()) {
-    DS2LOG(Fatal, "cannot create socket: %s", socket->error().c_str());
-  }
-
   if (reverse) {
     if (!socket->connect(host, port)) {
       DS2LOG(Fatal, "cannot connect to [%s:%s]: %s", host, port,

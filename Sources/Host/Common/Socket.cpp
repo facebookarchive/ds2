@@ -9,7 +9,6 @@
 //
 
 #include "DebugServer2/Host/Socket.h"
-#include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
 #if defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
@@ -46,13 +45,26 @@ Socket::Socket(SOCKET handle)
 
 Socket::~Socket() { close(); }
 
-bool Socket::create() {
+bool Socket::create(int af) {
   if (valid())
     return false;
 
-  _handle = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  _handle = ::socket(af, SOCK_STREAM, IPPROTO_TCP);
   if (_handle == INVALID_SOCKET) {
     _lastError = SOCK_ERRNO;
+  }
+
+  // On most Linux systems, IPV6_V6ONLY is off by default, but on some systems
+  // it's on, so turn it off to be able to receive both IPv6 and IPv4
+  // connections when we listen on IN6ADDR_ANY.
+  if (af == AF_INET6) {
+    int no = 0;
+    int res = setsockopt(_handle, IPPROTO_IPV6, IPV6_V6ONLY,
+                         reinterpret_cast<char *>(&no), sizeof(no));
+    if (res != 0) {
+      _lastError = SOCK_ERRNO;
+      return false;
+    }
   }
 
 #if !defined(OS_WIN32)
@@ -79,9 +91,6 @@ void Socket::close() {
 }
 
 bool Socket::listen(char const *address, char const *port) {
-  if (!valid())
-    return false;
-
   if (listening() || connected())
     return false;
 
@@ -93,7 +102,7 @@ bool Socket::listen(char const *address, char const *port) {
 
   struct addrinfo hints, *result;
   memset(&hints, 0, sizeof(hints));
-  hints.ai_family = AF_INET;
+  hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags = AI_PASSIVE;
   hints.ai_protocol = IPPROTO_TCP;
@@ -101,6 +110,10 @@ bool Socket::listen(char const *address, char const *port) {
   int res = ::getaddrinfo(address, port, &hints, &result);
   if (res != 0) {
     _lastError = SOCK_ERRNO;
+    return false;
+  }
+
+  if (!create(result->ai_family)) {
     return false;
   }
 
@@ -150,7 +163,7 @@ bool Socket::connect(char const *host, char const *port) {
   struct addrinfo *result, *results;
 
   ::memset(&hints, 0, sizeof hints);
-  hints.ai_family = AF_INET;
+  hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = IPPROTO_TCP;
 
@@ -162,9 +175,16 @@ bool Socket::connect(char const *host, char const *port) {
 
   SOCKET handle = INVALID_SOCKET;
   for (result = results; result != NULL; result = result->ai_next) {
+    if (!create(result->ai_family)) {
+      continue;
+    }
     handle = ::connect(_handle, result->ai_addr, result->ai_addrlen);
-    if (handle != INVALID_SOCKET)
+    if (handle == INVALID_SOCKET) {
+      close();
+      continue;
+    } else {
       break;
+    }
   }
   if (handle == INVALID_SOCKET) {
     _lastError = SOCK_ERRNO;
