@@ -41,7 +41,8 @@ target_include_directories(jsobjects
 set_property(TARGET jsobjects PROPERTY C_STANDARD 99)
 set_property(TARGET jsobjects PROPERTY CXX_STANDARD 11)
 if (${CMAKE_COMPILER_IS_GNUCXX}) # Clang or GCC
-  target_compile_options(jsobjects PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-function)
+  target_compile_options(jsobjects PRIVATE -Wall -Wextra -Werror)
+  target_compile_options(jsobjects PRIVATE -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare)
   target_compile_definitions(jsobjects PRIVATE _XOPEN_SOURCE=500)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(jsobjects PRIVATE /W3 /DSTRICT /wd4996)
