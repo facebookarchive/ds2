@@ -44,7 +44,7 @@ using ds2::GDBRemote::DebugSessionImpl;
 using ds2::GDBRemote::SlaveSessionImpl;
 
 static std::string gDefaultPort = "12345";
-static std::string gDefaultHost = "localhost";
+static std::string gDefaultHost = "127.0.0.1";
 static bool gKeepAlive = false;
 static bool gGDBCompat = false;
 
