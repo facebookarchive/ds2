@@ -107,6 +107,18 @@ bool Socket::listen(std::string const &address, std::string const &port) {
   hints.ai_flags = AI_PASSIVE;
   hints.ai_protocol = IPPROTO_TCP;
 
+  // On most system, the resolver will return an IPv6 for "localhost". This is
+  // not what most users expect, as they might have their server listening on
+  // "localhost", and their client trying to connect to "127.0.0.1". This will
+  // have the server socket accepting only IPv6 connections, and the client
+  // socket trying to connect to an IPv4 address.
+  // While this is true for all addresses (not just "localhost"), "localhost"
+  // is the one that causes issues most frequently. Force ai_family to AF_INET
+  // here so we don't fail.
+  if (address == "localhost") {
+    hints.ai_family = AF_INET;
+  }
+
   int res = ::getaddrinfo(address.c_str(), port.c_str(), &hints, &result);
   if (res != 0) {
     _lastError = SOCK_ERRNO;
@@ -166,6 +178,11 @@ bool Socket::connect(std::string const &host, std::string const &port) {
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = IPPROTO_TCP;
+
+  // See Socket::listen.
+  if (host == "localhost") {
+    hints.ai_family = AF_INET;
+  }
 
   int res = ::getaddrinfo(host.c_str(), port.c_str(), &hints, &results);
   if (res != 0) {
