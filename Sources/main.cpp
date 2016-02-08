@@ -60,14 +60,16 @@ Socket *CreateSocket(std::string const &host, std::string const &port,
       DS2LOG(Fatal, "cannot connect to [%s:%s]: %s", host.c_str(), port.c_str(),
              socket->error().c_str());
     } else {
-      DS2LOG(Info, "connected to [%s:%s]", host.c_str(), port.c_str());
+      DS2LOG(Info, "connected to [%s:%s]", socket->address().c_str(),
+             socket->port().c_str());
     }
   } else {
     if (!socket->listen(host, port)) {
       DS2LOG(Fatal, "cannot listen on [%s:%s]: %s", host.c_str(), port.c_str(),
              socket->error().c_str());
     } else {
-      DS2LOG(Info, "listening on [%s:%s]", host.c_str(), port.c_str());
+      DS2LOG(Info, "listening on [%s:%s]", socket->address().c_str(),
+             socket->port().c_str());
     }
   }
 
