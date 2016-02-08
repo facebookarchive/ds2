@@ -125,25 +125,9 @@ ErrorCode Process::attach(int waitStatus) {
 
 static pid_t blocking_waitpid(pid_t pid, int *status, int flags) {
   pid_t ret;
-  sigset_t block_mask, org_mask, wake_mask;
-
-  sigemptyset(&wake_mask);
-  sigfillset(&block_mask);
-
-  // Block all signals while waiting.
-  sigprocmask(SIG_BLOCK, &block_mask, &org_mask);
-
-  for (;;) {
+  do {
     ret = ::waitpid(pid, status, flags);
-    if (ret > 0 || (ret == -1 && errno != ECHILD))
-      break;
-
-    if (flags & __WCLONE) {
-      sigsuspend(&wake_mask);
-    }
-  }
-
-  sigprocmask(SIG_SETMASK, &org_mask, nullptr);
+  } while (ret == -1 && errno == EINTR);
 
   return ret;
 }
