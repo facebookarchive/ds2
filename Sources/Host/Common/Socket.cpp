@@ -313,15 +313,53 @@ std::string Socket::error() const {
 #endif
 }
 
-std::string Socket::port() const {
-  if (_handle == INVALID_SOCKET)
+std::string Socket::address() const {
+  if (_handle == INVALID_SOCKET) {
     return std::string();
+  }
 
   struct sockaddr_storage ss;
   socklen_t sslen = sizeof(ss);
   if (::getsockname(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen) <
-      0)
+      0) {
     return std::string();
+  }
+
+  std::string result;
+
+  switch (ss.ss_family) {
+  case AF_INET: {
+    char addressStr[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET,
+              &reinterpret_cast<struct sockaddr_in *>(&ss)->sin_addr.s_addr,
+              addressStr, sizeof(addressStr));
+    result.assign(addressStr);
+  } break;
+  case AF_INET6: {
+    char addressStr[INET6_ADDRSTRLEN];
+    inet_ntop(AF_INET6,
+              &reinterpret_cast<struct sockaddr_in6 *>(&ss)->sin6_addr.s6_addr,
+              addressStr, sizeof(addressStr));
+    result.assign(addressStr);
+  } break;
+  default:
+    DS2BUG("unknown socket family: %u", (unsigned int)ss.ss_family);
+  }
+
+  return result;
+}
+
+std::string Socket::port() const {
+  if (_handle == INVALID_SOCKET) {
+    return std::string();
+  }
+
+  struct sockaddr_storage ss;
+  socklen_t sslen = sizeof(ss);
+  if (::getsockname(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen) <
+      0) {
+    return std::string();
+  }
 
   switch (ss.ss_family) {
   case AF_INET:

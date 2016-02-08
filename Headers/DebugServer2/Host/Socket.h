@@ -64,6 +64,7 @@ public:
   bool connect(std::string const &host, std::string const &port);
 
 public:
+  std::string address() const;
   std::string port() const;
 
 public:
