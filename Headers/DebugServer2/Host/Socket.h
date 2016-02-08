@@ -64,7 +64,7 @@ public:
   bool connect(std::string const &host, std::string const &port);
 
 public:
-  uint16_t port() const;
+  std::string port() const;
 
 public:
   std::string error() const;

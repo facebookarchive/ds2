@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Host/Socket.h"
+#include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
 #if defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
@@ -312,25 +313,26 @@ std::string Socket::error() const {
 #endif
 }
 
-uint16_t Socket::port() const {
+std::string Socket::port() const {
   if (_handle == INVALID_SOCKET)
-    return 0;
+    return std::string();
 
   struct sockaddr_storage ss;
   socklen_t sslen = sizeof(ss);
   if (::getsockname(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen) <
       0)
-    return 0;
+    return std::string();
 
   switch (ss.ss_family) {
   case AF_INET:
-    return ntohs(reinterpret_cast<struct sockaddr_in *>(&ss)->sin_port);
+    return ds2::ToString(
+        ntohs(reinterpret_cast<struct sockaddr_in *>(&ss)->sin_port));
   case AF_INET6:
-    return ntohs(reinterpret_cast<struct sockaddr_in6 *>(&ss)->sin6_port);
+    return ds2::ToString(
+        ntohs(reinterpret_cast<struct sockaddr_in6 *>(&ss)->sin6_port));
   default:
-    break;
+    DS2BUG("unknown socket family: %u", (unsigned int)ss.ss_family);
   }
-  return 0;
 }
 }
 }

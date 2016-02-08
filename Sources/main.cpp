@@ -122,14 +122,14 @@ static int DebugMain(ds2::StringCollection const &args,
   auto socket = std::shared_ptr<Socket>(CreateSocket(host, port, reverse));
 
   if (!namedPipePath.empty()) {
-    std::string portStr = ds2::ToString(socket->port());
+    std::string realPort = socket->port();
     FILE *namedPipe = fopen(namedPipePath.c_str(), "a");
     if (namedPipe == nullptr) {
       DS2LOG(Error, "unable to open %s: %s", namedPipePath.c_str(),
              strerror(errno));
     } else {
       // Write the null terminator to the file. This follows the llgs behavior.
-      fwrite(portStr.c_str(), 1, portStr.length() + 1, namedPipe);
+      fwrite(realPort.c_str(), 1, realPort.length() + 1, namedPipe);
       fclose(namedPipe);
     }
   }
@@ -156,7 +156,7 @@ static int DebugMain(ds2::StringCollection const &args,
 #if !defined(OS_WIN32)
 static int SlaveMain() {
   auto server = std::unique_ptr<Socket>(CreateSocket("localhost", "0", false));
-  uint16_t port = server->port();
+  std::string port = server->port();
 
   pid_t pid = ::fork();
   if (pid < 0) {
@@ -187,7 +187,7 @@ static int SlaveMain() {
     // Write to the standard output to let know our parent
     // where we're listening.
     //
-    fprintf(stdout, "%u %d\n", port, pid);
+    fprintf(stdout, "%s %d\n", port.c_str(), pid);
   }
 
   return EXIT_SUCCESS;
