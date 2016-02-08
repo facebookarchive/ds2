@@ -58,10 +58,10 @@ protected:
   bool create(int af);
 
 public:
-  bool listen(char const *address, char const *port);
-  inline bool listen(char const *port) { return listen(nullptr, port); }
+  bool listen(std::string const &address, std::string const &port);
+  inline bool listen(std::string const &port) { return listen(nullptr, port); }
   Socket *accept();
-  bool connect(char const *host, char const *port);
+  bool connect(std::string const &host, std::string const &port);
 
 public:
   uint16_t port() const;

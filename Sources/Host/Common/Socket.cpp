@@ -90,7 +90,7 @@ void Socket::close() {
   _lastError = 0;
 }
 
-bool Socket::listen(char const *address, char const *port) {
+bool Socket::listen(std::string const &address, std::string const &port) {
   if (listening() || connected())
     return false;
 
@@ -107,7 +107,7 @@ bool Socket::listen(char const *address, char const *port) {
   hints.ai_flags = AI_PASSIVE;
   hints.ai_protocol = IPPROTO_TCP;
 
-  int res = ::getaddrinfo(address, port, &hints, &result);
+  int res = ::getaddrinfo(address.c_str(), port.c_str(), &hints, &result);
   if (res != 0) {
     _lastError = SOCK_ERRNO;
     return false;
@@ -158,7 +158,7 @@ Socket *Socket::accept() {
   return client;
 }
 
-bool Socket::connect(char const *host, char const *port) {
+bool Socket::connect(std::string const &host, std::string const &port) {
   struct addrinfo hints;
   struct addrinfo *result, *results;
 
@@ -167,7 +167,7 @@ bool Socket::connect(char const *host, char const *port) {
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = IPPROTO_TCP;
 
-  int res = ::getaddrinfo(host, port, &hints, &results);
+  int res = ::getaddrinfo(host.c_str(), port.c_str(), &hints, &results);
   if (res != 0) {
     _lastError = SOCK_ERRNO;
     return false;

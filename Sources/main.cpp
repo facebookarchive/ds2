@@ -51,22 +51,23 @@ static bool gGDBCompat = false;
 // This function creates and initializes a socket than can be either a client
 // (if reverse is true), or a server (if reverse is false) that will then need
 // to be accept()'d on.
-Socket *CreateSocket(char const *host, char const *port, bool reverse) {
+Socket *CreateSocket(std::string const &host, std::string const &port,
+                     bool reverse) {
   auto socket = new Socket;
 
   if (reverse) {
     if (!socket->connect(host, port)) {
-      DS2LOG(Fatal, "cannot connect to [%s:%s]: %s", host, port,
+      DS2LOG(Fatal, "cannot connect to [%s:%s]: %s", host.c_str(), port.c_str(),
              socket->error().c_str());
     } else {
-      DS2LOG(Info, "connected to [%s:%s]", host, port);
+      DS2LOG(Info, "connected to [%s:%s]", host.c_str(), port.c_str());
     }
   } else {
     if (!socket->listen(host, port)) {
-      DS2LOG(Fatal, "cannot listen on [%s:%s]: %s", host, port,
+      DS2LOG(Fatal, "cannot listen on [%s:%s]: %s", host.c_str(), port.c_str(),
              socket->error().c_str());
     } else {
-      DS2LOG(Info, "listening on [%s:%s]", host, port);
+      DS2LOG(Info, "listening on [%s:%s]", host.c_str(), port.c_str());
     }
   }
 
@@ -74,7 +75,7 @@ Socket *CreateSocket(char const *host, char const *port, bool reverse) {
 }
 
 #if !defined(OS_WIN32)
-static int PlatformMain(char const *host, char const *port) {
+static int PlatformMain(std::string const &host, std::string const &port) {
   auto server = std::unique_ptr<Socket>(CreateSocket(host, port, false));
 
   PlatformSessionImpl impl;
@@ -114,8 +115,8 @@ static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
 
 static int DebugMain(ds2::StringCollection const &args,
                      ds2::EnvironmentBlock const &env, int attachPid,
-                     char const *host, char const *port, bool reverse,
-                     std::string const &namedPipePath) {
+                     std::string const &host, std::string const &port,
+                     bool reverse, std::string const &namedPipePath) {
   // Use a shared_ptr here so we can easily copy it before calling
   // RunDebugServer below, if this is a reverse connect case.
   auto socket = std::shared_ptr<Socket>(CreateSocket(host, port, reverse));
@@ -421,11 +422,10 @@ int main(int argc, char **argv) {
 
   switch (mode) {
   case kRunModeNormal:
-    return DebugMain(args, env, attachPid, host.c_str(), port.c_str(), reverse,
-                     namedPipePath);
+    return DebugMain(args, env, attachPid, host, port, reverse, namedPipePath);
 #if !defined(OS_WIN32)
   case kRunModePlatform:
-    return PlatformMain(host.c_str(), port.c_str());
+    return PlatformMain(host, port);
   case kRunModeSlave:
     return SlaveMain();
 #endif
