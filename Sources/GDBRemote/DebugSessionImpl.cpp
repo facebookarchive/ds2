@@ -248,24 +248,20 @@ ErrorCode DebugSessionImpl::onQueryThreadList(Session &, ProcessId pid,
   if (_process == nullptr)
     return kErrorProcessNotFound;
 
-  switch (lastTid) {
-  case kAllThreadId:
-    _threadIndex = 0;
-    _process->getThreadIds(_tids);
-    break;
+  std::vector<ThreadId> tids;
 
-  case kAnyThreadId:
-    _threadIndex++;
-    break;
-
-  default:
+  if (lastTid == kAllThreadId) {
+    _process->getThreadIds(tids);
+    _tids.ids = tids;
+    _tids.it = _tids.ids.begin();
+  } else if (lastTid != kAnyThreadId) {
     return kErrorInvalidArgument;
   }
 
-  if (_threadIndex >= _tids.size())
+  if (_tids.it == _tids.ids.end())
     return kErrorNotFound;
 
-  tid = _tids[_threadIndex];
+  tid = *_tids.it++;
   return kSuccess;
 }
 

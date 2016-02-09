@@ -25,7 +25,7 @@ namespace ds2 {
 namespace GDBRemote {
 
 PlatformSessionImpl::PlatformSessionImpl()
-    : DummySessionDelegateImpl(), _processIndex(0), _disableASLR(false),
+    : DummySessionDelegateImpl(), _disableASLR(false),
       _workingDirectory(Platform::GetWorkingDirectory()) {}
 
 ErrorCode PlatformSessionImpl::onQueryProcessList(Session &session,
@@ -36,11 +36,12 @@ ErrorCode PlatformSessionImpl::onQueryProcessList(Session &session,
     updateProcesses(match);
   }
 
-  if (_processIndex >= _processes.size())
-    return kErrorNotFound;
+  if (_pids.it == _pids.ids.end())
+    return kErrorProcessNotFound;
 
-  info =
-      *static_cast<ds2::GDBRemote::ProcessInfo *>(&_processes[_processIndex++]);
+  if (!Platform::GetProcessInfo(*_pids.it++, info))
+    return kErrorProcessNotFound;
+
   return kSuccess;
 }
 
@@ -170,13 +171,12 @@ ErrorCode PlatformSessionImpl::onLaunchDebugServer(Session &session,
 }
 
 void PlatformSessionImpl::updateProcesses(ProcessInfoMatch const &match) const {
-  _processIndex = 0;
-  _processes.clear();
-
   // TODO(fjricci) we should only add processes that match "match"
   Platform::EnumerateProcesses(
       true, UserId(),
-      [&](ds2::ProcessInfo const &info) { _processes.push_back(info); });
+      [&](ds2::ProcessInfo const &info) { _pids.ids.push_back(info.pid); });
+
+  _pids.it = _pids.ids.begin();
 }
 
 ErrorCode PlatformSessionImpl::onDisableASLR(Session &, bool disable) {
