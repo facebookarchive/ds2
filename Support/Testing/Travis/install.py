@@ -12,12 +12,6 @@
 import os, platform
 from subprocess import check_call
 
-packages = []
-
-linux_packages = { 'Linux-ARM':     'g++-4.8-arm-linux-gnueabihf',
-                   'Linux-X86':     'g++-5-multilib',
-                   'Linux-X86_64':  'g++-5' }
-
 android_toolchains = { 'Android-ARM':       'arm',
                        'Android-ARM64':     'aarch64',
                        'Android-X86':       'x86',
@@ -28,49 +22,10 @@ tizen_toolchains = { 'Tizen-ARM':   'arm',
 
 target = os.getenv('TARGET')
 
-if target == 'Style':
-    packages.append('clang-format-3.7')
-elif target == 'Registers':
-    packages.append('flex')
-    packages.append('bison')
-    packages.append('g++-5')
-    packages.append('clang-format-3.7')
-elif target in linux_packages:
-    if "CentOS Linux" in platform.linux_distribution():
-        packages.append('gcc')
-    else:
-        # Install gcc even when using clang, so we can run llgs tests.
-        packages.append(linux_packages[target])
-        if os.getenv('CLANG') == '1':
-            packages.append('clang-3.7')
-elif target == 'MinGW-X86':
-    packages.append('g++-mingw-w64-i686')
-elif target in android_toolchains:
+if target in android_toolchains:
     # Android builds get the toolchain from AOSP.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
 elif target in tizen_toolchains:
     # Tizen builds use the android toolchain and link statically.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % tizen_toolchains[target], shell=True)
 
-# Running LLDB tests requires an install of lldb (for the tests to be able to
-# use the lldb python library without us building it).
-if os.getenv('LLDB_TESTS') != None:
-    packages.append('swig')
-    if "CentOS Linux" in platform.linux_distribution():
-        packages.append('libedit-devel')
-        packages.append('libxml2-devel')
-        packages.append('ncurses-devel')
-        packages.append('python-devel')
-    else:
-        packages.append('lldb-3.7')
-        packages.append('liblldb-3.7')
-        packages.append('python-lldb-3.7')
-
-if "Ubuntu" in platform.linux_distribution():
-    packages.append('realpath')
-
-if len(packages) > 0:
-    if "CentOS Linux" in platform.linux_distribution():
-        check_call('sudo yum install -y "%s"' % '" "'.join(packages), shell=True)
-    else:
-        check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
