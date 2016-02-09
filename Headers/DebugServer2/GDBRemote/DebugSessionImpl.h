@@ -23,11 +23,11 @@ namespace GDBRemote {
 class DebugSessionImpl : public DummySessionDelegateImpl {
 protected:
   Target::Process *_process;
-  std::vector<ThreadId> _tids;
+  mutable std::vector<ThreadId> _tids;
   std::vector<int> _programmedSignals;
   std::map<uint64_t, size_t> _allocations;
   std::map<uint64_t, Architecture::CPUState> _savedRegisters;
-  size_t _threadIndex;
+  mutable size_t _threadIndex;
   Host::ProcessSpawner _spawner;
 
 protected:
@@ -50,7 +50,7 @@ protected:
 protected:
   ErrorCode onQuerySupported(Session &session,
                              Feature::Collection const &remoteFeatures,
-                             Feature::Collection &localFeatures) override;
+                             Feature::Collection &localFeatures) const override;
   ErrorCode onPassSignals(Session &session,
                           std::vector<int> const &signals) override;
   ErrorCode onProgramSignals(Session &session,
@@ -59,25 +59,26 @@ protected:
 
 protected:
   ErrorCode onQueryCurrentThread(Session &session,
-                                 ProcessThreadId &ptid) override;
+                                 ProcessThreadId &ptid) const override;
   ErrorCode onThreadIsAlive(Session &session,
                             ProcessThreadId const &ptid) override;
   ErrorCode onQueryAttached(Session &session, ProcessId pid,
-                            bool &attachedProcess) override;
-  ErrorCode onQueryProcessInfo(Session &session, ProcessInfo &info) override;
+                            bool &attachedProcess) const override;
+  ErrorCode onQueryProcessInfo(Session &session,
+                               ProcessInfo &info) const override;
   ErrorCode onQueryThreadStopInfo(Session &session, ProcessThreadId const &ptid,
-                                  StopCode &stop) override;
+                                  StopCode &stop) const override;
 
   ErrorCode onQueryThreadList(Session &session, ProcessId pid, ThreadId lastTid,
-                              ThreadId &tid) override;
+                              ThreadId &tid) const override;
 
 protected:
   ErrorCode onQueryRegisterInfo(Session &session, uint32_t regno,
-                                RegisterInfo &info) override;
+                                RegisterInfo &info) const override;
 
 protected:
   ErrorCode onQuerySharedLibrariesInfoAddress(Session &session,
-                                              Address &address) override;
+                                              Address &address) const override;
 
 protected:
   ErrorCode onXferRead(Session &session, std::string const &object,
@@ -120,14 +121,15 @@ protected:
                                Address const &address) override;
 
   ErrorCode onQueryMemoryRegionInfo(Session &session, Address const &address,
-                                    MemoryRegionInfo &info) override;
+                                    MemoryRegionInfo &info) const override;
 
 protected:
   ErrorCode onSetEnvironmentVariable(Session &session, std::string const &name,
                                      std::string const &value) override;
   ErrorCode onSetProgramArguments(Session &session,
                                   StringCollection const &args) override;
-  ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid) override;
+  ErrorCode onQueryLaunchSuccess(Session &session,
+                                 ProcessId pid) const override;
 
 protected:
   ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
