@@ -21,8 +21,8 @@ protected:
   typedef std::map<std::string, std::string> EnvironmentMap;
 
 protected:
-  ProcessInfo::Collection _processes;
-  size_t _processIndex;
+  mutable ProcessInfo::Collection _processes;
+  mutable size_t _processIndex;
 
 protected:
   bool _disableASLR;
@@ -36,9 +36,9 @@ public:
 
 protected:
   ErrorCode onQueryProcessList(Session &session, ProcessInfoMatch const &match,
-                               bool first, ProcessInfo &info) override;
+                               bool first, ProcessInfo &info) const override;
   ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
-                               ProcessInfo &info) override;
+                               ProcessInfo &info) const override;
 
   ErrorCode onExecuteProgram(Session &session, std::string const &command,
                              uint32_t timeout,
@@ -53,11 +53,11 @@ protected:
 
 protected:
   ErrorCode onQueryUserName(Session &session, UserId const &uid,
-                            std::string &name) override;
+                            std::string &name) const override;
   ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
-                             std::string &name) override;
+                             std::string &name) const override;
   ErrorCode onQueryWorkingDirectory(Session &session,
-                                    std::string &workingDir) override;
+                                    std::string &workingDir) const override;
 
 protected:
   ErrorCode onLaunchDebugServer(Session &session, std::string const &host,
@@ -75,10 +75,11 @@ protected:
                               std::string const &architecture) override;
   ErrorCode onSetProgramArguments(Session &session,
                                   StringCollection const &args) override;
-  ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid) override;
+  ErrorCode onQueryLaunchSuccess(Session &session,
+                                 ProcessId pid) const override;
 
 private:
-  void updateProcesses(ProcessInfoMatch const &match);
+  void updateProcesses(ProcessInfoMatch const &match) const;
 };
 }
 }

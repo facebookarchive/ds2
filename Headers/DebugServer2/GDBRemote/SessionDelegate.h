@@ -43,16 +43,16 @@ protected: // Common
   virtual ErrorCode
   onAllowOperations(Session &session,
                     std::map<std::string, bool> const &operations) = 0;
-  virtual ErrorCode onQuerySupported(Session &session,
-                                     Feature::Collection const &remoteFeatures,
-                                     Feature::Collection &localFeatures) = 0;
+  virtual ErrorCode
+  onQuerySupported(Session &session, Feature::Collection const &remoteFeatures,
+                   Feature::Collection &localFeatures) const = 0;
 
   virtual ErrorCode onExecuteCommand(Session &session,
                                      std::string const &command) = 0;
 
   virtual ErrorCode onQueryServerVersion(Session &session,
-                                         ServerVersion &version) = 0;
-  virtual ErrorCode onQueryHostInfo(Session &session, HostInfo &info) = 0;
+                                         ServerVersion &version) const = 0;
+  virtual ErrorCode onQueryHostInfo(Session &session, HostInfo &info) const = 0;
 
 protected: // Debugging Session
   virtual ErrorCode onEnableControlAgent(Session &session, bool enable) = 0;
@@ -66,10 +66,10 @@ protected: // Debugging Session
 
   virtual ErrorCode onQuerySymbol(Session &session, std::string const &name,
                                   std::string const &value,
-                                  std::string &next) = 0;
+                                  std::string &next) const = 0;
 
   virtual ErrorCode onQueryRegisterInfo(Session &session, uint32_t regno,
-                                        RegisterInfo &info) = 0;
+                                        RegisterInfo &info) const = 0;
 
   virtual ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
                              StopCode &) = 0;
@@ -80,23 +80,26 @@ protected: // Debugging Session
                                 StopCode &stop) = 0;
   virtual ErrorCode onDetach(Session &session, ProcessId pid, bool stopped) = 0;
   virtual ErrorCode onQueryAttached(Session &session, ProcessId pid,
-                                    bool &attachedProcess) = 0;
-  virtual ErrorCode onQueryProcessInfo(Session &session, ProcessInfo &info) = 0;
+                                    bool &attachedProcess) const = 0;
+  virtual ErrorCode onQueryProcessInfo(Session &session,
+                                       ProcessInfo &info) const = 0;
   virtual ErrorCode onQueryThreadStopInfo(Session &session,
                                           ProcessThreadId const &ptid,
-                                          StopCode &stop) = 0;
+                                          StopCode &stop) const = 0;
 
   virtual ErrorCode onQueryHardwareWatchpointCount(Session &session,
-                                                   size_t &count) = 0;
+                                                   size_t &count) const = 0;
 
   virtual ErrorCode onQuerySectionOffsets(Session &session, Address &text,
-                                          Address &data, bool &isSegment) = 0;
-  virtual ErrorCode onQuerySharedLibrariesInfoAddress(Session &session,
-                                                      Address &address) = 0;
+                                          Address &data,
+                                          bool &isSegment) const = 0;
+  virtual ErrorCode
+  onQuerySharedLibrariesInfoAddress(Session &session,
+                                    Address &address) const = 0;
   virtual ErrorCode onQuerySharedLibraryInfo(Session &session,
                                              std::string const &path,
                                              std::string const &triple,
-                                             SharedLibraryInfo &info) = 0;
+                                             SharedLibraryInfo &info) const = 0;
 
   virtual ErrorCode onRestart(Session &session, ProcessId pid) = 0;
   virtual ErrorCode onInterrupt(Session &session) = 0;
@@ -113,24 +116,25 @@ protected: // Debugging Session
   // the one specified.
   //
   virtual ErrorCode onQueryThreadList(Session &session, ProcessId pid,
-                                      ThreadId lastTid, ThreadId &tid) = 0;
+                                      ThreadId lastTid,
+                                      ThreadId &tid) const = 0;
 
   virtual ErrorCode onQueryCurrentThread(Session &session,
-                                         ProcessThreadId &ptid) = 0;
+                                         ProcessThreadId &ptid) const = 0;
   virtual ErrorCode onThreadIsAlive(Session &session,
                                     ProcessThreadId const &ptid) = 0;
   virtual ErrorCode onQueryThreadInfo(Session &session,
                                       ProcessThreadId const &ptid,
-                                      uint32_t mode, void *info) = 0;
+                                      uint32_t mode, void *info) const = 0;
 
   virtual ErrorCode onQueryTLSAddress(Session &session,
                                       ProcessThreadId const &ptid,
                                       Address const &offset,
                                       Address const &linkMap,
-                                      Address &address) = 0;
+                                      Address &address) const = 0;
   virtual ErrorCode onQueryTIBAddress(Session &session,
                                       ProcessThreadId const &ptid,
-                                      Address &address) = 0;
+                                      Address &address) const = 0;
 
   virtual ErrorCode onEnableAsynchronousProfiling(Session &session,
                                                   ProcessThreadId const &ptid,
@@ -139,7 +143,7 @@ protected: // Debugging Session
                                                   uint32_t scanType) = 0;
   virtual ErrorCode onQueryProfileData(Session &session,
                                        ProcessThreadId const &ptid,
-                                       uint32_t scanType, void *data) = 0;
+                                       uint32_t scanType, void *data) const = 0;
 
   virtual ErrorCode onResume(Session &session,
                              ThreadResumeAction::Collection const &actions,
@@ -180,7 +184,7 @@ protected: // Debugging Session
                                        Address const &address) = 0;
   virtual ErrorCode onQueryMemoryRegionInfo(Session &session,
                                             Address const &address,
-                                            MemoryRegionInfo &info) = 0;
+                                            MemoryRegionInfo &info) const = 0;
 
   virtual ErrorCode onComputeCRC(Session &session, Address const &address,
                                  size_t length, uint32_t &crc) = 0;
@@ -282,22 +286,23 @@ protected: // Platform Session
 
   virtual ErrorCode onQueryProcessList(Session &session,
                                        ProcessInfoMatch const &match,
-                                       bool first, ProcessInfo &info) = 0;
+                                       bool first, ProcessInfo &info) const = 0;
   virtual ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
-                                       ProcessInfo &info) = 0;
+                                       ProcessInfo &info) const = 0;
 
   virtual ErrorCode onLaunchDebugServer(Session &session,
                                         std::string const &host, uint16_t &port,
                                         ProcessId &pid) = 0;
 
-  virtual ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid) = 0;
+  virtual ErrorCode onQueryLaunchSuccess(Session &session,
+                                         ProcessId pid) const = 0;
 
   virtual ErrorCode onQueryUserName(Session &session, UserId const &uid,
-                                    std::string &name) = 0;
+                                    std::string &name) const = 0;
   virtual ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
-                                     std::string &name) = 0;
+                                     std::string &name) const = 0;
   virtual ErrorCode onQueryWorkingDirectory(Session &session,
-                                            std::string &workingDir) = 0;
+                                            std::string &workingDir) const = 0;
 
 protected: // System Session
   virtual void onReset(Session &session) = 0;
