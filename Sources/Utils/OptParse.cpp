@@ -32,11 +32,9 @@ int OptParse::parse(int argc, char **argv, std::string &host,
     }                                                                          \
   } while (0)
 
-  int idx;
-
   // Skip argv[0] which contains the program name,
   // and argv[1] which contains the run mode
-  idx = 2;
+  int idx = 2;
 
   while (idx < argc) {
     if (argv[idx][0] == '-' && argv[idx][1] == '-') {
@@ -108,14 +106,21 @@ int OptParse::parse(int argc, char **argv, std::string &host,
       }
     } else {
       std::string addrString(argv[idx]);
-      auto splitPos = addrString.find(":");
+      auto splitPos = addrString.rfind(":");
 
       // end of options
       if (splitPos == std::string::npos)
         break;
 
-      if (splitPos > 0)
-        host = addrString.substr(0, splitPos);
+      if (splitPos > 0) {
+        // IPv6 addresses can be of the form '[a:b:c:d::1]:12345', so we need
+        // to strip the square brackets around the host part.
+        if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
+          host = addrString.substr(1, splitPos - 2);
+        } else {
+          host = addrString.substr(0, splitPos);
+        }
+      }
 
       port = addrString.substr(splitPos + 1);
     }
