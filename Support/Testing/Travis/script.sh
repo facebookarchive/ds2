@@ -37,7 +37,7 @@ if grep -q "Ubuntu" "/etc/issue" && [ ! -d "/tmp/$cmake_package/bin" ]; then
   cd "$OLDPWD"
 fi
 
-export PATH="$PWD/$cmake_package/bin:$PATH"
+export PATH="/tmp/$cmake_package/bin:$PATH"
 
 # Go to the root of the repo to check style and register files.
 cd "$top"
