@@ -173,6 +173,7 @@ void PlatformSessionImpl::updateProcesses(ProcessInfoMatch const &match) {
   _processIndex = 0;
   _processes.clear();
 
+  // TODO(fjricci) we should only add processes that match "match"
   Platform::EnumerateProcesses(
       true, UserId(),
       [&](ds2::ProcessInfo const &info) { _processes.push_back(info); });
