@@ -53,6 +53,7 @@ bool Socket::create(int af) {
   _handle = ::socket(af, SOCK_STREAM, IPPROTO_TCP);
   if (_handle == INVALID_SOCKET) {
     _lastError = SOCK_ERRNO;
+    return false;
   }
 
   // On most Linux systems, IPV6_V6ONLY is off by default, but on some systems
