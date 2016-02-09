@@ -23,12 +23,14 @@ namespace GDBRemote {
 class DebugSessionImpl : public DummySessionDelegateImpl {
 protected:
   Target::Process *_process;
-  mutable std::vector<ThreadId> _tids;
   std::vector<int> _programmedSignals;
   std::map<uint64_t, size_t> _allocations;
   std::map<uint64_t, Architecture::CPUState> _savedRegisters;
-  mutable size_t _threadIndex;
   Host::ProcessSpawner _spawner;
+
+protected:
+  // a struct to help iterate over the thread list for onQueryThreadList
+  mutable IterationState<ThreadId> _threadIterationState;
 
 protected:
   std::mutex _resumeSessionLock;

@@ -21,8 +21,8 @@ protected:
   typedef std::map<std::string, std::string> EnvironmentMap;
 
 protected:
-  mutable ProcessInfo::Collection _processes;
-  mutable size_t _processIndex;
+  // a struct to help iterate over the process list for onQueryProcessList
+  mutable IterationState<ProcessId> _processIterationState;
 
 protected:
   bool _disableASLR;

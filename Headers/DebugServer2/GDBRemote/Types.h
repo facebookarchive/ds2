@@ -208,6 +208,11 @@ struct ProgramResult {
 
   std::string encode() const;
 };
+
+template <class T> struct IterationState {
+  std::vector<T> vals;
+  typename std::vector<T>::iterator it;
+};
 }
 }
 
