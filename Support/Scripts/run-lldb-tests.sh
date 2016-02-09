@@ -34,9 +34,9 @@ if [ -s "/etc/centos-release" ]; then
   mkdir -p "$llvm_build"
   cd "$llvm_build"
   if [ ! -f "$llvm_build/Makefile" ]; then
-    cmake ..
+    cmake .. -G Ninja
   fi
-  make -j$(num_cpus)
+  ninja
 
   export PYTHONPATH="$llvm_build/lib64/python2.7/site-packages"
 
