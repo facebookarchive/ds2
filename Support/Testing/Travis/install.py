@@ -15,8 +15,8 @@ from subprocess import check_call
 packages = []
 
 linux_packages = { 'Linux-ARM':     'g++-4.7-arm-linux-gnueabi',
-                   'Linux-X86':     'g++-4.8-multilib',
-                   'Linux-X86_64':  'g++-4.8' }
+                   'Linux-X86':     'g++-5-multilib',
+                   'Linux-X86_64':  'g++-5' }
 
 android_toolchains = { 'Android-ARM':       'arm',
                        'Android-ARM64':     'aarch64',
@@ -33,7 +33,7 @@ if target == 'Style':
 elif target == 'Registers':
     packages.append('flex')
     packages.append('bison')
-    packages.append('g++-4.8')
+    packages.append('g++-5')
     packages.append('clang-format-3.7')
 elif target in linux_packages:
     if "CentOS Linux" in platform.linux_distribution():

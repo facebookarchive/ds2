@@ -68,7 +68,7 @@ elif grep -q "Ubuntu" "/etc/issue"; then
   done
 
   lldb_exe="$(which lldb-3.7)"
-  cc_exe="$(which gcc-4.8)"
+  cc_exe="$(which gcc-5)"
 else
   die "Testing is only supported on CentOS and Ubuntu."
 fi
