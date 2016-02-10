@@ -48,9 +48,8 @@ public:
   static AsyncProcessWaiter &Instance();
 
 public:
-  bool wait(std::set<ProcessId> const &pids, ProcessId &wpid, int &status,
-            bool hang);
-  bool wait(ProcessId const &pid, ProcessId &wpid, int &status, bool hang);
+  bool wait(std::set<ProcessId> const &pids, ProcessId &wpid, int &status);
+  bool wait(ProcessId const &pid, ProcessId &wpid, int &status);
 
 private:
   void start();

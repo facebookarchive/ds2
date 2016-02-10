@@ -27,8 +27,7 @@ public:
   ~PTrace() override;
 
 public:
-  ErrorCode wait(ProcessThreadId const &ptid, bool hang = true,
-                 int *status = nullptr) override;
+  ErrorCode wait(ProcessThreadId const &ptid, int *status = nullptr) override;
 
 public:
   ErrorCode traceMe(bool disableASLR) override;

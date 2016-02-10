@@ -59,7 +59,7 @@ protected:
   ErrorCode checkMemoryErrorCode(uint64_t address);
 
 public:
-  ErrorCode wait(int *rstatus = nullptr, bool hang = true) override;
+  ErrorCode wait(int *rstatus = nullptr) override;
 
 public:
   Host::POSIX::PTrace &ptrace() const override;

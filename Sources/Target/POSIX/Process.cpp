@@ -11,15 +11,15 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Process"
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Target/POSIX/Process.h"
-#include "DebugServer2/Host/POSIX/PTrace.h"
 #include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Host/POSIX/PTrace.h"
+#include "DebugServer2/Target/POSIX/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <cerrno>
+#include <csignal>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <csignal>
-#include <cerrno>
 
 using ds2::Host::ProcessSpawner;
 
@@ -92,9 +92,7 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
   return ptrace().writeMemory(_pid, address, data, length, count);
 }
 
-ErrorCode Process::wait(int *status, bool hang) {
-  return ptrace().wait(_pid, hang, status);
-}
+ErrorCode Process::wait(int *status) { return ptrace().wait(_pid, status); }
 
 ds2::Target::Process *Process::Attach(ProcessId pid) {
   if (pid <= 0)

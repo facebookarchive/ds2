@@ -32,7 +32,7 @@ PTrace::PTrace() : _privateData(nullptr) {}
 
 PTrace::~PTrace() { doneCPUState(); }
 
-ErrorCode PTrace::wait(ProcessThreadId const &ptid, bool hang, int *status) {
+ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   pid_t pid;
 
   if (!ptid.valid())
@@ -46,10 +46,10 @@ ErrorCode PTrace::wait(ProcessThreadId const &ptid, bool hang, int *status) {
 
   int stat;
   pid_t ret;
-  ret = waitpid(pid, &stat, __WALL | (hang ? 0 : WNOHANG));
+  ret = waitpid(pid, &stat, __WALL);
   if (ret < 0)
     return kErrorProcessNotFound;
-  DS2ASSERT(!hang || ret == pid);
+  DS2ASSERT(ret == pid);
 
   if (status != nullptr) {
     *status = stat;

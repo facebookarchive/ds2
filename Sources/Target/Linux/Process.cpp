@@ -53,7 +53,7 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   // Wait the main thread.
   //
   int status;
-  ErrorCode error = ptrace().wait(pid, true, &status);
+  ErrorCode error = ptrace().wait(pid, &status);
   if (error != kSuccess)
     return error;
 
@@ -74,7 +74,7 @@ ErrorCode Process::attach(int waitStatus) {
 
     _flags |= kFlagAttachedProcess;
 
-    error = ptrace().wait(_pid, true, &waitStatus);
+    error = ptrace().wait(_pid, &waitStatus);
     if (error != kSuccess)
       return error;
     ptrace().traceThat(_pid);
@@ -106,7 +106,7 @@ ErrorCode Process::attach(int waitStatus) {
         auto thread = new Thread(this, tid);
         if (ptrace().attach(tid) == kSuccess) {
           int status;
-          ptrace().wait(tid, true, &status);
+          ptrace().wait(tid, &status);
           ptrace().traceThat(tid);
           thread->updateStopInfo(status);
         }
@@ -138,7 +138,7 @@ static pid_t blocking_waitpid(pid_t pid, int *status, int flags) {
     if (ret > 0 || (ret == -1 && errno != ECHILD))
       break;
 
-    if ((flags & (__WCLONE | WNOHANG)) == __WCLONE) {
+    if (flags & __WCLONE) {
       sigsuspend(&wake_mask);
     }
   }
@@ -164,7 +164,7 @@ ErrorCode Process::checkMemoryErrorCode(uint64_t address) {
   return kSuccess;
 }
 
-ErrorCode Process::wait(int *rstatus, bool hang) {
+ErrorCode Process::wait(int *rstatus) {
   int status, signal;
   ProcessInfo info;
   ThreadId tid;
@@ -173,7 +173,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
   DS2ASSERT(!_threads.empty());
 
   while (!_threads.empty()) {
-    tid = blocking_waitpid(-1, &status, __WALL | (hang ? 0 : WNOHANG));
+    tid = blocking_waitpid(-1, &status, __WALL);
     DS2LOG(Debug, "wait tid=%d status=%#x", tid, status);
 
     if (tid <= 0)

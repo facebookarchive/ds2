@@ -83,7 +83,7 @@ public:
   void setSignalPass(int signo, bool set) {}
 
 public:
-  virtual ErrorCode wait(int *status = nullptr, bool hang = true);
+  virtual ErrorCode wait(int *status = nullptr);
 
 public:
   static Target::Process *Create(Host::ProcessSpawner &spawner);

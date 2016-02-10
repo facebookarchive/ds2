@@ -126,7 +126,7 @@ ErrorCode Process::attach(int waitStatus) {
   return kSuccess;
 }
 
-ErrorCode Process::wait(int *rstatus, bool hang) {
+ErrorCode Process::wait(int *rstatus) {
   int status, signal;
   struct ptrace_lwpinfo lwpinfo;
   ProcessInfo info;
@@ -137,7 +137,7 @@ ErrorCode Process::wait(int *rstatus, bool hang) {
   DS2ASSERT(!_threads.empty());
 
 continue_waiting:
-  err = super::wait(&status, hang);
+  err = super::wait(&status);
   if (err != kSuccess)
     return err;
 

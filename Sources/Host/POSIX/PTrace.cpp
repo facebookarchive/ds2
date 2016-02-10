@@ -21,12 +21,12 @@ PTrace::PTrace() = default;
 
 PTrace::~PTrace() = default;
 
-ErrorCode PTrace::wait(ProcessThreadId const &ptid, bool hang, int *status) {
+ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   if (ptid.pid <= kAnyProcessId || !(ptid.tid <= kAnyThreadId))
     return kErrorInvalidArgument;
 
   int stat;
-  pid_t wpid = ::waitpid(ptid.pid, &stat, hang ? 0 : WNOHANG);
+  pid_t wpid = ::waitpid(ptid.pid, &stat, 0);
   if (wpid != ptid.pid) {
     switch (errno) {
     case ESRCH:

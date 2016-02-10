@@ -36,7 +36,7 @@ Process::~Process() { CloseHandle(_handle); }
 ErrorCode Process::initialize(ProcessId pid, HANDLE handle, ThreadId tid,
                               HANDLE threadHandle, uint32_t flags) {
   int status;
-  ErrorCode error = wait(&status, true);
+  ErrorCode error = wait(&status);
   if (error != kSuccess)
     return error;
 
@@ -154,7 +154,7 @@ ErrorCode Process::terminate() {
 
 bool Process::isAlive() const { return !_terminated; }
 
-ErrorCode Process::wait(int *status, bool hang) {
+ErrorCode Process::wait(int *status) {
   if (_terminated)
     return kSuccess;
 
@@ -162,7 +162,7 @@ ErrorCode Process::wait(int *status, bool hang) {
   bool keepGoing = true;
 
   while (keepGoing) {
-    BOOL result = WaitForDebugEvent(&de, hang ? INFINITE : 0);
+    BOOL result = WaitForDebugEvent(&de, INFINITE);
     if (!result)
       return Platform::TranslateError();
 

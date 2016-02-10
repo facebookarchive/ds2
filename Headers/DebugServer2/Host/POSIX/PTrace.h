@@ -25,8 +25,7 @@ public:
   virtual ~PTrace();
 
 public:
-  virtual ErrorCode wait(ProcessThreadId const &ptid, bool hang = true,
-                         int *status = nullptr);
+  virtual ErrorCode wait(ProcessThreadId const &ptid, int *status = nullptr);
 
 public:
   virtual ErrorCode traceMe(bool disableASLR) = 0;

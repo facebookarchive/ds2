@@ -53,7 +53,7 @@ public:
   void setSignalPass(int signo, bool set);
 
 public:
-  virtual ErrorCode wait(int *status = nullptr, bool hang = true);
+  virtual ErrorCode wait(int *status = nullptr);
 
 public:
   virtual Host::POSIX::PTrace &ptrace() const = 0;

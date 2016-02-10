@@ -52,7 +52,7 @@ public:
   virtual ErrorCode deallocateMemory(uint64_t address, size_t size);
 
 public:
-  virtual ErrorCode wait(int *status = nullptr, bool hang = true);
+  virtual ErrorCode wait(int *status = nullptr);
 
 public:
   virtual Host::POSIX::PTrace &ptrace() const;

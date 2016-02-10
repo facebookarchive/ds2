@@ -52,7 +52,7 @@ ErrorCode Thread::suspend() {
 
     int status;
     error = process()->ptrace().wait(ProcessThreadId(process()->pid(), tid()),
-                                     true, &status);
+                                     &status);
     if (error != kSuccess) {
       DS2LOG(Error, "failed to wait for tid %d, error=%s\n", tid(),
              strerror(errno));
