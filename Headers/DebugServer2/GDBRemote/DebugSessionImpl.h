@@ -158,8 +158,9 @@ protected:
 protected:
   ErrorCode fetchStopInfoForAllThreads(Session &session,
                                        std::vector<StopCode> &stops,
-                                       StopCode &processStop);
-  ErrorCode createThreadsStopInfo(Session &session, JSArray &threadsStopInfo);
+                                       StopCode &processStop) override;
+  ErrorCode createThreadsStopInfo(Session &session,
+                                  JSArray &threadsStopInfo) override;
 
 private:
   ErrorCode spawnProcess(StringCollection const &args,
