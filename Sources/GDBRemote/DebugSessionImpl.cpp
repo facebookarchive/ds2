@@ -72,7 +72,7 @@ ErrorCode DebugSessionImpl::onInterrupt(Session &) {
 ErrorCode
 DebugSessionImpl::onQuerySupported(Session &session,
                                    Feature::Collection const &remoteFeatures,
-                                   Feature::Collection &localFeatures) {
+                                   Feature::Collection &localFeatures) const {
   for (auto feature : remoteFeatures) {
     DS2LOG(Debug, "gdb feature: %s", feature.name.c_str());
   }
@@ -234,7 +234,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
 
 ErrorCode DebugSessionImpl::onQueryThreadStopInfo(Session &session,
                                                   ProcessThreadId const &ptid,
-                                                  StopCode &stop) {
+                                                  StopCode &stop) const {
   Thread *thread = findThread(ptid);
   if (thread == nullptr)
     return kErrorProcessNotFound;
@@ -243,33 +243,30 @@ ErrorCode DebugSessionImpl::onQueryThreadStopInfo(Session &session,
 }
 
 ErrorCode DebugSessionImpl::onQueryThreadList(Session &, ProcessId pid,
-                                              ThreadId lastTid, ThreadId &tid) {
+                                              ThreadId lastTid,
+                                              ThreadId &tid) const {
   if (_process == nullptr)
     return kErrorProcessNotFound;
 
-  switch (lastTid) {
-  case kAllThreadId:
-    _threadIndex = 0;
-    _process->getThreadIds(_tids);
-    break;
+  std::vector<ThreadId> tids;
 
-  case kAnyThreadId:
-    _threadIndex++;
-    break;
-
-  default:
+  if (lastTid == kAllThreadId) {
+    _process->getThreadIds(tids);
+    _tids.ids = tids;
+    _tids.it = _tids.ids.begin();
+  } else if (lastTid != kAnyThreadId) {
     return kErrorInvalidArgument;
   }
 
-  if (_threadIndex >= _tids.size())
+  if (_tids.it == _tids.ids.end())
     return kErrorNotFound;
 
-  tid = _tids[_threadIndex];
+  tid = *_tids.it++;
   return kSuccess;
 }
 
 ErrorCode DebugSessionImpl::onQueryCurrentThread(Session &,
-                                                 ProcessThreadId &ptid) {
+                                                 ProcessThreadId &ptid) const {
   if (_process == nullptr)
     return kErrorProcessNotFound;
 
@@ -298,7 +295,7 @@ ErrorCode DebugSessionImpl::onThreadIsAlive(Session &session,
 }
 
 ErrorCode DebugSessionImpl::onQueryAttached(Session &, ProcessId pid,
-                                            bool &attachedProcess) {
+                                            bool &attachedProcess) const {
   if (_process == nullptr)
     return kErrorProcessNotFound;
   if (pid != kAnyProcessId && pid != kAllProcessId && pid != _process->pid())
@@ -308,7 +305,8 @@ ErrorCode DebugSessionImpl::onQueryAttached(Session &, ProcessId pid,
   return kSuccess;
 }
 
-ErrorCode DebugSessionImpl::onQueryProcessInfo(Session &, ProcessInfo &info) {
+ErrorCode DebugSessionImpl::onQueryProcessInfo(Session &,
+                                               ProcessInfo &info) const {
   if (_process == nullptr)
     return kErrorProcessNotFound;
   else
@@ -316,7 +314,7 @@ ErrorCode DebugSessionImpl::onQueryProcessInfo(Session &, ProcessInfo &info) {
 }
 
 ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
-                                                RegisterInfo &info) {
+                                                RegisterInfo &info) const {
   Architecture::LLDBRegisterInfo reginfo;
   Architecture::LLDBDescriptor const *desc =
       _process->getLLDBRegistersDescriptor();
@@ -433,7 +431,7 @@ ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
 
 ErrorCode
 DebugSessionImpl::onQuerySharedLibrariesInfoAddress(Session &,
-                                                    Address &address) {
+                                                    Address &address) const {
   if (_process == nullptr)
     return kErrorProcessNotFound;
 
@@ -784,9 +782,9 @@ ErrorCode DebugSessionImpl::onDeallocateMemory(Session &,
   return kSuccess;
 }
 
-ErrorCode DebugSessionImpl::onQueryMemoryRegionInfo(Session &,
-                                                    Address const &address,
-                                                    MemoryRegionInfo &info) {
+ErrorCode
+DebugSessionImpl::onQueryMemoryRegionInfo(Session &, Address const &address,
+                                          MemoryRegionInfo &info) const {
   if (_process == nullptr)
     return kErrorProcessNotFound;
   else
@@ -803,7 +801,7 @@ DebugSessionImpl::onSetProgramArguments(Session &,
   return kSuccess;
 }
 
-ErrorCode DebugSessionImpl::onQueryLaunchSuccess(Session &, ProcessId) {
+ErrorCode DebugSessionImpl::onQueryLaunchSuccess(Session &, ProcessId) const {
   return kSuccess;
 }
 

@@ -55,7 +55,7 @@ ErrorCode DummySessionDelegateImpl::onAllowOperations(
 }
 
 ErrorCode DummySessionDelegateImpl::onQuerySupported(
-    Session &, Feature::Collection const &, Feature::Collection &) {
+    Session &, Feature::Collection const &, Feature::Collection &) const {
   return kSuccess;
 }
 
@@ -74,7 +74,7 @@ DummySessionDelegateImpl::onExecuteCommand(Session &session,
 
 ErrorCode
 DummySessionDelegateImpl::onQueryServerVersion(Session &,
-                                               ServerVersion &version) {
+                                               ServerVersion &version) const {
   // TODO use #defines
   version.name = "DebugServer2";
   version.version = "1.0.0";
@@ -86,7 +86,8 @@ DummySessionDelegateImpl::onQueryServerVersion(Session &,
   return kSuccess;
 }
 
-ErrorCode DummySessionDelegateImpl::onQueryHostInfo(Session &, HostInfo &info) {
+ErrorCode DummySessionDelegateImpl::onQueryHostInfo(Session &,
+                                                    HostInfo &info) const {
   info.cpuType = Platform::GetCPUType();
   info.cpuSubType = Platform::GetCPUSubType();
   info.osType = Platform::GetOSTypeName();
@@ -139,12 +140,12 @@ ErrorCode DummySessionDelegateImpl::onProgramSignals(Session &,
 ErrorCode DummySessionDelegateImpl::onQuerySymbol(Session &,
                                                   std::string const &,
                                                   std::string const &,
-                                                  std::string &) {
+                                                  std::string &) const {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryRegisterInfo(Session &, uint32_t,
-                                                        RegisterInfo &) {
+                                                        RegisterInfo &) const {
   return kErrorUnsupported;
 }
 
@@ -169,34 +170,36 @@ ErrorCode DummySessionDelegateImpl::onDetach(Session &, ProcessId, bool) {
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryAttached(Session &, ProcessId,
-                                                    bool &) {
+                                                    bool &) const {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryProcessInfo(Session &,
-                                                       ProcessInfo &) {
+                                                       ProcessInfo &) const {
   return kErrorUnsupported;
 }
 
-ErrorCode DummySessionDelegateImpl::onQueryHardwareWatchpointCount(Session &,
-                                                                   size_t &) {
+ErrorCode
+DummySessionDelegateImpl::onQueryHardwareWatchpointCount(Session &,
+                                                         size_t &) const {
   return kSuccess;
 }
 
 ErrorCode DummySessionDelegateImpl::onQuerySectionOffsets(Session &, Address &,
-                                                          Address &, bool &) {
+                                                          Address &,
+                                                          bool &) const {
   return kSuccess;
 }
 
 ErrorCode
 DummySessionDelegateImpl::onQuerySharedLibrariesInfoAddress(Session &,
-                                                            Address &) {
+                                                            Address &) const {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onQuerySharedLibraryInfo(
     Session &session, std::string const &path, std::string const &triple,
-    SharedLibraryInfo &info) {
+    SharedLibraryInfo &info) const {
   return kErrorUnsupported;
 }
 
@@ -226,17 +229,19 @@ ErrorCode DummySessionDelegateImpl::onSynchronizeThreadState(Session &,
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryThreadList(Session &, ProcessId,
-                                                      ThreadId, ThreadId &) {
+                                                      ThreadId,
+                                                      ThreadId &) const {
   return kErrorUnsupported;
 }
 
-ErrorCode DummySessionDelegateImpl::onQueryCurrentThread(Session &,
-                                                         ProcessThreadId &) {
+ErrorCode
+DummySessionDelegateImpl::onQueryCurrentThread(Session &,
+                                               ProcessThreadId &) const {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryThreadStopInfo(
-    Session &, ProcessThreadId const &, StopCode &) {
+    Session &, ProcessThreadId const &, StopCode &) const {
   return kErrorUnsupported;
 }
 
@@ -247,7 +252,7 @@ ErrorCode DummySessionDelegateImpl::onThreadIsAlive(Session &,
 
 ErrorCode DummySessionDelegateImpl::onQueryThreadInfo(Session &,
                                                       ProcessThreadId const &,
-                                                      uint32_t, void *) {
+                                                      uint32_t, void *) const {
   return kErrorUnsupported;
 }
 
@@ -255,13 +260,13 @@ ErrorCode DummySessionDelegateImpl::onQueryTLSAddress(Session &,
                                                       ProcessThreadId const &,
                                                       Address const &,
                                                       Address const &,
-                                                      Address &) {
+                                                      Address &) const {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryTIBAddress(Session &,
                                                       ProcessThreadId const &,
-                                                      Address &) {
+                                                      Address &) const {
   return kErrorUnsupported;
 }
 
@@ -272,7 +277,7 @@ ErrorCode DummySessionDelegateImpl::onEnableAsynchronousProfiling(
 
 ErrorCode DummySessionDelegateImpl::onQueryProfileData(Session &,
                                                        ProcessThreadId const &,
-                                                       uint32_t, void *) {
+                                                       uint32_t, void *) const {
   return kErrorUnsupported;
 }
 
@@ -337,7 +342,7 @@ ErrorCode DummySessionDelegateImpl::onDeallocateMemory(Session &,
 
 ErrorCode
 DummySessionDelegateImpl::onQueryMemoryRegionInfo(Session &, Address const &,
-                                                  MemoryRegionInfo &) {
+                                                  MemoryRegionInfo &) const {
   return kErrorUnsupported;
 }
 
@@ -518,12 +523,13 @@ ErrorCode DummySessionDelegateImpl::onFileGetSize(Session &,
 
 ErrorCode DummySessionDelegateImpl::onQueryProcessList(Session &,
                                                        ProcessInfoMatch const &,
-                                                       bool, ProcessInfo &) {
+                                                       bool,
+                                                       ProcessInfo &) const {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryProcessInfo(Session &, ProcessId,
-                                                       ProcessInfo &) {
+                                                       ProcessInfo &) const {
   return kErrorUnsupported;
 }
 
@@ -534,23 +540,23 @@ ErrorCode DummySessionDelegateImpl::onLaunchDebugServer(Session &,
   return kErrorUnsupported;
 }
 
-ErrorCode DummySessionDelegateImpl::onQueryLaunchSuccess(Session &, ProcessId) {
+ErrorCode DummySessionDelegateImpl::onQueryLaunchSuccess(Session &,
+                                                         ProcessId) const {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryUserName(Session &, UserId const &,
-                                                    std::string &) {
+                                                    std::string &) const {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryGroupName(Session &, GroupId const &,
-                                                     std::string &) {
+                                                     std::string &) const {
   return kErrorUnsupported;
 }
 
-ErrorCode
-DummySessionDelegateImpl::onQueryWorkingDirectory(Session &,
-                                                  std::string &woringDir) {
+ErrorCode DummySessionDelegateImpl::onQueryWorkingDirectory(
+    Session &, std::string &woringDir) const {
   return kErrorUnsupported;
 }
 

@@ -43,14 +43,14 @@ protected: // Common
                     std::map<std::string, bool> const &operations) override;
   ErrorCode onQuerySupported(Session &session,
                              Feature::Collection const &remoteFeatures,
-                             Feature::Collection &localFeatures) override;
+                             Feature::Collection &localFeatures) const override;
 
   ErrorCode onExecuteCommand(Session &session,
                              std::string const &command) override;
 
   ErrorCode onQueryServerVersion(Session &session,
-                                 ServerVersion &version) override;
-  ErrorCode onQueryHostInfo(Session &session, HostInfo &info) override;
+                                 ServerVersion &version) const override;
+  ErrorCode onQueryHostInfo(Session &session, HostInfo &info) const override;
 
 protected: // Debugging Session
   ErrorCode onEnableControlAgent(Session &session, bool enable) override;
@@ -63,10 +63,11 @@ protected: // Debugging Session
                              std::vector<int> const &signals) override;
 
   ErrorCode onQuerySymbol(Session &session, std::string const &name,
-                          std::string const &value, std::string &next) override;
+                          std::string const &value,
+                          std::string &next) const override;
 
   ErrorCode onQueryRegisterInfo(Session &session, uint32_t regno,
-                                RegisterInfo &info) override;
+                                RegisterInfo &info) const override;
 
   ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
                      StopCode &stop) override;
@@ -77,19 +78,21 @@ protected: // Debugging Session
                         StopCode &stop) override;
   ErrorCode onDetach(Session &session, ProcessId pid, bool stopped) override;
   ErrorCode onQueryAttached(Session &session, ProcessId pid,
-                            bool &attachedProcess) override;
-  ErrorCode onQueryProcessInfo(Session &session, ProcessInfo &info) override;
+                            bool &attachedProcess) const override;
+  ErrorCode onQueryProcessInfo(Session &session,
+                               ProcessInfo &info) const override;
 
   ErrorCode onQueryHardwareWatchpointCount(Session &session,
-                                           size_t &count) override;
+                                           size_t &count) const override;
 
   ErrorCode onQuerySectionOffsets(Session &session, Address &text,
-                                  Address &data, bool &isSegment) override;
+                                  Address &data,
+                                  bool &isSegment) const override;
   ErrorCode onQuerySharedLibrariesInfoAddress(Session &session,
-                                              Address &address) override;
+                                              Address &address) const override;
   ErrorCode onQuerySharedLibraryInfo(Session &session, std::string const &path,
                                      std::string const &triple,
-                                     SharedLibraryInfo &info) override;
+                                     SharedLibraryInfo &info) const override;
 
   ErrorCode onRestart(Session &session, ProcessId pid) override;
   ErrorCode onInterrupt(Session &session) override;
@@ -105,30 +108,30 @@ protected: // Debugging Session
   // the one specified.
   //
   ErrorCode onQueryThreadList(Session &session, ProcessId pid, ThreadId lastTid,
-                              ThreadId &tid) override;
+                              ThreadId &tid) const override;
 
   ErrorCode onQueryThreadStopInfo(Session &session, ProcessThreadId const &ptid,
-                                  StopCode &stop) override;
+                                  StopCode &stop) const override;
 
   ErrorCode onQueryCurrentThread(Session &session,
-                                 ProcessThreadId &ptid) override;
+                                 ProcessThreadId &ptid) const override;
   ErrorCode onThreadIsAlive(Session &session,
                             ProcessThreadId const &ptid) override;
   ErrorCode onQueryThreadInfo(Session &session, ProcessThreadId const &ptid,
-                              uint32_t mode, void *info) override;
+                              uint32_t mode, void *info) const override;
 
   ErrorCode onQueryTLSAddress(Session &session, ProcessThreadId const &ptid,
                               Address const &offset, Address const &linkMap,
-                              Address &address) override;
+                              Address &address) const override;
   ErrorCode onQueryTIBAddress(Session &session, ProcessThreadId const &ptid,
-                              Address &address) override;
+                              Address &address) const override;
 
   ErrorCode onEnableAsynchronousProfiling(Session &session,
                                           ProcessThreadId const &ptid,
                                           bool enabled, uint32_t interval,
                                           uint32_t scanType) override;
   ErrorCode onQueryProfileData(Session &session, ProcessThreadId const &ptid,
-                               uint32_t scanType, void *data) override;
+                               uint32_t scanType, void *data) const override;
 
   ErrorCode onResume(Session &session,
                      ThreadResumeAction::Collection const &actions,
@@ -162,7 +165,7 @@ protected: // Debugging Session
   ErrorCode onDeallocateMemory(Session &session,
                                Address const &address) override;
   ErrorCode onQueryMemoryRegionInfo(Session &session, Address const &address,
-                                    MemoryRegionInfo &info) override;
+                                    MemoryRegionInfo &info) const override;
 
   ErrorCode onComputeCRC(Session &session, Address const &address,
                          size_t length, uint32_t &crc) override;
@@ -257,21 +260,22 @@ protected: // Platform Session
                           uint64_t &size) override;
 
   ErrorCode onQueryProcessList(Session &session, ProcessInfoMatch const &match,
-                               bool first, ProcessInfo &info) override;
+                               bool first, ProcessInfo &info) const override;
   ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
-                               ProcessInfo &info) override;
+                               ProcessInfo &info) const override;
 
   ErrorCode onLaunchDebugServer(Session &session, std::string const &host,
                                 uint16_t &port, ProcessId &pid) override;
 
-  ErrorCode onQueryLaunchSuccess(Session &session, ProcessId pid) override;
+  ErrorCode onQueryLaunchSuccess(Session &session,
+                                 ProcessId pid) const override;
 
   ErrorCode onQueryUserName(Session &session, UserId const &uid,
-                            std::string &name) override;
+                            std::string &name) const override;
   ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
-                             std::string &name) override;
+                             std::string &name) const override;
   ErrorCode onQueryWorkingDirectory(Session &session,
-                                    std::string &workingDir) override;
+                                    std::string &workingDir) const override;
 
 protected: // System Session
   void onReset(Session &session) override;

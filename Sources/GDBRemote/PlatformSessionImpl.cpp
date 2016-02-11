@@ -25,27 +25,28 @@ namespace ds2 {
 namespace GDBRemote {
 
 PlatformSessionImpl::PlatformSessionImpl()
-    : DummySessionDelegateImpl(), _processIndex(0), _disableASLR(false),
+    : DummySessionDelegateImpl(), _disableASLR(false),
       _workingDirectory(Platform::GetWorkingDirectory()) {}
 
 ErrorCode PlatformSessionImpl::onQueryProcessList(Session &session,
                                                   ProcessInfoMatch const &match,
                                                   bool first,
-                                                  ProcessInfo &info) {
+                                                  ProcessInfo &info) const {
   if (first) {
     updateProcesses(match);
   }
 
-  if (_processIndex >= _processes.size())
-    return kErrorNotFound;
+  if (_pids.it == _pids.ids.end())
+    return kErrorProcessNotFound;
 
-  info =
-      *static_cast<ds2::GDBRemote::ProcessInfo *>(&_processes[_processIndex++]);
+  if (!Platform::GetProcessInfo(*_pids.it++, info))
+    return kErrorProcessNotFound;
+
   return kSuccess;
 }
 
 ErrorCode PlatformSessionImpl::onQueryProcessInfo(Session &, ProcessId pid,
-                                                  ProcessInfo &info) {
+                                                  ProcessInfo &info) const {
   if (!Platform::GetProcessInfo(pid, info))
     return kErrorProcessNotFound;
   else
@@ -111,7 +112,7 @@ ErrorCode PlatformSessionImpl::onFileExists(Session &,
 }
 
 ErrorCode PlatformSessionImpl::onQueryUserName(Session &, UserId const &uid,
-                                               std::string &name) {
+                                               std::string &name) const {
   if (!Platform::GetUserName(uid, name))
     return kErrorNotFound;
   else
@@ -119,7 +120,7 @@ ErrorCode PlatformSessionImpl::onQueryUserName(Session &, UserId const &uid,
 }
 
 ErrorCode PlatformSessionImpl::onQueryGroupName(Session &, GroupId const &gid,
-                                                std::string &name) {
+                                                std::string &name) const {
   if (!Platform::GetGroupName(gid, name))
     return kErrorNotFound;
   else
@@ -128,7 +129,7 @@ ErrorCode PlatformSessionImpl::onQueryGroupName(Session &, GroupId const &gid,
 
 ErrorCode
 PlatformSessionImpl::onQueryWorkingDirectory(Session &,
-                                             std::string &workingDir) {
+                                             std::string &workingDir) const {
   workingDir = _workingDirectory;
   return kSuccess;
 }
@@ -169,14 +170,13 @@ ErrorCode PlatformSessionImpl::onLaunchDebugServer(Session &session,
   return kSuccess;
 }
 
-void PlatformSessionImpl::updateProcesses(ProcessInfoMatch const &match) {
-  _processIndex = 0;
-  _processes.clear();
-
+void PlatformSessionImpl::updateProcesses(ProcessInfoMatch const &match) const {
   // TODO(fjricci) we should only add processes that match "match"
   Platform::EnumerateProcesses(
       true, UserId(),
-      [&](ds2::ProcessInfo const &info) { _processes.push_back(info); });
+      [&](ds2::ProcessInfo const &info) { _pids.ids.push_back(info.pid); });
+
+  _pids.it = _pids.ids.begin();
 }
 
 ErrorCode PlatformSessionImpl::onDisableASLR(Session &, bool disable) {
@@ -243,7 +243,8 @@ PlatformSessionImpl::onSetProgramArguments(Session &,
   return kSuccess;
 }
 
-ErrorCode PlatformSessionImpl::onQueryLaunchSuccess(Session &, ProcessId) {
+ErrorCode PlatformSessionImpl::onQueryLaunchSuccess(Session &,
+                                                    ProcessId) const {
   return kSuccess;
 }
 }
