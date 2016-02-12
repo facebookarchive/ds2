@@ -9,22 +9,12 @@
 //
 
 #include "DebugServer2/Support/Stringify.h"
+#include "DebugServer2/Support/StringifyPrivate.h"
 #include "DebugServer2/Utils/Log.h"
 
 namespace ds2 {
 namespace Support {
 namespace Windows {
-
-#define DO_STRINGIFY(VALUE)                                                    \
-  case VALUE:                                                                  \
-    return #VALUE;
-
-#define DO_DEFAULT(MESSAGE, VALUE)                                             \
-  default:                                                                     \
-    if (dieOnFail)                                                             \
-      DS2BUG(MESSAGE ": %#lx", VALUE);                                         \
-    else                                                                       \
-      return nullptr;
 
 char const *Stringify::ExceptionCode(DWORD code, bool dieOnFail) {
   switch (code) {
