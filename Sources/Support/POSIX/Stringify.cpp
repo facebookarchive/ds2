@@ -20,7 +20,7 @@ namespace ds2 {
 namespace Support {
 namespace POSIX {
 
-char const *Stringify::Signal(int signal, bool dieOnFail) {
+char const *Stringify::Signal(int signal) {
   // SIGRTMIN can expand to a glibc call (not usable in a switch statement), so
   // check for it first.
   if (signal == SIGRTMIN)
@@ -64,7 +64,7 @@ char const *Stringify::Signal(int signal, bool dieOnFail) {
   }
 }
 
-char const *Stringify::SignalCode(int signal, int code, bool dieOnFail) {
+char const *Stringify::SignalCode(int signal, int code) {
   switch (signal) {
   case SIGILL:
     switch (code) {
@@ -98,7 +98,7 @@ char const *Stringify::SignalCode(int signal, int code, bool dieOnFail) {
   }
 }
 
-char const *Stringify::Errno(int error, bool dieOnFail) {
+char const *Stringify::Errno(int error) {
   switch (error) {
     DO_STRINGIFY(E2BIG)
     DO_STRINGIFY(EACCES)
@@ -237,7 +237,7 @@ char const *Stringify::Errno(int error, bool dieOnFail) {
   }
 }
 
-char const *Stringify::Ptrace(int code, bool dieOnFail) {
+char const *Stringify::Ptrace(int code) {
   switch (code) {
 #if defined(OS_LINUX)
     DO_STRINGIFY(PTRACE_ATTACH)

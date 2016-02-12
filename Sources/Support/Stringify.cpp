@@ -15,7 +15,7 @@
 namespace ds2 {
 namespace Support {
 
-char const *Stringify::Error(ErrorCode error, bool dieOnFail) {
+char const *Stringify::Error(ErrorCode error) {
   switch (error) {
     DO_STRINGIFY(kSuccess)
     DO_STRINGIFY(kErrorNoPermission)

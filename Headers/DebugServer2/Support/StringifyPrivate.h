@@ -17,9 +17,6 @@
 
 #define DO_DEFAULT(MESSAGE, VALUE)                                             \
   default:                                                                     \
-    if (dieOnFail)                                                             \
-      DS2BUG(MESSAGE ": %#x", VALUE);                                          \
-    else                                                                       \
-      return nullptr;
+    DS2BUG(MESSAGE ": %#x", VALUE);
 
 #endif // !__DebugServer2_Support_StringifyPrivate_h

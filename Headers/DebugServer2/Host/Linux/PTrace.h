@@ -102,7 +102,7 @@ protected:
     typedef enum __ptrace_request ptrace_request_t;
 #endif
     DS2LOG(Debug, "running ptrace command %s on pid %d",
-           Stringify::Ptrace(request, false), pid);
+           Stringify::Ptrace(request), pid);
     return ::ptrace(static_cast<ptrace_request_t>(request), pid,
                     (void *)(uintptr_t)addr, (void *)(uintptr_t)data);
   }
