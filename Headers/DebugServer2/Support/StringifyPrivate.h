@@ -17,6 +17,11 @@
 
 #define DO_DEFAULT(MESSAGE, VALUE)                                             \
   default:                                                                     \
-    DS2BUG(MESSAGE ": %#x", VALUE);
+    do {                                                                       \
+      DS2LOG(Warning, MESSAGE ": %#lx", (unsigned long)VALUE);                 \
+      static thread_local char tmp[20];                                        \
+      ::snprintf(tmp, sizeof(tmp), "%#lx", (unsigned long)VALUE);              \
+      return tmp;                                                              \
+    } while (0);
 
 #endif // !__DebugServer2_Support_StringifyPrivate_h
