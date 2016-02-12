@@ -319,10 +319,10 @@ std::string Socket::address() const {
     return std::string();
   }
 
+  auto func = listening() ? ::getsockname : ::getpeername;
   struct sockaddr_storage ss;
   socklen_t sslen = sizeof(ss);
-  if (::getsockname(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen) <
-      0) {
+  if (func(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen) < 0) {
     return std::string();
   }
 
@@ -355,10 +355,10 @@ std::string Socket::port() const {
     return std::string();
   }
 
+  auto func = listening() ? ::getsockname : ::getpeername;
   struct sockaddr_storage ss;
   socklen_t sslen = sizeof(ss);
-  if (::getsockname(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen) <
-      0) {
+  if (func(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen) < 0) {
     return std::string();
   }
 
