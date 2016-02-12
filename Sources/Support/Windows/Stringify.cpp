@@ -16,7 +16,7 @@ namespace ds2 {
 namespace Support {
 namespace Windows {
 
-char const *Stringify::ExceptionCode(DWORD code, bool dieOnFail) {
+char const *Stringify::ExceptionCode(DWORD code) {
   switch (code) {
     DO_STRINGIFY(EXCEPTION_ACCESS_VIOLATION)
     DO_STRINGIFY(EXCEPTION_ARRAY_BOUNDS_EXCEEDED)

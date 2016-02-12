@@ -35,7 +35,7 @@ class Stringify
 #endif
 {
 public:
-  static char const *Error(ErrorCode error, bool dieOnFail = true);
+  static char const *Error(ErrorCode error);
 };
 }
 }
