@@ -14,7 +14,7 @@ from subprocess import check_call
 
 packages = []
 
-linux_packages = { 'Linux-ARM':     'g++-4.7-arm-linux-gnueabi',
+linux_packages = { 'Linux-ARM':     'g++-4.8-arm-linux-gnueabihf',
                    'Linux-X86':     'g++-5-multilib',
                    'Linux-X86_64':  'g++-5' }
 
