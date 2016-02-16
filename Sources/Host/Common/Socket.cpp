@@ -20,19 +20,19 @@
 #include <ws2tcpip.h>
 #define SOCK_ERRNO WSAGetLastError()
 #define SOCK_WOULDBLOCK WSAEWOULDBLOCK
-#else
+#elif defined(OS_LINUX) || defined(OS_FREEBSD)
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <poll.h>
-#include <sys/socket.h>
 #include <unistd.h>
 #define SOCK_ERRNO errno
 #define SOCK_WOULDBLOCK EAGAIN
 #endif
 
+#include <algorithm>
 #include <cstring>
 
 namespace ds2 {
@@ -314,47 +314,43 @@ std::string Socket::error() const {
 #endif
 }
 
-std::string Socket::address() const {
+bool Socket::getSocketInfo(struct sockaddr_storage *ss) const {
   if (_handle == INVALID_SOCKET) {
-    return std::string();
+    return false;
   }
 
+  socklen_t sslen = sizeof(struct sockaddr_storage);
   auto func = listening() ? ::getsockname : ::getpeername;
+  return func(_handle, reinterpret_cast<struct sockaddr *>(ss), &sslen) >= 0;
+}
+
+std::string Socket::address() const {
   struct sockaddr_storage ss;
-  socklen_t sslen = sizeof(ss);
-  if (func(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen) < 0) {
+  if (!getSocketInfo(&ss)) {
     return std::string();
   }
 
+  char addressStr[std::max(INET_ADDRSTRLEN, INET6_ADDRSTRLEN)];
   switch (ss.ss_family) {
-  case AF_INET: {
-    char addressStr[INET_ADDRSTRLEN];
+  case AF_INET:
     inet_ntop(AF_INET,
               &reinterpret_cast<struct sockaddr_in *>(&ss)->sin_addr.s_addr,
               addressStr, sizeof(addressStr));
-    return addressStr;
-  } break;
-  case AF_INET6: {
-    char addressStr[INET6_ADDRSTRLEN];
+    break;
+  case AF_INET6:
     inet_ntop(AF_INET6,
               &reinterpret_cast<struct sockaddr_in6 *>(&ss)->sin6_addr.s6_addr,
               addressStr, sizeof(addressStr));
-    return addressStr;
-  } break;
+    break;
   default:
     DS2BUG("unknown socket family: %u", (unsigned int)ss.ss_family);
   }
+  return addressStr;
 }
 
 std::string Socket::port() const {
-  if (_handle == INVALID_SOCKET) {
-    return std::string();
-  }
-
-  auto func = listening() ? ::getsockname : ::getpeername;
   struct sockaddr_storage ss;
-  socklen_t sslen = sizeof(ss);
-  if (func(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen) < 0) {
+  if (!getSocketInfo(&ss)) {
     return std::string();
   }
 

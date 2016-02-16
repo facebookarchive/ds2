@@ -15,6 +15,8 @@
 
 #if defined(OS_WIN32)
 #include <winsock2.h>
+#elif defined(OS_LINUX) || defined(OS_FREEBSD)
+#include <sys/socket.h>
 #endif
 
 namespace ds2 {
@@ -62,6 +64,9 @@ public:
   inline bool listen(std::string const &port) { return listen(nullptr, port); }
   Socket *accept();
   bool connect(std::string const &host, std::string const &port);
+
+protected:
+  bool getSocketInfo(struct sockaddr_storage *ss) const;
 
 public:
   std::string address() const;
