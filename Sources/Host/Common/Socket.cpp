@@ -326,28 +326,24 @@ std::string Socket::address() const {
     return std::string();
   }
 
-  std::string result;
-
   switch (ss.ss_family) {
   case AF_INET: {
     char addressStr[INET_ADDRSTRLEN];
     inet_ntop(AF_INET,
               &reinterpret_cast<struct sockaddr_in *>(&ss)->sin_addr.s_addr,
               addressStr, sizeof(addressStr));
-    result.assign(addressStr);
+    return addressStr;
   } break;
   case AF_INET6: {
     char addressStr[INET6_ADDRSTRLEN];
     inet_ntop(AF_INET6,
               &reinterpret_cast<struct sockaddr_in6 *>(&ss)->sin6_addr.s6_addr,
               addressStr, sizeof(addressStr));
-    result.assign(addressStr);
+    return addressStr;
   } break;
   default:
     DS2BUG("unknown socket family: %u", (unsigned int)ss.ss_family);
   }
-
-  return result;
 }
 
 std::string Socket::port() const {
