@@ -129,9 +129,9 @@ dependencies.
 
 ### Cross compiling for Linux-ARM
 
-Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install
-`gcc-4.7-arm-linux-gnueabi` and `g++-4.7-arm-linux-gnueabi` and use the
-provided toolchain file.
+Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install an arm
+toolchain (for instance `g++-4.8-arm-linux-gnueabihf`) and use the provided
+toolchain file.
 
 ```sh
 cd ds2
