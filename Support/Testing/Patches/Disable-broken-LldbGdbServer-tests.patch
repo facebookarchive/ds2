@@ -42,11 +42,3 @@ index 03dcc84..2c40d9b 100644
      def test_Hc_then_Csignal_signals_correct_thread_launch_llgs_dwarf(self):
          self.init_llgs_test()
          self.buildDwarf()
-@@ -1521,6 +1526,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
- 
-     @llgs_test
-     @dwarf_test
-+    @unittest2.expectedFailure
-     def test_P_and_p_thread_suffix_work_llgs_dwarf(self):
-         self.init_llgs_test()
-         self.buildDwarf()
