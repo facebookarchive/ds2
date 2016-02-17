@@ -1033,7 +1033,7 @@ void Session::Handle_P(ProtocolInterpreter::Handler const &,
     // is deduced from current process.
     //
     if (*ptidptr++ == ';') {
-      if (!ptid.parse(eptr, kCompatibilityModeLLDBThread)) {
+      if (!ptid.parse(ptidptr, kCompatibilityModeLLDBThread)) {
         sendError(kErrorInvalidArgument);
         return;
       }
