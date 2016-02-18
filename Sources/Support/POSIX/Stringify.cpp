@@ -14,6 +14,7 @@
 
 #include <errno.h>
 #include <signal.h>
+#include <sys/types.h>
 #include <sys/ptrace.h>
 
 namespace ds2 {
@@ -21,10 +22,12 @@ namespace Support {
 namespace POSIX {
 
 char const *Stringify::Signal(int signal) {
+#if !defined(OS_DARWIN)
   // SIGRTMIN can expand to a glibc call (not usable in a switch statement), so
   // check for it first.
   if (signal == SIGRTMIN)
     return "SIGRTMIN";
+#endif
 
   switch (signal) {
     DO_STRINGIFY(SIGABRT)

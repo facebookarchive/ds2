@@ -13,7 +13,7 @@
 
 #include "DebugServer2/Base.h"
 
-#if defined(OS_LINUX) || defined(OS_FREEBSD)
+#if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_DARWIN)
 #include "DebugServer2/Host/POSIX/ProcessSpawner.h"
 #elif defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/ProcessSpawner.h"

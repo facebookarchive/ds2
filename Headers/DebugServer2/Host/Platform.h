@@ -19,6 +19,8 @@
 #include "DebugServer2/Host/Linux/Platform.h"
 #elif defined(OS_FREEBSD)
 #include "DebugServer2/Host/FreeBSD/Platform.h"
+#elif defined(OS_DARWIN)
+#include "DebugServer2/Host/Darwin/Platform.h"
 #else
 #error "Target not supported."
 #endif
@@ -32,6 +34,8 @@ using Windows::Platform;
 using Linux::Platform;
 #elif defined(OS_FREEBSD)
 using FreeBSD::Platform;
+#elif defined(OS_DARWIN)
+using Darwin::Platform;
 #else
 #error "Target not supported."
 #endif

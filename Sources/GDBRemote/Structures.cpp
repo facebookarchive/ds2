@@ -21,7 +21,7 @@
 #include <iomanip>
 #include <sstream>
 
-#if defined(OS_LINUX) || defined(OS_FREEBSD)
+#if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_DARWIN)
 #define FORMAT_ID(ID) ID
 #elif defined(OS_WIN32)
 #define FORMAT_ID(ID) 0

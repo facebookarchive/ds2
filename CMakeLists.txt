@@ -104,6 +104,14 @@ set(HOST_Linux_SOURCES
     Sources/Host/Linux/${ARCH_NAME}/PTrace${ARCH_NAME}.cpp
     )
 
+set(HOST_Darwin_SOURCES
+    ${HOST_POSIX_SOURCES}
+    Sources/Host/Darwin/LibProc.cpp
+    Sources/Host/Darwin/Platform.cpp
+    Sources/Host/Darwin/PTrace.cpp
+    Sources/Host/Darwin/${ARCH_NAME}/PTrace${ARCH_NAME}.cpp
+    )
+
 set(HOST_FreeBSD_SOURCES
     ${HOST_POSIX_SOURCES}
     Sources/Host/FreeBSD/ProcStat.cpp
@@ -122,13 +130,17 @@ set(TARGET_COMMON_SOURCES
     Sources/Target/ThreadBase.cpp
     )
 
-set(TARGET_POSIX_SOURCES
+set(TARGET_POSIX_ELF_SOURCES
     Sources/Target/POSIX/ELFProcess.cpp
+    )
+
+set(TARGET_POSIX_SOURCES
     Sources/Target/POSIX/Process.cpp
     Sources/Target/POSIX/Thread.cpp
     )
 
 set(TARGET_Linux_SOURCES
+    ${TARGET_POSIX_ELF_SOURCES}
     ${TARGET_POSIX_SOURCES}
     Sources/Target/Linux/${ARCH_NAME}/Process${ARCH_NAME}.cpp
     Sources/Target/Linux/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
@@ -136,7 +148,17 @@ set(TARGET_Linux_SOURCES
     Sources/Target/Linux/Thread.cpp
     )
 
+set(TARGET_Darwin_SOURCES
+    ${TARGET_POSIX_SOURCES}
+    Sources/Target/Darwin/MachOProcess.cpp
+    Sources/Target/Darwin/Process.cpp
+    Sources/Target/Darwin/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
+    Sources/Target/Darwin/${ARCH_NAME}/Process${ARCH_NAME}.cpp
+    Sources/Target/Darwin/Thread.cpp
+    )
+
 set(TARGET_FreeBSD_SOURCES
+    ${TARGET_POSIX_ELF_SOURCES}
     ${TARGET_POSIX_SOURCES}
     Sources/Target/FreeBSD/Process.cpp
     Sources/Target/FreeBSD/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
@@ -182,17 +204,26 @@ set(SUPPORT_COMMON_SOURCES
     Sources/main.cpp
     )
 
-set(SUPPORT_POSIX_SOURCES
+set(SUPPORT_POSIX_ELF_SOURCES
     Sources/Support/POSIX/ELFSupport.cpp
+    )
+
+set(SUPPORT_POSIX_SOURCES
     Sources/Support/POSIX/FaultHandler.cpp
     Sources/Support/POSIX/Stringify.cpp
     )
 
 set(SUPPORT_Linux_SOURCES
+    ${SUPPORT_POSIX_ELF_SOURCES}
+    ${SUPPORT_POSIX_SOURCES}
+    )
+
+set(SUPPORT_Darwin_SOURCES
     ${SUPPORT_POSIX_SOURCES}
     )
 
 set(SUPPORT_FreeBSD_SOURCES
+    ${SUPPORT_POSIX_ELF_SOURCES}
     ${SUPPORT_POSIX_SOURCES}
     )
 

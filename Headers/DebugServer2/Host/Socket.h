@@ -15,7 +15,7 @@
 
 #if defined(OS_WIN32)
 #include <winsock2.h>
-#elif defined(OS_LINUX) || defined(OS_FREEBSD)
+#elif defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_DARWIN)
 #include <sys/socket.h>
 #endif
 
@@ -26,7 +26,7 @@ class Socket : public Channel {
 private:
 #if defined(OS_WIN32)
   typedef int socklen_t;
-#elif defined(OS_LINUX) || defined(OS_FREEBSD)
+#elif defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_DARWIN)
   typedef int SOCKET;
   static SOCKET const INVALID_SOCKET = -1;
 #endif

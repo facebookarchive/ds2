@@ -20,7 +20,7 @@
 #include <ws2tcpip.h>
 #define SOCK_ERRNO WSAGetLastError()
 #define SOCK_WOULDBLOCK WSAEWOULDBLOCK
-#elif defined(OS_LINUX) || defined(OS_FREEBSD)
+#elif defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_DARWIN)
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>

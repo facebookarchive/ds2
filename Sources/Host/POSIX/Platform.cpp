@@ -22,7 +22,7 @@
 #include <string>
 #include <unistd.h>
 
-#if defined(OS_FREEBSD)
+#if defined(OS_FREEBSD) || defined(OS_DARWIN)
 #include <sys/types.h>
 #include <sys/socket.h>
 
@@ -32,6 +32,8 @@ extern char **environ;
 // TODO HAVE_ENDIAN_H, HAVE_SYS_ENDIAN_H
 #if defined(OS_LINUX)
 #include <endian.h>
+#elif defined(OS_DARWIN)
+#include <machine/endian.h>
 #else
 #include <sys/endian.h>
 #endif

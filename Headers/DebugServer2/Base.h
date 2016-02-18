@@ -11,6 +11,10 @@
 #ifndef __DebugServer2_Base_h
 #define __DebugServer2_Base_h
 
+#if defined(__APPLE__)
+#include "TargetConditionals.h"
+#endif
+
 #if defined(_WIN32)
 #include <winsock2.h>
 #include <windef.h>
@@ -39,6 +43,8 @@ typedef SSIZE_T ssize_t;
 #define OS_WIN32
 #elif defined(__FreeBSD__)
 #define OS_FREEBSD
+#elif defined(__APPLE__) && defined(TARGET_OS_MAC)
+#define OS_DARWIN
 #else
 #error "Target not supported."
 #endif

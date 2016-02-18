@@ -31,6 +31,9 @@ __FORWARD_DECLARE(Windows, Thread);
 #elif defined(OS_FREEBSD)
 __FORWARD_DECLARE(FreeBSD, Process);
 __FORWARD_DECLARE(FreeBSD, Thread);
+#elif defined(OS_DARWIN)
+__FORWARD_DECLARE(Darwin, Process);
+__FORWARD_DECLARE(Darwin, Thread);
 #else
 #error "Target not supported."
 #endif

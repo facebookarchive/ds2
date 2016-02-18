@@ -31,7 +31,7 @@ namespace ds2 {
 namespace Host {
 
 static bool open_terminal(int fds[2]) {
-#if defined(OS_FREEBSD)
+#if defined(OS_FREEBSD) || defined(OS_DARWIN)
   char *slave;
 #else
   char slave[PATH_MAX];
@@ -47,7 +47,7 @@ static bool open_terminal(int fds[2]) {
   if (::unlockpt(fds[0]) == -1)
     goto error_fd0;
 
-#if defined(OS_FREEBSD)
+#if defined(OS_FREEBSD) || defined(OS_DARWIN)
   slave = ptsname(fds[0]);
 #else
   if (::ptsname_r(fds[0], slave, sizeof(slave)) != 0)

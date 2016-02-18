@@ -17,6 +17,8 @@
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #elif defined(OS_FREEBSD)
 #include "DebugServer2/Host/FreeBSD/ExtraWrappers.h"
+#elif defined(OS_DARWIN)
+#include "DebugServer2/Host/Darwin/ExtraWrappers.h"
 #endif
 
 #if defined(ENABLE_LOGCAT)

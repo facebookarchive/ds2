@@ -11,6 +11,14 @@
 #ifndef __DebugServer2_Support_StringifyPrivate_h
 #define __DebugServer2_Support_StringifyPrivate_h
 
+#if defined(OS_DARWIN)
+#define ATT_TLS __thread
+#elif defined(OS_LINUX) || defined(OS_WIN32) || defined(OS_FREEBSD)
+#define ATT_TLS thread_local
+#else
+#error "Target not supported"
+#endif
+
 #define DO_STRINGIFY(VALUE)                                                    \
   case VALUE:                                                                  \
     return #VALUE;
@@ -19,7 +27,7 @@
   default:                                                                     \
     do {                                                                       \
       DS2LOG(Warning, MESSAGE ": %#lx", (unsigned long)VALUE);                 \
-      static thread_local char tmp[20];                                        \
+      static ATT_TLS char tmp[20];                                             \
       ::snprintf(tmp, sizeof(tmp), "%#lx", (unsigned long)VALUE);              \
       return tmp;                                                              \
     } while (0);
