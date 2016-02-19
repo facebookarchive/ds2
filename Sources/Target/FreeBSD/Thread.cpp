@@ -182,7 +182,7 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     return kSuccess;
 
   case StopInfo::kEventStop: {
-    siginfo_t si;
+    siginfo_t *si;
     ErrorCode error = process()->_ptrace.getLwpInfo(process()->pid(), &lwpinfo);
     if (error != kSuccess) {
       DS2LOG(Warning, "unable to get siginfo_t for tid %d, error=%s", tid(),
@@ -190,7 +190,8 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
       return error;
     }
 
-    if (si.si_code == SI_USER && lwpinfo.pl_siginfo.si_pid == 0 &&
+    si = &lwpinfo.pl_siginfo;
+    if (si->si_code == SI_USER && si->si_pid == 0 &&
         _stopInfo.signal == SIGSTOP) { // (3)
       _stopInfo.reason = StopInfo::kReasonTrap;
     } else if (_stopInfo.signal == SIGTRAP) { // (4)
@@ -200,7 +201,7 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
       // warning if the signal comes from an external source.
       DS2LOG(Warning,
              "tid %d received signal %s from an external source (sender=%d)",
-             tid(), strsignal(_stopInfo.signal), si.si_pid);
+             tid(), strsignal(_stopInfo.signal), si->si_pid);
     }
   } break;
   }
