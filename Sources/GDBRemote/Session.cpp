@@ -906,10 +906,13 @@ void Session::Handle__M(ProtocolInterpreter::Handler const &,
     switch (*eptr) {
     case 'r':
       protection |= kProtectionRead;
+      break;
     case 'w':
       protection |= kProtectionWrite;
+      break;
     case 'x':
       protection |= kProtectionExecute;
+      break;
     default:
       break;
     }
