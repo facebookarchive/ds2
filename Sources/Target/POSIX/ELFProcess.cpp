@@ -296,11 +296,14 @@ ErrorCode ELFProcess::updateInfo() {
     // Query the memory region information to know where
     // is the load base.
     MemoryRegionInfo mri;
+#if defined(OS_LINUX)
     MemoryRegionInfo prevMri;
+#endif
     error = getMemoryRegionInfo(_entryPoint, mri);
     if (error != kSuccess)
       goto mri_error;
 
+#if defined(OS_LINUX)
     // For some reason, on Android 5.1 and up some ELF segments get loaded in
     // memory multiple smaller contiguous regions instead of being loaded as a
     // single big mapping.
@@ -320,6 +323,9 @@ ErrorCode ELFProcess::updateInfo() {
              mri.backingFileOffset + mri.length == prevMri.backingFileOffset);
 
     _loadBase = prevMri.start;
+#else
+    _loadBase = mri.start;
+#endif
 
   mri_error:
     // Restore the hack.
