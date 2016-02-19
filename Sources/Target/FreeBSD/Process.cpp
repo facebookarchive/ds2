@@ -48,7 +48,7 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   // Wait the main thread.
   //
   int status;
-  ErrorCode error = ptrace().wait(pid, true, &status);
+  ErrorCode error = ptrace().wait(pid, &status);
   DS2LOG(Debug, "wait result=%d", error);
   if (error != kSuccess)
     return error;
@@ -73,7 +73,7 @@ ErrorCode Process::attach(int waitStatus) {
 
     _flags |= kFlagAttachedProcess;
 
-    error = ptrace().wait(_pid, true, &waitStatus);
+    error = ptrace().wait(_pid, &waitStatus);
     if (error != kSuccess)
       return error;
     ptrace().traceThat(_pid);
@@ -107,7 +107,7 @@ ErrorCode Process::attach(int waitStatus) {
         if (ptrace().attach(tid) == kSuccess) {
           int status;
 
-          ptrace().wait(tid, true, &status);
+          ptrace().wait(tid, &status);
           _ptrace.getLwpInfo(tid, &lwpinfo);
           ptrace().traceThat(tid);
           thread->updateStopInfo(status);
@@ -144,7 +144,7 @@ continue_waiting:
   DS2LOG(Debug, "stopped: status=%d", status);
 
   if (WIFEXITED(status)) {
-    err = super::wait(&status, true);
+    err = super::wait(&status);
     DS2LOG(Debug, "exited: status=%d", status);
     _currentThread->updateStopInfo(status);
     _terminated = true;
@@ -199,7 +199,7 @@ continue_waiting:
         if (ptrace().attach(tid) == kSuccess) {
           int status;
 
-          ptrace().wait(tid, true, &status);
+          ptrace().wait(tid, &status);
           _ptrace.getLwpInfo(tid, &lwpinfo);
           ptrace().traceThat(tid);
           thread->updateStopInfo(status);
