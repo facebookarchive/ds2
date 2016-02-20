@@ -22,7 +22,6 @@
 #include <cstdio>
 #include <cstdlib>
 #include <limits>
-
 #include <sys/ptrace.h>
 #include <sys/syscall.h>
 #include <sys/wait.h>
@@ -37,7 +36,10 @@ namespace Target {
 namespace Darwin {
 
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
-  int status;
+  //
+  // Wait the main thread.
+  //
+  int status = 0;
 
   // Wait the main thread.
   ErrorCode error = ptrace().wait(pid, &status);
@@ -240,6 +242,7 @@ ErrorCode Process::terminate() {
 ErrorCode Process::suspend() {
   std::set<Thread *> threads;
   enumerateThreads([&](Thread *thread) { threads.insert(thread); });
+  DS2BUG("not implemented");
 
   for (auto thread : threads) {
     Architecture::CPUState state;
@@ -310,6 +313,42 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
   info.clear();
 
   return kErrorNotFound;
+}
+
+ErrorCode Process::readString(Address const &address, std::string &str,
+                              size_t length, size_t *count) {
+  if (_currentThread == nullptr)
+    return kErrorProcessNotFound;
+
+  char buf[length];
+  ErrorCode err;
+
+  err = mach().readMemory(_currentThread->tid(), address, buf, length, count);
+  if (err != kSuccess)
+    return err;
+
+  if (strnlen(buf, length) == length)
+    return kErrorNameTooLong;
+
+  str = std::string(buf);
+  return kSuccess;
+}
+
+ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
+                              size_t *count) {
+  if (_currentThread == nullptr)
+    return kErrorProcessNotFound;
+
+  return mach().readMemory(_currentThread->tid(), address, data, length, count);
+}
+
+ErrorCode Process::writeMemory(Address const &address, void const *data,
+                               size_t length, size_t *count) {
+  if (_currentThread == nullptr)
+    return kErrorProcessNotFound;
+
+  return mach().writeMemory(_currentThread->tid(), address, data, length,
+                            count);
 }
 }
 }

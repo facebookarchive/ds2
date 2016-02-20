@@ -44,34 +44,13 @@ void PTrace::doneCPUState() { delete _privateData; }
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
                                ProcessInfo const &pinfo,
                                Architecture::CPUState &state) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  initCPUState(pid);
-  DS2BUG("not implemented");
-
-  return kSuccess;
+  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 
 ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
                                 ProcessInfo const &pinfo,
                                 Architecture::CPUState const &state) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  //
-  // Initialize the CPU state, just in case.
-  //
-  initCPUState(pid);
-  DS2BUG("not implemented");
-
-  return kSuccess;
+  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 }
 }

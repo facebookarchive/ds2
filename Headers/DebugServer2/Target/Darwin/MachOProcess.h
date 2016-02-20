@@ -11,6 +11,7 @@
 #ifndef __DebugServer2_Target_Darwin_MachOProcess_h
 #define __DebugServer2_Target_Darwin_MachOProcess_h
 
+#include "DebugServer2/Host/Darwin/Mach.h"
 #include "DebugServer2/Target/POSIX/Process.h"
 
 namespace ds2 {
@@ -21,6 +22,7 @@ class MachOProcess : public ds2::Target::POSIX::Process {
 protected:
   std::string _auxiliaryVector;
   Address _sharedLibraryInfoAddress;
+  Host::Darwin::Mach _mach;
 
 public:
   ErrorCode getAuxiliaryVector(std::string &auxv) override;
@@ -30,6 +32,9 @@ public:
   virtual ErrorCode getSharedLibraryInfoAddress(Address &address);
   virtual ErrorCode enumerateSharedLibraries(
       std::function<void(SharedLibraryInfo const &)> const &cb);
+
+public:
+  Host::Darwin::Mach &mach();
 
 protected:
   ErrorCode updateInfo() override;

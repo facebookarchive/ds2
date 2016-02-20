@@ -120,6 +120,8 @@ set(HOST_Darwin_SOURCES
     Sources/Host/Darwin/LibProc.cpp
     Sources/Host/Darwin/Platform.cpp
     Sources/Host/Darwin/PTrace.cpp
+    Sources/Host/Darwin/Mach.cpp
+    Sources/Host/Darwin/${ARCH_NAME}/Mach${ARCH_NAME}.cpp
     Sources/Host/Darwin/${ARCH_NAME}/PTrace${ARCH_NAME}.cpp
     )
 

@@ -36,6 +36,10 @@ protected:
   ErrorCode updateStopInfo(int waitStatus) override;
   void updateState() override;
 
+public:
+  virtual ErrorCode readCPUState(Architecture::CPUState &state) override;
+  virtual ErrorCode writeCPUState(Architecture::CPUState const &state) override;
+
 private:
   void updateState(bool force);
 };

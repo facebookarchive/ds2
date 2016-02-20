@@ -19,6 +19,7 @@
 #include <csignal>
 #include <cstdio>
 #include <limits>
+#include <sys/ptrace.h>
 
 #define super ds2::Host::POSIX::PTrace
 
@@ -57,30 +58,19 @@ ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {
 ErrorCode PTrace::readString(ProcessThreadId const &ptid,
                              Address const &address, std::string &str,
                              size_t length, size_t *count) {
-  char buf[length];
-  ErrorCode err = readMemory(ptid, address, buf, length, count);
-  if (err != kSuccess)
-    return err;
-
-  if (strnlen(buf, length) == length)
-    return kErrorNameTooLong;
-
-  str = std::string(buf);
-  return kSuccess;
+  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 
 ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
                              Address const &address, void *buffer,
                              size_t length, size_t *count) {
-  DS2BUG("not implemented");
-  return kErrorUnsupported;
+  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 
 ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
                               Address const &address, void const *buffer,
                               size_t length, size_t *count) {
-  DS2BUG("not implemented");
-  return kErrorUnsupported;
+  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 
 ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {

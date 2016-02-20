@@ -21,7 +21,6 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
-
 #include <sys/syscall.h>
 #include <sys/wait.h>
 
@@ -33,8 +32,33 @@ namespace Darwin {
 
 using Host::Darwin::LibProc;
 
-Thread::Thread(Process *process, ThreadId tid)
+Thread::Thread(ds2::Target::Process *process, ThreadId tid)
     : super(process, tid), _lastSyscallNumber(-1) {}
+
+ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
+  // TODO cache CPU state
+  ProcessInfo info;
+  ErrorCode error;
+
+  error = _process->getInfo(info);
+  if (error != kSuccess)
+    return error;
+
+  return process()->mach().readCPUState(
+      ProcessThreadId(process()->pid(), tid()), info, state);
+}
+
+ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
+  ProcessInfo info;
+  ErrorCode error;
+
+  error = _process->getInfo(info);
+  if (error != kSuccess)
+    return error;
+
+  return process()->mach().writeCPUState(
+      ProcessThreadId(process()->pid(), tid()), info, state);
+}
 
 ErrorCode Thread::updateStopInfo(int waitStatus) {
   super::updateStopInfo(waitStatus);
@@ -68,7 +92,34 @@ void Thread::updateState(bool force) {
     return;
   }
 
-  _state = kInvalid;
+  struct thread_basic_info info;
+  ErrorCode err;
+
+  err = process()->mach().getThreadInfo(_process->pid(), tid(), &info);
+  if (err != kSuccess) {
+    info.run_state = 0;
+  }
+
+  switch (info.run_state) {
+  case TH_STATE_HALTED:
+    _state = kTerminated;
+    break;
+
+  case TH_STATE_RUNNING:
+  case TH_STATE_UNINTERRUPTIBLE:
+    _state = kRunning;
+    break;
+
+  case TH_STATE_WAITING:
+  case TH_STATE_STOPPED:
+    _state = kStopped;
+    break;
+
+  default:
+    _state = kInvalid;
+    break;
+  }
+
   _stopInfo.core = 0; // TODO
 }
 }

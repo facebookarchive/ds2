@@ -27,6 +27,8 @@ ErrorCode MachOProcess::getAuxiliaryVector(std::string &auxv) {
   return error;
 }
 
+Host::Darwin::Mach &MachOProcess::mach() { return _mach; }
+
 uint64_t MachOProcess::getAuxiliaryVectorValue(uint64_t type) {
   DS2BUG("not implemented");
   return type;
@@ -108,7 +110,7 @@ ErrorCode MachOProcess::updateAuxiliaryVector() { return kSuccess; }
 //
 ErrorCode MachOProcess::getSharedLibraryInfoAddress(Address &address) {
   DS2BUG("not implemented");
-  return kSuccess;
+  return kErrorUnsupported;
 }
 
 //
