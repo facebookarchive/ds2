@@ -240,19 +240,25 @@ char const *Stringify::Errno(int error) {
 char const *Stringify::Ptrace(int code) {
   switch (code) {
 #if defined(OS_LINUX)
+    // On CentOS, PTRACE_* are enums, and can't
+    // be used inside define statements. CentOS
+    // defines PT_* macros, which can be used instead
     DO_STRINGIFY(PTRACE_ATTACH)
     DO_STRINGIFY(PTRACE_CONT)
     DO_STRINGIFY(PTRACE_DETACH)
     DO_STRINGIFY(PTRACE_GETEVENTMSG)
-#if defined(PTRACE_GETHBPREGS)
+#if defined(PTRACE_GETHBPREGS) || defined(PT_GETHBPREGS)
     DO_STRINGIFY(PTRACE_GETHBPREGS)
 #endif
-#if defined(PTRACE_GETREGS)
+#if defined(PTRACE_GETREGS) || defined(PT_GETREGS)
     DO_STRINGIFY(PTRACE_GETREGS)
+#endif
+#if defined(PTRACE_GETFPREGS) || defined(PT_GETFPREGS)
+    DO_STRINGIFY(PTRACE_GETFPREGS)
 #endif
     DO_STRINGIFY(PTRACE_GETREGSET)
     DO_STRINGIFY(PTRACE_GETSIGINFO)
-#if defined(PTRACE_GETVFPREGS)
+#if defined(PTRACE_GETVFPREGS) || defined(PT_GETVFPREGS)
     DO_STRINGIFY(PTRACE_GETVFPREGS)
 #endif
     DO_STRINGIFY(PTRACE_INTERRUPT)
@@ -265,16 +271,19 @@ char const *Stringify::Ptrace(int code) {
     DO_STRINGIFY(PTRACE_POKETEXT)
     DO_STRINGIFY(PTRACE_POKEUSER)
     DO_STRINGIFY(PTRACE_SEIZE)
-#if defined(PTRACE_SETHBPREGS)
+#if defined(PTRACE_SETHBPREGS) || defined(PT_SETHBPREGS)
     DO_STRINGIFY(PTRACE_SETHBPREGS)
 #endif
     DO_STRINGIFY(PTRACE_SETOPTIONS)
-#if defined(PTRACE_SETREGS)
+#if defined(PTRACE_SETREGS) || defined(PT_SETREGS)
     DO_STRINGIFY(PTRACE_SETREGS)
+#endif
+#if defined(PTRACE_SETFPREGS) || defined(PT_SETFPREGS)
+    DO_STRINGIFY(PTRACE_SETFPREGS)
 #endif
     DO_STRINGIFY(PTRACE_SETREGSET)
     DO_STRINGIFY(PTRACE_SETSIGINFO)
-#if defined(PTRACE_SETVFPREGS)
+#if defined(PTRACE_SETVFPREGS) || defined(SETVFPREGS)
     DO_STRINGIFY(PTRACE_SETVFPREGS)
 #endif
     DO_STRINGIFY(PTRACE_SINGLESTEP)
