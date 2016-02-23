@@ -50,6 +50,8 @@ public:
 
 public:
   ErrorCode getProcessDylbInfo(ProcessId pid, Address &address);
+  ErrorCode getProcessMemoryRegion(ProcessId pid, Address const &address,
+                                   MemoryRegionInfo &info);
 
 public:
   ErrorCode getThreadInfo(ProcessThreadId const &tid, thread_basic_info_t info);

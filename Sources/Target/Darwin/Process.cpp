@@ -312,7 +312,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
 
   info.clear();
 
-  return kErrorNotFound;
+  return mach().getProcessMemoryRegion(_info.pid, address, info);
 }
 
 ErrorCode Process::readString(Address const &address, std::string &str,

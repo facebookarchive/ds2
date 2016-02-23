@@ -119,6 +119,40 @@ ErrorCode Mach::getProcessDylbInfo(ProcessId pid, Address &address) {
   return kSuccess;
 }
 
+ErrorCode Mach::getProcessMemoryRegion(ProcessId pid, Address const &address,
+                                       MemoryRegionInfo &region) {
+  task_t task = getMachTask(pid);
+  if (task == TASK_NULL) {
+    return kErrorProcessNotFound;
+  }
+
+  mach_msg_type_number_t count = VM_REGION_SUBMAP_INFO_COUNT_64;
+  vm_region_submap_info_data_64_t regionInfo;
+  mach_vm_address_t start = address.value();
+  mach_vm_size_t size;
+  natural_t depth = 1024;
+  kern_return_t kret =
+      mach_vm_region_recurse(task, &start, &size, &depth,
+                             (vm_region_recurse_info_t)&regionInfo, &count);
+  if (kret != KERN_SUCCESS) {
+    DS2LOG(Error, "unable to retreive region (0x%llx) info: %s", start,
+           mach_error_string(kret));
+    return kErrorUnknown;
+  }
+
+  region.start = start;
+  region.length = size;
+
+  if ((regionInfo.protection & VM_PROT_READ) == VM_PROT_READ)
+    region.protection |= ds2::kProtectionRead;
+  if ((regionInfo.protection & VM_PROT_WRITE) == VM_PROT_WRITE)
+    region.protection |= ds2::kProtectionWrite;
+  if ((regionInfo.protection & VM_PROT_EXECUTE) == VM_PROT_EXECUTE)
+    region.protection |= ds2::kProtectionExecute;
+
+  return kSuccess;
+}
+
 ErrorCode Mach::getThreadInfo(ProcessThreadId const &ptid,
                               thread_basic_info_t info) {
   thread_t thread = getMachThread(ptid);
