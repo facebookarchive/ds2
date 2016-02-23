@@ -49,6 +49,9 @@ public:
                    int signal = 0, Address const &address = Address());
 
 public:
+  ErrorCode getProcessDylbInfo(ProcessId pid, Address &address);
+
+public:
   ErrorCode getThreadInfo(ProcessThreadId const &tid, thread_basic_info_t info);
   ErrorCode getThreadIdentifierInfo(ProcessThreadId const &tid,
                                     thread_identifier_info_data_t *threadID);

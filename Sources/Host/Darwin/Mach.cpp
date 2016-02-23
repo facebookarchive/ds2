@@ -100,6 +100,25 @@ ErrorCode Mach::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   return kErrorUnsupported;
 }
 
+ErrorCode Mach::getProcessDylbInfo(ProcessId pid, Address &address) {
+  task_t task = getMachTask(pid);
+  if (task == TASK_NULL) {
+    return kErrorProcessNotFound;
+  }
+
+  task_dyld_info_data_t dyldInfo;
+  mach_msg_type_number_t count = TASK_DYLD_INFO_COUNT;
+  kern_return_t kret =
+      task_info(task, TASK_DYLD_INFO, (task_info_t)&dyldInfo, &count);
+  if (kret != KERN_SUCCESS) {
+    return kErrorUnknown;
+  }
+
+  address = dyldInfo.all_image_info_addr;
+
+  return kSuccess;
+}
+
 ErrorCode Mach::getThreadInfo(ProcessThreadId const &ptid,
                               thread_basic_info_t info) {
   thread_t thread = getMachThread(ptid);

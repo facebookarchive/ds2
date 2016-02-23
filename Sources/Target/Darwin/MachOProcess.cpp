@@ -22,6 +22,8 @@ namespace ds2 {
 namespace Target {
 namespace Darwin {
 
+Host::Darwin::Mach &MachOProcess::mach() { return _mach; }
+
 ErrorCode MachOProcess::getAuxiliaryVector(std::string &auxv) {
   ErrorCode error = updateAuxiliaryVector();
   if (error == kSuccess || error == kErrorAlreadyExist) {
@@ -30,8 +32,6 @@ ErrorCode MachOProcess::getAuxiliaryVector(std::string &auxv) {
   }
   return error;
 }
-
-Host::Darwin::Mach &MachOProcess::mach() { return _mach; }
 
 uint64_t MachOProcess::getAuxiliaryVectorValue(uint64_t type) {
   DS2BUG("not implemented");
@@ -113,8 +113,7 @@ ErrorCode MachOProcess::updateAuxiliaryVector() { return kSuccess; }
 // Retrieves the shared library info address pointer.
 //
 ErrorCode MachOProcess::getSharedLibraryInfoAddress(Address &address) {
-  DS2BUG("not implemented");
-  return kErrorUnsupported;
+  return mach().getProcessDylbInfo(_info.pid, address);
 }
 
 //
