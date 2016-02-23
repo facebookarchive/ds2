@@ -2413,7 +2413,7 @@ void Session::Handle_qWatchpointSupportInfo(
   }
 
   std::ostringstream ss;
-  ss << "num:" << count;
+  ss << "num:" << count << ";";
   send(ss.str());
 }
 
