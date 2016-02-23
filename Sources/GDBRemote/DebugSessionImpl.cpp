@@ -95,7 +95,7 @@ DebugSessionImpl::onQuerySupported(Session &session,
   localFeatures.push_back(std::string("qXfer:siginfo:read-"));
   localFeatures.push_back(std::string("qXfer:siginfo:write-"));
 #endif
-#if !defined(OS_WIN32)
+#if !defined(OS_WIN32) && !defined(OS_MACOSX)
   localFeatures.push_back(std::string("qXfer:auxv:read+"));
   localFeatures.push_back(std::string("qXfer:libraries-svr4:read+"));
 #else
