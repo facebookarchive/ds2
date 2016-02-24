@@ -84,6 +84,9 @@ ErrorCode MachOProcess::updateInfo() {
   _entryPoint = 0; // TODO
   _loadBase = 0;   // TODO
 
+  _info.osType = "macosx";
+  _info.osVendor = "apple";
+
   _info.cpuType = kCPUTypeX86_64;           // TODO
   _info.cpuSubType = kCPUSubTypeX86_64_ALL; // TODO
   _info.nativeCPUType = 0;                  // TODO
