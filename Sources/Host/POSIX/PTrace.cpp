@@ -74,27 +74,27 @@ ErrorCode PTrace::execute(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   if (error != kSuccess)
     goto fail;
 
-  // 3. Resume and wait
+  // 4. Resume and wait
   error = resume(ptid, pinfo);
   if (error == kSuccess) {
     error = wait(ptid);
   }
 
   if (error == kSuccess) {
-    // 4. Read back the CPU state
+    // 5. Read back the CPU state
     error = readCPUState(ptid, pinfo, resultState);
     if (error == kSuccess) {
-      // 5. Save the result
+      // 6. Save the result
       result = resultState.retval();
     }
   }
 
-  // 6. Write back the old code
+  // 7. Write back the old code
   error = writeMemory(ptid, savedState.pc(), &savedCode[0], length);
   if (error != kSuccess)
     goto fail;
 
-  // 7. Restore CPU state
+  // 8. Restore CPU state
   error = writeCPUState(ptid, pinfo, savedState);
   if (error != kSuccess)
     goto fail;
