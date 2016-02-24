@@ -76,14 +76,61 @@ ErrorCode Mach::readMemory(ProcessThreadId const &ptid, Address const &address,
   if (kret != KERN_SUCCESS)
     return kErrorInvalidAddress;
 
-  *count = curr_bytes_read;
+  if (count != nullptr) {
+    *count = curr_bytes_read;
+  }
 
   return kSuccess;
 }
 
 ErrorCode Mach::writeMemory(ProcessThreadId const &ptid, Address const &address,
                             void const *buffer, size_t length, size_t *count) {
-  return kErrorUnsupported;
+  ErrorCode error = kSuccess;
+
+  // The mach debugging APIs do not allow writing to pages mapped without write
+  // permissions; remap them before writing.
+  // TODO: Write in multipage ?
+  task_t task = getMachTask(ptid.pid);
+  if (task == TASK_NULL) {
+    return kErrorProcessNotFound;
+  }
+
+  mach_msg_type_number_t infoCount = VM_REGION_SUBMAP_INFO_COUNT_64;
+  vm_region_submap_info_data_64_t regionInfo;
+  mach_vm_address_t start = address.value();
+  mach_vm_size_t size;
+  natural_t depth = 1024;
+
+  kern_return_t kret =
+      mach_vm_region_recurse(task, &start, &size, &depth,
+                             (vm_region_recurse_info_t)&regionInfo, &infoCount);
+  if (kret != KERN_SUCCESS) {
+    return kErrorInvalidAddress;
+  }
+
+  // The combinason of VM_PROT_COPY/VM_PROT_READ is need to override the
+  // write protection.
+  kret = mach_vm_protect(task, address.value(), length, FALSE,
+                         VM_PROT_WRITE | VM_PROT_COPY | VM_PROT_READ);
+  if (kret != KERN_SUCCESS) {
+    return kErrorInvalidAddress;
+  }
+
+  kret = mach_vm_write((vm_map_t)task, address.value(), (vm_offset_t)buffer,
+                       length);
+  if (kret != KERN_SUCCESS) {
+    error = kErrorUnknown;
+  } else if (count != nullptr) {
+    *count = length;
+  }
+
+  kret = mach_vm_protect(task, address.value(), length, FALSE,
+                         regionInfo.protection);
+  if (kret != KERN_SUCCESS && error == kSuccess) {
+    error = kErrorUnknown;
+  }
+
+  return error;
 }
 
 ErrorCode Mach::suspend(ProcessThreadId const &ptid) {
