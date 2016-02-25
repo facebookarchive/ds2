@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Target/Thread.h"
 
 #include <cstdlib>
 #include <sys/mman.h>
@@ -80,7 +81,8 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   //
   // Code inject and execute
   //
-  error = ptrace().execute(_pid, info, &codestr[0], codestr.size(), *address);
+  error = ptrace().execute(_currentThread->tid(), info, &codestr[0],
+                           codestr.size(), *address);
   if (error != kSuccess)
     return error;
 
@@ -106,7 +108,8 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   // Code inject and execute
   //
   uint64_t result = 0;
-  error = ptrace().execute(_pid, info, &codestr[0], codestr.size(), result);
+  error = ptrace().execute(_currentThread->tid(), info, &codestr[0],
+                           codestr.size(), result);
   if (error != kSuccess)
     return error;
 
