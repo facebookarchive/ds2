@@ -87,7 +87,17 @@ ErrorCode Mach::writeMemory(ProcessThreadId const &ptid, Address const &address,
 }
 
 ErrorCode Mach::suspend(ProcessThreadId const &ptid) {
-  return kErrorUnsupported;
+  thread_t thread = getMachThread(ptid);
+  if (thread == THREAD_NULL) {
+    return kErrorProcessNotFound;
+  }
+
+  kern_return_t kret = thread_suspend(thread);
+  if (kret != KERN_SUCCESS) {
+    return kErrorUnknown;
+  }
+
+  return kSuccess;
 }
 
 ErrorCode Mach::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
