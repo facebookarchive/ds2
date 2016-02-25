@@ -103,7 +103,8 @@ ErrorCode PTrace::execute(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   return kSuccess;
 
 fail:
-  return kill(ptid, SIGKILL); // we can't really do much at this point :(
+  kill(ptid, SIGKILL); // we can't really do much at this point :(
+  return error;
 }
 
 ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &pid) {
