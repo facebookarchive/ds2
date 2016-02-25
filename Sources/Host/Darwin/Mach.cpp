@@ -24,6 +24,42 @@
 #include <mach/thread_info.h>
 #include <sys/types.h>
 
+// Mach exception are manage by generated code, not a lib. Also the callback
+// to these system can't be register, it's hardlink. So we need to compile
+// these function to have access to the exception system. Also it's C...
+extern "C" {
+kern_return_t catch_mach_exception_raise_state(
+    mach_port_t exc_port, exception_type_t exc_type,
+    const mach_exception_data_t exc_data, mach_msg_type_number_t exc_data_count,
+    int *flavor, const thread_state_t old_state,
+    mach_msg_type_number_t old_stateCnt, thread_state_t new_state,
+    mach_msg_type_number_t *new_stateCnt) {
+  return KERN_FAILURE;
+}
+
+kern_return_t catch_mach_exception_raise_state_identity(
+    mach_port_t exc_port, mach_port_t thread_port, mach_port_t task_port,
+    exception_type_t exc_type, mach_exception_data_t exc_data,
+    mach_msg_type_number_t exc_data_count, int *flavor,
+    thread_state_t old_state, mach_msg_type_number_t old_stateCnt,
+    thread_state_t new_state, mach_msg_type_number_t *new_stateCnt) {
+  mach_port_deallocate(mach_task_self(), task_port);
+  mach_port_deallocate(mach_task_self(), thread_port);
+  return KERN_FAILURE;
+}
+
+kern_return_t
+catch_mach_exception_raise(mach_port_t exc_port, mach_port_t thread_port,
+                           mach_port_t task_port, exception_type_t exc_type,
+                           mach_exception_data_t exc_data,
+                           mach_msg_type_number_t exc_data_count) {
+  return KERN_FAILURE;
+}
+
+boolean_t mach_exc_server(mach_msg_header_t *InHeadP,
+                          mach_msg_header_t *OutHeadP);
+}
+
 namespace ds2 {
 namespace Host {
 namespace Darwin {
