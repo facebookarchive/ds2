@@ -37,6 +37,10 @@ protected:
   void updateState() override;
 
 public:
+  virtual ErrorCode step(int signal,
+                         Address const &address = Address()) override;
+
+public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state) override;
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state) override;
 

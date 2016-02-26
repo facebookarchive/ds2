@@ -166,6 +166,7 @@ set(TARGET_Darwin_SOURCES
     Sources/Target/Darwin/MachOProcess.cpp
     Sources/Target/Darwin/Process.cpp
     Sources/Target/Darwin/${ARCH_NAME}/Process${ARCH_NAME}.cpp
+    Sources/Target/Darwin/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Darwin/Thread.cpp
     )
 
