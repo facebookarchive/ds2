@@ -56,27 +56,29 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
       ProcessThreadId(process()->pid(), tid()), info, state);
 }
 
-ErrorCode Thread::updateStopInfo(int waitStatus) {
-  super::updateStopInfo(waitStatus);
-  updateState();
+ErrorCode Thread::updateStopInfo(Host::Darwin::MachExcStatus &status) {
 
-  switch (_stopInfo.event) {
-  case StopInfo::kEventNone:
-    DS2BUG("thread stopped for unknown reason, status=%#x", waitStatus);
-
-  case StopInfo::kEventExit:
-  case StopInfo::kEventKill:
-    DS2ASSERT(_stopInfo.reason == StopInfo::kReasonNone);
-    return kSuccess;
-
-  case StopInfo::kEventStop: {
-    // TODO: Here I need to have a real management of signal, but
-    // for the moment, likely when you strat, it will be a breakpoint
+  switch (status.type) {
+  case EXC_BREAKPOINT:
+    _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonBreakpoint;
-
-  } break;
+    _stopInfo.signal = SIGTRAP; // Simulate other POSIX system
+    break;
+  case EXC_SOFTWARE:
+    _stopInfo.event = StopInfo::kEventStop;
+    if (status.subtype == EXC_SOFT_SIGNAL) {
+      _stopInfo.signal = status.data;
+      if (status.data == SIGTRAP) {
+        _stopInfo.reason = StopInfo::kReasonBreakpoint;
+      }
+      break;
+    }
+  default:
+    _stopInfo.event = StopInfo::kEventNone;
+    _stopInfo.reason = StopInfo::kReasonNone;
   }
 
+  updateState();
   return kSuccess;
 }
 

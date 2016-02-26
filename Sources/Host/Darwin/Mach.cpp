@@ -28,6 +28,16 @@
 // to these system can't be register, it's hardlink. So we need to compile
 // these function to have access to the exception system. Also it's C...
 extern "C" {
+
+static struct {
+  task_t task;
+  bool isFilled;
+  thread_t thread;
+  int excType;
+  int data_count;
+  mach_exception_data_type_t data[1024];
+} g_exec_state;
+
 kern_return_t catch_mach_exception_raise_state(
     mach_port_t exc_port, exception_type_t exc_type,
     const mach_exception_data_t exc_data, mach_msg_type_number_t exc_data_count,
@@ -53,6 +63,25 @@ catch_mach_exception_raise(mach_port_t exc_port, mach_port_t thread_port,
                            mach_port_t task_port, exception_type_t exc_type,
                            mach_exception_data_t exc_data,
                            mach_msg_type_number_t exc_data_count) {
+
+  if (1) { // g_exec_state.task == task_port) {
+    kern_return_t kret;
+
+    kret = thread_suspend(thread_port);
+    if (kret != KERN_SUCCESS) {
+      DS2LOG(Error, "Unable to suspend the thread: %s",
+             mach_error_string(kret));
+      return KERN_FAILURE;
+    }
+
+    g_exec_state.thread = thread_port;
+    g_exec_state.excType = exc_type;
+    g_exec_state.isFilled = 1;
+    g_exec_state.data_count = exc_data_count;
+    ::memcpy(g_exec_state.data, exc_data,
+             exc_data_count * sizeof(mach_exception_data_type_t));
+    return KERN_SUCCESS;
+  }
   return KERN_FAILURE;
 }
 
@@ -280,6 +309,74 @@ Mach::getThreadIdentifierInfo(ProcessThreadId const &ptid,
   }
 
   return kSuccess;
+}
+
+ErrorCode Mach::setupExceptionChannel(ProcessId pid) {
+  task_t self = mach_task_self();
+
+  task_t task = getMachTask(pid);
+  if (task == TASK_NULL) {
+    return kErrorProcessNotFound;
+  }
+
+  kern_return_t kret =
+      mach_port_allocate(self, MACH_PORT_RIGHT_RECEIVE, &_exc_port);
+  if (kret != KERN_SUCCESS) {
+    return Platform::TranslateKernError(kret);
+  }
+
+  kret = mach_port_insert_right(self, _exc_port, _exc_port,
+                                MACH_MSG_TYPE_MAKE_SEND);
+  if (kret != KERN_SUCCESS) {
+    return Platform::TranslateKernError(kret);
+  }
+
+  kret = task_set_exception_ports(
+      task, EXC_MASK_BREAKPOINT | EXC_MASK_SOFTWARE, _exc_port,
+      EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES, THREAD_STATE_NONE);
+
+  return Platform::TranslateKernError(kret);
+}
+
+ErrorCode Mach::readException(MachExcStatus &status, bool timeout,
+                              thread_t *thread) {
+  union {
+    mach_msg_header_t hdr;
+    char payload[1024];
+  } msg;
+
+  mach_msg_option_t opts = MACH_RCV_MSG | MACH_RCV_INTERRUPT;
+  if (timeout) {
+    opts |= MACH_RCV_TIMEOUT;
+  }
+
+  kern_return_t kret = mach_msg(&msg.hdr, opts, 0, sizeof(msg.payload),
+                                _exc_port, 10000, MACH_PORT_NULL);
+  if (kret != MACH_MSG_SUCCESS) {
+    return Platform::TranslateKernError(kret);
+  }
+
+  g_exec_state.isFilled = 0;
+
+  if (!::mach_exc_server(&msg.hdr, &_reply.hdr)) {
+    return readException(status, timeout, thread);
+  } else if (g_exec_state.isFilled == 0) {
+    return readException(status, timeout, thread);
+  }
+
+  if (thread) {
+    *thread = g_exec_state.thread;
+  }
+
+  status.type = g_exec_state.excType;
+  status.subtype = g_exec_state.data[0];
+  status.data = g_exec_state.data[1];
+
+  return kSuccess;
+}
+
+bool Mach::exceptionIsFromThread(ProcessThreadId const &ptid) {
+  return g_exec_state.thread == getMachThread(ptid);
 }
 }
 }

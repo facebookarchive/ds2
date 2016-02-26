@@ -22,9 +22,25 @@ namespace ds2 {
 namespace Host {
 namespace Darwin {
 
+struct MachExcStatus {
+  uint32_t type;
+  uint32_t subtype;
+  uint32_t data;
+};
+
 class Mach {
+
+  struct MachMsg {
+    mach_msg_header_t hdr;
+    char payload[1024];
+  };
+
 public:
   virtual ~Mach() = default;
+
+protected:
+  mach_port_t _exc_port;
+  MachMsg _reply;
 
 public:
   ErrorCode readMemory(ProcessThreadId const &ptid, Address const &address,
@@ -57,6 +73,12 @@ public:
   ErrorCode getThreadInfo(ProcessThreadId const &tid, thread_basic_info_t info);
   ErrorCode getThreadIdentifierInfo(ProcessThreadId const &tid,
                                     thread_identifier_info_data_t *threadID);
+
+public:
+  ErrorCode setupExceptionChannel(ProcessId pid);
+  ErrorCode readException(MachExcStatus &status, bool timeout = true,
+                          thread_t *thread = nullptr);
+  bool exceptionIsFromThread(ProcessThreadId const &ptid);
 
 private:
   task_t getMachTask(ProcessId pid);
