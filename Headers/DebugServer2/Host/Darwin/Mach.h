@@ -36,9 +36,12 @@ class Mach {
   };
 
 public:
+  Mach(pid_t pid = -1);
   virtual ~Mach() = default;
 
 protected:
+  pid_t _pid;
+  task_t _task;
   mach_port_t _exc_port;
   MachMsg _reply;
 
@@ -65,8 +68,8 @@ public:
                    int signal = 0, Address const &address = Address());
 
 public:
-  ErrorCode getProcessDylbInfo(ProcessId pid, Address &address);
-  ErrorCode getProcessMemoryRegion(ProcessId pid, Address const &address,
+  ErrorCode getProcessDylbInfo(Address &address);
+  ErrorCode getProcessMemoryRegion(Address const &address,
                                    MemoryRegionInfo &info);
 
 public:
@@ -75,13 +78,13 @@ public:
                                     thread_identifier_info_data_t *threadID);
 
 public:
-  ErrorCode setupExceptionChannel(ProcessId pid);
+  ErrorCode setupExceptionChannel();
   ErrorCode readException(MachExcStatus &status, bool timeout = true,
                           thread_t *thread = nullptr);
   bool exceptionIsFromThread(ProcessThreadId const &ptid);
 
 private:
-  task_t getMachTask(ProcessId pid);
+  task_t getMachTask(ProcessId pid = -1);
   thread_t getMachThread(ProcessThreadId const &tid);
 };
 }

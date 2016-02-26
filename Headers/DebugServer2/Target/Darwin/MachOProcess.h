@@ -39,7 +39,7 @@ public:
                                std::set<ds2::Target::Thread *>()) override;
 
 public:
-  Host::Darwin::Mach &mach();
+  Host::Darwin::Mach &mach(ProcessId pid = -1);
 
 protected:
   ErrorCode updateInfo() override;

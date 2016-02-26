@@ -23,7 +23,12 @@ namespace ds2 {
 namespace Target {
 namespace Darwin {
 
-Host::Darwin::Mach &MachOProcess::mach() { return _mach; }
+Host::Darwin::Mach &MachOProcess::mach(ProcessId pid) {
+  if (pid != -1) {
+    _mach = Host::Darwin::Mach(pid);
+  }
+  return _mach;
+}
 
 ErrorCode
 MachOProcess::resume(int signal,
@@ -130,7 +135,7 @@ ErrorCode MachOProcess::updateAuxiliaryVector() { return kSuccess; }
 // Retrieves the shared library info address pointer.
 //
 ErrorCode MachOProcess::getSharedLibraryInfoAddress(Address &address) {
-  return mach().getProcessDylbInfo(_info.pid, address);
+  return mach().getProcessDylbInfo(address);
 }
 
 //

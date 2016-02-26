@@ -93,7 +93,13 @@ namespace ds2 {
 namespace Host {
 namespace Darwin {
 
+Mach::Mach(ProcessId pid) { _task = getMachTask(pid); }
+
 task_t Mach::getMachTask(ProcessId pid) {
+  if (pid == -1) {
+    return _task;
+  }
+
   task_t self = mach_task_self();
   task_t task;
 
@@ -110,8 +116,9 @@ thread_t Mach::getMachThread(ProcessThreadId const &ptid) {
   mach_msg_type_number_t thread_count;
 
   mach_port_t task = getMachTask(ptid.pid);
-  if (task == TASK_NULL)
+  if (task == TASK_NULL) {
     return THREAD_NULL;
+  }
 
   kern_return_t kret = task_threads(task, &thread_list, &thread_count);
   if (kret != KERN_SUCCESS) {
@@ -132,8 +139,9 @@ ErrorCode Mach::readMemory(ProcessThreadId const &ptid, Address const &address,
   mach_vm_size_t curr_bytes_read = 0;
 
   mach_port_t task = getMachTask(ptid.pid);
-  if (task == TASK_NULL)
+  if (task == TASK_NULL) {
     return kErrorProcessNotFound;
+  }
 
   kern_return_t kret =
       mach_vm_read_overwrite((vm_map_t)task, address, length,
@@ -155,7 +163,7 @@ ErrorCode Mach::writeMemory(ProcessThreadId const &ptid, Address const &address,
   // The mach debugging APIs do not allow writing to pages mapped without write
   // permissions; remap them before writing.
   // TODO: Write in multipage ?
-  task_t task = getMachTask(ptid.pid);
+  task_t task = getMachTask();
   if (task == TASK_NULL) {
     return kErrorProcessNotFound;
   }
@@ -221,7 +229,7 @@ ErrorCode Mach::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                        int signal, Address const &address) {
   kern_return_t kret;
   thread_t thread = getMachThread(ptid);
-  task_t task = getMachTask(ptid.pid);
+  task_t task = getMachTask();
   struct thread_basic_info info;
   unsigned int info_count = THREAD_BASIC_INFO_COUNT;
 
@@ -273,8 +281,8 @@ ErrorCode Mach::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   return kSuccess;
 }
 
-ErrorCode Mach::getProcessDylbInfo(ProcessId pid, Address &address) {
-  task_t task = getMachTask(pid);
+ErrorCode Mach::getProcessDylbInfo(Address &address) {
+  task_t task = getMachTask();
   if (task == TASK_NULL) {
     return kErrorProcessNotFound;
   }
@@ -292,9 +300,9 @@ ErrorCode Mach::getProcessDylbInfo(ProcessId pid, Address &address) {
   return kSuccess;
 }
 
-ErrorCode Mach::getProcessMemoryRegion(ProcessId pid, Address const &address,
+ErrorCode Mach::getProcessMemoryRegion(Address const &address,
                                        MemoryRegionInfo &region) {
-  task_t task = getMachTask(pid);
+  task_t task = getMachTask();
   if (task == TASK_NULL) {
     return kErrorProcessNotFound;
   }
@@ -362,10 +370,10 @@ Mach::getThreadIdentifierInfo(ProcessThreadId const &ptid,
   return kSuccess;
 }
 
-ErrorCode Mach::setupExceptionChannel(ProcessId pid) {
+ErrorCode Mach::setupExceptionChannel() {
   task_t self = mach_task_self();
 
-  task_t task = getMachTask(pid);
+  task_t task = getMachTask();
   if (task == TASK_NULL) {
     return kErrorProcessNotFound;
   }

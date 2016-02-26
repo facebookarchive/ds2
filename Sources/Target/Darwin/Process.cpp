@@ -43,7 +43,9 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   ErrorCode error;
   Host::Darwin::MachExcStatus status;
 
-  error = mach().setupExceptionChannel(pid);
+  mach(pid);
+
+  error = mach().setupExceptionChannel();
   if (error != kSuccess) {
     DS2LOG(Error, "Unable to setup the exception port");
     return error;
@@ -138,6 +140,7 @@ ErrorCode Process::wait() {
       return error;
     }
 
+    tid = 0;
     enumerateThreads([&](Thread *thread) {
       if (mach().exceptionIsFromThread(ProcessThreadId(pid(), thread->tid())))
         tid = thread->tid();
@@ -298,7 +301,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
 
   info.clear();
 
-  return mach().getProcessMemoryRegion(_info.pid, address, info);
+  return mach().getProcessMemoryRegion(address, info);
 }
 
 ErrorCode Process::readString(Address const &address, std::string &str,
