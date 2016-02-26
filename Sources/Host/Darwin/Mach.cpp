@@ -219,7 +219,58 @@ ErrorCode Mach::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
 
 ErrorCode Mach::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                        int signal, Address const &address) {
-  return kErrorUnsupported;
+  kern_return_t kret;
+  thread_t thread = getMachThread(ptid);
+  task_t task = getMachTask(ptid.pid);
+  struct thread_basic_info info;
+  unsigned int info_count = THREAD_BASIC_INFO_COUNT;
+
+  if (thread == THREAD_NULL) {
+    return kErrorProcessNotFound;
+  }
+
+  kret = mach_msg(&_reply.hdr, MACH_SEND_MSG | MACH_SEND_TIMEOUT,
+                  _reply.hdr.msgh_size, 0, MACH_PORT_NULL, 100, MACH_PORT_NULL);
+  if (kret != KERN_SUCCESS) {
+    DS2LOG(Error, "Failed to reply");
+    return kErrorUnknown;
+  }
+
+  kret = thread_info((thread_t)thread, THREAD_BASIC_INFO, (thread_info_t)&info,
+                     &info_count);
+  if (kret != KERN_SUCCESS) {
+    return kErrorProcessNotFound;
+  }
+
+  for (int i = 0; i < info.suspend_count; i++) {
+    DS2LOG(Debug, "[1] Resume pid:%d", ptid.pid);
+    if (thread_resume(thread) != KERN_SUCCESS)
+      continue;
+  }
+
+  kret = thread_info((thread_t)thread, THREAD_BASIC_INFO, (thread_info_t)&info,
+                     &info_count);
+  if (kret != KERN_SUCCESS) {
+    return kErrorProcessNotFound;
+  }
+  DS2ASSERT(info.suspend_count == 0);
+
+  struct task_basic_info tinfo;
+  mach_msg_type_number_t count = TASK_BASIC_INFO_COUNT;
+  kret = ::task_info(task, TASK_BASIC_INFO, (task_info_t)&tinfo, &count);
+  if (kret != KERN_SUCCESS) {
+    return Platform::TranslateKernError(kret);
+  }
+
+  if (tinfo.suspend_count != 0) {
+    DS2LOG(Debug, "Resume task");
+    kret = task_resume(task);
+    if (kret != KERN_SUCCESS) {
+      return kErrorProcessNotFound;
+    }
+  }
+
+  return kSuccess;
 }
 
 ErrorCode Mach::getProcessDylbInfo(ProcessId pid, Address &address) {

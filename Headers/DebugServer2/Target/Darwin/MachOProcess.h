@@ -34,6 +34,11 @@ public:
       std::function<void(SharedLibraryInfo const &)> const &cb);
 
 public:
+  virtual ErrorCode resume(int signal = 0,
+                           std::set<ds2::Target::Thread *> const &excluded =
+                               std::set<ds2::Target::Thread *>()) override;
+
+public:
   Host::Darwin::Mach &mach();
 
 protected:

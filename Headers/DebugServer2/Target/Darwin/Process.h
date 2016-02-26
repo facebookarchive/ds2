@@ -23,6 +23,7 @@ protected:
   Host::Darwin::PTrace _ptrace;
 
 protected:
+  ErrorCode initialize(ProcessId pid, uint32_t flags) override;
   ErrorCode attach(int waitStatus) override;
 
 public:

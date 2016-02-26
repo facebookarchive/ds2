@@ -33,7 +33,50 @@ namespace Darwin {
 using Host::Darwin::LibProc;
 
 Thread::Thread(ds2::Target::Process *process, ThreadId tid)
-    : super(process, tid), _lastSyscallNumber(-1) {}
+    : super(process, tid), _lastSyscallNumber(-1) {
+  //
+  // Initially the thread is stopped.
+  //
+}
+
+ErrorCode Thread::suspend() {
+  ErrorCode error = kSuccess;
+  if (_state == kRunning) {
+    error = process()->mach().suspend(ProcessThreadId(process()->pid(), tid()));
+    if (error != kSuccess)
+      return error;
+  }
+
+  if (_state == kTerminated) {
+    error = kErrorProcessNotFound;
+  }
+
+  return error;
+}
+
+ErrorCode Thread::resume(int signal, Address const &address) {
+  if (_state == kTerminated) {
+    return kErrorProcessNotFound;
+  }
+
+  if (_state == kInvalid || _state == kRunning) {
+    return kErrorInvalidArgument;
+  }
+
+  signal = 0; // _stopInfo.signal;
+
+  ProcessInfo info;
+  ErrorCode error = process()->mach().resume(
+      ProcessThreadId(process()->pid(), tid()), info, signal, address);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  _state = kRunning;
+  _stopInfo.signal = 0;
+
+  return error;
+}
 
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   // TODO cache CPU state

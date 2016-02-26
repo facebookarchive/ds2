@@ -40,11 +40,12 @@ protected:
   void updateState() override;
 
 public:
-  virtual ErrorCode step(int signal,
+  virtual ErrorCode suspend() override;
+  virtual ErrorCode step(int signal = 0,
                          Address const &address = Address()) override;
-
-public:
   virtual ErrorCode afterResume();
+  virtual ErrorCode resume(int signal = 0,
+                           Address const &address = Address()) override;
 
 public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state) override;

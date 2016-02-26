@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Target/Darwin/MachOProcess.h"
+#include "DebugServer2/Target/Darwin/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <dirent.h>
@@ -23,6 +24,19 @@ namespace Target {
 namespace Darwin {
 
 Host::Darwin::Mach &MachOProcess::mach() { return _mach; }
+
+ErrorCode
+MachOProcess::resume(int signal,
+                     std::set<ds2::Target::Thread *> const &excluded) {
+  enumerateThreads([&](Thread *thread) {
+
+    ErrorCode err = thread->resume(signal);
+    if (err != kSuccess) {
+      DS2LOG(Error, "Unable to resume the thread: %d", thread->tid());
+    }
+  });
+  return kSuccess;
+}
 
 ErrorCode MachOProcess::getAuxiliaryVector(std::string &auxv) {
   ErrorCode error = updateAuxiliaryVector();
