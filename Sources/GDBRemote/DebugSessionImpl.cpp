@@ -343,6 +343,7 @@ ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
   info.byteOffset = reginfo.Def->LLDBOffset;
   info.gccRegisterIndex = reginfo.Def->GCCRegisterNumber;
   info.dwarfRegisterIndex = reginfo.Def->DWARFRegisterNumber;
+  info.regno = regno;
 
   if (reginfo.Def->Format == Architecture::kFormatVector) {
     info.encoding = RegisterInfo::kEncodingVector;

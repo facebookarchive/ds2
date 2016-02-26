@@ -146,6 +146,7 @@ struct RegisterInfo {
   ssize_t byteOffset;
   ssize_t gccRegisterIndex;
   ssize_t dwarfRegisterIndex;
+  uint32_t regno;
   Encoding encoding;
   Format format;
   std::vector<uint32_t> containerRegisters;

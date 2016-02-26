@@ -643,6 +643,10 @@ std::string RegisterInfo::encode(int xmlSet) const {
       regInfo.push_back(std::make_pair("set", setName));
   }
 
+  if (xml) {
+    regInfo.push_back(std::make_pair("regnum", ds2::ToString(regno)));
+  }
+
   if (!(gccRegisterIndex < 0))
     regInfo.push_back(std::make_pair(xml ? "gcc_regnum" : "gcc",
                                      ds2::ToString(gccRegisterIndex)));
@@ -659,7 +663,8 @@ std::string RegisterInfo::encode(int xmlSet) const {
     for (size_t n = 0; n < containerRegisters.size(); n++) {
       if (n != 0)
         contStream << ',';
-      contStream << std::hex << containerRegisters[n] << std::dec;
+      contStream << (xml ? std::dec : std::hex) << containerRegisters[n]
+                 << std::dec;
     }
     regInfo.push_back(std::make_pair(xml ? "value_regnums" : "container-regs",
                                      contStream.str()));
@@ -670,7 +675,8 @@ std::string RegisterInfo::encode(int xmlSet) const {
     for (size_t n = 0; n < invalidateRegisters.size(); n++) {
       if (n != 0)
         invStream << ',';
-      invStream << std::hex << invalidateRegisters[n] << std::dec;
+      invStream << (xml ? std::dec : std::hex) << invalidateRegisters[n]
+                << std::dec;
     }
     regInfo.push_back(std::make_pair(
         xml ? "invalidate_regnums" : "invalidate-regs", invStream.str()));

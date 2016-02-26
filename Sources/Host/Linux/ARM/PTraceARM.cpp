@@ -102,13 +102,11 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
   //
   std::memcpy(state.gp.regs, gprs.uregs, sizeof(state.gp.regs));
 
-#if (__ARM_ARCH >= 7)
   static_assert(sizeof(state.vfp) == ARM_VFPREGS_SIZE,
                 "sizeof(ARM::CPUState.vfp) does not match ARM_VFPREGS_SIZE");
 
   if (wrapPtrace(PTRACE_GETVFPREGS, pid, nullptr, &state.vfp) < 0)
     return Platform::TranslateError();
-#endif
 
   //
   // Read hardware breakpoints and watchpoints.
@@ -176,13 +174,11 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   if (wrapPtrace(PTRACE_SETREGS, pid, nullptr, &gprs) < 0)
     return Platform::TranslateError();
 
-#if (__ARM_ARCH >= 7)
   static_assert(sizeof(state.vfp) == ARM_VFPREGS_SIZE,
                 "sizeof(ARM::CPUState.vfp) does not match ARM_VFPREGS_SIZE");
 
   if (wrapPtrace(PTRACE_SETVFPREGS, pid, nullptr, &state.vfp) < 0)
     return Platform::TranslateError();
-#endif
 
   //
   // Write hardware breakpoints and watchpoints.
