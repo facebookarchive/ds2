@@ -259,6 +259,10 @@ if (${ENABLE_LOGCAT})
   target_compile_definitions(ds2 PRIVATE ENABLE_LOGCAT)
 endif ()
 
+if ("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+  target_link_libraries(ds2 z)
+endif ()
+
 if ("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
   target_link_libraries(ds2 util procstat)
 endif ()

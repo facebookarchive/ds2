@@ -19,7 +19,20 @@ namespace ds2 {
 namespace Support {
 namespace Linux {
 
-class Compression : public Support::CompressionBase {};
+#define super Support::CompressionBase
+#define zLibMetaDataSize 10
+
+class Compression : public Support::CompressionBase {
+
+public:
+  static std::string getSupported(void);
+
+public:
+  virtual ErrorCode setAlgo(std::string algo, int min);
+
+public:
+  virtual std::string compress(const std::string &source);
+};
 }
 }
 }
