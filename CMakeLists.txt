@@ -199,6 +199,7 @@ set(SUPPORT_COMMON_SOURCES
     Sources/MessageQueue.cpp
     Sources/SessionThread.cpp
     Sources/Support/Stringify.cpp
+    Sources/Support/CompressionBase.cpp
     Sources/Utils/Log.cpp
     Sources/Utils/OptParse.cpp
     Sources/main.cpp
@@ -216,6 +217,7 @@ set(SUPPORT_POSIX_SOURCES
 set(SUPPORT_Linux_SOURCES
     ${SUPPORT_POSIX_ELF_SOURCES}
     ${SUPPORT_POSIX_SOURCES}
+    Sources/Support/Linux/Compression.cpp
     )
 
 set(SUPPORT_Darwin_SOURCES
