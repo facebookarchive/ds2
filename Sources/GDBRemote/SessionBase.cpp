@@ -81,6 +81,14 @@ bool SessionBase::send(std::string const &data, bool escaped) {
   std::ostringstream ss;
   std::string encoded;
   std::string const *datap = &data;
+  bool compressed = false;
+
+  if (_compression.isEnable()) {
+    encoded = _compression.compress(data);
+    datap = &encoded;
+    escaped = true;
+    compressed = encoded[0] == 'C';
+  }
 
   //
   // If data contains $, #, } or * we need to escape the
@@ -97,7 +105,8 @@ bool SessionBase::send(std::string const &data, bool escaped) {
      << (unsigned)csum;
 
   std::string final_data = ss.str();
-  DS2LOG(Packet, "putpkt(\"%s\", %u)", final_data.c_str(),
+  DS2LOG(Packet, "putpkt(\"%s\", %u)",
+         (compressed ? "<compressed>" : final_data.c_str()),
          (unsigned)final_data.length());
 
   return _channel->send(final_data);

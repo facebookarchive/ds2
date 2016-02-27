@@ -95,6 +95,7 @@ Session::Session(CompatibilityMode mode) : _compatMode(mode) {
   REGISTER_HANDLER_EQUALS_1(QSetSTDOUT);
   REGISTER_HANDLER_EQUALS_1(QSetWorkingDir);
   REGISTER_HANDLER_EQUALS_1(QStartNoAckMode);
+  REGISTER_HANDLER_EQUALS_1(QEnableCompression);
   REGISTER_HANDLER_EQUALS_1(QSyncThreadState);
   REGISTER_HANDLER_EQUALS_1(QThreadSuffixSupported);
   REGISTER_HANDLER_EQUALS_1(Qbtrace);
@@ -1223,6 +1224,33 @@ void Session::Handle_QStartNoAckMode(ProtocolInterpreter::Handler const &,
                                      std::string const &) {
   setAckMode(false);
   sendOK();
+}
+
+//
+// Packet:        QEnableCompression:type:<type>;[minsize:<size>;]
+// Description:   Request that the remote stub enable the compression
+//                with a specified type.
+// Compatibility: LLDB
+//
+void Session::Handle_QEnableCompression(ProtocolInterpreter::Handler const &,
+                                        std::string const &args) {
+  uint32_t min = -1;
+  std::string type = "";
+  ErrorCode err;
+
+  ParseList(args, ';', [&](std::string const &arg) {
+    if (arg.compare(0, 5, "type:") == 0) {
+      type = &arg[5];
+    } else if (arg.compare(0, 8, "minsize:") == 0) {
+      min = std::strtoul(&arg[8], nullptr, 0);
+    }
+  });
+
+  err = setCompressionType(type, min);
+  sendError(err);
+
+  if (err == kSuccess)
+    enableCompression();
 }
 
 //

@@ -108,6 +108,8 @@ private:
                                  std::string const &args);
   void Handle_QStartNoAckMode(ProtocolInterpreter::Handler const &,
                               std::string const &);
+  void Handle_QEnableCompression(ProtocolInterpreter::Handler const &,
+                                 std::string const &);
   void Handle_QSyncThreadState(ProtocolInterpreter::Handler const &,
                                std::string const &);
   void Handle_QThreadSuffixSupported(ProtocolInterpreter::Handler const &,

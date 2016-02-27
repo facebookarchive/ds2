@@ -14,6 +14,7 @@
 #include "DebugServer2/GDBRemote/Types.h"
 #include "DebugServer2/GDBRemote/PacketProcessor.h"
 #include "DebugServer2/GDBRemote/ProtocolInterpreter.h"
+#include "DebugServer2/Support/Compression.h"
 #include "DebugServer2/Host/Channel.h"
 
 namespace ds2 {
@@ -28,6 +29,7 @@ private:
   ProtocolInterpreter _interpreter;
 
 protected:
+  Support::Compression _compression;
   SessionDelegate *_delegate;
   bool _ackmode;
 
@@ -65,6 +67,12 @@ public:
 
 protected:
   inline void setAckMode(bool enabled) { _ackmode = enabled; }
+
+protected:
+  inline void enableCompression() { _compression.enable(true); }
+  inline ErrorCode setCompressionType(std::string type, int min) {
+    return _compression.setAlgo(type, min);
+  }
 
 public:
   inline ProtocolInterpreter &interpreter() const {
