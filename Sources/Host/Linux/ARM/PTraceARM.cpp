@@ -47,7 +47,7 @@ void PTrace::initCPUState(ProcessId pid) {
   //
   unsigned int value = 0;
   if (wrapPtrace(PTRACE_GETHBPREGS, pid, 0, &value) < 0) {
-    DS2LOG(Info, "hardware breakpoint support disabled, error=%s",
+    DS2LOG(Debug, "hardware breakpoint support disabled, error=%s",
            Stringify::Errno(errno));
     return;
   }

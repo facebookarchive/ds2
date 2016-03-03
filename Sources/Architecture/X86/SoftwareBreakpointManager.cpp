@@ -87,7 +87,7 @@ void SoftwareBreakpointManager::enableLocation(Site const &site) {
     return;
   }
 
-  DS2LOG(Info, "set breakpoint instruction %#x at %#lx (saved insn %#x)",
+  DS2LOG(Debug, "set breakpoint instruction %#x at %#lx (saved insn %#x)",
          opcode, (unsigned long)site.address.value(), old);
 
   _insns[site.address] = old;
@@ -104,7 +104,7 @@ void SoftwareBreakpointManager::disableLocation(Site const &site) {
     return;
   }
 
-  DS2LOG(Info, "reset instruction %#x at %#lx", old,
+  DS2LOG(Debug, "reset instruction %#x at %#lx", old,
          (unsigned long)site.address.value());
 
   _insns.erase(site.address);

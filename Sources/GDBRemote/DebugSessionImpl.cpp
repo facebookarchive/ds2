@@ -444,7 +444,7 @@ ErrorCode DebugSessionImpl::onXferRead(Session &session,
                                        std::string const &annex,
                                        uint64_t offset, uint64_t length,
                                        std::string &buffer, bool &last) {
-  DS2LOG(Info, "object='%s' annex='%s' offset=%#" PRIx64 " length=%#" PRIx64,
+  DS2LOG(Debug, "object='%s' annex='%s' offset=%#" PRIx64 " length=%#" PRIx64,
          object.c_str(), annex.c_str(), offset, length);
 
   // TODO Split these generators into appropriate functions
@@ -1033,9 +1033,13 @@ ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
 
 ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
                                          EnvironmentBlock const &env) {
-  DS2LOG(Debug, "spawning process with args:");
-  for (auto const &arg : args)
-    DS2LOG(Debug, "  %s", arg.c_str());
+  if (GetLogLevel() >= kLogLevelInfo) {
+    DS2LOG(Info, "spawning process `%s`", args[0].c_str());
+  } else {
+    DS2LOG(Debug, "spawning process with args:");
+    for (auto const &arg : args)
+      DS2LOG(Debug, "  %s", arg.c_str());
+  }
 
   _spawner.setExecutable(args[0]);
   _spawner.setArguments(StringCollection(args.begin() + 1, args.end()));
