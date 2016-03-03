@@ -240,7 +240,7 @@ int main(int argc, char **argv) {
 #if !defined(OS_WIN32)
   ds2::SetLogColorsEnabled(isatty(fileno(stderr)));
 #endif
-  ds2::SetLogLevel(ds2::kLogLevelWarning);
+  ds2::SetLogLevel(ds2::kLogLevelInfo);
 
   enum RunMode {
     kRunModeNormal,
