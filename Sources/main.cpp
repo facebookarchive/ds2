@@ -257,25 +257,6 @@ int main(int argc, char **argv) {
   RunMode mode = kRunModeNormal;
   bool reverse = false;
 
-  if (argc < 2)
-    opts.usageDie("first argument must be g[dbserver] or p[latform]");
-
-  switch (argv[1][0]) {
-  case 'g':
-    mode = kRunModeNormal;
-    break;
-#if !defined(OS_WIN32)
-  case 'p':
-    mode = kRunModePlatform;
-    break;
-  case 's':
-    mode = kRunModeSlave;
-    break;
-#endif
-  default:
-    opts.usageDie("first argument must be g[dbserver] or p[latform]");
-  }
-
   // Logging options.
   opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
                  "output log messages to the file specified");
@@ -311,6 +292,25 @@ int main(int argc, char **argv) {
                  "use native registers (no-op)", true);
   opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
                  "make ds2 run in its own session (no-op)", true);
+
+  if (argc < 2)
+    opts.usageDie("first argument must be g[dbserver] or p[latform]");
+
+  switch (argv[1][0]) {
+  case 'g':
+    mode = kRunModeNormal;
+    break;
+#if !defined(OS_WIN32)
+  case 'p':
+    mode = kRunModePlatform;
+    break;
+  case 's':
+    mode = kRunModeSlave;
+    break;
+#endif
+  default:
+    opts.usageDie("first argument must be g[dbserver] or p[latform]");
+  }
 
   idx = opts.parse(argc, argv, host, port);
   argc -= idx, argv += idx;
