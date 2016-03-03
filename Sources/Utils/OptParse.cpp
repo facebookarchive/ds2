@@ -105,10 +105,16 @@ int OptParse::parse(int argc, char **argv, std::string &host,
         }
       }
     } else {
+      // We already have our [host]:port, this can only be the path to the
+      // binary to run.
+      if (!port.empty())
+        break;
+
       std::string addrString(argv[idx]);
       auto splitPos = addrString.rfind(":");
 
-      // end of options
+      // Argument is not an option (--long or -s) and not a [host]:port. We're
+      // done with parsing and this is the path to the binary to run.
       if (splitPos == std::string::npos)
         break;
 
