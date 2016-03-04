@@ -8,13 +8,35 @@
 ## PATENTS file in the same directory.
 ##
 
-sudo: required
-dist: trusty
+sudo: false
+dist: precise
 branches:
   only:
     - master
 matrix:
   fast_finish: true
+
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-precise-3.7
+      - ubuntu-toolchain-r-test
+      - extras-precise
+      - kubuntu-backports
+      - r-packages-precise
+    packages:
+      - clang-format-3.7
+      - flex
+      - bison
+      - swig
+      - g++-4.8
+      - clang-3.7
+      - g++-4.8-multilib
+      #- g++-mingw-w64-i686
+      - lldb-3.7
+      - liblldb-3.7
+      - python-lldb-3.7
+      - realpath
 
 env:
   - TARGET="Style"
@@ -26,7 +48,6 @@ env:
   - TARGET="Android-ARM64"
   - TARGET="Android-X86"
   - TARGET="Android-X86_64"
-  - TARGET="Linux-ARM"
   - TARGET="MinGW-X86"
   - TARGET="Tizen-ARM"
   - TARGET="Tizen-X86"
@@ -45,6 +66,5 @@ env:
   - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="1"
   - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="1" RELEASE="1"
 
-before_install: ./Support/Testing/Travis/before-install.py
 install:        ./Support/Testing/Travis/install.py
 script:         ./Support/Testing/Travis/script.sh

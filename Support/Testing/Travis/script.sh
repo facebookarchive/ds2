@@ -107,6 +107,15 @@ else
   cmake_options+=(-DCMAKE_BUILD_TYPE="Debug")
 fi
 
+echo "mingw?"
+echo $(which i686-w64-mingw32-gcc)
+echo "gcc?"
+echo $(which gcc)
+echo "gcc-4.8?"
+echo $(which gcc-4.8)
+echo "gcc-5?"
+echo $(which gcc-5)
+
 cmake "${cmake_options[@]}" "$top"
 make -j$(num_cpus)
 
