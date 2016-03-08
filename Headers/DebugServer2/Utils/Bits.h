@@ -20,7 +20,7 @@ namespace Utils {
 
 // We apply the builtin bit functions on chunks of sizeof(int) * 8 bits.
 // However, we can't do full shifts of this size because only the least
-// signifitive bits are used and clang complains, so we shift twice half
+// significative bits are used and clang complains, so we shift twice half
 // the size.
 static const size_t kHalfIntBits = sizeof(unsigned int) * 4;
 
