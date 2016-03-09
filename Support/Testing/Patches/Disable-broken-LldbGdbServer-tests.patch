@@ -6,7 +6,7 @@ index 03dcc84..2c40d9b 100644
  
      @llgs_test
      @dwarf_test
-+    @unittest2.expectedFailure
++    @expectedFailurei386
      def test_p_returns_correct_data_size_for_each_qRegisterInfo_launch_llgs_dwarf(self):
          self.init_llgs_test()
          self.buildDwarf()
@@ -14,7 +14,7 @@ index 03dcc84..2c40d9b 100644
  
      @llgs_test
      @dwarf_test
-+    @unittest2.expectedFailure
++    @expectedFailurei386
      def test_p_returns_correct_data_size_for_each_qRegisterInfo_attach_llgs_dwarf(self):
          self.init_llgs_test()
          self.buildDwarf()
