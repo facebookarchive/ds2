@@ -352,6 +352,23 @@ public:
       _GETREG(gp, gs);
       _GETREG(gp, eflags);
 
+      _GETREG2(x87, st0, regs[0].bytes);
+      _GETREG2(x87, st1, regs[1].bytes);
+      _GETREG2(x87, st2, regs[2].bytes);
+      _GETREG2(x87, st3, regs[3].bytes);
+      _GETREG2(x87, st4, regs[4].bytes);
+      _GETREG2(x87, st5, regs[5].bytes);
+      _GETREG2(x87, st6, regs[6].bytes);
+      _GETREG2(x87, st7, regs[7].bytes);
+      _GETREG2(x87, fstat, fstw);
+      _GETREG2(x87, fctrl, fctw);
+      _GETREG(x87, ftag);
+      _GETREG2(gp, fiseg, cs);
+      _GETREG2(x87, fioff, firip);
+      _GETREG2(gp, foseg, cs);
+      _GETREG2(x87, fooff, forip);
+      _GETREG(x87, fop);
+
       _GETREG32(gp, eax, rax);
       _GETREG32(gp, ebx, rbx);
       _GETREG32(gp, ecx, rcx);
@@ -426,6 +443,23 @@ public:
       _GETREG2(avx, ymm13, regs[13]);
       _GETREG2(avx, ymm14, regs[14]);
       _GETREG2(avx, ymm15, regs[15]);
+
+      _GETREG2(sse, xmm0, regs[16]);
+      _GETREG2(sse, xmm1, regs[17]);
+      _GETREG2(sse, xmm2, regs[18]);
+      _GETREG2(sse, xmm3, regs[19]);
+      _GETREG2(sse, xmm4, regs[20]);
+      _GETREG2(sse, xmm5, regs[21]);
+      _GETREG2(sse, xmm6, regs[22]);
+      _GETREG2(sse, xmm7, regs[23]);
+      _GETREG2(sse, xmm8, regs[24]);
+      _GETREG2(sse, xmm9, regs[25]);
+      _GETREG2(sse, xmm10, regs[26]);
+      _GETREG2(sse, xmm11, regs[27]);
+      _GETREG2(sse, xmm12, regs[28]);
+      _GETREG2(sse, xmm13, regs[29]);
+      _GETREG2(sse, xmm14, regs[30]);
+      _GETREG2(sse, xmm15, regs[31]);
 
     default:
       return false;
