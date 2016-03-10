@@ -104,13 +104,15 @@ char const *Platform::GetOSVersion() {
   static char versionStr[32] = {'\0'};
 
   if (versionStr[0] == '\0') {
-    DWORD version;
+    OSVERSIONINFO version;
 
-    version = ::GetVersion();
+    version.dwOSVersionInfoSize = sizeof(version);
+    if (!::GetVersionEx(&version)) {
+      return versionStr;
+    }
 
     ::ds2_snprintf(versionStr, sizeof(versionStr), "%d.%d",
-                   (DWORD)(LOBYTE(LOWORD(version))),
-                   (DWORD)(HIBYTE(LOWORD(version))));
+                   version.dwMajorVersion, version.dwMinorVersion);
   }
 
   return versionStr;
@@ -120,14 +122,14 @@ char const *Platform::GetOSBuild() {
   static char buildStr[32] = {'\0'};
 
   if (buildStr[0] == '\0') {
-    DWORD version;
+    OSVERSIONINFO version;
 
-    version = ::GetVersion();
-
-    if (version < 0x80000000) {
-      ::ds2_snprintf(buildStr, sizeof(buildStr), "%d",
-                     (DWORD)(HIWORD(version)));
+    version.dwOSVersionInfoSize = sizeof(version);
+    if (!::GetVersionEx(&version)) {
+      return buildStr;
     }
+
+    ::ds2_snprintf(buildStr, sizeof(buildStr), "%d", version.dwBuildNumber);
   }
 
   return buildStr;
