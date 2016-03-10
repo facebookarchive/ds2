@@ -155,9 +155,9 @@ error:
 }
 
 bool Platform::GetUserName(UserId const &uid, std::string &name) {
-  WCHAR nameStr[UNLEN];
-  WCHAR domainStr[UNLEN]; // unused
-  DWORD size = UNLEN;
+  WCHAR nameStr[UNLEN + 1];
+  WCHAR domainStr[UNLEN + 1]; // unused
+  DWORD size = UNLEN + 1;
   SID_NAME_USE nameUse; // unused
   int rc;
 
