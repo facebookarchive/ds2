@@ -30,7 +30,7 @@ template <typename T> static typename std::make_unsigned<T>::type MakeUnsigned(T
 
 static inline unsigned int FFS(unsigned int number) {
 #if __has_builtin(__builtin_ffs)
-  return __builtin_ffs(number);
+  return static_cast<unsigned int>(__builtin_ffs(static_cast<int>(number)));
 #elif defined(_MSC_VER)
   unsigned long index;
   if (_BitScanForward(&index, number)) {
@@ -49,7 +49,7 @@ static inline unsigned int FFS(unsigned int number) {
 
 static inline unsigned int PopCount(unsigned int number) {
 #if __has_builtin(__builtin_popcount)
-  return __builtin_popcount(number);
+  return static_cast<unsigned int>(__builtin_popcount(static_cast<int>(number)));
 #elif defined(_MSC_VER)
   return _CountOneBits(number);
 #else
@@ -65,7 +65,7 @@ static inline unsigned int PopCount(unsigned int number) {
 template <typename T> static inline unsigned int FFS(T number) {
   auto uNumber = MakeUnsigned(number);
   while (uNumber > 0) {
-    int ffs = FFS(uNumber);
+    unsigned int ffs = FFS(static_cast<typeof(uNumber)>(uNumber));
     if (ffs != 0) {
       return ffs;
     }
@@ -79,7 +79,7 @@ template <typename T> static inline unsigned int PopCount(T number) {
   auto uNumber = MakeUnsigned(number);
   unsigned int count = 0;
   while (uNumber > 0) {
-    count += PopCount(number);
+    count += PopCount(static_cast<typeof(uNumber)>(number));
     uNumber >>= kHalfIntBits;
     uNumber >>= kHalfIntBits;
   }

@@ -224,13 +224,13 @@ public:
     gp.r14 = regs[14];
     gp.r15 = regs[15];
     gp.rip = regs[16];
-    gp.eflags = regs[17];
-    gp.cs = regs[18];
-    gp.ss = regs[19];
-    gp.ds = regs[20];
-    gp.es = regs[21];
-    gp.fs = regs[22];
-    gp.gs = regs[23];
+    gp.eflags = static_cast<uint32_t>(regs[17]);
+    gp.cs = static_cast<uint32_t>(regs[18]);
+    gp.ss = static_cast<uint32_t>(regs[19]);
+    gp.ds = static_cast<uint32_t>(regs[20]);
+    gp.es = static_cast<uint32_t>(regs[21]);
+    gp.fs = static_cast<uint32_t>(regs[22]);
+    gp.gs = static_cast<uint32_t>(regs[23]);
   }
 
 public:
@@ -546,7 +546,7 @@ struct CPUState {
   }
   inline void setPC(uint64_t pc) {
     if (is32)
-      state32.setPC(pc);
+      state32.setPC(static_cast<uint32_t>(pc));
     else
       state64.setPC(pc);
   }
@@ -556,7 +556,7 @@ struct CPUState {
   }
   inline void setSP(uint64_t sp) {
     if (is32)
-      state32.setSP(sp);
+      state32.setSP(static_cast<uint32_t>(sp));
     else
       state64.setSP(sp);
   }

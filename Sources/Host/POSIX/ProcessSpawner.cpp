@@ -361,7 +361,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
           // redirections, so dup2() only, do not close. We will close when all
           // FDs have been dup2()'d.
           //
-          ::dup2(fds[n][WR], n);
+          ::dup2(fds[n][WR], static_cast<int>(n));
           break;
 
         default:
@@ -369,13 +369,13 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
             if (fds[n][WR] != -1) {
               ::close(fds[n][WR]);
             }
-            ::dup2(fds[n][RD], n);
+            ::dup2(fds[n][RD], static_cast<int>(n));
             ::close(fds[n][RD]);
           } else {
             if (fds[n][RD] != -1) {
               ::close(fds[n][RD]);
             }
-            ::dup2(fds[n][WR], n);
+            ::dup2(fds[n][WR], static_cast<int>(n));
             ::close(fds[n][WR]);
           }
           break;
