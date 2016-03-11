@@ -16,6 +16,11 @@ project(DebugServer2)
 set(OS_NAME ${CMAKE_SYSTEM_NAME})
 set(ARCH_NAME ${CMAKE_SYSTEM_PROCESSOR})
 
+string(STRIP "${OS_NAME}" OS_NAME)
+if (OS_NAME MATCHES "WindowsStore")
+  set(OS_NAME "Windows")
+endif ()
+
 string(STRIP "${ARCH_NAME}" ARCH_NAME)
 string(TOUPPER "${ARCH_NAME}" ARCH_NAME)
 if (ARCH_NAME MATCHES "^ARM64" OR ARCH_NAME MATCHES "AARCH64")
@@ -294,6 +299,9 @@ endif ()
 
 if ("${OS_NAME}" MATCHES "Windows")
   target_link_libraries(ds2 psapi shlwapi ws2_32)
+  if ("${CMAKE_SYSTEM_NAME}" MATCHES "WindowsStore")
+    target_link_libraries(ds2 onecore kernel32)
+  endif ()
 endif ()
 
 include(FindThreads)
