@@ -93,23 +93,23 @@ bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
       mode == kCompatibilityModeGDBMultiprocess) {
     if (string[0] == 'p') {
       char *eptr;
-      pid = strtoul(string.c_str() + 1, &eptr, 16);
+      pid = static_cast<typeof(pid)>(strtoul(string.c_str() + 1, &eptr, 16));
       CHECK_AND_RESET(pid, kAllProcessId);
       if (*eptr++ == '.') {
-        tid = strtoul(eptr, nullptr, 16);
+        tid = static_cast<typeof(tid)>(strtoul(eptr, nullptr, 16));
         CHECK_AND_RESET(tid, kAllThreadId);
       }
     } else {
-      pid = std::strtoul(string.c_str(), nullptr, 16);
+      pid = static_cast<typeof(pid)>(std::strtoul(string.c_str(), nullptr, 16));
       CHECK_AND_RESET(pid, kAllProcessId);
     }
   } else if (mode == kCompatibilityModeLLDB) {
     char *eptr;
-    pid = strtoul(string.c_str(), &eptr, 16);
+    pid = static_cast<typeof(pid)>(strtoul(string.c_str(), &eptr, 16));
     CHECK_AND_RESET(pid, kAllProcessId);
     if (*eptr++ == ';') {
       if (std::strncmp(eptr, "thread:", 7) == 0) {
-        tid = strtoul(eptr + 7, nullptr, 16);
+        tid = static_cast<typeof(tid)>(strtoul(eptr + 7, nullptr, 16));
         CHECK_AND_RESET(tid, kAllThreadId);
       }
     } else {
@@ -118,7 +118,7 @@ bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
     }
   } else if (mode == kCompatibilityModeLLDBThread) {
     if (std::strncmp(string.c_str(), "thread:", 7) == 0) {
-      tid = strtoul(string.c_str() + 7, nullptr, 16);
+      tid = static_cast<typeof(tid)>(strtoul(string.c_str() + 7, nullptr, 16));
       CHECK_AND_RESET(tid, kAllThreadId);
     }
   } else {
@@ -266,9 +266,10 @@ void StopCode::encodeRegisters(std::map<std::string, std::string> &regs,
     }
 
 #if defined(ENDIAN_BIG)
-    regVal << HEX(regsize >> 2) << reg.second.value;
+    regVal << HEX(static_cast<int>(regsize >> 2)) << reg.second.value;
 #else
-    regVal << HEX(regsize >> 2) << (Swap64(reg.second.value) >> (64 - regsize));
+    regVal << HEX(static_cast<int>(regsize >> 2))
+           << (Swap64(reg.second.value) >> (64 - regsize));
 #endif
 
     regs.insert(std::make_pair(regNum.str(), regVal.str()));
