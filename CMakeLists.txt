@@ -249,7 +249,7 @@ add_executable(ds2 ${DEBUGSERVER2_SOURCES})
 target_include_directories(ds2 PUBLIC Headers)
 set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
 
-if ("${CMAKE_SYSTEM_NAME}" MATCHES "Linux" OR "${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
+if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "FreeBSD")
   include(CheckIncludeFile)
   CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
   if (HAVE_SYS_PERSONALITY_H)
@@ -257,7 +257,7 @@ if ("${CMAKE_SYSTEM_NAME}" MATCHES "Linux" OR "${CMAKE_SYSTEM_NAME}" MATCHES "Fr
   endif ()
 endif ()
 
-if ("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+if ("${OS_NAME}" MATCHES "Windows")
   target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)
   target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6 _WIN32_WINNT=_WIN32_WINNT_WIN6)
 endif ()
@@ -288,11 +288,11 @@ if (${ENABLE_LOGCAT})
   target_compile_definitions(ds2 PRIVATE ENABLE_LOGCAT)
 endif ()
 
-if ("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")
+if ("${OS_NAME}" MATCHES "FreeBSD")
   target_link_libraries(ds2 util procstat)
 endif ()
 
-if ("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
+if ("${OS_NAME}" MATCHES "Windows")
   target_link_libraries(ds2 psapi shlwapi ws2_32)
 endif ()
 
