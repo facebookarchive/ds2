@@ -233,6 +233,11 @@ DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
 }
 
 int main(int argc, char **argv) {
+  std::ostringstream ss;
+  for (int i = 0; i < argc; ++i)
+    ss << argv[i] << " ";
+  std::string full_args = ss.str();
+
   ds2::OptParse opts;
   int idx;
 
@@ -421,6 +426,8 @@ int main(int argc, char **argv) {
   if (host.empty()) {
     host = gDefaultHost;
   }
+
+  DS2LOG(Debug, "ds2 launched with arguments: %s", full_args.c_str());
 
   switch (mode) {
   case kRunModeNormal:
