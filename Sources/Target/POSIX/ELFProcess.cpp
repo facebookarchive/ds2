@@ -88,7 +88,7 @@ inline ErrorCode GetELFSharedLibraryInfoAddress(ELFProcess *process,
   // 2. Find DT_DEBUG in .dynamic section
   //
   uint64_t dynsymAddress = process->loadBase() + ph.p_paddr - elfLoadBase;
-  size_t entriesCount = ph.p_memsz / sizeof(dynsym);
+  size_t entriesCount = static_cast<size_t>(ph.p_memsz / sizeof(dynsym));
   for (size_t n = 0; n < entriesCount; n++) {
     error = process->readMemory(dynsymAddress, &dynsym, sizeof(dynsym));
     if (error != ds2::kSuccess)
@@ -406,16 +406,16 @@ ErrorCode ELFProcess::updateInfo() {
   enumerateAuxiliaryVector([&](ELFSupport::AuxiliaryVectorEntry const &entry) {
     switch (entry.type) {
     case AT_GID:
-      _info.realGid = entry.value;
+      _info.realGid = static_cast<ds2::GroupId>(entry.value);
       break;
     case AT_EGID:
-      _info.effectiveGid = entry.value;
+      _info.effectiveGid = static_cast<ds2::GroupId>(entry.value);
       break;
     case AT_UID:
-      _info.realUid = entry.value;
+      _info.realUid = static_cast<ds2::UserId>(entry.value);
       break;
     case AT_EUID:
-      _info.effectiveUid = entry.value;
+      _info.effectiveUid = static_cast<ds2::UserId>(entry.value);
       break;
     }
   });

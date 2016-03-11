@@ -28,7 +28,7 @@
 
 namespace {
 
-int sLogLevel;
+uint32_t sLogLevel;
 bool sColorsEnabled = false;
 // stderr is handled a bit differently on Windows, especially when running
 // under powershell. We can simply use stdout for log output.
@@ -76,7 +76,7 @@ void SetLogColorsEnabled(bool enabled) { sColorsEnabled = enabled; }
 
 void SetLogOutputStream(FILE *stream) { sOutputStream = stream; }
 
-void vLog(int level, char const *classname, char const *funcname,
+void vLog(uint32_t level, char const *classname, char const *funcname,
           char const *format, va_list ap) {
   std::stringstream ss;
 
@@ -88,7 +88,7 @@ void vLog(int level, char const *classname, char const *funcname,
     va_copy(ap_copy, ap);
     buffer.resize(required_bytes + 1);
     required_bytes =
-        ds2_vsnprintf(buffer.data(), buffer.size(), format, ap_copy);
+        static_cast<size_t>(ds2_vsnprintf(buffer.data(), buffer.size(), format, ap_copy));
     va_end(ap_copy);
   } while (required_bytes >= buffer.size());
 
@@ -163,7 +163,7 @@ void Log(int level, char const *classname, char const *funcname,
   va_list ap;
 
   va_start(ap, format);
-  vLog(level, classname, funcname, format, ap);
+  vLog(static_cast<uint32_t>(level), classname, funcname, format, ap);
   va_end(ap);
 }
 }

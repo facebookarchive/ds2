@@ -306,16 +306,16 @@ bool ProcFS::ReadUptime(Uptime &uptime) {
 
         switch (index) {
         case UPTIME_F_RUN_TIME:
-          uptime.run_time.tv_sec = strtoll(value, &end, 0);
+          uptime.run_time.tv_sec = static_cast<typeof(uptime.run_time.tv_sec)>(strtoll(value, &end, 0));
           if (*end++ == '.') {
-            uptime.run_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
+            uptime.run_time.tv_nsec = static_cast<typeof(uptime.run_time.tv_nsec)>(strtoll(end, nullptr, 0) * 10000000);
           }
           break;
 
         case UPTIME_F_IDLE_TIME:
-          uptime.idle_time.tv_sec = strtoll(value, &end, 0);
+          uptime.idle_time.tv_sec = static_cast<typeof(uptime.idle_time.tv_sec)>(strtoll(value, &end, 0));
           if (*end++ == '.') {
-            uptime.idle_time.tv_nsec = strtoll(end, nullptr, 0) * 10000000;
+            uptime.idle_time.tv_nsec = static_cast<typeof(uptime.idle_time.tv_nsec)>(strtoll(end, nullptr, 0) * 10000000);
           }
           break;
         }

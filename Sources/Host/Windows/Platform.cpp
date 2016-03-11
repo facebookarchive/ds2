@@ -153,6 +153,10 @@ error:
 }
 
 bool Platform::GetUserName(UserId const &uid, std::string &name) {
+#if defined(ARCH_ARM)
+  // TODO implement for Winphone ARM.
+  return false;
+#else
   WCHAR nameStr[UNLEN];
   WCHAR domainStr[UNLEN]; // unused
   DWORD size = UNLEN;
@@ -166,6 +170,7 @@ bool Platform::GetUserName(UserId const &uid, std::string &name) {
 
   name = WideToNarrowString(nameStr);
   return true;
+#endif
 }
 
 bool Platform::GetGroupName(UserId const &gid, std::string &name) {
@@ -222,7 +227,9 @@ bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
     info.name = WideToNarrowString(processName);
   }
 
-  // Get process user ID.
+// Get process user ID.
+#if !defined(ARCH_ARM)
+  // TODO implement for Winphone ARM.
   {
     HANDLE processToken;
     std::vector<char> userInfoBuffer;
@@ -253,6 +260,7 @@ bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
 
     CloseHandle(processToken);
   }
+#endif
 
   // TODO(sas): Fetch the process group ID. This looks like it's gonna
   // require some additional work as a process on Windows doesn't have

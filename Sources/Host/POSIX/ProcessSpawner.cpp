@@ -15,6 +15,7 @@
 #endif
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/ProcessSpawner.h"
+#include "DebugServer2/Utils/Bits.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <climits>
@@ -361,7 +362,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
           // redirections, so dup2() only, do not close. We will close when all
           // FDs have been dup2()'d.
           //
-          ::dup2(fds[n][WR], n);
+          ::dup2(fds[n][WR], static_cast<int>(n));
           break;
 
         default:
@@ -369,13 +370,13 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
             if (fds[n][WR] != -1) {
               ::close(fds[n][WR]);
             }
-            ::dup2(fds[n][RD], n);
+            ::dup2(fds[n][RD], static_cast<int>(n));
             ::close(fds[n][RD]);
           } else {
             if (fds[n][RD] != -1) {
               ::close(fds[n][RD]);
             }
-            ::dup2(fds[n][WR], n);
+            ::dup2(fds[n][WR], static_cast<int>(n));
             ::close(fds[n][WR]);
           }
           break;
@@ -518,7 +519,7 @@ void ProcessSpawner::redirectionThread() {
       }
     }
 
-    nfds = ::poll(pfds, nfds, 100);
+    nfds = ::poll(pfds, static_cast<nfds_t>(nfds), 100);
     if (nfds < 0)
       break;
 
@@ -547,7 +548,7 @@ void ProcessSpawner::redirectionThread() {
             if (descriptor->mode == kRedirectBuffer) {
               _outputBuffer.insert(_outputBuffer.end(), &buf[0], &buf[nread]);
             } else {
-              descriptor->delegate(buf, nread);
+              descriptor->delegate(buf, ds2::Utils::MakeUnsigned(nread));
             }
             done = true;
           }

@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Architecture/ARM/Branching.h"
+#include "DebugServer2/Utils/Bits.h"
 
 using namespace ds2::Architecture::ARM;
 
@@ -69,7 +70,8 @@ public:
     info.itCount = 0;
     if (info.it) {
       info.cond = static_cast<BranchCond>((insn >> 4) & 0xf);
-      info.itCount = 5 - __builtin_ffs(insn & 0xf);
+      // itCount has 3 bits
+      info.itCount = (5 - ds2::Utils::FFS(insn & 0xf)) & 7;
     } else {
       info.cond = kCondAL;
     }
@@ -168,7 +170,7 @@ public:
       info.mode = kBranchDispNormal;
       info.reg1 = 13; // Stack Pointer | TODO: Generate register names
       info.reg2 = -1;
-      info.disp = __builtin_popcount(insn & 0xff) << 2;
+      info.disp = ds2::Utils::PopCount(insn & 0xff) << 2;
       return true;
     }
     return false;
@@ -381,7 +383,7 @@ public:
       info.reg2 = -1;
       // count bits
       info.disp = 0;
-      for (uint16_t regs = insn[1]; regs != 0; regs >>= 1) {
+      for (uint16_t regs = insn[1]; regs != 0; regs = static_cast<uint16_t>(regs >> 1)) {
         info.disp += (regs & 1);
       }
       // PC should be stored at address (reg1 + (bit_count - 1) * 4)

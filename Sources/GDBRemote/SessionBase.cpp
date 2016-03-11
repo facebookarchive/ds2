@@ -155,7 +155,7 @@ bool SessionBase::sendError(ErrorCode code) {
 
   char message[4];
   message[0] = 'E';
-  message[1] = NibbleToHex(code >> 4);
+  message[1] = NibbleToHex(static_cast<uint8_t>(code >> 4));
   message[2] = NibbleToHex(code & 15);
   message[3] = '\0';
   return send(message);

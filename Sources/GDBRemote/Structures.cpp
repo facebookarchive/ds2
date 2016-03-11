@@ -60,7 +60,7 @@ bool Feature::parse(std::string const &string) {
 }
 
 #define HEX0 std::hex << std::setfill('0')
-#define HEX(N) HEX0 << std::setw(N)
+#define HEX(N) HEX0 << std::setw(static_cast<int>(N))
 #define DEC std::dec
 
 //
@@ -93,23 +93,23 @@ bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
       mode == kCompatibilityModeGDBMultiprocess) {
     if (string[0] == 'p') {
       char *eptr;
-      pid = strtoul(string.c_str() + 1, &eptr, 16);
+      pid = static_cast<ProcessId>(strtoul(string.c_str() + 1, &eptr, 16));
       CHECK_AND_RESET(pid, kAllProcessId);
       if (*eptr++ == '.') {
-        tid = strtoul(eptr, nullptr, 16);
+        tid = static_cast<ThreadId>(strtoul(eptr, nullptr, 16));
         CHECK_AND_RESET(tid, kAllThreadId);
       }
     } else {
-      pid = std::strtoul(string.c_str(), nullptr, 16);
+      pid = static_cast<ProcessId>(std::strtoul(string.c_str(), nullptr, 16));
       CHECK_AND_RESET(pid, kAllProcessId);
     }
   } else if (mode == kCompatibilityModeLLDB) {
     char *eptr;
-    pid = strtoul(string.c_str(), &eptr, 16);
+    pid = static_cast<ProcessId>(strtoul(string.c_str(), &eptr, 16));
     CHECK_AND_RESET(pid, kAllProcessId);
     if (*eptr++ == ';') {
       if (std::strncmp(eptr, "thread:", 7) == 0) {
-        tid = strtoul(eptr + 7, nullptr, 16);
+        tid = static_cast<ThreadId>(strtoul(eptr + 7, nullptr, 16));
         CHECK_AND_RESET(tid, kAllThreadId);
       }
     } else {
@@ -118,7 +118,7 @@ bool ProcessThreadId::parse(std::string const &string, CompatibilityMode mode) {
     }
   } else if (mode == kCompatibilityModeLLDBThread) {
     if (std::strncmp(string.c_str(), "thread:", 7) == 0) {
-      tid = strtoul(string.c_str() + 7, nullptr, 16);
+      tid = static_cast<ThreadId>(strtoul(string.c_str() + 7, nullptr, 16));
       CHECK_AND_RESET(tid, kAllThreadId);
     }
   } else {

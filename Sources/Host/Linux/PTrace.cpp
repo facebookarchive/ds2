@@ -151,7 +151,7 @@ ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
 
   bool foundNull = false;
   size_t nread = 0;
-  uintptr_t base = address;
+  uintptr_t base = static_cast<uintptr_t>(address);
   uintptr_t *words = (uintptr_t *)buffer;
 
   if (length == 0 || buffer == nullptr) {
@@ -235,7 +235,7 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
   }
 
   size_t nwritten = 0;
-  uintptr_t base = address;
+  uintptr_t base = static_cast<uintptr_t>(address);
   uintptr_t const *words = (uintptr_t const *)buffer;
 
   if (length == 0 || buffer == nullptr) {
@@ -326,7 +326,7 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
     if (error != kSuccess)
       return error;
 
-    state.setPC(address);
+    state.setPC(static_cast<uintptr_t>(address));
 
     error = writeCPUState(ptid, pinfo, state);
     if (error != kSuccess)
@@ -361,7 +361,7 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
     if (error != kSuccess)
       return error;
 
-    state.setPC(address);
+    state.setPC(static_cast<uintptr_t>(address));
 
     error = writeCPUState(ptid, pinfo, state);
     if (error != kSuccess)

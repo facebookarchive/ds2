@@ -13,6 +13,7 @@
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/GDBRemote/SessionDelegate.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
+#include "DebugServer2/Utils/Bits.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/SwapEndian.h"
@@ -235,7 +236,7 @@ std::string Session::formatAddress(Address const &address,
     value = Swap64(value) >> (64 - regsize);
   }
 
-  ss << std::hex << std::setw(regsize >> 2) << std::setfill('0') << value;
+  ss << std::hex << std::setw(static_cast<int>(regsize >> 2)) << std::setfill('0') << value;
   return ss.str();
 }
 
@@ -313,12 +314,12 @@ void Session::Handle_A(ProtocolInterpreter::Handler const &,
       }
     }
 
-    uint32_t nchars = std::strtoul(eptr, &eptr, 10);
+    uint32_t nchars = static_cast<uint32_t>(std::strtoul(eptr, &eptr, 10));
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
     }
-    uint32_t argno = std::strtoul(eptr, &eptr, 10);
+    uint32_t argno = static_cast<uint32_t>(std::strtoul(eptr, &eptr, 10));
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
@@ -385,7 +386,7 @@ void Session::Handle_B(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_b(ProtocolInterpreter::Handler const &,
                        std::string const &args) {
-  uint32_t speed = std::strtoul(args.c_str(), nullptr, 0); // TODO maybe hex?
+  uint32_t speed = static_cast<uint32_t>(std::strtoul(args.c_str(), nullptr, 0)); // TODO maybe hex?
   sendError(_delegate->onSetBaudRate(*this, speed));
 }
 
@@ -463,7 +464,7 @@ void Session::Handle_C(ProtocolInterpreter::Handler const &,
   char *bptr;
   char *eptr;
 
-  signal = std::strtol(args.c_str(), &bptr, 16);
+  signal = static_cast<int>(std::strtol(args.c_str(), &bptr, 16));
 
   if (*bptr == ';' && parseAddress(address, bptr + 1, &eptr, kEndianNative)) {
     bptr = eptr;
@@ -582,9 +583,9 @@ void Session::Handle_D(ProtocolInterpreter::Handler const &,
   ProcessId pid = kAnyProcessId;
 
   if (!args.empty()) {
-    mode = std::strtoul(args.c_str(), &eptr, 10);
+    mode = static_cast<uint32_t>(std::strtoul(args.c_str(), &eptr, 10));
     if (*eptr++ == ';') {
-      pid = std::strtoul(eptr, nullptr, 16);
+      pid = static_cast<ProcessId>(std::strtoul(eptr, nullptr, 16));
     }
   }
 
@@ -704,7 +705,7 @@ void Session::Handle_H(ProtocolInterpreter::Handler const &,
   }
 
   ProcessThreadId ptid;
-  uint8_t command = args[0];
+  uint8_t command = ds2::Utils::MakeUnsigned(args[0]);
 
   if (!ptid.parse(args.substr(1), _compatMode)) {
     sendError(kErrorInvalidArgument);
@@ -728,7 +729,7 @@ void Session::Handle_H(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  _ptids[command] = ptid;
+  _ptids[ds2::Utils::MakeSigned(command)] = ptid;
   sendOK();
 
   DS2LOG(Debug, "setting command '%c' to pid %" PRIu64 " tid %" PRIu64, command,
@@ -749,11 +750,11 @@ void Session::Handle_I(ProtocolInterpreter::Handler const &,
   Address address;
   uint32_t ncycles = 1;
 
-  signal = std::strtol(args.c_str(), &eptr, 16);
+  signal = static_cast<int>(std::strtol(args.c_str(), &eptr, 16));
   if (*eptr++ == ';') {
     parseAddress(address, eptr, &eptr, kEndianNative);
     if (*eptr++ == ',') {
-      ncycles = std::strtoul(eptr, nullptr, 16); // TODO is it really hex?
+      ncycles = static_cast<uint32_t>(std::strtoul(eptr, nullptr, 16)); // TODO is it really hex?
     }
   }
 
@@ -800,7 +801,7 @@ void Session::Handle_i(ProtocolInterpreter::Handler const &,
 
   parseAddress(address, args.c_str(), &eptr, kEndianNative);
   if (*eptr++ == ',') {
-    ncycles = std::strtoul(eptr, nullptr, 16); // TODO is it really hex?
+    ncycles = static_cast<uint32_t>(std::strtoul(eptr, nullptr, 16)); // TODO is it really hex?
   }
 
   //
@@ -920,14 +921,14 @@ void Session::Handle__M(ProtocolInterpreter::Handler const &,
 
   Address address;
   ErrorCode error =
-      _delegate->onAllocateMemory(*this, length, protection, address);
+      _delegate->onAllocateMemory(*this, static_cast<size_t>(length), protection, address);
   if (error != kSuccess) {
     sendError(error);
     return;
   }
 
   std::ostringstream ss;
-  ss << std::hex << std::setfill('0') << std::setw(_delegate->getGPRSize() >> 2)
+  ss << std::hex << std::setfill('0') << std::setw(static_cast<int>(_delegate->getGPRSize() >> 2))
      << address.value();
   send(ss.str());
 }
@@ -968,7 +969,7 @@ void Session::Handle_M(ProtocolInterpreter::Handler const &,
 
   std::string data(HexToString(eptr));
   if (data.length() > length) {
-    data = data.substr(0, length);
+    data = data.substr(0, static_cast<std::basic_string<char>::size_type>(length));
   }
 
   size_t nwritten = 0;
@@ -994,7 +995,7 @@ void Session::Handle_m(ProtocolInterpreter::Handler const &,
   }
   length = strtoull(eptr, nullptr, 16);
 
-  ErrorCode error = _delegate->onReadMemory(*this, address, length, data);
+  ErrorCode error = _delegate->onReadMemory(*this, static_cast<size_t>(address), length, data);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -1016,7 +1017,7 @@ void Session::Handle_P(ProtocolInterpreter::Handler const &,
   std::string value;
   uint32_t regno;
 
-  regno = std::strtoul(args.c_str(), &eptr, 16);
+  regno = static_cast<uint32_t>(std::strtoul(args.c_str(), &eptr, 16));
   if (*eptr++ != '=') {
     sendError(kErrorInvalidArgument);
     return;
@@ -1028,7 +1029,7 @@ void Session::Handle_P(ProtocolInterpreter::Handler const &,
     ptidptr = std::strchr(eptr, '\0');
   }
 
-  value = HexToString(std::string(eptr, ptidptr - eptr));
+  value = HexToString(std::string(eptr, ds2::Utils::MakeUnsigned(ptidptr - eptr)));
 
   if (_compatMode == kCompatibilityModeLLDB) {
     //
@@ -1060,7 +1061,7 @@ void Session::Handle_p(ProtocolInterpreter::Handler const &,
                        std::string const &args) {
   char *eptr;
   ProcessThreadId ptid;
-  uint32_t regno = std::strtoul(args.c_str(), &eptr, 16);
+  uint32_t regno = static_cast<uint32_t>(std::strtoul(args.c_str(), &eptr, 16));
 
   if (_compatMode == kCompatibilityModeLLDB) {
     //
@@ -1146,7 +1147,7 @@ void Session::Handle_QPassSignals(ProtocolInterpreter::Handler const &,
                                   std::string const &args) {
   std::vector<int> signals;
   ParseList(args, ';', [&](std::string const &arg) {
-    signals.push_back(std::strtoul(arg.c_str(), nullptr, 16));
+    signals.push_back(static_cast<int>(std::strtoul(arg.c_str(), nullptr, 16)));
   });
 
   sendError(_delegate->onPassSignals(*this, signals));
@@ -1162,7 +1163,7 @@ void Session::Handle_QProgramSignals(ProtocolInterpreter::Handler const &,
                                      std::string const &args) {
   std::vector<int> signals;
   ParseList(args, ';', [&](std::string const &arg) {
-    signals.push_back(std::strtoul(arg.c_str(), nullptr, 16));
+    signals.push_back(static_cast<int>(std::strtoul(arg.c_str(), nullptr, 16)));
   });
 
   sendError(_delegate->onProgramSignals(*this, signals));
@@ -1264,7 +1265,7 @@ void Session::Handle_QAllow(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_QAgent(ProtocolInterpreter::Handler const &,
                             std::string const &args) {
-  uint32_t value = std::strtoul(args.c_str(), nullptr, 16);
+  uint32_t value = static_cast<uint32_t>(std::strtoul(args.c_str(), nullptr, 16));
   sendError(_delegate->onEnableControlAgent(*this, value != 0));
 }
 
@@ -1296,7 +1297,7 @@ void Session::Handle_Qbtrace(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_QDisableRandomization(ProtocolInterpreter::Handler const &,
                                            std::string const &args) {
-  uint32_t value = std::strtoul(args.c_str(), nullptr, 16);
+  uint32_t value = static_cast<uint32_t>(std::strtoul(args.c_str(), nullptr, 16));
   sendError(_delegate->onDisableASLR(*this, value != 0));
 }
 
@@ -1308,7 +1309,7 @@ void Session::Handle_QDisableRandomization(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_QSetMaxPacketSize(ProtocolInterpreter::Handler const &,
                                        std::string const &args) {
-  uint32_t size = std::strtoul(args.c_str(), nullptr, 16);
+  uint32_t size = static_cast<uint32_t>(std::strtoul(args.c_str(), nullptr, 16));
   if (size == 0) {
     sendError(kErrorInvalidArgument);
     return;
@@ -1325,7 +1326,7 @@ void Session::Handle_QSetMaxPacketSize(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_QSetMaxPayloadSize(ProtocolInterpreter::Handler const &,
                                         std::string const &args) {
-  uint32_t size = std::strtoul(args.c_str(), nullptr, 16);
+  uint32_t size = static_cast<uint32_t>(std::strtoul(args.c_str(), nullptr, 16));
   if (size == 0) {
     sendError(kErrorInvalidArgument);
     return;
@@ -1408,7 +1409,7 @@ void Session::Handle_QListThreadsInStopReply(
 //
 void Session::Handle_QSetDisableASLR(ProtocolInterpreter::Handler const &,
                                      std::string const &args) {
-  uint32_t value = std::strtoul(args.c_str(), nullptr, 10);
+  uint32_t value = static_cast<uint32_t>(std::strtoul(args.c_str(), nullptr, 10));
   sendError(_delegate->onDisableASLR(*this, value != 0));
 }
 
@@ -1428,9 +1429,9 @@ void Session::Handle_QSetEnableAsyncProfiling(
     if (arg.compare(0, 7, "enable:") == 0) {
       enabled = std::strtoul(&arg[7], nullptr, 0) != 0;
     } else if (arg.compare(0, 9, "scan_type:") == 0) {
-      scanType = std::strtoul(&arg[9], nullptr, 0);
+      scanType = static_cast<uint32_t>(std::strtoul(&arg[9], nullptr, 0));
     } else if (arg.compare(0, 13, "interval_usec:") == 0) {
-      interval = std::strtoul(&arg[13], nullptr, 0);
+      interval = static_cast<uint32_t>(std::strtoul(&arg[13], nullptr, 0));
     }
   });
 
@@ -1490,7 +1491,7 @@ void Session::Handle_QThreadSuffixSupported(
 void Session::Handle_qAttached(ProtocolInterpreter::Handler const &,
                                std::string const &args) {
   bool attached = false;
-  ProcessId pid = strtoull(args.c_str(), nullptr, 16);
+  ProcessId pid = static_cast<ProcessId>(strtoull(args.c_str(), nullptr, 16));
   ErrorCode error = _delegate->onQueryAttached(*this, pid, attached);
   if (error != kSuccess) {
     sendError(error);
@@ -1603,7 +1604,7 @@ void Session::Handle_qGetProfileData(ProtocolInterpreter::Handler const &,
 
   ParseList(args, ';', [&](std::string const &arg) {
     if (arg.compare(0, 9, "scan_type:") == 0) {
-      scanType = std::strtoul(&arg[9], nullptr, 0);
+      scanType = static_cast<uint32_t>(std::strtoul(&arg[9], nullptr, 0));
     }
   });
 
@@ -1703,7 +1704,7 @@ void Session::Handle_qGetWorkingDir(ProtocolInterpreter::Handler const &,
 void Session::Handle_qGroupName(ProtocolInterpreter::Handler const &,
                                 std::string const &args) {
   std::string name;
-  UserId uid = UNPACK_ID(args.c_str());
+  UserId uid = static_cast<UserId>(UNPACK_ID(args.c_str()));
   ErrorCode error = _delegate->onQueryGroupName(*this, uid, name);
   if (error != kSuccess) {
     sendError(error);
@@ -1737,7 +1738,7 @@ void Session::Handle_qHostInfo(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_qKillSpawnedProcess(ProtocolInterpreter::Handler const &,
                                          std::string const &args) {
-  ProcessId pid = std::strtoul(args.c_str(), nullptr, 10);
+  ProcessId pid = static_cast<ProcessId>(std::strtoul(args.c_str(), nullptr, 10));
   sendError(_delegate->onTerminate(*this, pid));
 }
 
@@ -1753,7 +1754,7 @@ void Session::Handle_qL(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  ThreadId next = std::strtoul(&args[2], nullptr, 16);
+  ThreadId next = static_cast<ThreadId>(std::strtoul(&args[2], nullptr, 16));
 
   ThreadId tid;
   ErrorCode error =
@@ -1794,7 +1795,7 @@ void Session::Handle_qLaunchGDBServer(ProtocolInterpreter::Handler const &,
     if (arg.compare(0, 5, "host:") == 0) {
       host = &arg[5];
     } else if (arg.compare(0, 5, "port:") == 0) {
-      port = std::strtoul(&arg[5], nullptr, 10);
+      port = static_cast<uint16_t>(std::strtoul(&arg[5], nullptr, 10));
     }
   });
 
@@ -1960,7 +1961,7 @@ void Session::Handle_qP(ProtocolInterpreter::Handler const &,
 void Session::Handle_qPlatform_IO_MkDir(ProtocolInterpreter::Handler const &,
                                         std::string const &args) {
   char *eptr;
-  uint32_t mode = std::strtoul(args.c_str(), &eptr, 16);
+  uint32_t mode = static_cast<uint32_t>(std::strtoul(args.c_str(), &eptr, 16));
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
@@ -1990,7 +1991,7 @@ void Session::Handle_qPlatform_RunCommand(ProtocolInterpreter::Handler const &,
   std::string command(HexToString(args.substr(0, comma)));
 
   char *eptr;
-  uint32_t timeout = std::strtoul(&args[comma + 1], &eptr, 16);
+  uint32_t timeout = static_cast<uint32_t>(std::strtoul(&args[comma + 1], &eptr, 16));
   if (*eptr++ == ',') {
     workingDir = eptr;
   }
@@ -2039,7 +2040,7 @@ void Session::Handle_qProcessInfo(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_qProcessInfoPID(ProtocolInterpreter::Handler const &,
                                      std::string const &args) {
-  ProcessId pid = std::strtoul(args.c_str(), nullptr, 10);
+  ProcessId pid = static_cast<ProcessId>(std::strtoul(args.c_str(), nullptr, 10));
 
   ProcessInfo info;
   ErrorCode error = _delegate->onQueryProcessInfo(*this, pid, info);
@@ -2077,7 +2078,7 @@ void Session::Handle_qRcmd(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_qRegisterInfo(ProtocolInterpreter::Handler const &,
                                    std::string const &args) {
-  uint32_t regno = std::strtoul(args.c_str(), nullptr, 16);
+  uint32_t regno = static_cast<uint32_t>(std::strtoul(args.c_str(), nullptr, 16));
 
   RegisterInfo info;
   ErrorCode error = _delegate->onQueryRegisterInfo(*this, regno, info);
@@ -2302,7 +2303,7 @@ void Session::Handle_qSymbol(ProtocolInterpreter::Handler const &,
 void Session::Handle_qThreadStopInfo(ProtocolInterpreter::Handler const &,
                                      std::string const &args) {
   ProcessThreadId ptid;
-  ptid.tid = strtoull(args.c_str(), nullptr, 16);
+  ptid.tid = static_cast<ThreadId>(strtoull(args.c_str(), nullptr, 16));
 
   StopCode stop;
   ErrorCode error = _delegate->onQueryThreadStopInfo(*this, ptid, stop);
@@ -2377,7 +2378,7 @@ void Session::Handle_qTStatus(ProtocolInterpreter::Handler const &,
 void Session::Handle_qUserName(ProtocolInterpreter::Handler const &,
                                std::string const &args) {
   std::string name;
-  UserId uid = UNPACK_ID(args.c_str());
+  UserId uid = static_cast<UserId>(UNPACK_ID(args.c_str()));
   ErrorCode error = _delegate->onQueryUserName(*this, uid, name);
   if (error != kSuccess) {
     sendError(error);
@@ -2535,18 +2536,18 @@ void Session::Handle_qfProcessInfo(ProtocolInterpreter::Handler const &,
     } else if (key == "name_match") {
       match.nameMatch = value;
     } else if (key == "pid") {
-      match.pid = std::strtoul(value.c_str(), nullptr, 10);
+      match.pid = static_cast<ProcessId>(std::strtoul(value.c_str(), nullptr, 10));
     } else if (key == "uid") {
-      match.realUid = UNPACK_ID(value.c_str());
+      match.realUid = static_cast<UserId>(UNPACK_ID(value.c_str()));
     } else if (key == "gid") {
-      match.realGid = UNPACK_ID(value.c_str());
+      match.realGid = static_cast<GroupId>(UNPACK_ID(value.c_str()));
 #if !defined(OS_WIN32)
     } else if (key == "parent_pid") {
-      match.parentPid = std::strtoul(value.c_str(), nullptr, 10);
+      match.parentPid = static_cast<ProcessId>(std::strtoul(value.c_str(), nullptr, 10));
     } else if (key == "euid") {
-      match.effectiveUid = std::strtoul(value.c_str(), nullptr, 10);
+      match.effectiveUid = static_cast<UserId>(std::strtoul(value.c_str(), nullptr, 10));
     } else if (key == "egid") {
-      match.effectiveGid = std::strtoul(value.c_str(), nullptr, 10);
+      match.effectiveGid = static_cast<GroupId>(std::strtoul(value.c_str(), nullptr, 10));
 #endif
     } else if (key == "all_users") {
       match.allUsers =
@@ -2667,7 +2668,7 @@ void Session::Handle_S(ProtocolInterpreter::Handler const &,
   char *bptr;
   char *eptr;
 
-  signal = std::strtol(args.c_str(), &bptr, 16);
+  signal = static_cast<int>(std::strtol(args.c_str(), &bptr, 16));
 
   if (*bptr == ';' && parseAddress(address, bptr + 1, &eptr, kEndianNative)) {
     bptr = eptr;
@@ -2804,12 +2805,12 @@ void Session::Handle_t(ProtocolInterpreter::Handler const &,
     sendError(kErrorInvalidArgument);
     return;
   }
-  uint32_t pattern = std::strtoul(eptr, &eptr, 16);
+  uint32_t pattern = static_cast<uint32_t>(std::strtoul(eptr, &eptr, 16));
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
   }
-  uint32_t mask = std::strtoul(eptr, &eptr, 16);
+  uint32_t mask = static_cast<uint32_t>(std::strtoul(eptr, &eptr, 16));
 
   Address location;
   ErrorCode error =
@@ -2830,7 +2831,7 @@ void Session::Handle_t(ProtocolInterpreter::Handler const &,
 void Session::Handle_vAttach(ProtocolInterpreter::Handler const &,
                              std::string const &args) {
   StopCode stop;
-  ProcessId pid = std::strtoul(args.c_str(), nullptr, 16);
+  ProcessId pid = static_cast<ProcessId>(std::strtoul(args.c_str(), nullptr, 16));
   ErrorCode error = _delegate->onAttach(*this, pid, kAttachNow, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -2956,7 +2957,7 @@ void Session::Handle_vCont(ProtocolInterpreter::Handler const &,
           break;
         case 'C':
           action.action = kResumeActionContinueWithSignal;
-          action.signal = std::strtoul(eptr, &eptr, 16);
+          action.signal = static_cast<int>(std::strtoul(eptr, &eptr, 16));
           break;
         case 's':
           action.action = kResumeActionSingleStep;
@@ -2964,7 +2965,7 @@ void Session::Handle_vCont(ProtocolInterpreter::Handler const &,
           break;
         case 'S':
           action.action = kResumeActionSingleStepWithSignal;
-          action.signal = std::strtoul(eptr, &eptr, 16);
+          action.signal = static_cast<int>(std::strtoul(eptr, &eptr, 16));
           break;
         case 't':
           action.action = kResumeActionStop;
@@ -3045,12 +3046,12 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
 
     char *eptr;
-    uint32_t flags = std::strtoul(&args[comma + 1], &eptr, 16);
+    uint32_t flags = static_cast<uint32_t>(std::strtoul(&args[comma + 1], &eptr, 16));
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
     }
-    uint32_t mode = std::strtoul(eptr, nullptr, 16);
+    uint32_t mode = static_cast<uint32_t>(std::strtoul(eptr, nullptr, 16));
 
     int fd;
     error = _delegate->onFileOpen(
@@ -3062,7 +3063,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       ss << 'F' << 0 << ';' << std::hex << fd;
     }
   } else if (op == "close") {
-    int fd = std::strtol(&args[op_end], nullptr, 16);
+    int fd = static_cast<int>(std::strtol(&args[op_end], nullptr, 16));
     error = _delegate->onFileClose(*this, fd);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
@@ -3071,7 +3072,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
   } else if (op == "pread") {
     char *eptr;
-    int fd = std::strtol(&args[op_end], &eptr, 16);
+    int fd = static_cast<int>(std::strtol(&args[op_end], &eptr, 16));
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
@@ -3093,7 +3094,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
   } else if (op == "pwrite") {
     char *eptr;
-    int fd = std::strtol(&args[op_end], &eptr, 16);
+    int fd = static_cast<int>(std::strtol(&args[op_end], &eptr, 16));
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
@@ -3105,7 +3106,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
 
     size_t nwritten;
-    size_t length = args.length() - (eptr - args.c_str());
+    size_t length = args.length() - ds2::Utils::MakeUnsigned(eptr - args.c_str());
     ErrorCode error = _delegate->onFileWrite(
         *this, fd, offset, std::string(eptr, length), nwritten);
     if (error != kSuccess) {
@@ -3228,7 +3229,7 @@ void Session::Handle_vFlashWrite(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_vKill(ProtocolInterpreter::Handler const &,
                            std::string const &args) {
-  ProcessId pid = std::strtoul(args.c_str(), nullptr, 16);
+  ProcessId pid = static_cast<ProcessId>(std::strtoul(args.c_str(), nullptr, 16));
 
   StopCode stop;
   ErrorCode error = _delegate->onTerminate(*this, pid, stop);
@@ -3402,7 +3403,7 @@ void Session::Handle_Z(ProtocolInterpreter::Handler const &,
     sendError(kErrorInvalidArgument);
     return;
   }
-  kind = std::strtoul(eptr, &eptr, 16);
+  kind = static_cast<uint32_t>(std::strtoul(eptr, &eptr, 16));
 
   //
   // TODO cond_list etc
@@ -3434,7 +3435,7 @@ void Session::Handle_z(ProtocolInterpreter::Handler const &,
     sendError(kErrorInvalidArgument);
     return;
   }
-  kind = std::strtoul(eptr, &eptr, 16);
+  kind = static_cast<uint32_t>(std::strtoul(eptr, &eptr, 16));
 
   sendError(_delegate->onRemoveBreakpoint(*this, type, address, kind));
 }

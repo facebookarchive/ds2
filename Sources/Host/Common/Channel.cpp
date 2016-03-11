@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Host/Channel.h"
+#include "DebugServer2/Utils/Bits.h"
 
 namespace ds2 {
 namespace Host {
@@ -34,11 +35,11 @@ bool Channel::receive(std::string &buffer) {
     size_t size = buffer.size();
     buffer.resize(size + chunk);
     ssize_t nrecvd = receive(&buffer[size], chunk);
-    if (nrecvd == 0)
+    if (nrecvd <= 0)
       break;
-    buffer.resize(size + nrecvd);
+    buffer.resize(size + ds2::Utils::MakeUnsigned(nrecvd));
 
-    total += nrecvd;
+    total += ds2::Utils::MakeUnsigned(nrecvd);
   }
   buffer.resize(total);
   return !buffer.empty();
