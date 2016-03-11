@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Utils/CompilerSupport.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Types.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
@@ -155,7 +156,7 @@ error:
 }
 
 bool Platform::GetUserName(UserId const &uid, std::string &name) {
-#if defined(ARCH_ARM)
+#if WINDOWS_ARM
   // TODO implement for Winphone ARM.
   return false;
 #else
@@ -232,7 +233,7 @@ bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
   }
 
 // Get process user ID.
-#if !defined(ARCH_ARM)
+#if !WINDOWS_ARM
   // TODO implement for Winphone ARM.
   {
     HANDLE processToken;
