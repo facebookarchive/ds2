@@ -58,4 +58,14 @@
 #define DS2_UNREACHABLE() abort()
 #endif
 
+#if defined(_MSC_VER)
+#include <windows.h>
+#if defined(ARCH_ARM) && WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+// As of now, this is the same as winphone ARM.
+#define WINDOWS_ARM 1
+#else
+#define WINDOWS_ARM 0
+#endif
+#endif
+
 #endif // !__DebugServer2_Utils_CompilerSupport_h
