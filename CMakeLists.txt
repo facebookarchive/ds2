@@ -199,6 +199,7 @@ set(SUPPORT_COMMON_SOURCES
     Sources/MessageQueue.cpp
     Sources/SessionThread.cpp
     Sources/Support/Stringify.cpp
+    Sources/Support/CompressionBase.cpp
     Sources/Utils/Log.cpp
     Sources/Utils/OptParse.cpp
     Sources/main.cpp
@@ -216,6 +217,7 @@ set(SUPPORT_POSIX_SOURCES
 set(SUPPORT_Linux_SOURCES
     ${SUPPORT_POSIX_ELF_SOURCES}
     ${SUPPORT_POSIX_SOURCES}
+    Sources/Support/Linux/Compression.cpp
     )
 
 set(SUPPORT_Darwin_SOURCES
@@ -286,6 +288,10 @@ target_link_libraries(ds2 jsobjects)
 if (${ENABLE_LOGCAT})
   target_link_libraries(ds2 log)
   target_compile_definitions(ds2 PRIVATE ENABLE_LOGCAT)
+endif ()
+
+if ("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
+  target_link_libraries(ds2 z)
 endif ()
 
 if ("${CMAKE_SYSTEM_NAME}" MATCHES "FreeBSD")

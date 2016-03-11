@@ -15,6 +15,7 @@
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Support/Stringify.h"
+#include "DebugServer2/Support/Compression.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -111,6 +112,10 @@ DebugSessionImpl::onQuerySupported(Session &session,
   localFeatures.push_back(std::string("ConditionalTracepoints-"));
   localFeatures.push_back(std::string("TracepointSource-"));
   localFeatures.push_back(std::string("EnableDisableTracepoints-"));
+
+  std::string compressionFeature = Support::Compression::getSupported();
+  if (!compressionFeature.empty())
+    localFeatures.push_back(compressionFeature);
 
   return kSuccess;
 }

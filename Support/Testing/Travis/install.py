@@ -38,11 +38,17 @@ elif target == 'Registers':
 elif target in linux_packages:
     if "CentOS Linux" in platform.linux_distribution():
         packages.append('gcc')
+        packages.append('zlib-devel')
     else:
         # Install gcc even when using clang, so we can run llgs tests.
         packages.append(linux_packages[target])
         if os.getenv('CLANG') == '1':
             packages.append('clang-3.7')
+        packages.append('lib32stdc++6')
+        packages.append('zlib1g-dev')
+        packages.append('zlib1g-dev:i386')
+        check_call('sudo dpkg --add-architecture i386')
+        check_call('sudo apt -get update')
 elif target == 'MinGW-X86':
     packages.append('g++-mingw-w64-i686')
 elif target in android_toolchains:
