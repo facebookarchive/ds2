@@ -183,7 +183,9 @@ bool Platform::CloseFile(int fd) { return false; }
 bool Platform::IsFilePresent(std::string const &path) {
   // BOOL and bool are not the same type on windows. Specify `== TRUE` to
   // silence a warning.
-  return ::PathFileExistsW(NarrowToWideString(path).c_str()) == TRUE;
+  WIN32_FILE_ATTRIBUTE_DATA attributes; // unused
+  return ::GetFileAttributesExW(NarrowToWideString(path).c_str(),
+                                GetFileExInfoStandard, &attributes) == TRUE;
 }
 
 char const *Platform::GetWorkingDirectory() { return nullptr; }
