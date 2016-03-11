@@ -21,7 +21,8 @@ namespace GDBRemote {
 DummySessionDelegateImpl::DummySessionDelegateImpl() : _secure(true) {}
 
 size_t DummySessionDelegateImpl::getGPRSize() const {
-  DS2ASSERT(!"this method shall be implemented by inheriting class");
+  // this method shall be implemented by inheriting class
+  DS2ASSERT(false);
   return 0;
 }
 

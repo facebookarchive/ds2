@@ -15,6 +15,7 @@
 #endif
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/ProcessSpawner.h"
+#include "DebugServer2/Utils/Bits.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <climits>
@@ -518,7 +519,7 @@ void ProcessSpawner::redirectionThread() {
       }
     }
 
-    nfds = ::poll(pfds, nfds, 100);
+    nfds = ::poll(pfds, static_cast<nfds_t>(nfds), 100);
     if (nfds < 0)
       break;
 
@@ -547,7 +548,7 @@ void ProcessSpawner::redirectionThread() {
             if (descriptor->mode == kRedirectBuffer) {
               _outputBuffer.insert(_outputBuffer.end(), &buf[0], &buf[nread]);
             } else {
-              descriptor->delegate(buf, nread);
+              descriptor->delegate(buf, ds2::Utils::MakeUnsigned(nread));
             }
             done = true;
           }

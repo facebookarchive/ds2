@@ -70,7 +70,8 @@ public:
     info.itCount = 0;
     if (info.it) {
       info.cond = static_cast<BranchCond>((insn >> 4) & 0xf);
-      info.itCount = 5 - ds2::Utils::FFS(insn & 0xf);
+      // itCount has 3 bits
+      info.itCount = (5 - ds2::Utils::FFS(insn & 0xf)) & 7;
     } else {
       info.cond = kCondAL;
     }
@@ -382,7 +383,7 @@ public:
       info.reg2 = -1;
       // count bits
       info.disp = 0;
-      for (uint16_t regs = insn[1]; regs != 0; regs >>= 1) {
+      for (uint16_t regs = insn[1]; regs != 0; regs = static_cast<uint16_t>(regs >> 1)) {
         info.disp += (regs & 1);
       }
       // PC should be stored at address (reg1 + (bit_count - 1) * 4)

@@ -182,7 +182,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
 
   stop.ptid.pid = thread->process()->pid();
   stop.ptid.tid = thread->tid();
-  stop.core = info.core;
+  stop.core = static_cast<int32_t>(info.core);
 
   // This code translate a StopInfo to a StopCode that we can send back to the
   // debugger.
@@ -339,7 +339,7 @@ ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
     info.genericName = reginfo.Def->GenericName;
   }
 
-  info.bitSize = reginfo.Def->BitSize;
+  info.bitSize = static_cast<size_t>(reginfo.Def->BitSize);
   info.byteOffset = reginfo.Def->LLDBOffset;
   info.gccRegisterIndex = reginfo.Def->GCCRegisterNumber;
   info.dwarfRegisterIndex = reginfo.Def->DWARFRegisterNumber;
@@ -415,7 +415,7 @@ ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
     info.containerRegisters.clear();
     for (size_t n = 0; reginfo.Def->ContainerRegisters[n] != nullptr; n++) {
       info.containerRegisters.push_back(
-          reginfo.Def->ContainerRegisters[n]->LLDBRegisterNumber);
+          static_cast<uint32_t>(reginfo.Def->ContainerRegisters[n]->LLDBRegisterNumber));
     }
   }
 
@@ -423,7 +423,7 @@ ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
     info.invalidateRegisters.clear();
     for (size_t n = 0; reginfo.Def->InvalidatedRegisters[n] != nullptr; n++) {
       info.invalidateRegisters.push_back(
-          reginfo.Def->InvalidatedRegisters[n]->LLDBRegisterNumber);
+          static_cast<uint32_t>(reginfo.Def->InvalidatedRegisters[n]->LLDBRegisterNumber));
     }
   }
 

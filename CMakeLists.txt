@@ -263,7 +263,7 @@ if ("${CMAKE_SYSTEM_NAME}" MATCHES "Windows")
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(ds2 PRIVATE -Wall -Wextra -Wno-unused-parameter)
+  target_compile_options(ds2 PRIVATE -Wall -Wextra -Wno-unused-parameter -Wconversion)
   # This should be enabled by default but clang has a couple of additional
   # warnings we need to take care of first.
   if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")

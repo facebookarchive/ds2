@@ -140,7 +140,7 @@ ErrorCode Process::checkMemoryErrorCode(uint64_t address) {
   int pgsz = getpagesize();
 
   if (address & (pgsz - 1)) {
-    int error = -address;
+    int error = -static_cast<int>(address);
     DS2LOG(Debug, "mmap failed with errno=%s", Stringify::Errno(error));
     return Platform::TranslateError(error);
   }

@@ -138,7 +138,7 @@ public:
       } else {
         info.reg2 = _insn & 0xf;
         info.disp = (_insn >> 7) & 0x1f;
-        info.mode = DecodeShiftMode(info.disp, (_insn >> 5) & 3);
+        info.mode = DecodeShiftMode(static_cast<uint8_t>(info.disp), static_cast<uint8_t>((_insn >> 5) & 3));
       }
 
       switch ((_insn >> 21) & 0xf) {
@@ -254,7 +254,7 @@ public:
       if ((_insn >> 24) & 1) {
         info.reg2 = _insn & 0xf;
         info.disp = (_insn >> 7) & 0x1f;
-        info.mode = DecodeShiftMode(info.disp, (_insn >> 5) & 3);
+        info.mode = DecodeShiftMode(static_cast<uint8_t>(info.disp), static_cast<uint8_t>((_insn >> 5) & 3));
       }
       // We need to know if we need to subtract the register #2
       info.subt = ((_insn >> 23) & 1) == 0;
@@ -283,7 +283,7 @@ public:
       info.reg2 = -1;
       // count bits
       info.disp = 0;
-      for (uint16_t regs = _insn & 0x7fff; regs != 0; regs >>= 1) {
+      for (uint16_t regs = _insn & 0x7fff; regs != 0; regs = static_cast<uint16_t>((regs >> 1))) {
         info.disp += (regs & 1);
       }
       info.disp <<= 2;

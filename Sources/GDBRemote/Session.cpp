@@ -583,7 +583,7 @@ void Session::Handle_D(ProtocolInterpreter::Handler const &,
   ProcessId pid = kAnyProcessId;
 
   if (!args.empty()) {
-    mode = static_cast<ProcessId>(std::strtoul(args.c_str(), &eptr, 10));
+    mode = static_cast<uint32_t>(std::strtoul(args.c_str(), &eptr, 10));
     if (*eptr++ == ';') {
       pid = static_cast<ProcessId>(std::strtoul(eptr, nullptr, 16));
     }
@@ -705,7 +705,7 @@ void Session::Handle_H(ProtocolInterpreter::Handler const &,
   }
 
   ProcessThreadId ptid;
-  uint8_t command = args[0];
+  uint8_t command = ds2::Utils::MakeUnsigned(args[0]);
 
   if (!ptid.parse(args.substr(1), _compatMode)) {
     sendError(kErrorInvalidArgument);
@@ -729,7 +729,7 @@ void Session::Handle_H(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  _ptids[command] = ptid;
+  _ptids[ds2::Utils::MakeSigned(command)] = ptid;
   sendOK();
 
   DS2LOG(Debug, "setting command '%c' to pid %" PRIu64 " tid %" PRIu64, command,
@@ -921,7 +921,7 @@ void Session::Handle__M(ProtocolInterpreter::Handler const &,
 
   Address address;
   ErrorCode error =
-      _delegate->onAllocateMemory(*this, length, protection, address);
+      _delegate->onAllocateMemory(*this, static_cast<size_t>(length), protection, address);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -969,7 +969,7 @@ void Session::Handle_M(ProtocolInterpreter::Handler const &,
 
   std::string data(HexToString(eptr));
   if (data.length() > length) {
-    data = data.substr(0, length);
+    data = data.substr(0, static_cast<std::basic_string<char>::size_type>(length));
   }
 
   size_t nwritten = 0;
@@ -995,7 +995,7 @@ void Session::Handle_m(ProtocolInterpreter::Handler const &,
   }
   length = strtoull(eptr, nullptr, 16);
 
-  ErrorCode error = _delegate->onReadMemory(*this, address, length, data);
+  ErrorCode error = _delegate->onReadMemory(*this, static_cast<size_t>(address), length, data);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -1029,7 +1029,7 @@ void Session::Handle_P(ProtocolInterpreter::Handler const &,
     ptidptr = std::strchr(eptr, '\0');
   }
 
-  value = HexToString(std::string(eptr, ptidptr - eptr));
+  value = HexToString(std::string(eptr, ds2::Utils::MakeUnsigned(ptidptr - eptr)));
 
   if (_compatMode == kCompatibilityModeLLDB) {
     //
@@ -3063,7 +3063,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       ss << 'F' << 0 << ';' << std::hex << fd;
     }
   } else if (op == "close") {
-    int fd = static_cast<uint32_t>(std::strtol(&args[op_end], nullptr, 16));
+    int fd = static_cast<int>(std::strtol(&args[op_end], nullptr, 16));
     error = _delegate->onFileClose(*this, fd);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
@@ -3072,7 +3072,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
   } else if (op == "pread") {
     char *eptr;
-    int fd = static_cast<uint32_t>(std::strtol(&args[op_end], &eptr, 16));
+    int fd = static_cast<int>(std::strtol(&args[op_end], &eptr, 16));
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
@@ -3094,7 +3094,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
   } else if (op == "pwrite") {
     char *eptr;
-    int fd = static_cast<uint32_t>(std::strtol(&args[op_end], &eptr, 16));
+    int fd = static_cast<int>(std::strtol(&args[op_end], &eptr, 16));
     if (*eptr++ != ',') {
       sendError(kErrorInvalidArgument);
       return;
@@ -3106,7 +3106,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
 
     size_t nwritten;
-    size_t length = ds2::Utils::MakeUnsigned(args.length() - (eptr - args.c_str()));
+    size_t length = args.length() - ds2::Utils::MakeUnsigned(eptr - args.c_str());
     ErrorCode error = _delegate->onFileWrite(
         *this, fd, offset, std::string(eptr, length), nwritten);
     if (error != kSuccess) {
@@ -3229,7 +3229,7 @@ void Session::Handle_vFlashWrite(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_vKill(ProtocolInterpreter::Handler const &,
                            std::string const &args) {
-  ProcessId pid = static_cast<uint32_t>(std::strtoul(args.c_str(), nullptr, 16));
+  ProcessId pid = static_cast<ProcessId>(std::strtoul(args.c_str(), nullptr, 16));
 
   StopCode stop;
   ErrorCode error = _delegate->onTerminate(*this, pid, stop);

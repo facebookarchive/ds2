@@ -111,7 +111,7 @@ public:
 
   inline void setGPState(std::vector<uint64_t> const &regs) {
     for (size_t n = 0; n < regs.size() && n < array_size(gp.regs); n++) {
-      gp.regs[n] = regs[n];
+      gp.regs[n] = static_cast<uint32_t>(regs[n]);
     }
   }
 

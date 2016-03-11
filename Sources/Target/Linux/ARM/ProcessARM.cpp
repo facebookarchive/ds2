@@ -47,7 +47,7 @@ static inline void InitCodeVector(U8Vector &codestr, T const &init) {
 
 static inline void T1MOV8SetImmediate(uint16_t *insn, uint8_t value) {
   *insn &= 0xff00; // remove imm
-  *insn |= value;
+  *insn = static_cast<uint16_t>(*insn | value);
 }
 
 static inline void ARMMOV8SetImmediate(uint32_t *insn, uint8_t value) {
@@ -322,14 +322,14 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
 
   U8Vector codestr;
   if (state.isThumb()) {
-    ThumbPrepareMunmapCode(address, size, codestr);
+    ThumbPrepareMunmapCode(static_cast<uint32_t>(address), size, codestr);
     // If the current PC is not aligned (thumb has 16bit instructions), add a
     // nop at the begining of codestr to make sure ldr PC works as intended.
     DS2ASSERT(state.pc() % 2 == 0);
     if (state.pc() % 4 != 0)
       codestr.insert(codestr.begin(), {0x00, 0x1c});
   } else {
-    ARMPrepareMunmapCode(address, size, codestr);
+    ARMPrepareMunmapCode(static_cast<uint32_t>(address), size, codestr);
   }
 
   //
@@ -342,7 +342,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
     return error;
 
   if ((int)result < 0) {
-    int error = -result;
+    int error = -static_cast<int>(result);
     DS2LOG(Debug, "munmap failed with errno=%s", Stringify::Errno(error));
     return Platform::TranslateError(error);
   }

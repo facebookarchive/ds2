@@ -38,7 +38,7 @@ bool LibProc::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
     return false;
 
   info.pid = pid;
-  info.parentPid = ti.pbsd.pbi_ppid;
+  info.parentPid = static_cast<ProcessId>(ti.pbsd.pbi_ppid);
   info.realUid = ti.pbsd.pbi_ruid;
   info.effectiveUid = ti.pbsd.pbi_uid;
   info.realGid = ti.pbsd.pbi_rgid;

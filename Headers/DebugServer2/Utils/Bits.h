@@ -24,8 +24,12 @@ namespace Utils {
 // the size.
 static const size_t kHalfIntBits = sizeof(int) * 4;
 
-template <typename T> static typename std::make_unsigned<T>::type MakeUnsigned(T number) {
+template <typename T> static inline typename std::make_unsigned<T>::type MakeUnsigned(T number) {
   return static_cast<typename std::make_unsigned<T>::type>(number);
+}
+
+template <typename T> static inline typename std::make_signed<T>::type MakeSigned(T number) {
+  return static_cast<typename std::make_signed<T>::type>(number);
 }
 
 static inline unsigned int FFS(unsigned int number) {
@@ -49,7 +53,7 @@ static inline unsigned int FFS(unsigned int number) {
 
 static inline unsigned int PopCount(unsigned int number) {
 #if __has_builtin(__builtin_popcount)
-  return static_cast<unsigned int>(__builtin_popcount(static_cast<int>(number)));
+  return static_cast<unsigned int>(__builtin_popcount(number));
 #elif defined(_MSC_VER)
   return _CountOneBits(number);
 #else

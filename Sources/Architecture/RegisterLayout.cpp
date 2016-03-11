@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Architecture/RegisterLayout.h"
+#include "DebugServer2/Utils/Bits.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
 
@@ -254,10 +255,10 @@ size_t GDBXMLGenerator::GetVectorCount(GDBEncoding const &enc, size_t vecsize,
 void GDBXMLGenerator::generateVector(std::ostringstream &s,
                                      GDBVectorDef const *def) const {
   s << '\t' << "<vector id=" << quote(def->Name) << ' ';
-  s << "type=" << quote(GetVectorType(def->Encoding, def->ElementBitSize))
+  s << "type=" << quote(GetVectorType(def->Encoding, ds2::Utils::MakeUnsigned(def->ElementBitSize)))
     << ' ';
   s << "count="
-    << quote(GetVectorCount(def->Encoding, def->BitSize, def->ElementBitSize))
+    << quote(static_cast<int64_t>(GetVectorCount(def->Encoding, def->BitSize, ds2::Utils::MakeUnsigned(def->ElementBitSize))))
     << ' ';
   s << "/>" << std::endl;
 }
@@ -284,8 +285,8 @@ void GDBXMLGenerator::generateFlags(std::ostringstream &s,
     FlagDef const &def = set->Defs[n];
     s << "\t\t"
       << "<field name=" << quote(def.Name) << ' '
-      << "start=" << quote(def.Start) << ' '
-      << "end=" << quote(def.Start + def.Length - 1) << ' ' << "/>"
+      << "start=" << quote(static_cast<int64_t>(def.Start)) << ' '
+      << "end=" << quote(static_cast<int64_t>(def.Start + def.Length - 1)) << ' ' << "/>"
       << std::endl;
   }
   s << '\t' << "</flags>" << std::endl;
@@ -300,7 +301,7 @@ void GDBXMLGenerator::generateRegister(std::ostringstream &s,
   }
   if (def->GDBEncoding.Encoding != ds2::Architecture::kGDBEncodingUnknown) {
     s << "type=" << quote(GetType(def->GDBEncoding.Encoding,
-                                  def->GDBEncoding.Name, def->BitSize))
+                                  def->GDBEncoding.Name, ds2::Utils::MakeUnsigned(def->BitSize)))
       << ' ';
   }
   if ((def->Flags & ds2::Architecture::kRegisterDefNoGDBRegisterNumber) == 0 &&
@@ -366,7 +367,7 @@ std::string LLDBXMLGenerator::main() const {
   s << '\t' << "<groups>" << '\n';
   for (size_t nset = 0; nset < _desc->Count; nset++) {
     LLDBRegisterSet const *set = _desc->Sets[nset];
-    s << "\t\t<group id=" << quote(nset) << " name=" << quote(set->Name) << "/>"
+    s << "\t\t<group id=" << quote(static_cast<int64_t>(nset)) << " name=" << quote(set->Name) << "/>"
       << std::endl;
   }
   s << "\t</groups>" << std::endl;

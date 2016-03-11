@@ -36,7 +36,7 @@ ErrorCode Process::detach() {
   ErrorCode error = ptrace().detach(_pid);
   if (error == kSuccess) {
     cleanup();
-    _flags &= ~kFlagAttachedProcess;
+    _flags &= ~static_cast<uint32_t>(kFlagAttachedProcess);
   }
   return error;
 }

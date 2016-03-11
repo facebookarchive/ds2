@@ -146,7 +146,7 @@ bool Platform::GetGroupName(GroupId const &gid, std::string &name) {
 }
 
 int Platform::OpenFile(std::string const &path, uint32_t flags, uint32_t mode) {
-  return ::open(path.c_str(), flags, mode);
+  return ::open(path.c_str(), static_cast<int>(flags), mode);
 }
 
 bool Platform::CloseFile(int fd) { return close(fd); }

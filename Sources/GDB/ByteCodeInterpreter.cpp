@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/GDB/ByteCodeInterpreter.h"
+#include "DebugServer2/Utils/Bits.h"
 
 #include <cstdio>
 
@@ -168,7 +169,7 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       POP(a);
       if (b == 0)
         return kErrorDivideByZero;
-      push(static_cast<uint64_t>(a) / static_cast<uint64_t>(b));
+      push(ds2::Utils::MakeSigned(static_cast<uint64_t>(a) / static_cast<uint64_t>(b)));
       break;
 
     case kOpcodeSREM:
@@ -184,7 +185,7 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       POP(a);
       if (b == 0)
         return kErrorDivideByZero;
-      push(static_cast<uint64_t>(a) % static_cast<uint64_t>(b));
+      push(ds2::Utils::MakeSigned(static_cast<uint64_t>(a) % static_cast<uint64_t>(b)));
       break;
 
     case kOpcodeLSH:
@@ -202,13 +203,13 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
     case kOpcodeURSH:
       POP(b);
       POP(a);
-      push(static_cast<uint64_t>(a) >> (b & 0x3f));
+      push(ds2::Utils::MakeSigned(static_cast<uint64_t>(a) >> (b & 0x3f)));
       break;
 
     case kOpcodeTRACE:
       POP(b); // size
       POP(a); // addr
-      if (!_delegate->recordTraceMemory(a, b, false))
+      if (!_delegate->recordTraceMemory(ds2::Utils::MakeUnsigned(a), static_cast<size_t>(b), false))
         return kErrorCannotRecordTrace;
       break;
 
@@ -216,8 +217,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       TOP(a); // addr
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset = bc[pc];
-      if (!_delegate->recordTraceMemory(a, offset, false))
+      offset = static_cast<uint32_t>(bc[pc]);
+      if (!_delegate->recordTraceMemory(ds2::Utils::MakeUnsigned(a), offset, false))
         return kErrorCannotRecordTrace;
       break;
 
@@ -280,40 +281,40 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
 
     case kOpcodeREFI8:
       POP(a);
-      if (!_delegate->readMemory8(a, data.i8))
+      if (!_delegate->readMemory8(static_cast<uint8_t>(a), data.i8))
         return kErrorBadAddress;
       push(data.i8);
       break;
 
     case kOpcodeREFI16:
       POP(a);
-      if (!_delegate->readMemory16(a, data.i16))
+      if (!_delegate->readMemory16(static_cast<uint16_t>(a), data.i16))
         return kErrorBadAddress;
       push(data.i16);
       break;
 
     case kOpcodeREFI32:
       POP(a);
-      if (!_delegate->readMemory32(a, data.i32))
+      if (!_delegate->readMemory32(static_cast<uint32_t>(a), data.i32))
         return kErrorBadAddress;
       push(data.i32);
       break;
 
     case kOpcodeREFI64:
       POP(a);
-      if (!_delegate->readMemory64(a, data.i64))
+      if (!_delegate->readMemory64(ds2::Utils::MakeUnsigned(a), data.i64))
         return kErrorBadAddress;
-      push(data.i64);
+      push(ds2::Utils::MakeSigned(data.i64));
       break;
 
     case kOpcodeIF_GOTO:
       POP(a);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset = bc[pc];
+      offset = static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8, offset |= static_cast<uint32_t>(bc[pc]);
       if (offset >= bc.size())
         return kErrorInvalidByteCodeAddress;
       if (a != 0) {
@@ -325,10 +326,10 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
     case kOpcodeGOTO:
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset = bc[pc];
+      offset = static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8, offset |= static_cast<uint32_t>(bc[pc]);
       if (offset >= bc.size())
         return kErrorInvalidByteCodeAddress;
       pc = offset - 1; // - 1 because the PC is incremented at beginning of loop
@@ -343,67 +344,67 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
     case kOpcodeCONST16:
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i16 = bc[pc];
+      data.i16 = static_cast<uint16_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i16 <<= 8, data.i16 |= bc[pc];
+      data.i16 = static_cast<uint16_t>(data.i16 << 8), data.i16 = static_cast<uint16_t>(data.i16 | bc[pc]);
       push(data.i16);
       break;
 
     case kOpcodeCONST32:
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i32 = bc[pc];
+      data.i32 = static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i32 <<= 8, data.i32 |= bc[pc];
+      data.i32 <<= 8, data.i32 |= static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i32 <<= 8, data.i32 |= bc[pc];
+      data.i32 <<= 8, data.i32 |= static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i32 <<= 8, data.i32 |= bc[pc];
+      data.i32 <<= 8, data.i32 |= static_cast<uint32_t>(bc[pc]);
       push(data.i32);
       break;
 
     case kOpcodeCONST64:
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 = bc[pc];
+      data.i64 = static_cast<uint64_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8, data.i64 |= static_cast<uint64_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8, data.i64 |= static_cast<uint64_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8, data.i64 |= static_cast<uint64_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8, data.i64 |= static_cast<uint64_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8, data.i64 |= static_cast<uint64_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8, data.i64 |= static_cast<uint64_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
-      push(data.i64);
+      data.i64 <<= 8, data.i64 |= static_cast<uint64_t>(bc[pc]);
+      push(ds2::Utils::MakeSigned(data.i64));
       break;
 
     case kOpcodeREG:
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset = bc[pc];
+      offset = static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8, offset |= static_cast<uint32_t>(bc[pc]);
       if (!_delegate->readRegister(offset, data.i64))
         return kErrorInvalidRegister;
-      push(data.i64);
+      push(ds2::Utils::MakeSigned(data.i64));
       break;
 
     case kOpcodeEND:
@@ -424,7 +425,7 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       if (++pc >= bc.size())
         return kErrorShortByteCode;
       byte = bc[pc] & 0x3f;
-      push(a & ~(~0ULL << byte));
+      push(ds2::Utils::MakeSigned(ds2::Utils::MakeUnsigned(a) & ~(~0ULL << byte)));
       break;
 
     case kOpcodeSWAP:
@@ -437,38 +438,38 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
     case kOpcodeGETV:
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset = bc[pc];
+      offset = static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8, offset |= static_cast<uint32_t>(bc[pc]);
       if (!_delegate->readTraceStateVariable(offset, data.i64))
         return kErrorInvalidTraceVariable;
-      push(data.i64);
+      push(ds2::Utils::MakeSigned(data.i64));
       break;
 
     case kOpcodeSETV:
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset = bc[pc];
+      offset = static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8, offset |= static_cast<uint32_t>(bc[pc]);
       TOP(a);
-      if (!_delegate->writeTraceStateVariable(offset, a))
+      if (!_delegate->writeTraceStateVariable(offset, ds2::Utils::MakeUnsigned(a)))
         return kErrorInvalidTraceVariable;
       break;
 
     case kOpcodeTRACEV:
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset = bc[pc];
+      offset = static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8, offset |= static_cast<uint32_t>(bc[pc]);
       if (!_delegate->readTraceStateVariable(offset, data.i64))
         return kErrorInvalidTraceVariable;
       a = 0; // XXX: This should probably be a POP() call.
-      if (!_delegate->recordTraceValue(a))
+      if (!_delegate->recordTraceValue(ds2::Utils::MakeUnsigned(a)))
         return kErrorCannotRecordTrace;
       push(a);
       break;
@@ -476,7 +477,7 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
     case kOpcodeTRACENZ:
       POP(b); // size
       POP(a); // addr
-      if (!_delegate->recordTraceMemory(a, b, true))
+      if (!_delegate->recordTraceMemory(ds2::Utils::MakeUnsigned(a), static_cast<size_t>(b), true))
         return kErrorCannotRecordTrace;
       break;
 
@@ -484,18 +485,18 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       TOP(a); // addr
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset = bc[pc];
+      offset = static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
-      if (!_delegate->recordTraceMemory(a, offset, false))
+      offset <<= 8, offset |= static_cast<uint32_t>(bc[pc]);
+      if (!_delegate->recordTraceMemory(ds2::Utils::MakeUnsigned(a), offset, false))
         return kErrorCannotRecordTrace;
       break;
 
     case kOpcodePICK:
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      byte = bc[pc];
+      byte = static_cast<uint8_t>(bc[pc]);
       if (byte >= _stack.size())
         return kErrorInvalidStackOffset;
       PEEK(byte, a);
@@ -516,13 +517,13 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
     case kOpcodePRINTF: {
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      uint8_t nargs = bc[pc];
+      uint8_t nargs = static_cast<uint8_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset = bc[pc];
+      offset = static_cast<uint32_t>(bc[pc]);
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8, offset |= static_cast<uint32_t>(bc[pc]);
       pc++;
       if (pc + offset >= bc.size())
         return kErrorShortByteCode;

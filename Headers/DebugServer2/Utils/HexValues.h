@@ -27,23 +27,23 @@ static inline char NibbleToHex(uint8_t byte) {
 
 static inline uint8_t HexToNibble(char ch) {
   if (ch >= '0' && ch <= '9')
-    return ch - '0';
+    return static_cast<uint8_t>(ch - '0');
   else if (ch >= 'a' && ch <= 'f')
-    return ch - 'a' + 10;
+    return static_cast<uint8_t>(ch - 'a' + 10);
   else if (ch >= 'A' && ch <= 'F')
-    return ch - 'A' + 10;
+    return static_cast<uint8_t>(ch - 'A' + 10);
   DS2_UNREACHABLE();
 }
 
 static inline uint8_t HexToByte(char const *chars) {
-  return (HexToNibble(chars[0]) << 4) | HexToNibble(chars[1]);
+  return static_cast<uint8_t>((HexToNibble(chars[0]) << 4) | HexToNibble(chars[1]));
 }
 
 static inline std::string StringToHex(std::string const &str) {
   std::string result;
   for (char n : str) {
-    result += NibbleToHex(n >> 4);
-    result += NibbleToHex(n & 15);
+    result += NibbleToHex(static_cast<uint8_t>(n >> 4));
+    result += NibbleToHex(static_cast<uint8_t>(n & 15));
   }
   return result;
 }

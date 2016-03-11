@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Host/QueueChannel.h"
+#include "DebugServer2/Utils/Bits.h"
 
 #include <algorithm>
 #include <cstring>
@@ -56,7 +57,7 @@ ssize_t QueueChannel::receive(void *buffer, size_t length) {
 
   length = std::min(length, strbuf.size());
   std::memcpy(buffer, strbuf.data(), length);
-  return length;
+  return ds2::Utils::MakeSigned(length);
 }
 
 bool QueueChannel::receive(std::string &buffer) {

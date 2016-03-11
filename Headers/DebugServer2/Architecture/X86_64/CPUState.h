@@ -294,7 +294,7 @@ public:
 #undef _REGVALUE
 
 public:
-  inline bool getLLDBRegisterPtr(int regno, void **ptr, size_t *length) const {
+  inline bool getLLDBRegisterPtr(uint32_t regno, void **ptr, size_t *length) const {
 #define _GETREG2(T, REG, FLD)                                                  \
   case reg_lldb_##REG:                                                         \
     *ptr = &const_cast<CPUState64 *>(this)->T.FLD, *length = sizeof(T.FLD);    \
@@ -439,7 +439,7 @@ public:
     return true;
   }
 
-  inline bool getGDBRegisterPtr(int regno, void **ptr, size_t *length) const {
+  inline bool getGDBRegisterPtr(uint32_t regno, void **ptr, size_t *length) const {
 #define _GETREG2(T, REG, FLD)                                                  \
   case reg_gdb_##REG:                                                          \
     *ptr = &const_cast<CPUState64 *>(this)->T.FLD, *length = sizeof(T.FLD);    \
@@ -592,7 +592,7 @@ public:
   }
 
 public:
-  inline bool getLLDBRegisterPtr(int regno, void **ptr, size_t *length) const {
+  inline bool getLLDBRegisterPtr(uint32_t regno, void **ptr, size_t *length) const {
     if (is32) {
       return state32.getLLDBRegisterPtr(regno, ptr, length);
     } else {
@@ -600,7 +600,7 @@ public:
     }
   }
 
-  inline bool getGDBRegisterPtr(int regno, void **ptr, size_t *length) const {
+  inline bool getGDBRegisterPtr(uint32_t regno, void **ptr, size_t *length) const {
     if (is32) {
       return state32.getGDBRegisterPtr(regno, ptr, length);
     } else {

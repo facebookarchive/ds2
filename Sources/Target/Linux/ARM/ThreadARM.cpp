@@ -199,7 +199,7 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
   //
   if (branchPCSize == 0) {
     branchPCSize = (branchPC & 1) ? 2 : 4;
-    branchPC &= ~1ULL;
+    branchPC &= ~1UL;
   }
 
   return ds2::kSuccess;
@@ -330,7 +330,7 @@ PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
   //
   if (branchPCSize == 0) {
     branchPCSize = (branchPC & 1) ? 2 : 4;
-    branchPC &= ~1ULL;
+    branchPC &= ~1UL;
   }
 
   return ds2::kSuccess;
@@ -346,7 +346,7 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
 
   bool link = false;
   bool isThumb = (state.gp.cpsr & (1 << 5));
-  uint32_t pc = address.valid() ? address.value() : state.pc();
+  uint32_t pc = static_cast<uint32_t>(address.valid() ? address.value() : state.pc());
   uint32_t nextPC = static_cast<uint32_t>(-1);
   uint32_t nextPCSize = 0;
   uint32_t branchPC = static_cast<uint32_t>(-1);
