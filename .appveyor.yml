@@ -1,0 +1,38 @@
+# Operating system (build VM template)
+os: Visual Studio 2015
+
+version: 0.1-branch-{branch}-build-{build}
+
+branches:
+  only:
+    - master
+
+environment:
+  matrix:
+    - generator: "Visual Studio 14 2015"
+      toolchain: "WinStore"
+    - generator: "Visual Studio 14 2015 ARM"
+      toolchain: "WinStore"
+    - generator: "Visual Studio 14 2015"
+      toolchain: "Windows"
+
+clone_folder: c:\projects\ds2
+shallow_clone: true
+
+platform: x64
+configuration: Release
+
+install:
+  - C:\cygwin\setup-x86.exe -qnNdO -R C:/cygwin -s
+    http://cygwin.mirror.constant.com -l C:/cygwin/var/cache/setup -P bison -P
+    flex
+
+build_script:
+  - mkdir "C:\projects\ds2\build"
+  - set PATH=%PATH%;C:\cygwin\bin
+  - echo Running cmake...
+  - cd c:\projects\ds2\build
+  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-%toolchain%.cmake ..
+  - ..\Support\Scripts\build-windows.bat
+
+test: off
