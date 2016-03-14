@@ -12,7 +12,7 @@
 
 #include "DebugServer2/Target/ProcessBase.h"
 #include "DebugServer2/Architecture/CPUState.h"
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -184,7 +184,7 @@ ErrorCode ProcessBase::beforeResume() {
   if (!isAlive())
     return kErrorProcessNotFound;
 
-  BreakpointManager *bpm = breakpointManager();
+  SoftwareBreakpointManager *bpm = softwareBreakpointManager();
 
   //
   // Enable breakpoints.
@@ -202,7 +202,7 @@ ErrorCode ProcessBase::afterResume() {
 
   DS2LOG(Debug, "process still alive, _pid=%" PRIu64, (uint64_t)_pid);
 
-  BreakpointManager *bpm = breakpointManager();
+  SoftwareBreakpointManager *bpm = softwareBreakpointManager();
 
   //
   // Disable breakpoints and try to hit the breakpoint.
@@ -222,7 +222,7 @@ ErrorCode ProcessBase::afterResume() {
 }
 
 void ProcessBase::prepareForDetach() {
-  BreakpointManager *bpm = breakpointManager();
+  SoftwareBreakpointManager *bpm = softwareBreakpointManager();
   if (bpm != nullptr) {
     bpm->clear();
   }

@@ -22,6 +22,8 @@
 namespace ds2 {
 namespace Target {
 
+class ProcessBase;
+
 #if defined(OS_LINUX)
 __FORWARD_DECLARE(Linux, Process);
 __FORWARD_DECLARE(Linux, Thread);

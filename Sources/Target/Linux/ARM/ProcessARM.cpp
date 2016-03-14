@@ -9,8 +9,8 @@
 //
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
@@ -350,28 +350,28 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   return kSuccess;
 }
 
-BreakpointManager *Process::breakpointManager() const {
-  if (_breakpointManager == nullptr) {
-    const_cast<Process *>(this)->_breakpointManager =
+SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
+  if (_softwareBreakpointManager == nullptr) {
+    const_cast<Process *>(this)->_softwareBreakpointManager =
         new Architecture::ARM::SoftwareBreakpointManager(
             reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
   }
 
-  return _breakpointManager;
+  return _softwareBreakpointManager;
 }
 
-WatchpointManager *Process::watchpointManager() const {
+HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
 #if notyet
   //
   // TODO: this needs an hardware that supports hardware breakpoints,
   // I currently can't test this case, so it's #ifdefed out until
   // I have access to such hardware.
   //
-  if (_watchpointManager == nullptr) {
-    _watchpointManager = new Architecture::ARM::WatchpointManager(this);
+  if (_hardwareBreakpointManager == nullptr) {
+    _hardwareBreakpointManager = new Architecture::ARM::WatchpointManager(this);
   }
 
-  return _watchpointManager;
+  return _hardwareBreakpointManager;
 #else
   return nullptr;
 #endif

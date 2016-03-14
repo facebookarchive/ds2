@@ -959,7 +959,7 @@ ret:
 ErrorCode DebugSessionImpl::onDetach(Session &, ProcessId, bool stopped) {
   ErrorCode error;
 
-  BreakpointManager *bpm = _process->breakpointManager();
+  SoftwareBreakpointManager *bpm = _process->softwareBreakpointManager();
   if (bpm != nullptr) {
     bpm->clear();
   }
@@ -1007,7 +1007,7 @@ ErrorCode DebugSessionImpl::onInsertBreakpoint(
   if (type != kSoftwareBreakpoint)
     return kErrorUnsupported;
 
-  BreakpointManager *bpm = _process->breakpointManager();
+  SoftwareBreakpointManager *bpm = _process->softwareBreakpointManager();
   if (bpm == nullptr)
     return kErrorUnsupported;
 
@@ -1024,7 +1024,7 @@ ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
   if (type != kSoftwareBreakpoint)
     return kErrorUnsupported;
 
-  BreakpointManager *bpm = _process->breakpointManager();
+  SoftwareBreakpointManager *bpm = _process->softwareBreakpointManager();
   if (bpm == nullptr)
     return kErrorUnsupported;
 

@@ -11,6 +11,7 @@
 #ifndef __DebugServer2_Target_ProcessBase_h
 #define __DebugServer2_Target_ProcessBase_h
 
+#include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/ProcessDecl.h"
 #include "DebugServer2/Target/ThreadBase.h"
 
@@ -19,8 +20,7 @@
 
 namespace ds2 {
 
-class BreakpointManager;
-class WatchpointManager;
+class HardwareBreakpointManager;
 
 namespace Target {
 
@@ -123,8 +123,8 @@ protected:
   virtual ErrorCode updateInfo() = 0;
 
 public:
-  virtual BreakpointManager *breakpointManager() const = 0;
-  virtual WatchpointManager *watchpointManager() const = 0;
+  virtual SoftwareBreakpointManager *softwareBreakpointManager() const = 0;
+  virtual HardwareBreakpointManager *hardwareBreakpointManager() const = 0;
 
 public:
   virtual bool isELFProcess() const = 0;

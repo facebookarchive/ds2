@@ -43,8 +43,8 @@ namespace Target {
 namespace Linux {
 
 Process::Process()
-    : super(), _breakpointManager(nullptr), _watchpointManager(nullptr),
-      _terminated(false) {}
+    : super(), _softwareBreakpointManager(nullptr),
+      _hardwareBreakpointManager(nullptr), _terminated(false) {}
 
 Process::~Process() = default;
 

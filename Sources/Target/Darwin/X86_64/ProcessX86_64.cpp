@@ -117,17 +117,19 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   return kSuccess;
 }
 
-BreakpointManager *Process::breakpointManager() const {
-  if (_breakpointManager == nullptr) {
-    const_cast<Process *>(this)->_breakpointManager =
+SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
+  if (_softwareBreakpointManager == nullptr) {
+    const_cast<Process *>(this)->_softwareBreakpointManager =
         new Architecture::X86::SoftwareBreakpointManager(
             reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
   }
 
-  return _breakpointManager;
+  return _softwareBreakpointManager;
 }
 
-WatchpointManager *Process::watchpointManager() const { return nullptr; }
+HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
+  return nullptr;
+}
 
 bool Process::isSingleStepSupported() const { return true; }
 

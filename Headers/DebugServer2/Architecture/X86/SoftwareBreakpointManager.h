@@ -37,6 +37,9 @@ public:
 protected:
   void enableLocation(Site const &site) override;
   void disableLocation(Site const &site) override;
+
+protected:
+  friend Target::ProcessBase;
 };
 }
 }

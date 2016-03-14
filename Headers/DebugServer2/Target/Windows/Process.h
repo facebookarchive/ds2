@@ -21,7 +21,7 @@ namespace Windows {
 class Process : public Target::ProcessBase {
 protected:
   HANDLE _handle;
-  BreakpointManager *_breakpointManager;
+  SoftwareBreakpointManager *_softwareBreakpointManager;
   bool _terminated;
 
 protected:
@@ -67,8 +67,10 @@ public:
   virtual ErrorCode updateInfo();
 
 public:
-  virtual BreakpointManager *breakpointManager() const;
-  virtual WatchpointManager *watchpointManager() const { return nullptr; }
+  virtual SoftwareBreakpointManager *softwareBreakpointManager() const;
+  virtual HardwareBreakpointManager *hardwareBreakpointManager() const {
+    return nullptr;
+  }
 
 public:
   virtual bool isELFProcess() const { return false; }

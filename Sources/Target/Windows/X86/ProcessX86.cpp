@@ -18,14 +18,14 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
-BreakpointManager *Process::breakpointManager() const {
-  if (_breakpointManager == nullptr) {
-    const_cast<Process *>(this)->_breakpointManager =
+SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
+  if (_softwareBreakpointManager == nullptr) {
+    const_cast<Process *>(this)->_softwareBreakpointManager =
         new Architecture::X86::SoftwareBreakpointManager(
             reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
   }
 
-  return _breakpointManager;
+  return _softwareBreakpointManager;
 }
 
 GDBDescriptor const *Process::getGDBRegistersDescriptor() const {

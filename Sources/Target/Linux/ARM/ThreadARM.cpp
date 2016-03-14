@@ -12,7 +12,7 @@
 
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -366,7 +366,7 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
 
   if (branchPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(branchPCSize != 0);
-    error = process()->breakpointManager()->add(
+    error = process()->softwareBreakpointManager()->add(
         branchPC, BreakpointManager::kTypeTemporaryOneShot, branchPCSize);
     if (error != kSuccess)
       return error;
@@ -374,7 +374,7 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
 
   if (nextPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(nextPCSize != 0);
-    error = process()->breakpointManager()->add(
+    error = process()->softwareBreakpointManager()->add(
         nextPC, BreakpointManager::kTypeTemporaryOneShot, nextPCSize);
     if (error != kSuccess)
       return error;

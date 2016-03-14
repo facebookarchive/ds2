@@ -21,8 +21,8 @@ namespace Darwin {
 class Process : public MachOProcess {
 protected:
   Host::Darwin::PTrace _ptrace;
-  BreakpointManager *_breakpointManager;
-  WatchpointManager *_watchpointManager;
+  SoftwareBreakpointManager *_softwareBreakpointManager;
+  HardwareBreakpointManager *_hardwareBreakpointManager;
   bool _terminated;
 
 protected:
@@ -65,8 +65,8 @@ public:
   virtual bool isSingleStepSupported() const;
 
 public:
-  virtual BreakpointManager *breakpointManager() const;
-  virtual WatchpointManager *watchpointManager() const;
+  virtual SoftwareBreakpointManager *softwareBreakpointManager() const;
+  virtual HardwareBreakpointManager *hardwareBreakpointManager() const;
 
 protected:
   friend class Thread;
