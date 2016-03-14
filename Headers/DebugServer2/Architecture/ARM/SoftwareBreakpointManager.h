@@ -23,30 +23,32 @@ private:
 
 public:
   SoftwareBreakpointManager(Target::Process *process);
-  ~SoftwareBreakpointManager();
+  ~SoftwareBreakpointManager() override;
 
 public:
-  virtual void clear();
+  virtual void clear() override;
 
 public:
-  virtual ErrorCode add(Address const &address, Type type, size_t size);
-  virtual ErrorCode remove(Address const &address);
+  virtual ErrorCode add(Address const &address, Type type,
+                        size_t size) override;
+  virtual ErrorCode remove(Address const &address) override;
 
 public:
-  virtual bool has(Address const &address) const;
+  virtual bool has(Address const &address) const override;
 
 public:
-  virtual void enumerate(std::function<void(Site const &)> const &cb) const;
+  virtual void
+  enumerate(std::function<void(Site const &)> const &cb) const override;
 
 protected:
-  virtual bool hit(Target::Thread *thread);
+  virtual bool hit(Target::Thread *thread) override;
 
 protected:
   virtual void getOpcode(uint32_t type, std::string &opcode) const;
 
 protected:
-  virtual void enableLocation(Site const &site);
-  virtual void disableLocation(Site const &site);
+  virtual void enableLocation(Site const &site) override;
+  virtual void disableLocation(Site const &site) override;
 };
 }
 }
