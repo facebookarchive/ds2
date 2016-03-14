@@ -18,3 +18,8 @@
 # will build for WinStore ARM.
 set(CMAKE_SYSTEM_NAME WindowsStore)
 set(CMAKE_SYSTEM_VERSION 10.0)
+
+# For WinStore we build as a library because creating a process seems
+# restricted, so we just have a separate process open `ds2.dll` and run `main`
+# from it.
+set(LIBRARY 1)

@@ -232,7 +232,15 @@ DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
   exit(EXIT_SUCCESS);
 }
 
+#if defined(OS_WIN32)
+// On certain Windows targets (Windows Phone in particular), we build ds2 as a
+// library and load it from another process. To achieve this, we need `main` to
+// be exported so we can `GetProcAddress` it from that separate process.
+// clang-format off
+__declspec(dllexport)
+#endif
 int main(int argc, char **argv) {
+  // clang-format on
   std::ostringstream ss;
   for (int i = 0; i < argc; ++i)
     ss << argv[i] << " ";

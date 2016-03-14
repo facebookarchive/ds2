@@ -250,7 +250,11 @@ set(DEBUGSERVER2_SOURCES
     ${GDBREMOTE_SOURCES}
     )
 
-add_executable(ds2 ${DEBUGSERVER2_SOURCES})
+if (LIBRARY)
+  add_library(ds2 SHARED ${DEBUGSERVER2_SOURCES})
+else ()
+  add_executable(ds2 ${DEBUGSERVER2_SOURCES})
+endif ()
 target_include_directories(ds2 PUBLIC Headers)
 set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
 
