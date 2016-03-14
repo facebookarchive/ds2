@@ -11,7 +11,9 @@
 #ifndef __DebugServer2_BreakpointManager_h
 #define __DebugServer2_BreakpointManager_h
 
-#include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Target/ProcessDecl.h"
+
+#include <functional>
 
 namespace ds2 {
 

@@ -21,8 +21,8 @@ namespace Linux {
 class Process : public ds2::Target::POSIX::ELFProcess {
 protected:
   Host::Linux::PTrace _ptrace;
-  BreakpointManager *_breakpointManager;
-  WatchpointManager *_watchpointManager;
+  SoftwareBreakpointManager *_softwareBreakpointManager;
+  HardwareBreakpointManager *_hardwareBreakpointManager;
   bool _terminated;
 
 protected:
@@ -72,8 +72,8 @@ public:
   bool isSingleStepSupported() const override;
 
 public:
-  BreakpointManager *breakpointManager() const override;
-  WatchpointManager *watchpointManager() const override;
+  SoftwareBreakpointManager *softwareBreakpointManager() const override;
+  HardwareBreakpointManager *hardwareBreakpointManager() const override;
 
 protected:
   friend class Thread;
