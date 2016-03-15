@@ -133,7 +133,7 @@ inline std::string JSObject::QuoteString(std::string const &s) {
 
 void JSInteger::dump1(FILE *fp, size_t indent, size_t) const {
   JSObject::Indent(fp, indent);
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
   fprintf(fp, "%I64d", (__int64)value());
 #else
   fprintf(fp, "%lld", (long long)value());
