@@ -11,9 +11,10 @@
 #define __DS2_LOG_CLASS_NAME__ "DebugSession"
 
 #include "DebugServer2/GDBRemote/DebugSessionImpl.h"
-#include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/GDBRemote/Session.h"
+#include "DebugServer2/HardwareBreakpointManager.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
@@ -311,6 +312,23 @@ ErrorCode DebugSessionImpl::onQueryProcessInfo(Session &,
     return kErrorProcessNotFound;
   else
     return _process->getInfo(info);
+}
+
+ErrorCode
+DebugSessionImpl::onQueryHardwareWatchpointCount(Session &,
+                                                 size_t &count) const {
+  if (_process == nullptr) {
+    return kErrorProcessNotFound;
+  }
+
+  HardwareBreakpointManager *bpm = _process->hardwareBreakpointManager();
+  if (bpm == nullptr) {
+    count = 0;
+  } else {
+    count = bpm->maxWatchpoints();
+  }
+
+  return kSuccess;
 }
 
 ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,

@@ -68,6 +68,8 @@ protected:
                             bool &attachedProcess) const override;
   ErrorCode onQueryProcessInfo(Session &session,
                                ProcessInfo &info) const override;
+  ErrorCode onQueryHardwareWatchpointCount(Session &session,
+                                           size_t &count) const override;
   ErrorCode onQueryThreadStopInfo(Session &session, ProcessThreadId const &ptid,
                                   StopCode &stop) const override;
 
