@@ -115,26 +115,26 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
     unsigned long value;
 
     if (wrapPtrace(PTRACE_GETHBPREGS, pid, (n << 1) + 1, &value) < 0) {
-      state.hbp.bcr[n] = 0;
+      state.hbp.bp_addr[n] = 0;
     } else {
-      state.hbp.bcr[n] = value;
+      state.hbp.bp_addr[n] = value;
     }
 
     if (wrapPtrace(PTRACE_GETHBPREGS, pid, (n << 1) + 2, &value) < 0) {
-      state.hbp.bvr[n] = 0;
+      state.hbp.bp_ctrl[n] = 0;
     } else {
-      state.hbp.bvr[n] = value;
+      state.hbp.bp_ctrl[n] = value;
     }
   }
 
   for (size_t n = 0; n < _privateData->watchpointCount; n++) {
-    if (wrapPtrace(PTRACE_GETHBPREGS, pid, -((n << 1) + 1), &state.hbp.wcr[n]) <
-        0) {
-      state.hbp.wcr[n] = 0;
+    if (wrapPtrace(PTRACE_GETHBPREGS, pid, -((n << 1) + 1),
+                   &state.hbp.wp_addr[n]) < 0) {
+      state.hbp.wp_addr[n] = 0;
     }
-    if (wrapPtrace(PTRACE_GETHBPREGS, pid, -((n << 1) + 2), &state.hbp.wvr[n]) <
-        0) {
-      state.hbp.wvr[n] = 0;
+    if (wrapPtrace(PTRACE_GETHBPREGS, pid, -((n << 1) + 2),
+                   &state.hbp.wp_ctrl[n]) < 0) {
+      state.hbp.wp_ctrl[n] = 0;
     }
   }
 
@@ -184,13 +184,13 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   // Write hardware breakpoints and watchpoints.
   //
   for (size_t n = 0; n < _privateData->breakpointCount; n++) {
-    wrapPtrace(PTRACE_SETHBPREGS, pid, (n << 1) + 1, &state.hbp.bcr[n]);
-    wrapPtrace(PTRACE_GETHBPREGS, pid, (n << 1) + 2, &state.hbp.bvr[n]);
+    wrapPtrace(PTRACE_SETHBPREGS, pid, (n << 1) + 1, &state.hbp.bp_addr[n]);
+    wrapPtrace(PTRACE_GETHBPREGS, pid, (n << 1) + 2, &state.hbp.bp_ctrl[n]);
   }
 
   for (size_t n = 0; n < _privateData->watchpointCount; n++) {
-    wrapPtrace(PTRACE_SETHBPREGS, pid, -((n << 1) + 1), &state.hbp.wcr[n]);
-    wrapPtrace(PTRACE_SETHBPREGS, pid, -((n << 1) + 2), &state.hbp.wvr[n]);
+    wrapPtrace(PTRACE_SETHBPREGS, pid, -((n << 1) + 1), &state.hbp.wp_addr[n]);
+    wrapPtrace(PTRACE_SETHBPREGS, pid, -((n << 1) + 2), &state.hbp.wp_ctrl[n]);
   }
 
   return kSuccess;
