@@ -12,7 +12,7 @@
 set -eu
 
 cmake_package="cmake-3.4.0-Linux-x86_64"
-cformat="clang-format-3.7"
+cformat="clang-format-3.8"
 top="$(git rev-parse --show-toplevel)"
 
 source "$top/Support/Scripts/common.sh"

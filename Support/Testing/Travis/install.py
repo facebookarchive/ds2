@@ -29,12 +29,12 @@ tizen_toolchains = { 'Tizen-ARM':   'arm',
 target = os.getenv('TARGET')
 
 if target == 'Style':
-    packages.append('clang-format-3.7')
+    packages.append('clang-format-3.8')
 elif target == 'Registers':
     packages.append('flex')
     packages.append('bison')
     packages.append('g++-5')
-    packages.append('clang-format-3.7')
+    packages.append('clang-format-3.8')
 elif target in linux_packages:
     if "CentOS Linux" in platform.linux_distribution():
         packages.append('gcc')

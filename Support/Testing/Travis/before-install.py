@@ -17,7 +17,11 @@ keys = []
 
 target = os.getenv('TARGET')
 
-if target in [ 'Style', 'Registers' ] or os.getenv('CLANG') == '1' or os.getenv('LLDB_TESTS') != None:
+if target in [ 'Style', 'Registers' ]:
+    repositories.append('ppa:ubuntu-toolchain-r/test')
+    keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
+    repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty main')
+elif os.getenv('CLANG') == '1' or os.getenv('LLDB_TESTS') != None:
     repositories.append('ppa:ubuntu-toolchain-r/test')
     keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
     repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main')
