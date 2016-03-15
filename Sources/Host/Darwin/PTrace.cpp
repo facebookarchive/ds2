@@ -122,14 +122,10 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
 ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   if (kill(pid, SIGSTOP) < 0)
     return Platform::TranslateError();
@@ -141,14 +137,10 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                        int signal, Address const &address) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   //
   // Continuation from address?
@@ -178,14 +170,10 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   pid_t pid;
   caddr_t addr;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   //
   // Continuation from address?

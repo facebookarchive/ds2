@@ -110,6 +110,15 @@ fail:
 ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &pid) {
   return kErrorUnsupported;
 }
+
+ErrorCode PTrace::ptidToPid(ProcessThreadId const &ptid, pid_t &pid) {
+  if (!ptid.valid())
+    return kErrorInvalidArgument;
+
+  pid = (ptid.tid <= kAnyThreadId) ? ptid.pid : ptid.tid;
+
+  return kSuccess;
+}
 }
 }
 }
