@@ -11,15 +11,7 @@
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/CompilerSupport.h"
-#if defined(OS_LINUX)
-#include "DebugServer2/Host/Linux/ExtraWrappers.h"
-#elif defined(OS_WIN32)
-#include "DebugServer2/Host/Windows/ExtraWrappers.h"
-#elif defined(OS_FREEBSD)
-#include "DebugServer2/Host/FreeBSD/ExtraWrappers.h"
-#elif defined(OS_DARWIN)
-#include "DebugServer2/Host/Darwin/ExtraWrappers.h"
-#endif
+#include "DebugServer2/Utils/String.h"
 
 #if defined(ENABLE_LOGCAT)
 #include <android/log.h>
@@ -88,7 +80,7 @@ void vLog(int level, char const *classname, char const *funcname,
     va_copy(ap_copy, ap);
     buffer.resize(required_bytes + 1);
     required_bytes =
-        ds2_vsnprintf(buffer.data(), buffer.size(), format, ap_copy);
+        ds2::Utils::VSNPrintf(buffer.data(), buffer.size(), format, ap_copy);
     va_end(ap_copy);
   } while (required_bytes >= buffer.size());
 

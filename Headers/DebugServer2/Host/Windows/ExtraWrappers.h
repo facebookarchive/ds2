@@ -17,29 +17,6 @@
 #include <cstdio>
 #include <windows.h>
 
-// MSVC does not have snprintf, and has a vsnprintf that does not have the same
-// semantics as the linux one, which means we have to provide wrappers for
-// both.
-
-static inline int ds2_vsnprintf(char *str, size_t size, char const *format,
-                                va_list ap) {
-  int res;
-  res = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
-  if (res == -1)
-    res = _vscprintf(format, ap);
-  return res;
-}
-
-static inline int ds2_snprintf(char *str, size_t size, char const *format,
-                               ...) {
-  int res;
-  va_list ap;
-  va_start(ap, format);
-  res = ds2_vsnprintf(str, size, format, ap);
-  va_end(ap);
-  return res;
-}
-
 // clang-format off
 // Some APIs are not exposed when building for UAP.
 #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)

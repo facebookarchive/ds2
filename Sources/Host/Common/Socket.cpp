@@ -307,7 +307,7 @@ std::string Socket::error() const {
 #if defined(OS_WIN32)
   // 128 bytes is enough for "error " + "0x00000000"
   char buf[128];
-  ds2_snprintf(buf, sizeof(buf), "error %#x", _lastError);
+  ds2::Utils::SNPrintf(buf, sizeof(buf), "error %#x", _lastError);
   return std::string(buf);
 #else
   return strerror(_lastError);

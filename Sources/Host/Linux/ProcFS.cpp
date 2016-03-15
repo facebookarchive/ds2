@@ -14,6 +14,7 @@
 #include "DebugServer2/Support/POSIX/ELFSupport.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/String.h"
 
 #include <cctype>
 #include <cerrno>
@@ -91,15 +92,15 @@ static void MakePath(char *path, size_t maxsize, pid_t pid, char const *what) {
 
   if (pid == 0) {
     if (what == nullptr) {
-      ds2_snprintf(path, maxsize, "/proc/self");
+      ds2::Utils::SNPrintf(path, maxsize, "/proc/self");
     } else {
-      ds2_snprintf(path, maxsize, "/proc/self/%s", what);
+      ds2::Utils::SNPrintf(path, maxsize, "/proc/self/%s", what);
     }
   } else {
     if (what == nullptr) {
-      ds2_snprintf(path, maxsize, "/proc/%d", pid);
+      ds2::Utils::SNPrintf(path, maxsize, "/proc/%d", pid);
     } else {
-      ds2_snprintf(path, maxsize, "/proc/%d/%s", pid, what);
+      ds2::Utils::SNPrintf(path, maxsize, "/proc/%d/%s", pid, what);
     }
   }
 }
@@ -125,9 +126,9 @@ static void MakePath(char *path, size_t maxsize, pid_t pid, pid_t tid,
     }
 
     if (what == nullptr) {
-      ds2_snprintf(path, maxsize, "/proc/self/task/%d", tid);
+      ds2::Utils::SNPrintf(path, maxsize, "/proc/self/task/%d", tid);
     } else {
-      ds2_snprintf(path, maxsize, "/proc/self/task/%d/%s", tid, what);
+      ds2::Utils::SNPrintf(path, maxsize, "/proc/self/task/%d/%s", tid, what);
     }
   } else {
     if (tid == 0) {
@@ -135,16 +136,17 @@ static void MakePath(char *path, size_t maxsize, pid_t pid, pid_t tid,
     }
 
     if (what == nullptr) {
-      ds2_snprintf(path, maxsize, "/proc/%d/task/%d", pid, tid);
+      ds2::Utils::SNPrintf(path, maxsize, "/proc/%d/task/%d", pid, tid);
     } else {
-      ds2_snprintf(path, maxsize, "/proc/%d/task/%d/%s", pid, tid, what);
+      ds2::Utils::SNPrintf(path, maxsize, "/proc/%d/task/%d/%s", pid, tid,
+                           what);
     }
   }
 }
 
 int ProcFS::OpenFd(char const *what, int mode) {
   char path[PATH_MAX + 1];
-  ds2_snprintf(path, PATH_MAX, "/proc/%s", what);
+  ds2::Utils::SNPrintf(path, PATH_MAX, "/proc/%s", what);
   return open(path, mode);
 }
 
@@ -160,7 +162,7 @@ int ProcFS::OpenFd(pid_t pid, pid_t tid, char const *what, int mode) {
 
 FILE *ProcFS::OpenFILE(char const *what, char const *mode) {
   char path[PATH_MAX + 1];
-  ds2_snprintf(path, PATH_MAX, "/proc/%s", what);
+  ds2::Utils::SNPrintf(path, PATH_MAX, "/proc/%s", what);
   FILE *res = fopen(path, mode);
   if (res == nullptr)
     DS2LOG(Error, "can't open %s: %s", path, strerror(errno));
@@ -183,7 +185,7 @@ FILE *ProcFS::OpenFILE(pid_t pid, pid_t tid, char const *what,
 
 DIR *ProcFS::OpenDIR(char const *what) {
   char path[PATH_MAX + 1];
-  ds2_snprintf(path, PATH_MAX, "/proc/%s", what);
+  ds2::Utils::SNPrintf(path, PATH_MAX, "/proc/%s", what);
   return opendir(path);
 }
 

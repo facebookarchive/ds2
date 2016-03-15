@@ -41,13 +41,6 @@ int tgkill(pid_t pid, pid_t tid, int signo) DS2_ATTRIBUTE_WEAK;
 
 // No glibc wrapper for tkill
 int tkill(pid_t tid, int signo) DS2_ATTRIBUTE_WEAK;
-
-// We use ds2_snprintf and ds2_vsnprintf in ds2 code to make sure we don't use
-// the bogus vsnprintf provided in the MSVC runtime. The following two defines
-// allow us to avoid #ifdef conditionals accross the code.
-// See Headers/DebugServer2/Host/Windows/ExtraWrappers.h.
-#define ds2_snprintf snprintf
-#define ds2_vsnprintf vsnprintf
 }
 
 #endif // !__DebugServer2_Host_Linux_ExtraWrappers_h

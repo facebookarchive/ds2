@@ -13,6 +13,7 @@
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #include "DebugServer2/Types.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/String.h"
 
 #include <lmcons.h>
 #include <psapi.h>
@@ -111,8 +112,8 @@ char const *Platform::GetOSVersion() {
       return versionStr;
     }
 
-    ::ds2_snprintf(versionStr, sizeof(versionStr), "%d.%d",
-                   version.dwMajorVersion, version.dwMinorVersion);
+    ds2::Utils::SNPrintf(versionStr, sizeof(versionStr), "%d.%d",
+                         version.dwMajorVersion, version.dwMinorVersion);
   }
 
   return versionStr;
@@ -129,7 +130,8 @@ char const *Platform::GetOSBuild() {
       return buildStr;
     }
 
-    ::ds2_snprintf(buildStr, sizeof(buildStr), "%d", version.dwBuildNumber);
+    ds2::Utils::SNPrintf(buildStr, sizeof(buildStr), "%d",
+                         version.dwBuildNumber);
   }
 
   return buildStr;
