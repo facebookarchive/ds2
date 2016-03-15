@@ -12,7 +12,13 @@
 set -eu
 
 cmake_package="cmake-3.4.0-Linux-x86_64"
-cformat="clang-format-3.8"
+
+if [[ -n "${CLANG_FORMAT_PATH-}" ]]; then
+  cformat="$CLANG_FORMAT_PATH"
+else
+  cformat="clang-format-3.8"
+fi
+
 top="$(git rev-parse --show-toplevel)"
 
 source "$top/Support/Scripts/common.sh"
