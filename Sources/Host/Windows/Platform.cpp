@@ -112,7 +112,7 @@ char const *Platform::GetOSVersion() {
       return versionStr;
     }
 
-    ds2::Utils::SNPrintf(versionStr, sizeof(versionStr), "%d.%d",
+    ds2::Utils::SNPrintf(versionStr, sizeof(versionStr), "%lu.%lu",
                          version.dwMajorVersion, version.dwMinorVersion);
   }
 
@@ -130,7 +130,7 @@ char const *Platform::GetOSBuild() {
       return buildStr;
     }
 
-    ds2::Utils::SNPrintf(buildStr, sizeof(buildStr), "%d",
+    ds2::Utils::SNPrintf(buildStr, sizeof(buildStr), "%lu",
                          version.dwBuildNumber);
   }
 

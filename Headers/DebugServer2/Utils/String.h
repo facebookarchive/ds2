@@ -11,6 +11,8 @@
 #ifndef __DebugServer2_Utils_Utils_String_h
 #define __DebugServer2_Utils_Utils_String_h
 
+#include "DebugServer2/Utils/CompilerSupport.h"
+
 #include <cstdarg>
 #include <cstdio>
 #include <sstream>
@@ -25,6 +27,13 @@ template <typename T> static inline std::string ToString(T val) {
   os << val;
   return os.str();
 }
+
+// We can't add the printf attribute directly on the inline function
+// definition, we have to put it on a separate function declaration.
+static inline int VSNPrintf(char *str, size_t size, char const *format,
+                            va_list ap) DS2_ATTRIBUTE_PRINTF(3, 0);
+static inline int SNPrintf(char *str, size_t size, char const *format, ...)
+    DS2_ATTRIBUTE_PRINTF(3, 4);
 
 #if defined(OS_WIN32)
 // MSVC does not have snprintf, and has a vsnprintf that does not have the same
