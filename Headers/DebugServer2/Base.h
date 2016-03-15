@@ -16,8 +16,10 @@
 #endif
 
 #if defined(_WIN32)
-#include <windef.h>
+// clang-format off
 #include <winsock2.h>
+#include <windef.h>
+// clang-format on
 #if !defined(__MINGW32__)
 typedef SSIZE_T ssize_t;
 #endif
