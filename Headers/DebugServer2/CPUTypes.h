@@ -12,6 +12,7 @@
 #define __DebugServer2_CPUTypes_h
 
 #include "DebugServer2/Base.h"
+#include "DebugServer2/Constants.h"
 
 namespace ds2 {
 
