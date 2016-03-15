@@ -204,7 +204,7 @@ std::string GDBXMLGenerator::GetType(GDBEncoding const &enc,
     return "int";
   case ds2::Architecture::kGDBEncodingSizedInteger:
     if (bitsize != 0)
-      return "int" + ds2::ToString(bitsize);
+      return "int" + ds2::Utils::ToString(bitsize);
     break;
   default:
     DS2ASSERT(0 && "invalid GDB encoding");
@@ -223,7 +223,7 @@ std::string GDBXMLGenerator::GetVectorType(GDBEncoding const &enc,
   case ds2::Architecture::kGDBEncodingInteger:
   case ds2::Architecture::kGDBEncodingSizedInteger:
     if (elsize != 0)
-      return "int" + ds2::ToString(elsize);
+      return "int" + ds2::Utils::ToString(elsize);
     break;
   default:
     DS2ASSERT(0 && "invalid encoding for GDB vector");

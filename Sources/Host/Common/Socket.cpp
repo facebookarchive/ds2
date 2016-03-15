@@ -356,10 +356,10 @@ std::string Socket::port() const {
 
   switch (ss.ss_family) {
   case AF_INET:
-    return ds2::ToString(
+    return ds2::Utils::ToString(
         ntohs(reinterpret_cast<struct sockaddr_in *>(&ss)->sin_port));
   case AF_INET6:
-    return ds2::ToString(
+    return ds2::Utils::ToString(
         ntohs(reinterpret_cast<struct sockaddr_in6 *>(&ss)->sin6_port));
   default:
     DS2BUG("unknown socket family: %u", (unsigned int)ss.ss_family);

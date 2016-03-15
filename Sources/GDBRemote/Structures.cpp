@@ -626,9 +626,9 @@ std::string RegisterInfo::encode(int xmlSet) const {
     regInfo.push_back(
         std::make_pair(xml ? "altname" : "alt-name", alternateName));
 
-  regInfo.push_back(std::make_pair("bitsize", ds2::ToString(bitSize)));
-  regInfo.push_back(
-      std::make_pair("offset", ds2::ToString(byteOffset < 0 ? 0 : byteOffset)));
+  regInfo.push_back(std::make_pair("bitsize", ds2::Utils::ToString(bitSize)));
+  regInfo.push_back(std::make_pair(
+      "offset", ds2::Utils::ToString(byteOffset < 0 ? 0 : byteOffset)));
 
   if (encodingName != nullptr)
     regInfo.push_back(std::make_pair("encoding", encodingName));
@@ -638,22 +638,23 @@ std::string RegisterInfo::encode(int xmlSet) const {
 
   if (!setName.empty()) {
     if (xml)
-      regInfo.push_back(std::make_pair("group_id", ds2::ToString(xmlSet)));
+      regInfo.push_back(
+          std::make_pair("group_id", ds2::Utils::ToString(xmlSet)));
     else
       regInfo.push_back(std::make_pair("set", setName));
   }
 
   if (xml) {
-    regInfo.push_back(std::make_pair("regnum", ds2::ToString(regno)));
+    regInfo.push_back(std::make_pair("regnum", ds2::Utils::ToString(regno)));
   }
 
   if (!(gccRegisterIndex < 0))
     regInfo.push_back(std::make_pair(xml ? "gcc_regnum" : "gcc",
-                                     ds2::ToString(gccRegisterIndex)));
+                                     ds2::Utils::ToString(gccRegisterIndex)));
 
   if (!(dwarfRegisterIndex < 0))
     regInfo.push_back(std::make_pair(xml ? "dwarf_regnum" : "dwarf",
-                                     ds2::ToString(dwarfRegisterIndex)));
+                                     ds2::Utils::ToString(dwarfRegisterIndex)));
 
   if (!genericName.empty())
     regInfo.push_back(std::make_pair("generic", genericName));

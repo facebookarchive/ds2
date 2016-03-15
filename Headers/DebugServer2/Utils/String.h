@@ -15,12 +15,14 @@
 #include <string>
 
 namespace ds2 {
+namespace Utils {
 
 // Android doesn't have std::to_string, define our own implementation.
 template <typename T> static inline std::string ToString(T val) {
   std::ostringstream os;
   os << val;
   return os.str();
+}
 }
 }
 

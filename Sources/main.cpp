@@ -203,12 +203,12 @@ DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
 
   Platform::EnumerateProcesses(
       true, ds2::UserId(), [&](ds2::ProcessInfo const &info) {
-        std::string pid = ds2::ToString(info.pid);
+        std::string pid = ds2::Utils::ToString(info.pid);
 
         std::string user;
         if (!Platform::GetUserName(info.realUid, user)) {
 #if !defined(OS_WIN32)
-          user = ds2::ToString(info.realUid);
+          user = ds2::Utils::ToString(info.realUid);
 #else
           user = "<NONE>";
 #endif
