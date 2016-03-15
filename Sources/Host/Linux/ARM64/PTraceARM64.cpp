@@ -74,17 +74,12 @@ void PTrace::doneCPUState() { delete _privateData; }
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
                                ProcessInfo const &pinfo,
                                Architecture::CPUState &state) {
-  ErrorCode error;
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   // Initialize the CPU state, just in case.
   initCPUState(pid);
@@ -106,17 +101,12 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
 ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
                                 ProcessInfo const &,
                                 Architecture::CPUState const &state) {
-  ErrorCode error;
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   // Initialize the CPU state, just in case.
   initCPUState(pid);

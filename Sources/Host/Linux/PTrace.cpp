@@ -34,14 +34,10 @@ PTrace::~PTrace() { doneCPUState(); }
 ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   int stat;
   pid_t ret;
@@ -115,14 +111,10 @@ ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
                             bool nullTerm) {
   pid_t pid;
 
-  if (!ptid.valid() || !address.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   bool foundNull = false;
   size_t nread = 0;
@@ -200,14 +192,10 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
                               size_t length, size_t *count) {
   pid_t pid;
 
-  if (!ptid.valid() || !address.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   size_t nwritten = 0;
   uintptr_t base = address;
@@ -257,14 +245,10 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
 ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   if (tkill(pid, SIGSTOP) < 0)
     return Platform::TranslateError();
@@ -276,14 +260,10 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                        int signal, Address const &address) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
 #if defined(__arm__)
   //
@@ -318,14 +298,10 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                          int signal, Address const &address) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   //
   // Continuation from address?
@@ -352,14 +328,10 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
 ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &epid) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   unsigned long value;
   if (wrapPtrace(PTRACE_GETEVENTMSG, pid, nullptr, &value) < 0)
@@ -372,14 +344,10 @@ ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &epid) {
 ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   if (wrapPtrace(PTRACE_GETSIGINFO, pid, nullptr, &si) < 0)
     return Platform::TranslateError();

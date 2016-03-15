@@ -281,14 +281,10 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
                                Architecture::CPUState &state) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   //
   // Initialize the CPU state, just in case.
@@ -330,14 +326,10 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
                                 Architecture::CPUState const &state) {
   pid_t pid;
 
-  if (!ptid.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = ptidToPid(ptid, pid);
 
-  if (!(ptid.tid <= kAnyThreadId)) {
-    pid = ptid.tid;
-  } else {
-    pid = ptid.pid;
-  }
+  if (error != kSuccess)
+    return error;
 
   //
   // Initialize the CPU state, just in case.

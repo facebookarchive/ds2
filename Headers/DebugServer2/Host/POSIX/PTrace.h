@@ -108,6 +108,8 @@ protected:
                     (PTraceAddrType)(uintptr_t)addr,
                     (PTraceDataType)(uintptr_t)data);
   }
+
+  virtual ErrorCode ptidToPid(ProcessThreadId const &ptid, pid_t &pid);
 };
 }
 }
