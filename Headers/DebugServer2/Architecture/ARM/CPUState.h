@@ -65,12 +65,12 @@ struct CPUState {
 
   struct {
     // Breakpoints
-    uint32_t bvr[32];
-    uint32_t bcr[32];
+    uint32_t bp_ctrl[32];
+    uint32_t bp_addr[32];
 
     // Watchpoints
-    uint32_t wvr[32];
-    uint32_t wcr[32];
+    uint32_t wp_ctrl[32];
+    uint32_t wp_addr[32];
   } hbp;
 
 public:
