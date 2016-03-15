@@ -98,9 +98,10 @@ void vLog(int level, char const *classname, char const *funcname,
   functag << funcname;
 
 #if defined(ENABLE_LOGCAT)
-  if (level >= sLogLevel || level >= kLogLevelDebug)
+  if (level >= sLogLevel || level >= kLogLevelDebug) {
     // If we're on Android pollute logcat as well.
     androidLogcat(level, functag.str().c_str(), buffer.data());
+  }
 #endif
 
   if (level < sLogLevel)
@@ -150,6 +151,13 @@ void vLog(int level, char const *classname, char const *funcname,
   }
 
   ss << ' ' << buffer.data() << std::endl;
+
+#if defined(OS_WIN32)
+  if (level >= sLogLevel || level >= kLogLevelDebug) {
+    // If we're on Windows, pullute dbgview as well.
+    OutputDebugStringA(ss.str().c_str());
+  }
+#endif
 
   fputs(ss.str().c_str(), sOutputStream);
   fflush(sOutputStream);
