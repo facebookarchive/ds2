@@ -10,10 +10,10 @@
 //
 
 #include "DebugServer2/Host/FreeBSD/PTrace.h"
+#include "DebugServer2/Architecture/X86/CPUState.h"
+#include "DebugServer2/Architecture/X86_64/CPUState.h"
 #include "DebugServer2/Host/Platform.h"
 
-#include <DebugServer2/Architecture/X86/CPUState.h>
-#include <DebugServer2/Architecture/X86_64/CPUState.h>
 #include <elf.h>
 #include <machine/fpu.h>
 #include <machine/reg.h>
