@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/ThreadBase.h"
+#include "DebugServer2/Target/Process.h"
 
 namespace ds2 {
 namespace Target {

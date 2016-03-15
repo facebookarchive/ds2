@@ -10,11 +10,11 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::ProcessBase"
 
+#include "DebugServer2/Target/ProcessBase.h"
 #include "DebugServer2/Architecture/CPUState.h"
 #include "DebugServer2/BreakpointManager.h"
-#include "DebugServer2/Utils/Log.h"
-#include "DebugServer2/Target/ProcessBase.h"
 #include "DebugServer2/Target/Thread.h"
+#include "DebugServer2/Utils/Log.h"
 
 namespace ds2 {
 namespace Target {
@@ -153,8 +153,8 @@ ErrorCode ProcessBase::writeMemoryBuffer(Address const &address,
 }
 
 void ProcessBase::insert(ThreadBase *thread) {
-  if (!_threads.insert(
-                   std::make_pair(thread->tid(), static_cast<Thread *>(thread)))
+  if (!_threads
+           .insert(std::make_pair(thread->tid(), static_cast<Thread *>(thread)))
            .second)
     return;
 

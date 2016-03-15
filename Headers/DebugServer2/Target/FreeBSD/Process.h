@@ -11,8 +11,8 @@
 #ifndef __DebugServer2_Target_FreeBSD_Process_h
 #define __DebugServer2_Target_FreeBSD_Process_h
 
-#include "DebugServer2/Target/POSIX/ELFProcess.h"
 #include "DebugServer2/Host/FreeBSD/PTrace.h"
+#include "DebugServer2/Target/POSIX/ELFProcess.h"
 
 namespace ds2 {
 namespace Target {

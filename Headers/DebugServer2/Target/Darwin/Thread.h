@@ -13,12 +13,12 @@
 
 #include "DebugServer2/Target/POSIX/Thread.h"
 
-#include <libproc.h>
 #include <csignal>
+#include <libproc.h>
 
-#include <sys/types.h>
 #include <mach/mach.h>
 #include <mach/mach_vm.h>
+#include <sys/types.h>
 
 namespace ds2 {
 namespace Target {

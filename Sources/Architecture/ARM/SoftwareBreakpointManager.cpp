@@ -10,8 +10,8 @@
 
 #define __DS2_LOG_CLASS_NAME__ "SoftwareBreakpointManager"
 
-#include "DebugServer2/Architecture/ARM/Branching.h"
 #include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
+#include "DebugServer2/Architecture/ARM/Branching.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"

@@ -9,21 +9,21 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Host/Darwin/LibProc.h"
+#include "DebugServer2/Utils/Log.h"
 
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/user.h>
-#include <sys/sysctl.h>
 #include <mach/mach.h>
 #include <mach/mach_vm.h>
 #include <mach/thread_info.h>
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <sys/types.h>
+#include <sys/user.h>
 
-#include <util.h>
+#include <libproc.h>
 #include <stdlib.h>
 #include <string>
-#include <libproc.h>
+#include <util.h>
 
 namespace ds2 {
 namespace Host {

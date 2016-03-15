@@ -11,11 +11,11 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Darwin/Thread.h"
-#include "DebugServer2/Host/Darwin/PTrace.h"
-#include "DebugServer2/Host/Darwin/LibProc.h"
 #include "DebugServer2/Architecture/X86_64/CPUState.h"
+#include "DebugServer2/Host/Darwin/LibProc.h"
+#include "DebugServer2/Host/Darwin/PTrace.h"
+#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>

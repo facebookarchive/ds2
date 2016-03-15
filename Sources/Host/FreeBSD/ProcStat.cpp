@@ -8,14 +8,14 @@
 // PATENTS file in the same directory.
 //
 
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/user.h>
-#include <sys/sysctl.h>
-#include <sys/elf.h>
-#include <libutil.h>
 #include <libprocstat.h>
+#include <libutil.h>
 #include <string>
+#include <sys/elf.h>
+#include <sys/param.h>
+#include <sys/sysctl.h>
+#include <sys/types.h>
+#include <sys/user.h>
 
 #include "DebugServer2/Host/FreeBSD/ProcStat.h"
 #include "DebugServer2/Support/POSIX/ELFSupport.h"

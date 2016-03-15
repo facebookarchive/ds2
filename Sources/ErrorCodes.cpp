@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Types.h"
 #include "DebugServer2/Constants.h"
+#include "DebugServer2/Types.h"
 
 namespace ds2 {
 

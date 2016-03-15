@@ -13,8 +13,8 @@
 
 #include "DebugServer2/Host/POSIX/PTrace.h"
 
-#include <sys/types.h>
 #include <sys/ptrace.h>
+#include <sys/types.h>
 
 namespace ds2 {
 namespace Host {

@@ -9,8 +9,8 @@
 //
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
+#include "DebugServer2/Target/Thread.h"
 
 // Include system header files for constants.
 #include <cstdlib>

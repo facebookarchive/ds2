@@ -9,15 +9,15 @@
 //
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
+#include "DebugServer2/Target/Thread.h"
 
 //
 // Include system header files for constants.
 //
-#include <sys/syscall.h>
-#include <sys/mman.h>
 #include <cstdlib>
+#include <sys/mman.h>
+#include <sys/syscall.h>
 
 using ds2::Architecture::GDBDescriptor;
 using ds2::Architecture::LLDBDescriptor;

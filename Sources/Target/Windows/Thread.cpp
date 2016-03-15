@@ -10,11 +10,11 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
+#include "DebugServer2/Target/Windows/Thread.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Target/Windows/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cinttypes>

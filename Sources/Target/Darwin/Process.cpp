@@ -11,22 +11,22 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Process"
 
 #include "DebugServer2/Target/Darwin/Process.h"
-#include "DebugServer2/Target/Darwin/Thread.h"
-#include "DebugServer2/Host/Darwin/PTrace.h"
-#include "DebugServer2/Host/Darwin/LibProc.h"
-#include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Host/Darwin/LibProc.h"
+#include "DebugServer2/Host/Darwin/PTrace.h"
+#include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
+#include "DebugServer2/Target/Darwin/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
 #include <csignal>
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
 #include <limits>
 
 #include <sys/ptrace.h>
-#include <sys/wait.h>
 #include <sys/syscall.h>
+#include <sys/wait.h>
 
 using ds2::Host::Darwin::PTrace;
 using ds2::Host::Darwin::LibProc;

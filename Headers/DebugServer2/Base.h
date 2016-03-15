@@ -16,8 +16,8 @@
 #endif
 
 #if defined(_WIN32)
-#include <winsock2.h>
 #include <windef.h>
+#include <winsock2.h>
 #if !defined(__MINGW32__)
 typedef SSIZE_T ssize_t;
 #endif
@@ -64,7 +64,7 @@ typedef SSIZE_T ssize_t;
 #endif
 
 template <typename TYPE, size_t SIZE>
-static inline size_t array_size(TYPE const(&)[SIZE]) {
+static inline size_t array_size(TYPE const (&)[SIZE]) {
   return SIZE;
 }
 

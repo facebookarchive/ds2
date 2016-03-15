@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Support/POSIX/ELFSupport.h"
 #include "DebugServer2/Utils/HexValues.h"

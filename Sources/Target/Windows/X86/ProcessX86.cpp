@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
 
 using ds2::Architecture::GDBDescriptor;
 using ds2::Architecture::LLDBDescriptor;

@@ -11,15 +11,15 @@
 #ifndef __DebugServer2_Host_FreeBSD_ProcStat_h
 #define __DebugServer2_Host_FreeBSD_ProcStat_h
 
-#include "DebugServer2/Types.h"
 #include "DebugServer2/Support/POSIX/ELFSupport.h"
+#include "DebugServer2/Types.h"
 
 #include <dirent.h>
 #include <fcntl.h>
 #include <functional>
 #include <stdio.h>
-#include <sys/stat.h>
 #include <sys/proc.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 namespace ds2 {

@@ -12,8 +12,8 @@
 #define __DebugServer2_Types_h
 
 #include "DebugServer2/Base.h"
-#include "DebugServer2/Constants.h"
 #include "DebugServer2/CPUTypes.h"
+#include "DebugServer2/Constants.h"
 
 #include <cstdint>
 #include <map>

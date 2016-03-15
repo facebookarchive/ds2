@@ -11,8 +11,8 @@
 #ifndef __DebugServer2_Target_Linux_Process_h
 #define __DebugServer2_Target_Linux_Process_h
 
-#include "DebugServer2/Target/POSIX/ELFProcess.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
+#include "DebugServer2/Target/POSIX/ELFProcess.h"
 
 namespace ds2 {
 namespace Target {

@@ -13,10 +13,10 @@
 
 #include <sys/utsname.h>
 
+#include <algorithm>
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
-#include <algorithm>
 
 namespace ds2 {
 namespace Host {

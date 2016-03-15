@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Base.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Base.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
@@ -23,8 +23,8 @@
 #include <unistd.h>
 
 #if defined(OS_FREEBSD) || defined(OS_DARWIN)
-#include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 
 extern char **environ;
 #endif

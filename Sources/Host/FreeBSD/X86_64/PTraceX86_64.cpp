@@ -9,17 +9,17 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/FreeBSD/PTrace.h"
+#include "DebugServer2/Host/Platform.h"
 
+#include <DebugServer2/Architecture/X86/CPUState.h>
+#include <DebugServer2/Architecture/X86_64/CPUState.h>
+#include <elf.h>
+#include <machine/fpu.h>
+#include <machine/reg.h>
 #include <sys/ptrace.h>
 #include <sys/uio.h>
 #include <sys/user.h>
-#include <machine/reg.h>
-#include <machine/fpu.h>
-#include <elf.h>
-#include <DebugServer2/Architecture/X86_64/CPUState.h>
-#include <DebugServer2/Architecture/X86/CPUState.h>
 
 #define super ds2::Host::POSIX::PTrace
 

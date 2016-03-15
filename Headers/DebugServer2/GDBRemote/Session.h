@@ -11,8 +11,8 @@
 #ifndef __DebugServer2_GDBRemote_Session_h
 #define __DebugServer2_GDBRemote_Session_h
 
-#include "DebugServer2/GDBRemote/SessionBase.h"
 #include "DebugServer2/GDBRemote/ProtocolInterpreter.h"
+#include "DebugServer2/GDBRemote/SessionBase.h"
 
 #include <functional>
 #include <map>

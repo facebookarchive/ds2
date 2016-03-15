@@ -14,10 +14,10 @@
 
 #define super ds2::Host::POSIX::PTrace
 
+#include <elf.h>
 #include <sys/ptrace.h>
 #include <sys/uio.h>
 #include <sys/user.h>
-#include <elf.h>
 
 namespace ds2 {
 namespace Host {

@@ -12,8 +12,8 @@
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
 
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
 #include <sstream>
 
 using ds2::Architecture::FlagDef;

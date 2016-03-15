@@ -11,8 +11,8 @@
 #define __DS2_LOG_CLASS_NAME__ "Session"
 
 #include "DebugServer2/GDBRemote/SessionBase.h"
-#include "DebugServer2/GDBRemote/SessionDelegate.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
+#include "DebugServer2/GDBRemote/SessionDelegate.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"

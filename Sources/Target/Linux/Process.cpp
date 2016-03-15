@@ -10,6 +10,7 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Process"
 
+#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
@@ -17,14 +18,13 @@
 #include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Support/Stringify.h"
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
 #include <csignal>
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
 #include <elf.h>
 #include <limits>
 #include <sys/ptrace.h>

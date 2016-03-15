@@ -11,8 +11,8 @@
 #ifndef __DebugServer2_Target_Darwin_Process_h
 #define __DebugServer2_Target_Darwin_Process_h
 
-#include "DebugServer2/Target/Darwin/MachOProcess.h"
 #include "DebugServer2/Host/Darwin/PTrace.h"
+#include "DebugServer2/Target/Darwin/MachOProcess.h"
 
 namespace ds2 {
 namespace Target {

@@ -11,9 +11,9 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
 #include "DebugServer2/Target/Thread.h"
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
 #include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
 using ds2::Target::Linux::Process;

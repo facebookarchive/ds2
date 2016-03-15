@@ -8,19 +8,19 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
-#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Support/Stringify.h"
-#include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 //
 // Include system header files for constants.
 //
-#include <sys/syscall.h>
-#include <sys/mman.h>
 #include <cstdlib>
+#include <sys/mman.h>
+#include <sys/syscall.h>
 
 //
 // TODO: Identify ARMv7 at runtime.

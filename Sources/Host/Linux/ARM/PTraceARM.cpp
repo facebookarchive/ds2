@@ -8,18 +8,18 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
 
 #define super ds2::Host::POSIX::PTrace
 
-#include <sys/ptrace.h>
 #include <asm/ptrace.h>
-#include <sys/uio.h>
 #include <elf.h>
+#include <sys/ptrace.h>
+#include <sys/uio.h>
 
 using ds2::Support::Stringify;
 

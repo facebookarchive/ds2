@@ -8,9 +8,9 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Utils/CompilerSupport.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Utils/CompilerSupport.h"
 #if defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #elif defined(OS_WIN32)

@@ -16,10 +16,10 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
-#include <cstring>
-#include <sstream>
-#include <iomanip>
 #include <algorithm>
+#include <cstring>
+#include <iomanip>
+#include <sstream>
 
 using ds2::Host::Platform;
 

@@ -11,9 +11,9 @@
 #ifndef __DebugServer2_GDBRemote_SessionBase_h
 #define __DebugServer2_GDBRemote_SessionBase_h
 
-#include "DebugServer2/GDBRemote/Types.h"
 #include "DebugServer2/GDBRemote/PacketProcessor.h"
 #include "DebugServer2/GDBRemote/ProtocolInterpreter.h"
+#include "DebugServer2/GDBRemote/Types.h"
 #include "DebugServer2/Host/Channel.h"
 
 namespace ds2 {

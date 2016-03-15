@@ -11,8 +11,8 @@
 #ifndef __DebugServer2_Target_POSIX_ELFProcess_h
 #define __DebugServer2_Target_POSIX_ELFProcess_h
 
-#include "DebugServer2/Target/POSIX/Process.h"
 #include "DebugServer2/Support/POSIX/ELFSupport.h"
+#include "DebugServer2/Target/POSIX/Process.h"
 
 namespace ds2 {
 namespace Target {

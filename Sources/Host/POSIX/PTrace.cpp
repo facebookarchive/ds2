@@ -10,8 +10,8 @@
 
 #include "DebugServer2/Host/POSIX/PTrace.h"
 
-#include <sys/wait.h>
 #include <cerrno>
+#include <sys/wait.h>
 
 namespace ds2 {
 namespace Host {

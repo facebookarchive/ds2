@@ -10,10 +10,10 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Linux/Thread.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
+#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>

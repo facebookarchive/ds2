@@ -8,8 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/POSIX/Thread.h"
+#include "DebugServer2/Target/Process.h"
 
 #include <sys/wait.h>
 

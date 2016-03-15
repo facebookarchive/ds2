@@ -11,18 +11,18 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/FreeBSD/Thread.h"
 #include "DebugServer2/Host/FreeBSD/PTrace.h"
 #include "DebugServer2/Host/FreeBSD/ProcStat.h"
+#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <DebugServer2/Architecture/X86_64/CPUState.h>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
 #include <sys/syscall.h>
 #include <sys/wait.h>
-#include <DebugServer2/Architecture/X86_64/CPUState.h>
 
 #define super ds2::Target::POSIX::Thread
 

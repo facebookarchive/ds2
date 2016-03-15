@@ -11,8 +11,8 @@
 #ifndef __DebugServer2_Host_Darwin_LibProc_h
 #define __DebugServer2_Host_Darwin_LibProc_h
 
-#include "DebugServer2/Types.h"
 #include "DebugServer2/Target/ThreadBase.h"
+#include "DebugServer2/Types.h"
 
 #include <dirent.h>
 #include <fcntl.h>

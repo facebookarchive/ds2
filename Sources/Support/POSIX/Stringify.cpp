@@ -14,8 +14,8 @@
 
 #include <errno.h>
 #include <signal.h>
-#include <sys/types.h>
 #include <sys/ptrace.h>
+#include <sys/types.h>
 
 namespace ds2 {
 namespace Support {

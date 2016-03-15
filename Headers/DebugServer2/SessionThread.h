@@ -11,9 +11,9 @@
 #ifndef __SessionThread_h
 #define __SessionThread_h
 
-#include "DebugServer2/Host/QueueChannel.h"
-#include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/GDBRemote/PacketProcessor.h"
+#include "DebugServer2/GDBRemote/Session.h"
+#include "DebugServer2/Host/QueueChannel.h"
 
 #include <thread>
 
