@@ -68,6 +68,7 @@ set(ARCHITECTURE_COMMON_SOURCES
 set(ARCHITECTURE_ARM_SOURCES
     Sources/Architecture/ARM/ARMBranchInfo.cpp
     Sources/Architecture/ARM/ThumbBranchInfo.cpp
+    Sources/Architecture/ARM/HardwareBreakpointManager.cpp
     Sources/Architecture/ARM/SoftwareBreakpointManager.cpp
     Sources/Architecture/ARM/RegistersDescriptors.cpp
     )
@@ -78,6 +79,7 @@ set(ARCHITECTURE_ARM64_SOURCES
     )
 
 set(ARCHITECTURE_X86_SOURCES
+    Sources/Architecture/X86/HardwareBreakpointManager.cpp
     Sources/Architecture/X86/SoftwareBreakpointManager.cpp
     Sources/Architecture/X86/RegistersDescriptors.cpp
     )
