@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Host/Linux/PTrace.h"
+#include "DebugServer2/HardwareBreakpointManager.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Support/Stringify.h"
@@ -134,6 +135,43 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
   }
 
   return kSuccess;
+}
+
+uint32_t PTrace::getStoppointData(ProcessThreadId const &ptid) {
+  pid_t pid;
+
+  ErrorCode error = ptidToPid(ptid, pid);
+
+  if (error != kSuccess)
+    return 0;
+
+  //
+  // Retrieve the information about Hardware Breakpoint, if supported.
+  //
+  unsigned int value = 0;
+  if (wrapPtrace(PTRACE_GETHBPREGS, pid, 0, &value) < 0) {
+    DS2LOG(Debug, "hardware breakpoint support disabled, error=%s",
+           Stringify::Errno(errno));
+    return 0;
+  }
+
+  if (((value >> 24) & 0xff) == 0) {
+    return 0;
+  }
+
+  return value;
+}
+
+int PTrace::getMaxHardwareBreakpoints(ProcessThreadId const &ptid) {
+  return getStoppointData(ptid) & 0xff;
+}
+
+int PTrace::getMaxHardwareWatchpoints(ProcessThreadId const &ptid) {
+  return (getStoppointData(ptid) >> 8) & 0xff;
+}
+
+int PTrace::getMaxWatchpointSize(ProcessThreadId const &ptid) {
+  return (getStoppointData(ptid) >> 16) & 0xff;
 }
 
 ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,

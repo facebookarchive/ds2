@@ -109,6 +109,13 @@ protected:
                     (PTraceDataType)(uintptr_t)data);
   }
 
+#if defined(OS_LINUX) && defined(ARCH_ARM)
+public:
+  virtual int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) = 0;
+  virtual int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) = 0;
+  virtual int getMaxWatchpointSize(ProcessThreadId const &ptid) = 0;
+#endif
+
   virtual ErrorCode ptidToPid(ProcessThreadId const &ptid, pid_t &pid);
 };
 }

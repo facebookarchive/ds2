@@ -83,6 +83,17 @@ protected:
   void initCPUState(ProcessId pid);
   void doneCPUState();
 
+// Debug register ptrace APIs only exist for Linux ARM
+#if defined(ARCH_ARM)
+private:
+  uint32_t getStoppointData(ProcessThreadId const &ptid);
+
+public:
+  int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) override;
+  int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) override;
+  int getMaxWatchpointSize(ProcessThreadId const &ptid) override;
+#endif
+
 public:
   PTracePrivateData *_privateData;
 };
