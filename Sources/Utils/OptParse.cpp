@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Utils/OptParse.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/String.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -150,15 +151,33 @@ std::vector<std::string> const &OptParse::getVector(std::string const &name) {
   return get(name, vectorOption).values.vectorValue;
 }
 
-void OptParse::usageDie(std::string const &message) {
-  auto outStream = stderr;
+static void print(char const *format, ...) {
+  va_list ap, sap;
+  std::vector<char> line;
 
+  va_start(ap, format);
+  va_copy(sap, ap);
+
+  size_t size = ds2::Utils::VSNPrintf(nullptr, 0, format, ap) + 1;
+  line.resize(size);
+  ds2::Utils::VSNPrintf(line.data(), size, format, sap);
+
+  va_end(ap);
+  va_end(sap);
+
+  fputs(line.data(), stderr);
+#if defined(OS_WIN32)
+  OutputDebugStringA(line.data());
+#endif
+};
+
+void OptParse::usageDie(std::string const &message) {
   if (!message.empty()) {
-    fprintf(outStream, "error: %s\n", message.c_str());
+    print("error: %s\n", message.c_str());
   }
 
-  fprintf(outStream, "usage: %s [%s] [%s] [%s] [%s]\n", "ds2", "RUN_MODE",
-          "OPTIONS", "[HOST]:PORT", "-- PROGRAM [ARGUMENTS...]");
+  print("usage: %s [%s] [%s] [%s] [%s]\n", "ds2", "RUN_MODE", "OPTIONS",
+        "[HOST]:PORT", "-- PROGRAM [ARGUMENTS...]");
 
   size_t help_align = 0;
 
@@ -175,12 +194,12 @@ void OptParse::usageDie(std::string const &message) {
     if (e.second.hidden)
       continue;
 
-    fprintf(outStream, "  -%c, --%s", e.second.shortName, e.first.c_str());
-    fprintf(outStream, " %s", (e.second.type == stringOption ? "ARG" : "   "));
+    print("  -%c, --%s", e.second.shortName, e.first.c_str());
+    print(" %s", (e.second.type == stringOption ? "ARG" : "   "));
     for (size_t i = 0; i < help_align - e.first.size(); ++i) {
-      fprintf(outStream, " ");
+      print(" ");
     }
-    fprintf(outStream, "%s\n", e.second.help.c_str());
+    print("%s\n", e.second.help.c_str());
   }
 
   exit(EXIT_FAILURE);
