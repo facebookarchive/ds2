@@ -78,6 +78,9 @@ public:
   virtual ErrorCode execute(ProcessThreadId const &ptid,
                             ProcessInfo const &pinfo, void const *code,
                             size_t length, uint64_t &result);
+
+protected:
+  virtual ErrorCode ptidToPid(ProcessThreadId const &ptid, pid_t &pid);
 };
 }
 }
