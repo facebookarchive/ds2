@@ -19,7 +19,6 @@
 #include <csignal>
 #include <cstdio>
 #include <limits>
-#include <sys/ptrace.h>
 #include <sys/thr.h>
 
 #define super ds2::Host::POSIX::PTrace
@@ -42,30 +41,6 @@ ErrorCode PTrace::traceMe(bool disableASLR) {
 ErrorCode PTrace::traceThat(ProcessId pid) {
   if (pid <= 0)
     return kErrorInvalidArgument;
-
-  return kSuccess;
-}
-
-ErrorCode PTrace::attach(ProcessId pid) {
-  if (pid <= kAnyProcessId)
-    return kErrorProcessNotFound;
-
-  DS2LOG(Debug, "attaching to pid %" PRIu64, (uint64_t)pid);
-
-  if (wrapPtrace(PT_ATTACH, pid, nullptr, nullptr) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
-ErrorCode PTrace::detach(ProcessId pid) {
-  if (pid <= kAnyProcessId)
-    return kErrorProcessNotFound;
-
-  DS2LOG(Debug, "detaching from pid %" PRIu64, (uint64_t)pid);
-
-  if (wrapPtrace(PT_DETACH, pid, nullptr, nullptr) < 0)
-    return Platform::TranslateError();
 
   return kSuccess;
 }

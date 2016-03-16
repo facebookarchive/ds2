@@ -11,8 +11,6 @@
 #ifndef __DebugServer2_Host_FreeBSD_PTrace_h
 #define __DebugServer2_Host_FreeBSD_PTrace_h
 
-#include <sys/ptrace.h>
-
 #include "DebugServer2/Host/POSIX/PTrace.h"
 
 namespace ds2 {
@@ -29,10 +27,6 @@ public:
 public:
   virtual ErrorCode traceMe(bool disableASLR);
   virtual ErrorCode traceThat(ProcessId pid);
-
-public:
-  virtual ErrorCode attach(ProcessId pid);
-  virtual ErrorCode detach(ProcessId pid);
 
 public:
   virtual ErrorCode kill(ProcessThreadId const &ptid, int signal);
@@ -76,15 +70,6 @@ public:
 protected:
   void initCPUState(ProcessId pid);
   void doneCPUState();
-
-protected:
-  template <typename CommandType, typename AddrType, typename DataType>
-  long wrapPtrace(CommandType request, pid_t pid, AddrType addr,
-                  DataType data) {
-    typedef int ptrace_request_t;
-    return ::ptrace(static_cast<ptrace_request_t>(request), pid,
-                    (char *)(uintptr_t)addr, (int)(uintptr_t)data);
-  }
 
 public:
   PTracePrivateData *_privateData;

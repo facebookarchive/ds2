@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Host/POSIX/PTrace.h"
+#include "DebugServer2/Host/Platform.h"
 
 #include <cerrno>
 #include <sys/wait.h>
@@ -16,6 +17,12 @@
 namespace ds2 {
 namespace Host {
 namespace POSIX {
+
+#if defined(OS_LINUX)
+#define PTCMD(CMD) PTRACE_##CMD
+#elif defined(OS_FREEBSD) || defined(OS_DARWIN)
+#define PTCMD(CMD) PT_##CMD
+#endif
 
 PTrace::PTrace() = default;
 
@@ -39,6 +46,30 @@ ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   if (status != nullptr) {
     *status = stat;
   }
+
+  return kSuccess;
+}
+
+ErrorCode PTrace::attach(ProcessId pid) {
+  if (pid <= kAnyProcessId)
+    return kErrorProcessNotFound;
+
+  DS2LOG(Debug, "attaching to pid %" PRIu64, (uint64_t)pid);
+
+  if (wrapPtrace(PTCMD(ATTACH), pid, nullptr, nullptr) < 0)
+    return Platform::TranslateError();
+
+  return kSuccess;
+}
+
+ErrorCode PTrace::detach(ProcessId pid) {
+  if (pid <= kAnyProcessId)
+    return kErrorProcessNotFound;
+
+  DS2LOG(Debug, "detaching from pid %" PRIu64, (uint64_t)pid);
+
+  if (wrapPtrace(PTCMD(DETACH), pid, nullptr, nullptr) < 0)
+    return Platform::TranslateError();
 
   return kSuccess;
 }

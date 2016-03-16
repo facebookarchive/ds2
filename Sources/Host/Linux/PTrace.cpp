@@ -19,7 +19,6 @@
 #include <csignal>
 #include <cstdio>
 #include <limits>
-#include <sys/ptrace.h>
 #include <sys/wait.h>
 
 #define super ds2::Host::POSIX::PTrace
@@ -86,30 +85,6 @@ ErrorCode PTrace::traceThat(ProcessId pid) {
            pid, strerror(errno));
     return Platform::TranslateError();
   }
-
-  return kSuccess;
-}
-
-ErrorCode PTrace::attach(ProcessId pid) {
-  if (pid <= kAnyProcessId)
-    return kErrorProcessNotFound;
-
-  DS2LOG(Debug, "attaching to pid %" PRIu64, (uint64_t)pid);
-
-  if (wrapPtrace(PTRACE_ATTACH, pid, nullptr, nullptr) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
-ErrorCode PTrace::detach(ProcessId pid) {
-  if (pid <= kAnyProcessId)
-    return kErrorProcessNotFound;
-
-  DS2LOG(Debug, "detaching from pid %" PRIu64, (uint64_t)pid);
-
-  if (wrapPtrace(PTRACE_DETACH, pid, nullptr, nullptr) < 0)
-    return Platform::TranslateError();
 
   return kSuccess;
 }

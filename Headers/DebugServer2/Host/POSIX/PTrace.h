@@ -12,8 +12,14 @@
 #define __DebugServer2_Host_POSIX_PTrace_h
 
 #include "DebugServer2/Architecture/CPUState.h"
+#include "DebugServer2/Support/Stringify.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <csignal>
+// clang-format off
+#include <sys/types.h>
+#include <sys/ptrace.h>
+// clang-format on
 
 namespace ds2 {
 namespace Host {
@@ -32,8 +38,8 @@ public:
   virtual ErrorCode traceThat(ProcessId pid) = 0;
 
 public:
-  virtual ErrorCode attach(ProcessId pid) = 0;
-  virtual ErrorCode detach(ProcessId pid) = 0;
+  virtual ErrorCode attach(ProcessId pid);
+  virtual ErrorCode detach(ProcessId pid);
 
 public:
   virtual ErrorCode kill(ProcessThreadId const &ptid, int signal) = 0;
@@ -78,6 +84,30 @@ public:
   virtual ErrorCode execute(ProcessThreadId const &ptid,
                             ProcessInfo const &pinfo, void const *code,
                             size_t length, uint64_t &result);
+
+protected:
+  template <typename CommandType, typename AddrType, typename DataType>
+  long wrapPtrace(CommandType request, pid_t pid, AddrType addr,
+                  DataType data) {
+#if defined(OS_LINUX)
+#if defined(__ANDROID__)
+    typedef int PTraceRequestType;
+#else
+    typedef enum __ptrace_request PTraceRequestType;
+#endif
+    typedef void *PTraceAddrType;
+    typedef void *PTraceDataType;
+#elif defined(OS_FREEBSD) || defined(OS_DARWIN)
+    typedef int PTraceRequestType;
+    typedef caddr_t PTraceAddrType;
+    typedef int PTraceDataType;
+#endif
+    DS2LOG(Debug, "running ptrace command %s on pid %d",
+           ds2::Support::Stringify::Ptrace(request), pid);
+    return ::ptrace(static_cast<PTraceRequestType>(request), pid,
+                    (PTraceAddrType)(uintptr_t)addr,
+                    (PTraceDataType)(uintptr_t)data);
+  }
 };
 }
 }

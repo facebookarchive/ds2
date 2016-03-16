@@ -15,8 +15,6 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
-#include <sys/ptrace.h>
-
 #include <cerrno>
 #include <csignal>
 #include <cstdio>
@@ -44,33 +42,6 @@ ErrorCode PTrace::traceThat(ProcessId pid) {
     return kErrorInvalidArgument;
 
   return kSuccess; // kErrorUnsupported;
-}
-
-ErrorCode PTrace::attach(ProcessId pid) {
-  if (pid <= kAnyProcessId)
-    return kErrorProcessNotFound;
-
-  DS2LOG(Debug, "attaching to pid %" PRIu64, (uint64_t)pid);
-
-  if (wrapPtrace(PT_ATTACH, pid, nullptr, nullptr) < 0) {
-    ErrorCode error = Platform::TranslateError();
-    DS2LOG(Error, "Unable to attach: %d", error);
-    return error;
-  }
-
-  return kSuccess;
-}
-
-ErrorCode PTrace::detach(ProcessId pid) {
-  if (pid <= kAnyProcessId)
-    return kErrorProcessNotFound;
-
-  DS2LOG(Debug, "detaching from pid %" PRIu64, (uint64_t)pid);
-
-  if (wrapPtrace(PT_DETACH, pid, nullptr, nullptr) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
 }
 
 ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {

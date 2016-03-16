@@ -12,12 +12,7 @@
 #define __DebugServer2_Host_Linux_PTrace_h
 
 #include "DebugServer2/Host/POSIX/PTrace.h"
-#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
-
-#include <sys/ptrace.h>
-
-using ds2::Support::Stringify;
 
 namespace ds2 {
 namespace Host {
@@ -36,10 +31,6 @@ public:
 public:
   ErrorCode traceMe(bool disableASLR) override;
   ErrorCode traceThat(ProcessId pid) override;
-
-public:
-  ErrorCode attach(ProcessId pid) override;
-  ErrorCode detach(ProcessId pid) override;
 
 public:
   ErrorCode kill(ProcessThreadId const &ptid, int signal) override;
@@ -91,21 +82,6 @@ protected:
 protected:
   void initCPUState(ProcessId pid);
   void doneCPUState();
-
-protected:
-  template <typename CommandType, typename AddrType, typename DataType>
-  long wrapPtrace(CommandType request, pid_t pid, AddrType addr,
-                  DataType data) {
-#if defined(__ANDROID__)
-    typedef int ptrace_request_t;
-#else
-    typedef enum __ptrace_request ptrace_request_t;
-#endif
-    DS2LOG(Debug, "running ptrace command %s on pid %d",
-           Stringify::Ptrace(request), pid);
-    return ::ptrace(static_cast<ptrace_request_t>(request), pid,
-                    (void *)(uintptr_t)addr, (void *)(uintptr_t)data);
-  }
 
 public:
   PTracePrivateData *_privateData;
