@@ -14,8 +14,10 @@
 
 #include <errno.h>
 #include <signal.h>
-#include <sys/ptrace.h>
+// clang-format off
 #include <sys/types.h>
+#include <sys/ptrace.h>
+// clang-format on
 
 namespace ds2 {
 namespace Support {
