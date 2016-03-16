@@ -94,7 +94,6 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -109,7 +108,6 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -142,7 +140,6 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   caddr_t addr;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 

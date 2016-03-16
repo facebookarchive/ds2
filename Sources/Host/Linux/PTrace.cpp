@@ -35,7 +35,6 @@ ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -112,7 +111,6 @@ ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -193,7 +191,6 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -246,7 +243,6 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -261,7 +257,6 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -299,7 +294,6 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -329,7 +323,6 @@ ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &epid) {
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -345,7 +338,6 @@ ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 

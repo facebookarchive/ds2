@@ -282,7 +282,6 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
@@ -327,7 +326,6 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return error;
 
