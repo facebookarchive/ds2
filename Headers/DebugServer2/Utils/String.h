@@ -41,8 +41,9 @@ static inline int SNPrintf(char *str, size_t size, char const *format, ...)
 // both.
 static inline int VSNPrintf(char *str, size_t size, char const *format,
                             va_list ap) {
-  int res;
-  res = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
+  int res = -1;
+  if (size > 0)
+    res = _vsnprintf_s(str, size, _TRUNCATE, format, ap);
   if (res == -1) {
     res = _vscprintf(format, ap);
   }
