@@ -72,5 +72,5 @@ if "Ubuntu" in platform.linux_distribution():
 if len(packages) > 0:
     if "CentOS Linux" in platform.linux_distribution():
         check_call('sudo yum install -y "%s"' % '" "'.join(packages), shell=True)
-    else:
+    elif "Ubuntu" in platform.linux_distribution():
         check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
