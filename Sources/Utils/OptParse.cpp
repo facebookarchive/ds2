@@ -153,14 +153,12 @@ std::vector<std::string> const &OptParse::getVector(std::string const &name) {
 
 static void print(char const *format, ...) {
   va_list ap, sap;
-  std::vector<char> line;
 
   va_start(ap, format);
   va_copy(sap, ap);
 
-  size_t size = ds2::Utils::VSNPrintf(nullptr, 0, format, ap) + 1;
-  line.resize(size);
-  ds2::Utils::VSNPrintf(line.data(), size, format, sap);
+  std::vector<char> line(ds2::Utils::VSNPrintf(nullptr, 0, format, ap) + 1);
+  ds2::Utils::VSNPrintf(line.data(), line.size(), format, sap);
 
   va_end(ap);
   va_end(sap);
