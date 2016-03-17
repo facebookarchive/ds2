@@ -146,7 +146,7 @@ void vLog(int level, char const *classname, char const *funcname,
 
 #if defined(OS_WIN32)
   if (level >= sLogLevel || level >= kLogLevelDebug) {
-    // If we're on Windows, pullute dbgview as well.
+    // If we're on Windows, pollute dbgview as well.
     OutputDebugStringA(ss.str().c_str());
   }
 #endif
