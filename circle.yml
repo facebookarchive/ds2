@@ -1,0 +1,13 @@
+machine:
+  timezone:
+    America/Los_Angeles # Set the timezone
+
+dependencies:
+  pre:
+    - LLDB_TESTS="all" TARGET=Linux-X86 ./Support/Testing/Travis/before-install.py
+  override:
+    - LLDB_TESTS="all" TARGET=Linux-X86 ./Support/Testing/Travis/install.py
+
+test:
+  override:
+    - LLDB_TESTS="all" TARGET=Linux-X86 ./Support/Testing/Travis/script.sh
