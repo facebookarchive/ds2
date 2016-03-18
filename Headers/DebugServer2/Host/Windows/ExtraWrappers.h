@@ -63,6 +63,8 @@ BOOL WINAPI LookupAccountSidW(
 );
 #define LookupAccountSid LookupAccountSidW
 
+#define EnumProcessModules    K32EnumProcessModules
+#define EnumProcessModulesEx  K32EnumProcessModulesEx
 BOOL WINAPI EnumProcessModules(
   _In_  HANDLE  hProcess,
   _Out_ HMODULE *lphModule,
@@ -70,6 +72,8 @@ BOOL WINAPI EnumProcessModules(
   _Out_ LPDWORD lpcbNeeded
 );
 
+#define GetModuleBaseNameA  K32GetModuleBaseNameA
+#define GetModuleBaseNameW  K32GetModuleBaseNameW
 DWORD WINAPI GetModuleBaseNameA(
   _In_     HANDLE  hProcess,
   _In_opt_ HMODULE hModule,
@@ -108,6 +112,7 @@ DWORD WINAPI GetLengthSid(
   _In_ PSID pSid
 );
 
+#define EnumProcesses K32EnumProcesses
 BOOL WINAPI EnumProcesses(
   _Out_ DWORD *pProcessIds,
   _In_  DWORD cb,
@@ -358,6 +363,8 @@ BOOL WINAPI VirtualFreeEx(
   _In_ DWORD  dwFreeType
 );
 
+#define GetModuleFileNameExA  K32GetModuleFileNameExA
+#define GetModuleFileNameExW  K32GetModuleFileNameExW
 DWORD WINAPI GetModuleFileNameExA(
   _In_     HANDLE  hProcess,
   _In_opt_ HMODULE hModule,
