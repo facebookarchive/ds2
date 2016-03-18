@@ -166,4 +166,23 @@ void Log(int level, char const *classname, char const *funcname,
   vLog(level, classname, funcname, format, ap);
   va_end(ap);
 }
+
+void Print(char const *format, ...) {
+  va_list ap, sap;
+
+  va_start(ap, format);
+  va_copy(sap, ap);
+
+  std::vector<char> line(ds2::Utils::VSNPrintf(nullptr, 0, format, ap) + 1);
+  ds2::Utils::VSNPrintf(line.data(), line.size(), format, sap);
+
+  va_end(ap);
+  va_end(sap);
+
+  fputs(line.data(), stderr);
+#if defined(OS_WIN32)
+  OutputDebugStringA(line.data());
+#endif
+};
+
 }

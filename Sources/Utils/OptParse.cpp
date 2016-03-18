@@ -151,30 +151,12 @@ std::vector<std::string> const &OptParse::getVector(std::string const &name) {
   return get(name, vectorOption).values.vectorValue;
 }
 
-static void print(char const *format, ...) {
-  va_list ap, sap;
-
-  va_start(ap, format);
-  va_copy(sap, ap);
-
-  std::vector<char> line(ds2::Utils::VSNPrintf(nullptr, 0, format, ap) + 1);
-  ds2::Utils::VSNPrintf(line.data(), line.size(), format, sap);
-
-  va_end(ap);
-  va_end(sap);
-
-  fputs(line.data(), stderr);
-#if defined(OS_WIN32)
-  OutputDebugStringA(line.data());
-#endif
-};
-
 void OptParse::usageDie(std::string const &message) {
   if (!message.empty()) {
-    print("error: %s\n", message.c_str());
+    Print("error: %s\n", message.c_str());
   }
 
-  print("usage: %s [%s] [%s] [%s] [%s]\n", "ds2", "RUN_MODE", "OPTIONS",
+  Print("usage: %s [%s] [%s] [%s] [%s]\n", "ds2", "RUN_MODE", "OPTIONS",
         "[HOST]:PORT", "-- PROGRAM [ARGUMENTS...]");
 
   size_t help_align = 0;
@@ -192,12 +174,12 @@ void OptParse::usageDie(std::string const &message) {
     if (e.second.hidden)
       continue;
 
-    print("  -%c, --%s", e.second.shortName, e.first.c_str());
-    print(" %s", (e.second.type == stringOption ? "ARG" : "   "));
+    Print("  -%c, --%s", e.second.shortName, e.first.c_str());
+    Print(" %s", (e.second.type == stringOption ? "ARG" : "   "));
     for (size_t i = 0; i < help_align - e.first.size(); ++i) {
-      print(" ");
+      Print(" ");
     }
-    print("%s\n", e.second.help.c_str());
+    Print("%s\n", e.second.help.c_str());
   }
 
   exit(EXIT_FAILURE);
