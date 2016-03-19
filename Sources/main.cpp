@@ -232,6 +232,30 @@ DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
   exit(EXIT_SUCCESS);
 }
 
+void GetModifiedCurrentEnvironment(ds2::OptParse &opts, ds2::EnvironmentBlock &env) {
+  Platform::GetCurrentEnvironment(env);
+
+  for (auto const &e : opts.getVector("set-env")) {
+    char const *arg = e.c_str();
+    char const *equal = strchr(arg, '=');
+    if (equal == nullptr || equal == arg) {
+      DS2LOG(Error, "trying to add invalid environment value '%s', skipping",
+             e.c_str());
+      continue;
+    }
+    env[std::string(arg, equal)] = equal + 1;
+  }
+
+  for (auto const &e : opts.getVector("unset-env")) {
+    if (env.find(e) == env.end()) {
+      DS2LOG(Warning, "trying to remove '%s' not present in the environment",
+             e.c_str());
+      continue;
+    }
+    env.erase(e);
+  }
+}
+
 #if defined(OS_WIN32)
 // On certain Windows targets (Windows Phone in particular), we build ds2 as a
 // library and load it from another process. To achieve this, we need `main` to
@@ -370,27 +394,7 @@ int main(int argc, char **argv) {
   }
 
   ds2::EnvironmentBlock env;
-  Platform::GetCurrentEnvironment(env);
-
-  for (auto const &e : opts.getVector("set-env")) {
-    char const *arg = e.c_str();
-    char const *equal = strchr(arg, '=');
-    if (equal == nullptr || equal == arg) {
-      DS2LOG(Error, "trying to add invalid environment value '%s', skipping",
-             e.c_str());
-      continue;
-    }
-    env[std::string(arg, equal)] = equal + 1;
-  }
-
-  for (auto const &e : opts.getVector("unset-env")) {
-    if (env.find(e) == env.end()) {
-      DS2LOG(Warning, "trying to remove '%s' not present in the environment",
-             e.c_str());
-      continue;
-    }
-    env.erase(e);
-  }
+  GetModifiedCurrentEnvironment(opts, env);
 
   if (!opts.getString("attach").empty()) {
     attachPid = atoi(opts.getString("attach").c_str());
