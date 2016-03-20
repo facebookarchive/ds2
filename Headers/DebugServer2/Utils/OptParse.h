@@ -11,6 +11,8 @@
 #ifndef __DebugServer2_Utils_OptParse_h
 #define __DebugServer2_Utils_OptParse_h
 
+#include "DebugServer2/Types.h"
+
 #include <map>
 #include <string>
 #include <vector>
@@ -27,10 +29,11 @@ public:
 
 public:
   void addOption(OptionType type, std::string const &name, char shortName,
-                 std::string const &help = std::string(), bool hidden = false);
+                 std::string const &help = std::string(), bool hidden = false,
+                 std::string const &envVarName = std::string());
 
 public:
-  int parse(int argc, char **argv, std::string &host, std::string &port);
+  int parse(int argc, char **argv, EnvironmentBlock const &env);
 
 public:
   bool getBool(std::string const &name);
@@ -39,6 +42,9 @@ public:
 
 public:
   void usageDie(std::string const &message = std::string());
+
+private:
+  void UpdateOptionsFromEnvVars(EnvironmentBlock const &env);
 
 private:
   struct OptionStorage {
@@ -51,6 +57,23 @@ private:
     } values;
     std::string help;
     bool hidden;
+    std::string envVarName;
+    bool isSet;
+
+    void setBool(bool value) {
+      isSet = true;
+      values.boolValue = value;
+    }
+
+    void setString(std::string value) {
+      isSet = true;
+      values.stringValue = value;
+    }
+
+    void addToVector(std::string const &value) {
+      isSet = true;
+      values.vectorValue.push_back(value);
+    }
   };
 
   typedef std::map<std::string, OptionStorage> OptionCollection;

@@ -17,15 +17,42 @@
 
 namespace ds2 {
 
+static std::string const kPortLongName = "port";
+static std::string const kHostLongName = "host";
+
 void OptParse::addOption(OptionType type, std::string const &name,
-                         char shortName, std::string const &help, bool hidden) {
+                         char shortName, std::string const &help, bool hidden,
+                         std::string const &envVarName) {
   DS2ASSERT(_options.find(name) == _options.end());
   DS2ASSERT(findShortOpt(shortName) == _options.end());
-  _options[name] = {shortName, type, {false, "", {}}, help, hidden};
+  _options[name] = {shortName,  type, {false, "", {}}, help, hidden,
+                    envVarName, false};
 }
 
-int OptParse::parse(int argc, char **argv, std::string &host,
-                    std::string &port) {
+void OptParse::UpdateOptionsFromEnvVars(EnvironmentBlock const &env) {
+  for (auto &it : _options) {
+    auto &option = it.second;
+    if (!option.envVarName.empty() && !option.isSet) {
+      auto it = env.find(option.envVarName);
+      if (it != env.end()) {
+        switch (option.type) {
+        case boolOption:
+          option.setBool(true);
+          break;
+        case stringOption:
+          option.setString(it->second);
+          break;
+        case vectorOption:
+          usageDie("Setting vector values through environment variables is not "
+                   "supported");
+          break;
+        }
+      }
+    }
+  }
+}
+
+int OptParse::parse(int argc, char **argv, EnvironmentBlock const &env) {
 #define CHECK(COND)                                                            \
   do {                                                                         \
     if (!(COND)) {                                                             \
@@ -35,7 +62,7 @@ int OptParse::parse(int argc, char **argv, std::string &host,
 
   // Skip argv[0] which contains the program name,
   // and argv[1] which contains the run mode
-  int idx = 2;
+  int idx = std::min(2, argc);
 
   while (idx < argc) {
     if (argv[idx][0] == '-' && argv[idx][1] == '-') {
@@ -66,13 +93,13 @@ int OptParse::parse(int argc, char **argv, std::string &host,
 
       switch (it->second.type) {
       case boolOption:
-        it->second.values.boolValue = true;
+        it->second.setBool(true);
         break;
       case stringOption:
-        it->second.values.stringValue = argVal;
+        it->second.setString(argVal);
         break;
       case vectorOption:
-        it->second.values.vectorValue.push_back(argVal);
+        it->second.addToVector(argVal);
         break;
       }
     } else if (argv[idx][0] == '-') {
@@ -83,23 +110,23 @@ int OptParse::parse(int argc, char **argv, std::string &host,
         CHECK(it != _options.end());
         switch (it->second.type) {
         case boolOption:
-          it->second.values.boolValue = true;
+          it->second.setBool(true);
           break;
         case stringOption:
           if (argv[idx][optidx + 1] != '\0') {
-            it->second.values.stringValue = argv[idx] + optidx + 1;
+            it->second.setString(argv[idx] + optidx + 1);
           } else {
             CHECK(idx + 1 < argc);
-            it->second.values.stringValue = argv[++idx];
+            it->second.setString(argv[++idx]);
             optidx = -1;
           }
           break;
         case vectorOption:
           if (argv[idx][optidx + 1] != '\0') {
-            it->second.values.vectorValue.push_back(argv[idx] + optidx + 1);
+            it->second.addToVector(argv[idx] + optidx + 1);
           } else {
             CHECK(idx + 1 < argc);
-            it->second.values.vectorValue.push_back(argv[++idx]);
+            it->second.addToVector(argv[++idx]);
             optidx = -1;
           }
           break;
@@ -108,7 +135,7 @@ int OptParse::parse(int argc, char **argv, std::string &host,
     } else {
       // We already have our [host]:port, this can only be the path to the
       // binary to run.
-      if (!port.empty())
+      if (!getString(kPortLongName).empty())
         break;
 
       std::string addrString(argv[idx]);
@@ -122,18 +149,24 @@ int OptParse::parse(int argc, char **argv, std::string &host,
       if (splitPos > 0) {
         // IPv6 addresses can be of the form '[a:b:c:d::1]:12345', so we need
         // to strip the square brackets around the host part.
+        auto it = _options.find(kHostLongName);
+        CHECK(it != _options.end());
         if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
-          host = addrString.substr(1, splitPos - 2);
+          it->second.setString(addrString.substr(1, splitPos - 2));
         } else {
-          host = addrString.substr(0, splitPos);
+          it->second.setString(addrString.substr(0, splitPos));
         }
       }
 
-      port = addrString.substr(splitPos + 1);
+      auto it = _options.find(kPortLongName);
+      CHECK(it != _options.end());
+      it->second.setString(addrString.substr(splitPos + 1));
     }
 
     ++idx;
   }
+
+  UpdateOptionsFromEnvVars(env);
 
   return idx;
 #undef CHECK

@@ -184,5 +184,4 @@ void Print(char const *format, ...) {
   OutputDebugStringA(line.data());
 #endif
 };
-
 }

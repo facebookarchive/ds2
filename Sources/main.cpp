@@ -47,7 +47,10 @@ static std::string gDefaultPort = "12345";
 static std::string gDefaultHost = "127.0.0.1";
 static bool gKeepAlive = false;
 static bool gGDBCompat = false;
-static const std::string kEnvRunModeName = "DS2_RUN_MODE";
+static std::string const kRunModeEnvName = "DS2_RUN_MODE";
+static std::string const kPortEnvName = "DS2_PORT";
+static std::string const kHostEnvName = "DS2_HOST";
+static std::string const kProgramEnvName = "DS2_PROGRAM";
 
 enum RunMode {
   kRunModeNormal,
@@ -241,7 +244,8 @@ DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
   exit(EXIT_SUCCESS);
 }
 
-void ModifyCurrentEnvironmentWithOpts(ds2::OptParse &opts, ds2::EnvironmentBlock &env) {
+void ModifyCurrentEnvironmentWithOpts(ds2::OptParse &opts,
+                                      ds2::EnvironmentBlock &env) {
   for (auto const &e : opts.getVector("set-env")) {
     char const *arg = e.c_str();
     char const *equal = strchr(arg, '=');
@@ -263,18 +267,19 @@ void ModifyCurrentEnvironmentWithOpts(ds2::OptParse &opts, ds2::EnvironmentBlock
   }
 }
 
-char GetRawRunMode(int argc, char **argv, const ds2::EnvironmentBlock &env) {
+char GetRawRunMode(int argc, char **argv, ds2::EnvironmentBlock const &env) {
   if (argc >= 2) {
     return argv[1][0];
   }
-  auto envVar = env.find(kEnvRunModeName);
+  auto envVar = env.find(kRunModeEnvName);
   if (envVar != env.end()) {
     return envVar->second[0];
   }
   return '\0';
 }
 
-RunMode GetRunMode(int argc, char **argv, const ds2::EnvironmentBlock &env, ds2::OptParse &opts) {
+RunMode GetRunMode(int argc, char **argv, ds2::EnvironmentBlock const &env,
+                   ds2::OptParse &opts) {
   switch (GetRawRunMode(argc, argv, env)) {
   case 'g':
     return kRunModeNormal;
@@ -287,7 +292,8 @@ RunMode GetRunMode(int argc, char **argv, const ds2::EnvironmentBlock &env, ds2:
     break;
 #endif
   default:
-    opts.usageDie("first argument must be g[dbserver] or p[latform]. You can also set the environment variable DS2_RUN_MODE");
+    opts.usageDie("first argument must be g[dbserver] or p[latform]. You can "
+                  "also set the environment variable DS2_RUN_MODE");
   }
   DS2_UNREACHABLE();
 }
@@ -316,11 +322,9 @@ int main(int argc, char **argv) {
   ds2::SetLogLevel(ds2::kLogLevelInfo);
 
   int attachPid = -1;
-  std::string port;
-  std::string host;
   std::string namedPipePath;
   bool reverse = false;
-  
+
   ds2::EnvironmentBlock env;
   Platform::GetCurrentEnvironment(env);
 
@@ -341,6 +345,10 @@ int main(int argc, char **argv) {
                  "list processes debuggable by the current user");
 
   // Target debug options.
+  opts.addOption(ds2::OptParse::stringOption, "host", 'H',
+                 "another way to specify the host", false, kHostEnvName);
+  opts.addOption(ds2::OptParse::stringOption, "port", 'p',
+                 "another way to specify the port", false, kPortEnvName);
   opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
                  "add an element to the environment before launch");
   opts.addOption(ds2::OptParse::vectorOption, "unset-env", 'E',
@@ -362,7 +370,9 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
                  "make ds2 run in its own session (no-op)", true);
 
-  idx = opts.parse(argc, argv, host, port);
+  idx = opts.parse(argc, argv, env);
+  std::string port = opts.getString("port");
+  std::string host = opts.getString("host");
   argc -= idx, argv += idx;
 
   // Logging options.
@@ -402,6 +412,13 @@ int main(int argc, char **argv) {
 
   // Target debug options and program arguments.
   ds2::StringCollection args(&argv[0], &argv[argc]);
+  if (args.empty()) {
+    auto it = env.find(kProgramEnvName);
+    if (it != env.end()) {
+      args.push_back(it->second);
+    }
+  }
+
   if (mode != kRunModeNormal && !args.empty()) {
     opts.usageDie("PROGRAM and ARGUMENTS only supported in gdbserver mode");
   }
