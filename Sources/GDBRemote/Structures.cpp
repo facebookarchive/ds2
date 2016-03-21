@@ -294,46 +294,6 @@ std::string StopCode::encodeRegisters() const {
   return ss.str();
 }
 
-JSDictionary *StopCode::encodeBriefJson() const {
-  auto threadObj = JSDictionary::New();
-
-  threadObj->set("tid", JSInteger::New(ptid.tid));
-  threadObj->set("reason", JSString::New(reasonToString()));
-
-  return threadObj;
-}
-
-JSDictionary *StopCode::encodeJson() const {
-  auto threadObj = encodeBriefJson();
-
-  if (!threadName.empty())
-    threadObj->set("name", JSString::New(threadName));
-
-  if (core)
-    threadObj->set("core", JSInteger::New(core));
-
-  auto regSet = JSDictionary::New();
-  std::map<std::string, std::string> regs;
-  encodeRegisters(regs, false);
-
-  for (auto const &reg : regs) {
-    regSet->set(reg.first, JSString::New(reg.second));
-  }
-
-  threadObj->set("registers", regSet);
-
-  return threadObj;
-}
-
-std::string
-StopCode::encodeWithAllThreads(CompatibilityMode mode,
-                               const JSArray &threadsStopInfo) const {
-  std::ostringstream ss;
-  ss << encode(mode) << "jstopinfo:" << StringToHex(threadsStopInfo.toString())
-     << ";";
-  return ss.str();
-}
-
 std::string StopCode::encode(CompatibilityMode mode) const {
   std::ostringstream ss;
   if (event == kSignal && mode == kCompatibilityModeGDBMultiprocess) {
@@ -395,6 +355,46 @@ std::string StopCode::encode(CompatibilityMode mode) const {
     ss << ';';
   }
   return ss.str();
+}
+
+std::string
+StopCode::encodeWithAllThreads(CompatibilityMode mode,
+                               const JSArray &threadsStopInfo) const {
+  std::ostringstream ss;
+  ss << encode(mode) << "jstopinfo:" << StringToHex(threadsStopInfo.toString())
+     << ";";
+  return ss.str();
+}
+
+JSDictionary *StopCode::encodeJson() const {
+  auto threadObj = encodeBriefJson();
+
+  if (!threadName.empty())
+    threadObj->set("name", JSString::New(threadName));
+
+  if (core)
+    threadObj->set("core", JSInteger::New(core));
+
+  auto regSet = JSDictionary::New();
+  std::map<std::string, std::string> regs;
+  encodeRegisters(regs, false);
+
+  for (auto const &reg : regs) {
+    regSet->set(reg.first, JSString::New(reg.second));
+  }
+
+  threadObj->set("registers", regSet);
+
+  return threadObj;
+}
+
+JSDictionary *StopCode::encodeBriefJson() const {
+  auto threadObj = JSDictionary::New();
+
+  threadObj->set("tid", JSInteger::New(ptid.tid));
+  threadObj->set("reason", JSString::New(reasonToString()));
+
+  return threadObj;
 }
 
 std::string HostInfo::encode() const {
