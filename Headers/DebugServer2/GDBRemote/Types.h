@@ -21,14 +21,14 @@
 namespace ds2 {
 namespace GDBRemote {
 
-struct ProcessThreadId : ds2::ProcessThreadId {
+struct ProcessThreadId : public ds2::ProcessThreadId {
   ProcessThreadId(ProcessId pid = kAnyProcessId, ThreadId tid = kAnyThreadId)
       : ds2::ProcessThreadId(pid, tid) {}
   bool parse(std::string const &string, CompatibilityMode mode);
   std::string encode(CompatibilityMode mode) const;
 };
 
-struct MemoryRegionInfo : ds2::MemoryRegionInfo {
+struct MemoryRegionInfo : public ds2::MemoryRegionInfo {
   std::string encode() const;
 };
 
@@ -161,7 +161,7 @@ struct RegisterInfo {
   std::string encode(int xmlSet = -1) const;
 };
 
-struct HostInfo : ds2::HostInfo {
+struct HostInfo : public ds2::HostInfo {
   bool watchpointExceptionsReceivedBefore;
 
   HostInfo() : ds2::HostInfo(), watchpointExceptionsReceivedBefore(false) {}
@@ -175,7 +175,7 @@ struct ProcessInfo : public ds2::ProcessInfo {
                      bool alternateVersion = false) const;
 };
 
-struct ProcessInfoMatch : ProcessInfo {
+struct ProcessInfoMatch : public ProcessInfo {
   std::string nameMatch;
   std::string triple;
   bool allUsers;
