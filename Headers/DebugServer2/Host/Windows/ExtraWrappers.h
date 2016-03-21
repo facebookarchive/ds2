@@ -379,7 +379,7 @@ DWORD WINAPI GetModuleFileNameExW(
 );
 #define GetModuleFileNameEx GetModuleFileNameExW
 
-}
+} // extern "C"
 
 #endif
 // clang-format on
