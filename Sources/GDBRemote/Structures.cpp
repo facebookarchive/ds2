@@ -184,6 +184,12 @@ std::string StopInfo::reasonToString() const {
   case StopInfo::kReasonLibraryLoad:
   case StopInfo::kReasonLibraryUnload:
     return "library";
+#if defined(OS_WIN32)
+  case StopInfo::kReasonMemoryError:
+  case StopInfo::kReasonMathError:
+  case StopInfo::kReasonInstructionError:
+    return "";
+#endif
   default:
     DS2_UNREACHABLE();
   }
@@ -222,6 +228,13 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode) const {
     if (mode == kCompatibilityModeLLDB)
       ss << ';' << "reason:" << reasonToString();
     break;
+
+#if defined(OS_WIN32)
+  case StopInfo::kReasonMemoryError:
+  case StopInfo::kReasonMathError:
+  case StopInfo::kReasonInstructionError:
+    break;
+#endif
   }
 
   if (mode == kCompatibilityModeLLDB) {
@@ -321,9 +334,20 @@ std::string StopInfo::encode(CompatibilityMode mode) const {
     case StopInfo::kReasonLibraryUnload:
       ss << 0;
       break;
-    default:
-      ss << 5;
+    case StopInfo::kReasonBreakpoint:
+      ss << 5; // SIGTRAP
       break;
+    case StopInfo::kReasonMemoryError:
+      ss << 11; // SIGSEGV
+      break;
+    case StopInfo::kReasonMathError:
+      ss << 8; // SIGFPE
+      break;
+    case StopInfo::kReasonInstructionError:
+      ss << 4; // SIGILL
+      break;
+    default:
+      DS2BUG("not implemented");
     }
 #endif
     ss << DEC;

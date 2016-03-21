@@ -66,6 +66,11 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_STRINGIFY(StopInfo::kReasonBreakpoint)
     DO_STRINGIFY(StopInfo::kReasonSignalStop)
     DO_STRINGIFY(StopInfo::kReasonTrap)
+#if defined(OS_WIN32)
+    DO_STRINGIFY(StopInfo::kReasonMemoryError)
+    DO_STRINGIFY(StopInfo::kReasonMathError)
+    DO_STRINGIFY(StopInfo::kReasonInstructionError)
+#endif
     DO_DEFAULT("unknown StopInfo reason", reason);
   }
 }

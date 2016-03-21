@@ -106,6 +106,11 @@ struct StopInfo {
     kReasonBreakpoint,
     kReasonSignalStop, // TODO better name
     kReasonTrap,
+#if defined(OS_WIN32)
+    kReasonMemoryError,
+    kReasonMathError,
+    kReasonInstructionError,
+#endif
   };
 
   Event event;
