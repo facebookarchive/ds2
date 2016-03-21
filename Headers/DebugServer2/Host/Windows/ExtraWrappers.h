@@ -287,33 +287,6 @@ HANDLE WINAPI OpenThread(
   _In_  DWORD dwThreadId
 );
 
-HANDLE WINAPI CreateToolhelp32Snapshot(
-  _In_  DWORD dwFlags,
-  _In_  DWORD th32ProcessID
-);
-
-#define TH32CS_SNAPTHREAD 0x00000004
-
-typedef struct tagTHREADENTRY32 {
-  DWORD dwSize;
-  DWORD cntUsage;
-  DWORD th32ThreadID;
-  DWORD th32OwnerProcessID;
-  LONG  tpBasePri;
-  LONG  tpDeltaPri;
-  DWORD dwFlags;
-} THREADENTRY32, *PTHREADENTRY32, *LPTHREADENTRY32;
-
-BOOL WINAPI Thread32First(
-  _In_     HANDLE hSnapshot,
-  _Inout_  LPTHREADENTRY32 lpte
-);
-
-BOOL WINAPI Thread32Next(
-  _In_   HANDLE hSnapshot,
-  _Out_  LPTHREADENTRY32 lpte
-);
-
 WINBASEAPI HANDLE WINAPI OpenProcess(
   _In_  DWORD dwDesiredAccess,
   _In_  BOOL bInheritHandle,
@@ -369,10 +342,6 @@ BOOL WINAPI DebugActiveProcessStop(
   _In_ DWORD dwProcessId
 );
 
-BOOL WINAPI DebugBreakProcess(
-  _In_ HANDLE Process
-);
-
 LPVOID WINAPI VirtualAllocEx(
   _In_     HANDLE hProcess,
   _In_opt_ LPVOID lpAddress,
@@ -388,8 +357,79 @@ BOOL WINAPI VirtualFreeEx(
   _In_ DWORD  dwFreeType
 );
 
+BOOL WINAPI DebugBreakProcess(
+  _In_ HANDLE Process
+);
+
+#define TH32CS_SNAPTHREAD 0x00000004
+HANDLE WINAPI CreateToolhelp32Snapshot(
+  _In_  DWORD dwFlags,
+  _In_  DWORD th32ProcessID
+);
+
+typedef struct tagTHREADENTRY32 {
+  DWORD dwSize;
+  DWORD cntUsage;
+  DWORD th32ThreadID;
+  DWORD th32OwnerProcessID;
+  LONG  tpBasePri;
+  LONG  tpDeltaPri;
+  DWORD dwFlags;
+} THREADENTRY32, *PTHREADENTRY32, *LPTHREADENTRY32;
+BOOL WINAPI Thread32First(
+  _In_     HANDLE hSnapshot,
+  _Inout_  LPTHREADENTRY32 lpte
+);
+
+BOOL WINAPI Thread32Next(
+  _In_   HANDLE hSnapshot,
+  _Out_  LPTHREADENTRY32 lpte
+);
+
 } // extern "C"
 // clang-format on
+
+// The following code allows us to pick some symbols directly from kernel32.dll
+// (against which we cannot link when building for WinStore-ARM for instance.
+// The functions are declared in the above block (see DebugBreakProcess for
+// instance), but these declarations are then hidden with macros below.
+// Basically, we just
+//     GetProcAddress(GetModuleHandle("kernel32"), funcName)
+// and call that.
+//
+// Given that we have declarations for these functions above, we can also
+// type-check these calls and make sure both the return type and the arguments
+// type (see `decltype` in `DO_K32_CALL`) are matching.
+//
+// If we need more functions that are only available in kernel32.dll, we just
+// need to add their prototype in the above `extern "C" {}` block, and add a
+// one line `#define` below, in this form:
+//     #define FunctionName(...) DO_K32_CALL(FunctionName, __VA_ARGS__)
+
+static inline FARPROC GetK32Proc(_In_ LPCSTR procName) {
+  static HMODULE kernel32Base = nullptr;
+  if (kernel32Base == nullptr) {
+    kernel32Base = GetModuleHandle(L"kernel32");
+  }
+
+  return GetProcAddress(kernel32Base, procName);
+}
+
+template <typename RetType, typename... ArgTypes>
+RetType CallK32Proc(char const *name, ArgTypes... args) {
+  auto procAddress =
+      reinterpret_cast<RetType (*)(ArgTypes...)>(GetK32Proc(name));
+  return procAddress(args...);
+}
+
+#define DO_K32_CALL(FUNC, ...)                                                 \
+  CallK32Proc<decltype(FUNC(__VA_ARGS__))>(#FUNC, __VA_ARGS__)
+
+#define DebugBreakProcess(...) DO_K32_CALL(DebugBreakProcess, __VA_ARGS__)
+#define CreateToolhelp32Snapshot(...)                                          \
+  DO_K32_CALL(CreateToolhelp32Snapshot, __VA_ARGS__)
+#define Thread32First(...) DO_K32_CALL(Thread32First, __VA_ARGS__)
+#define Thread32Next(...) DO_K32_CALL(Thread32Next, __VA_ARGS__)
 
 #endif
 
