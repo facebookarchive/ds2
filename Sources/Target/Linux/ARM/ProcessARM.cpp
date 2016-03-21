@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Target/Process.h"
+#include "DebugServer2/HardwareBreakpointManager.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Support/Stringify.h"
@@ -361,20 +362,13 @@ SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
 }
 
 HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
-#if notyet
-  //
-  // TODO: this needs an hardware that supports hardware breakpoints,
-  // I currently can't test this case, so it's #ifdefed out until
-  // I have access to such hardware.
-  //
   if (_hardwareBreakpointManager == nullptr) {
-    _hardwareBreakpointManager = new Architecture::ARM::WatchpointManager(this);
+    const_cast<Process *>(this)->_hardwareBreakpointManager =
+        new Architecture::ARM::HardwareBreakpointManager(
+            reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
   }
 
   return _hardwareBreakpointManager;
-#else
-  return nullptr;
-#endif
 }
 
 int Process::getMaxBreakpoints() const {

@@ -9,7 +9,8 @@
 //
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
+#include "DebugServer2/HardwareBreakpointManager.h"
+#include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Thread.h"
 
 #include <cstdlib>
@@ -130,15 +131,13 @@ SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
 }
 
 HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
-#if 0
-    if (_hardwareBreakpointManager == nullptr) {
-        _hardwareBreakpointManager = new Architecture::ARM::WatchpointManager(this);
-    }
+  if (_hardwareBreakpointManager == nullptr) {
+    const_cast<Process *>(this)->_hardwareBreakpointManager =
+        new Architecture::X86::HardwareBreakpointManager(
+            reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
+  }
 
-    return _hardwareBreakpointManager;
-#else
-  return nullptr;
-#endif
+  return _hardwareBreakpointManager;
 }
 
 bool Process::isSingleStepSupported() const { return true; }

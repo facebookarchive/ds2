@@ -9,7 +9,8 @@
 //
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
+#include "DebugServer2/HardwareBreakpointManager.h"
+#include "DebugServer2/SoftwareBreakpointManager.h"
 
 #include <cstdlib>
 #include <sys/mman.h>
@@ -42,7 +43,13 @@ SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
 }
 
 HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
-  return nullptr;
+  if (_hardwareBreakpointManager == nullptr) {
+    const_cast<Process *>(this)->_hardwareBreakpointManager =
+        new Architecture::ARM::HardwareBreakpointManager(
+            reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
+  }
+
+  return _hardwareBreakpointManager;
 }
 
 int Process::getMaxBreakpoints() const { return 0; }
