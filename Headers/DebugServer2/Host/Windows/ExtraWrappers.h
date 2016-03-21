@@ -17,10 +17,10 @@
 #include <cstdio>
 #include <windows.h>
 
-// clang-format off
 // Some APIs are not exposed when building for UAP.
 #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
+// clang-format off
 extern "C" {
 
 #define UNLEN 256
@@ -87,6 +87,31 @@ DWORD WINAPI GetModuleBaseNameW(
   _In_     DWORD   nSize
 );
 #define GetModuleBaseName GetModuleBaseNameW
+
+#define GetModuleFileNameExA  K32GetModuleFileNameExA
+#define GetModuleFileNameExW  K32GetModuleFileNameExW
+DWORD WINAPI GetModuleFileNameExA(
+  _In_     HANDLE  hProcess,
+  _In_opt_ HMODULE hModule,
+  _Out_    LPSTR   lpFilename,
+  _In_     DWORD   nSize
+);
+DWORD WINAPI GetModuleFileNameExW(
+  _In_     HANDLE  hProcess,
+  _In_opt_ HMODULE hModule,
+  _Out_    LPWSTR  lpFilename,
+  _In_     DWORD   nSize
+);
+#define GetModuleFileNameEx GetModuleFileNameExW
+
+HMODULE WINAPI GetModuleHandleA(
+  _In_opt_ LPCSTR lpModuleName
+);
+HMODULE WINAPI GetModuleHandleW(
+  _In_opt_ LPCWSTR lpModuleName
+);
+#define GetModuleHandle GetModuleHandleW
+
 
 BOOL WINAPI OpenProcessToken(
   _In_  HANDLE  ProcessHandle,
@@ -363,25 +388,9 @@ BOOL WINAPI VirtualFreeEx(
   _In_ DWORD  dwFreeType
 );
 
-#define GetModuleFileNameExA  K32GetModuleFileNameExA
-#define GetModuleFileNameExW  K32GetModuleFileNameExW
-DWORD WINAPI GetModuleFileNameExA(
-  _In_     HANDLE  hProcess,
-  _In_opt_ HMODULE hModule,
-  _Out_    LPSTR   lpFilename,
-  _In_     DWORD   nSize
-);
-DWORD WINAPI GetModuleFileNameExW(
-  _In_     HANDLE  hProcess,
-  _In_opt_ HMODULE hModule,
-  _Out_    LPWSTR  lpFilename,
-  _In_     DWORD   nSize
-);
-#define GetModuleFileNameEx GetModuleFileNameExW
-
 } // extern "C"
+// clang-format on
 
 #endif
-// clang-format on
 
 #endif // !__DebugServer2_Host_Windows_ExtraWrappers_h
