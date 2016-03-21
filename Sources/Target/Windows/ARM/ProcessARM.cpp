@@ -28,6 +28,12 @@ SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
   return _softwareBreakpointManager;
 }
 
+int Process::getMaxBreakpoints() const { return 0; }
+
+int Process::getMaxWatchpoints() const { return 0; }
+
+int Process::getMaxWatchpointSize() const { return 0; }
+
 GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
   return &Architecture::ARM::GDB;
 }

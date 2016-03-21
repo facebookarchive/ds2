@@ -90,6 +90,13 @@ public:
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,
                         size_t *count = nullptr) override;
 
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
+public:
+  int getMaxBreakpoints() const;
+  int getMaxWatchpoints() const;
+  int getMaxWatchpointSize() const;
+#endif
+
 public:
   Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
   Architecture::LLDBDescriptor const *

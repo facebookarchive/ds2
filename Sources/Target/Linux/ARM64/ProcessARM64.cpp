@@ -45,6 +45,12 @@ HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
   return nullptr;
 }
 
+int Process::getMaxBreakpoints() const { return 0; }
+
+int Process::getMaxWatchpoints() const { return 0; }
+
+int Process::getMaxWatchpointSize() const { return 0; }
+
 bool Process::isSingleStepSupported() const { return true; }
 
 GDBDescriptor const *Process::getGDBRegistersDescriptor() const {

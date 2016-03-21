@@ -377,6 +377,18 @@ HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
 #endif
 }
 
+int Process::getMaxBreakpoints() const {
+  return ptrace().getMaxHardwareBreakpoints(_pid);
+}
+
+int Process::getMaxWatchpoints() const {
+  return ptrace().getMaxHardwareWatchpoints(_pid);
+}
+
+int Process::getMaxWatchpointSize() const {
+  return ptrace().getMaxWatchpointSize(_pid);
+}
+
 bool Process::isSingleStepSupported() const {
   //
   // Linux/ARM has no single step support, it must be emulated, this

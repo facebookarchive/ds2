@@ -102,6 +102,13 @@ public:
   virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const;
   virtual Architecture::LLDBDescriptor const *
   getLLDBRegistersDescriptor() const;
+
+#if defined(ARCH_ARM)
+public:
+  int getMaxBreakpoints() const;
+  int getMaxWatchpoints() const;
+  int getMaxWatchpointSize() const;
+#endif
 };
 }
 }
