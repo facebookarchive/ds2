@@ -313,4 +313,9 @@ if ("${OS_NAME}" MATCHES "Windows")
 endif ()
 
 include(FindThreads)
-target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
+if (STATIC AND DEFINED CMAKE_THREAD_LIBS_INIT AND
+    (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+  target_link_libraries(ds2 -Wl,--whole-archive ${CMAKE_THREAD_LIBS_INIT} -Wl,--no-whole-archive)
+else ()
+  target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
+endif ()
