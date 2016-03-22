@@ -28,6 +28,8 @@ char const *Platform::GetOSTypeName() { return "linux"; }
 char const *Platform::GetOSVendorName() {
 #if defined(PLATFORM_ANDROID)
   return "android";
+#elif defined(PLATFORM_TIZEN)
+  return "tizen";
 #else
   //
   // Use /etc/lsb-release to extract the vendor and cache it.
