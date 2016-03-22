@@ -13,7 +13,7 @@
 #include "DebugServer2/Utils/CompilerSupport.h"
 #include "DebugServer2/Utils/String.h"
 
-#if defined(ENABLE_LOGCAT)
+#if defined(PLATFORM_ANDROID)
 #include <android/log.h>
 #endif
 #include <sstream>
@@ -31,7 +31,7 @@ FILE *sOutputStream = stderr;
 #endif
 }
 
-#if defined(ENABLE_LOGCAT)
+#if defined(PLATFORM_ANDROID)
 static void androidLogcat(int level, char const *functag, char const *message) {
   android_LogPriority androidLevel;
 
@@ -89,7 +89,7 @@ void vLog(int level, char const *classname, char const *funcname,
     functag << classname << "::";
   functag << funcname;
 
-#if defined(ENABLE_LOGCAT)
+#if defined(PLATFORM_ANDROID)
   if (level >= sLogLevel || level >= kLogLevelDebug) {
     // If we're on Android pollute logcat as well.
     androidLogcat(level, functag.str().c_str(), buffer.data());

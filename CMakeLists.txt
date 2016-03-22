@@ -301,7 +301,6 @@ target_link_libraries(ds2 jsobjects)
 
 if (ANDROID)
   target_link_libraries(ds2 log)
-  target_compile_definitions(ds2 PRIVATE ENABLE_LOGCAT)
 endif ()
 
 if ("${OS_NAME}" MATCHES "FreeBSD")
