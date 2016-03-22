@@ -63,7 +63,7 @@ typedef SSIZE_T ssize_t;
 #error "Architecture not supported."
 #endif
 
-#if defined(OS_WIN32)
+#if defined(COMPILER_MSVC)
 #define ENDIAN_LITTLE
 #else
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
