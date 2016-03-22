@@ -23,7 +23,7 @@
 #endif
 #include <unistd.h>
 
-#if defined(ARCH_X86) && defined(__ANDROID__)
+#if defined(ARCH_X86) && defined(PLATFORM_ANDROID)
 #include <sys/user.h>
 #endif
 

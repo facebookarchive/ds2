@@ -23,18 +23,6 @@ typedef SSIZE_T ssize_t;
 #include <cstdlib>
 #endif
 
-#if defined(__arm__) || defined(_M_ARM)
-#define ARCH_ARM
-#elif defined(__aarch64__) || defined(_M_ARM64)
-#define ARCH_ARM64
-#elif defined(__i386__) || defined(_M_IX86)
-#define ARCH_X86
-#elif defined(__x86_64__) || defined(_M_AMD64)
-#define ARCH_X86_64
-#else
-#error "Architecture not supported."
-#endif
-
 #if defined(__linux__)
 #define OS_LINUX
 #elif defined(_WIN32)
@@ -45,6 +33,24 @@ typedef SSIZE_T ssize_t;
 #define OS_DARWIN
 #else
 #error "Target not supported."
+#endif
+
+#if defined(__TIZEN__)
+#define PLATFORM_TIZEN
+#elif defined(__ANDROID__)
+#define PLATFORM_ANDROID
+#endif
+
+#if defined(__arm__) || defined(_M_ARM)
+#define ARCH_ARM
+#elif defined(__aarch64__) || defined(_M_ARM64)
+#define ARCH_ARM64
+#elif defined(__i386__) || defined(_M_IX86)
+#define ARCH_X86
+#elif defined(__x86_64__) || defined(_M_AMD64)
+#define ARCH_X86_64
+#else
+#error "Architecture not supported."
 #endif
 
 #if defined(OS_WIN32)

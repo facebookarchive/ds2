@@ -26,7 +26,7 @@ namespace Linux {
 char const *Platform::GetOSTypeName() { return "linux"; }
 
 char const *Platform::GetOSVendorName() {
-#if defined(__ANDROID__)
+#if defined(PLATFORM_ANDROID)
   return "android";
 #else
   //
