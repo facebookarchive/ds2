@@ -65,9 +65,9 @@ static inline int SNPrintf(char *str, size_t size, char const *format, ...) {
   return res;
 }
 
-#if defined(_MSC_VER)
+#if defined(COMPILER_MSVC)
 #pragma deprecated(sprintf, snprintf, vsnprintf)
-#else
+#elif defined(COMPILER_CLANG) || defined(COMPILER_GCC)
 #pragma GCC poison sprintf snprintf vsnprintf
 #endif
 }

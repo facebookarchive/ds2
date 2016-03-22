@@ -32,7 +32,7 @@ static typename std::make_unsigned<T>::type MakeUnsigned(T number) {
 static inline unsigned int FFS(unsigned int number) {
 #if __has_builtin(__builtin_ffs)
   return __builtin_ffs(number);
-#elif defined(_MSC_VER)
+#elif defined(COMPILER_MSVC)
   unsigned long index;
   if (_BitScanForward(&index, number)) {
     return index + 1;
@@ -51,7 +51,7 @@ static inline unsigned int FFS(unsigned int number) {
 static inline unsigned int PopCount(unsigned int number) {
 #if __has_builtin(__builtin_popcount)
   return __builtin_popcount(number);
-#elif defined(_MSC_VER)
+#elif defined(COMPILER_MSVC)
   return _CountOneBits(number);
 #else
   unsigned int count = 0;

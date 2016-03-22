@@ -23,6 +23,16 @@ typedef SSIZE_T ssize_t;
 #include <cstdlib>
 #endif
 
+#if defined(__clang__)
+#define COMPILER_CLANG
+#elif defined(__GNUC__)
+#define COMPILER_GCC
+#elif defined(_MSC_VER)
+#define COMPILER_MSVC
+#else
+#error "Compiler not supported."
+#endif
+
 #if defined(__linux__)
 #define OS_LINUX
 #elif defined(_WIN32)

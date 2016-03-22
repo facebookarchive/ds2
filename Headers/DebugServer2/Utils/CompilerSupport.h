@@ -11,11 +11,13 @@
 #ifndef __DebugServer2_Utils_CompilerSupport_h
 #define __DebugServer2_Utils_CompilerSupport_h
 
+#include "DebugServer2/Base.h"
+
 // For GCC we define __has_attribute and __has_builtin to 1 because we know we
 // always have recent enough versions (support for C++11 for instance).
 
 #if !defined(__has_attribute)
-#if defined(__GNUC__) && !defined(__clang__)
+#if defined(COMPILER_GCC)
 #define __has_attribute(ATTR) 1
 #else
 #define __has_attribute(ATTR) 0
@@ -23,7 +25,7 @@
 #endif
 
 #if !defined(__has_builtin)
-#if defined(__GNUC__) && !defined(__clang__)
+#if defined(COMPILER_GCC)
 #define __has_builtin(BUILTIN) 1
 #else
 #define __has_builtin(BUILTIN) 0
@@ -49,7 +51,7 @@
 #define DS2_ATTRIBUTE_NORETURN
 #endif
 
-#if !defined(__clang__) && defined(_MSC_VER)
+#if defined(COMPILER_MSVC)
 #define DS2_UNREACHABLE() __assume(0)
 #elif __has_builtin(__builtin_unreachable)
 #define DS2_UNREACHABLE() __builtin_unreachable()
