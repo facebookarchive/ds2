@@ -259,6 +259,7 @@ else ()
 endif ()
 target_include_directories(ds2 PUBLIC Headers)
 set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
+set_property(TARGET ds2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
 if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "FreeBSD")
   include(CheckIncludeFile)
