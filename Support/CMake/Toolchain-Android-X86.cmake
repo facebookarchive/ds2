@@ -14,5 +14,5 @@ set(CMAKE_SYSTEM_PROCESSOR X86)
 set(CMAKE_C_COMPILER /tmp/aosp-toolchain/x86_64-linux-android-4.9/bin/x86_64-linux-android-gcc)
 set(CMAKE_CXX_COMPILER /tmp/aosp-toolchain/x86_64-linux-android-4.9/bin/x86_64-linux-android-g++)
 
+set(ANDROID 1)
 set(PIE 1)
-set(ENABLE_LOGCAT 1)

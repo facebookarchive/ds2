@@ -274,6 +274,10 @@ if ("${OS_NAME}" MATCHES "Windows")
   target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6 _WIN32_WINNT=_WIN32_WINNT_WIN6)
 endif ()
 
+if (TIZEN)
+  target_compile_definitions(ds2 PRIVATE __TIZEN__)
+endif ()
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(ds2 PRIVATE -Wall -Wextra -Wno-unused-parameter)
   # This should be enabled by default but clang has a couple of additional
@@ -295,7 +299,7 @@ endif ()
 add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
 target_link_libraries(ds2 jsobjects)
 
-if (${ENABLE_LOGCAT})
+if (ANDROID)
   target_link_libraries(ds2 log)
   target_compile_definitions(ds2 PRIVATE ENABLE_LOGCAT)
 endif ()
