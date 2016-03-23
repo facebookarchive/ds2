@@ -184,6 +184,12 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
   if (error != ds2::kSuccess)
     return error;
 
+  // If the address is 0, it means the dynamic linker hasn't filled
+  // DT_DEBUG->d_ptr and the link map is not available yet.
+  if (address == 0) {
+    return kErrorBusy;
+  }
+
   error = ReadELFDebug(process, address, debug);
   if (error != ds2::kSuccess)
     return error;
