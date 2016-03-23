@@ -170,14 +170,6 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
   ELFLinkMap<T> linkMap;
   T address;
   T linkMapAddress;
-#if defined(PLATFORM_ANDROID)
-  // FIXME: main executable detection is disabled on Android because this
-  // causes some issues when using the mozzloader. LLDB seems to be fine with
-  // us not marking any object as being the main executable anyway.
-  bool isMain = false;
-#else
-  bool isMain = true;
-#endif
 
   ErrorCode error =
       process->readMemory(addressToDPtr, &address, sizeof(address));
@@ -208,20 +200,37 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
       return error;
 
     SharedLibraryInfo shlib;
-    shlib.main = isMain;
-    shlib.sections.clear();
-    shlib.svr4.mapAddress = linkMapAddress;
-    shlib.svr4.baseAddress = linkMap.baseAddress;
-    shlib.svr4.ldAddress = linkMap.ldAddress;
 
     error = process->readString(linkMap.nameAddress, shlib.path, PATH_MAX);
     if (error != ds2::kSuccess)
       return error;
 
+    shlib.svr4.mapAddress = linkMapAddress;
+    shlib.svr4.baseAddress = linkMap.baseAddress;
+    shlib.svr4.ldAddress = linkMap.ldAddress;
+    shlib.sections.clear();
+
+#if defined(OS_LINUX) && !defined(PLATFORM_ANDROID)
+    // On non-android linux systems, main executable has an empty path.
+    shlib.main = shlib.path.empty();
+#elif defined(OS_LINUX) && defined(PLATFORM_ANDROID)
+    // On android, libraries have just their basename as path, except for
+    // /system/bin/linker and /system/bin/linker64 that have the full path.
+    // The main executable also has a full path, except when debugging an app,
+    // where the app's bundle indentifier is used as path. (wat?)
+    shlib.main = shlib.svr4.ldAddress == 0 ||
+                 (shlib.path.find("/system/bin/linker") != 0 &&
+                  !shlib.path.empty() && shlib.path[0] == '/');
+#elif defined(OS_FREEBSD)
+    // FIXME(sas): not sure how exactly to determine this on FreeBSD.
+    shlib.main = false;
+#else
+#error "Target not supported."
+#endif
+
     cb(shlib);
 
     linkMapAddress = linkMap.nextAddress;
-    isMain = false;
   }
 
   return ds2::kSuccess;

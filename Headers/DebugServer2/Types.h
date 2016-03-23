@@ -311,8 +311,8 @@ struct MemoryRegionInfo {
 };
 
 struct SharedLibraryInfo {
-  bool main;
   std::string path;
+  bool main;
   struct {
     uint64_t mapAddress;
     uint64_t baseAddress;
