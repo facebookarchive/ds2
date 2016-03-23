@@ -18,7 +18,7 @@
 #elif defined(OS_LINUX) || defined(OS_WIN32) || defined(OS_FREEBSD)
 #define ATT_TLS thread_local
 #else
-#error "Target not supported"
+#error "Target not supported."
 #endif
 
 #define DO_STRINGIFY(VALUE)                                                    \
