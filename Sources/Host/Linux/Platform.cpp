@@ -23,17 +23,18 @@ namespace ds2 {
 namespace Host {
 namespace Linux {
 
-char const *Platform::GetOSTypeName() { return "linux"; }
+char const *Platform::GetOSTypeName() {
+#if defined(PLATFORM_ANDROID)
+  return "linux-android";
+#elif defined(PLATFORM_TIZEN)
+  return "linux-tizen";
+#else
+  return "linux";
+#endif
+}
 
 char const *Platform::GetOSVendorName() {
-#if defined(PLATFORM_ANDROID)
-  return "android";
-#elif defined(PLATFORM_TIZEN)
-  return "tizen";
-#else
-  //
   // Use /etc/lsb-release to extract the vendor and cache it.
-  //
   static std::string vendor;
 
   if (!vendor.empty())
@@ -61,7 +62,6 @@ char const *Platform::GetOSVendorName() {
   }
 
   return vendor.c_str();
-#endif
 }
 
 static struct utsname const *GetCachedUTSName() {
