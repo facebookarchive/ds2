@@ -15,6 +15,7 @@
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <cerrno>
 #include <csignal>
 // clang-format off
 #include <sys/types.h>
@@ -104,11 +105,27 @@ protected:
     typedef caddr_t PTraceAddrType;
     typedef int PTraceDataType;
 #endif
-    DS2LOG(Debug, "running ptrace command %s on pid %d",
-           ds2::Support::Stringify::Ptrace(request), pid);
-    return ::ptrace(static_cast<PTraceRequestType>(request), pid,
-                    (PTraceAddrType)(uintptr_t)addr,
-                    (PTraceDataType)(uintptr_t)data);
+    // ptrace return types vary across systems. Avoid truncating data.
+    decltype(ptrace((PTraceRequestType)0, 0, 0, 0)) ret = 0;
+
+    do {
+      if (ret < 0) {
+        DS2LOG(Warning, "ptrace command %s on pid %d returned EAGAIN, retrying",
+               ds2::Support::Stringify::Ptrace(request), pid);
+      }
+
+      ret = ::ptrace(static_cast<PTraceRequestType>(request), pid,
+                     (PTraceAddrType)(uintptr_t)addr,
+                     (PTraceDataType)(uintptr_t)data);
+    } while (ret < 0 && (errno == EAGAIN || errno == EBUSY));
+
+    if (errno != 0) {
+      DS2LOG(Debug, "ran ptrace command %s on pid %d, returned %s",
+             ds2::Support::Stringify::Ptrace(request), pid,
+             ds2::Support::Stringify::Errno(errno));
+    }
+
+    return ret;
   }
 
 #if defined(OS_LINUX) && defined(ARCH_ARM)
