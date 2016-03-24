@@ -22,7 +22,7 @@ std::string Basename(std::string const &path) {
 
   auto end = path.find_last_not_of(sep);
   if (end == std::string::npos)
-    return "/";
+    return std::string(&sep, 1);
 
   auto begin = path.rfind(sep, end);
   if (begin == std::string::npos) {
