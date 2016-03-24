@@ -208,6 +208,7 @@ set(SUPPORT_COMMON_SOURCES
     Sources/Support/Stringify.cpp
     Sources/Utils/Log.cpp
     Sources/Utils/OptParse.cpp
+    Sources/Utils/Paths.cpp
     Sources/main.cpp
     )
 
