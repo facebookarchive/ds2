@@ -28,7 +28,6 @@ env:
   - TARGET="Android-ARM64"
   - TARGET="Android-X86"
   - TARGET="Android-X86_64"
-  - TARGET="Linux-ARM"
   - TARGET="MinGW-X86"
   - TARGET="Tizen-ARM"
   - TARGET="Tizen-X86"
