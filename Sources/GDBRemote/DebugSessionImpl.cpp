@@ -18,6 +18,7 @@
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/Paths.h"
 
 #include <iomanip>
 #include <sstream>
@@ -535,7 +536,8 @@ ErrorCode DebugSessionImpl::onXferRead(Session &session,
       if (library.main)
         return;
 
-      ss << "  <library name=\"" << library.path << "\">" << std::endl;
+      ss << "  <library name=\"" << ds2::Utils::Basename(library.path) << "\">"
+         << std::endl;
       for (auto section : library.sections)
         ss << "    <section address=\"0x" << std::hex << section << "\" />"
            << std::endl;
@@ -555,7 +557,7 @@ ErrorCode DebugSessionImpl::onXferRead(Session &session,
           mainMapAddress = library.svr4.mapAddress;
         } else {
           sslibs << "<library "
-                 << "name=\"" << library.path << "\" "
+                 << "name=\"" << ds2::Utils::Basename(library.path) << "\" "
                  << "lm=\""
                  << "0x" << std::hex << library.svr4.mapAddress << "\" "
                  << "l_addr=\""
