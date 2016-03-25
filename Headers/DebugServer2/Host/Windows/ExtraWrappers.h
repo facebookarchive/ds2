@@ -415,15 +415,14 @@ static inline FARPROC GetK32Proc(_In_ LPCSTR procName) {
   return GetProcAddress(kernel32Base, procName);
 }
 
-template <typename RetType, typename... ArgTypes>
-RetType CallK32Proc(char const *name, ArgTypes... args) {
-  auto procAddress =
-      reinterpret_cast<RetType (*)(ArgTypes...)>(GetK32Proc(name));
+template <typename ProcPtrType, typename... ArgTypes>
+auto CallK32Proc(char const *name, ArgTypes... args)
+    -> decltype(((ProcPtrType) nullptr)(args...)) {
+  auto procAddress = reinterpret_cast<ProcPtrType>(GetK32Proc(name));
   return procAddress(args...);
 }
 
-#define DO_K32_CALL(FUNC, ...)                                                 \
-  CallK32Proc<decltype(FUNC(__VA_ARGS__))>(#FUNC, __VA_ARGS__)
+#define DO_K32_CALL(FUNC, ...) CallK32Proc<decltype(&FUNC)>(#FUNC, __VA_ARGS__)
 
 #define DebugBreakProcess(...) DO_K32_CALL(DebugBreakProcess, __VA_ARGS__)
 #define CreateToolhelp32Snapshot(...)                                          \
