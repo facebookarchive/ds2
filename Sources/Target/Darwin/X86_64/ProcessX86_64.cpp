@@ -50,7 +50,7 @@ static void PrepareMmapCode(size_t size, uint32_t protection,
 
   uint8_t *code = &codestr[0];
   *reinterpret_cast<uint32_t *>(code + 0x03) = SYS_mmap;
-  *reinterpret_cast<uint32_t *>(code + 0x0d) = size;
+  *reinterpret_cast<uint32_t *>(code + 0x0d) = static_cast<uint32_t>(size);
   *reinterpret_cast<uint32_t *>(code + 0x14) = protection;
   *reinterpret_cast<uint32_t *>(code + 0x1b) = MAP_ANON | MAP_PRIVATE;
 }
@@ -62,7 +62,7 @@ static void PrepareMunmapCode(uint64_t address, size_t size,
   uint8_t *code = &codestr[0];
   *reinterpret_cast<uint32_t *>(code + 0x03) = SYS_munmap;
   *reinterpret_cast<uint64_t *>(code + 0x09) = address;
-  *reinterpret_cast<uint32_t *>(code + 0x14) = size;
+  *reinterpret_cast<uint32_t *>(code + 0x14) = static_cast<uint32_t>(size);
 }
 
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,

@@ -335,12 +335,12 @@ std::string Socket::address() const {
   case AF_INET:
     inet_ntop(AF_INET,
               &reinterpret_cast<struct sockaddr_in *>(&ss)->sin_addr.s_addr,
-              addressStr, sizeof(addressStr));
+              addressStr, static_cast<socklen_t>(sizeof(addressStr)));
     break;
   case AF_INET6:
     inet_ntop(AF_INET6,
               &reinterpret_cast<struct sockaddr_in6 *>(&ss)->sin6_addr.s6_addr,
-              addressStr, sizeof(addressStr));
+              addressStr, static_cast<socklen_t>(sizeof(addressStr)));
     break;
   default:
     DS2BUG("unknown socket family: %u", (unsigned int)ss.ss_family);
