@@ -23,7 +23,7 @@ protected:
   friend class Session;
 
 public:
-  virtual ~SessionDelegate();
+  virtual ~SessionDelegate() = default;
 
 protected: // General Information
   virtual size_t getGPRSize() const = 0;

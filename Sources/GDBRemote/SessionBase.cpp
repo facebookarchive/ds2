@@ -12,7 +12,6 @@
 
 #include "DebugServer2/GDBRemote/SessionBase.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
-#include "DebugServer2/GDBRemote/SessionDelegate.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
@@ -160,9 +159,5 @@ bool SessionBase::sendError(ErrorCode code) {
   message[3] = '\0';
   return send(message);
 }
-
-using ds2::GDBRemote::SessionDelegate;
-
-SessionDelegate::~SessionDelegate() = default;
 }
 }
