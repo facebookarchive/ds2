@@ -44,5 +44,33 @@ char const *Stringify::Error(ErrorCode error) {
     DO_DEFAULT("unknown error code", error);
   }
 }
+
+char const *Stringify::StopEvent(StopInfo::Event event) {
+  switch (event) {
+    DO_STRINGIFY(StopInfo::kEventNone)
+    DO_STRINGIFY(StopInfo::kEventStop)
+    DO_STRINGIFY(StopInfo::kEventExit)
+    DO_STRINGIFY(StopInfo::kEventKill)
+    DO_DEFAULT("unknown StopInfo event", event);
+  }
+}
+
+char const *Stringify::StopReason(StopInfo::Reason reason) {
+  switch (reason) {
+    DO_STRINGIFY(StopInfo::kReasonNone)
+    DO_STRINGIFY(StopInfo::kReasonWatchpoint)
+    DO_STRINGIFY(StopInfo::kReasonRegisterWatchpoint)
+    DO_STRINGIFY(StopInfo::kReasonAddressWatchpoint)
+    DO_STRINGIFY(StopInfo::kReasonLibraryLoad)
+    DO_STRINGIFY(StopInfo::kReasonLibraryUnload)
+    DO_STRINGIFY(StopInfo::kReasonReplayLog)
+    DO_STRINGIFY(StopInfo::kReasonBreakpoint)
+    DO_STRINGIFY(StopInfo::kReasonTrace)
+    DO_STRINGIFY(StopInfo::kReasonSignalStop)
+    DO_STRINGIFY(StopInfo::kReasonException)
+    DO_STRINGIFY(StopInfo::kReasonTrap)
+    DO_DEFAULT("unknown StopInfo reason", reason);
+  }
+}
 }
 }

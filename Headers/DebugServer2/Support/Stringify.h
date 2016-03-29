@@ -13,6 +13,7 @@
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Constants.h"
+#include "DebugServer2/Types.h"
 
 #if defined(OS_WIN32)
 #include "DebugServer2/Support/Windows/Stringify.h"
@@ -36,6 +37,8 @@ class Stringify
 {
 public:
   static char const *Error(ErrorCode error);
+  static char const *StopEvent(StopInfo::Event event);
+  static char const *StopReason(StopInfo::Reason reason);
 };
 }
 }
