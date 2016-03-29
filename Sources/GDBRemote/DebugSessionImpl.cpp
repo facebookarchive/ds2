@@ -165,16 +165,17 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
                                           StopCode &stop) const {
   Thread *thread = findThread(ptid);
   DS2LOG(Debug, "thread %p", thread);
+
   if (thread == nullptr) {
 #if defined(OS_WIN32)
+    // TODO: This needs to go away.
     if (_process && !_process->isAlive()) {
       stop.event = StopCode::kSignalExit;
       stop.signal = 9;
       return kSuccess;
     }
-#else
-    return kErrorProcessNotFound;
 #endif
+    return kErrorProcessNotFound;
   }
 
   bool readRegisters = true;
