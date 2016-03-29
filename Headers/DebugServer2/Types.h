@@ -93,9 +93,7 @@ struct StopInfo {
     kEventNone,
     kEventStop,
     kEventExit,
-#if !defined(OS_WIN32)
     kEventKill,
-#endif
   };
 
   enum Reason {
@@ -115,22 +113,19 @@ struct StopInfo {
 
   Event event;
   Reason reason;
-  uint32_t core;
+  // TODO: status and signal should be an union.
   int status;
-#if !defined(OS_WIN32)
   int signal;
-#endif
+  int core;
 
   StopInfo() { clear(); }
 
   inline void clear() {
     event = kEventNone;
     reason = kReasonNone;
-    core = 0;
     status = 0;
-#if !defined(OS_WIN32)
     signal = 0;
-#endif
+    core = -1;
   }
 };
 

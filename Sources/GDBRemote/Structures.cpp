@@ -10,6 +10,7 @@
 
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
 #include "DebugServer2/GDBRemote/Types.h"
+#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
@@ -28,6 +29,8 @@
 #else
 #error "Target not supported."
 #endif
+
+using ds2::Support::Stringify;
 
 namespace ds2 {
 namespace GDBRemote {
@@ -162,7 +165,7 @@ std::string ProcessThreadId::encode(CompatibilityMode mode) const {
   return ss.str();
 }
 
-std::string StopCode::reasonToString() const {
+std::string StopInfo::reasonToString() const {
   switch (reason) {
   case StopInfo::kReasonNone:
     return "none";
@@ -192,7 +195,7 @@ std::string StopCode::reasonToString() const {
   }
 }
 
-std::string StopCode::encodeInfo(CompatibilityMode mode) const {
+std::string StopInfo::encodeInfo(CompatibilityMode mode) const {
   std::ostringstream ss;
 
   if (mode == kCompatibilityModeLLDB) {
@@ -252,7 +255,7 @@ std::string StopCode::encodeInfo(CompatibilityMode mode) const {
   return ss.str();
 }
 
-void StopCode::encodeRegisters(std::map<std::string, std::string> &regs,
+void StopInfo::encodeRegisters(std::map<std::string, std::string> &regs,
                                bool hexIndex) const {
   for (auto &reg : registers) {
     std::stringstream regNum;
@@ -275,7 +278,7 @@ void StopCode::encodeRegisters(std::map<std::string, std::string> &regs,
   }
 }
 
-std::string StopCode::encodeRegisters() const {
+std::string StopInfo::encodeRegisters() const {
   std::ostringstream ss;
   bool first = true;
   std::map<std::string, std::string> regs;
@@ -294,9 +297,12 @@ std::string StopCode::encodeRegisters() const {
   return ss.str();
 }
 
-std::string StopCode::encode(CompatibilityMode mode) const {
+std::string StopInfo::encode(CompatibilityMode mode) const {
+  // We shouldn't be trying to encode something that has no stop event.
+  DS2ASSERT(event != kEventNone);
+
   std::ostringstream ss;
-  if (event == kSignal && mode == kCompatibilityModeGDBMultiprocess) {
+  if (event == kEventStop && mode == kCompatibilityModeGDBMultiprocess) {
     //
     // We need to have some information in order to
     // have extended stop reason.
@@ -311,7 +317,7 @@ std::string StopCode::encode(CompatibilityMode mode) const {
   }
 
   switch (event) {
-  case kSignal:
+  case kEventStop:
     ss << ((mode != kCompatibilityModeGDB) ? 'T' : 'S') << HEX(2);
 #if !defined(OS_WIN32)
     ss << ((reason != StopInfo::kReasonNone) ? (signal & 0xff) : 0);
@@ -332,12 +338,16 @@ std::string StopCode::encode(CompatibilityMode mode) const {
     ss << DEC;
     break;
 
-  case kSignalExit:
+  case kEventExit:
+    ss << 'W' << HEX(2) << (status & 0xff) << DEC;
+    break;
+
+  case kEventKill:
     ss << 'X' << HEX(2) << (signal & 0xff) << DEC;
     break;
 
-  case kCleanExit:
-    ss << 'W' << HEX(2) << (status & 0xff) << DEC;
+  default:
+    DS2BUG("impossible StopInfo event: %s", Stringify::StopEvent(event));
   }
 
   //
@@ -345,7 +355,7 @@ std::string StopCode::encode(CompatibilityMode mode) const {
   // is present at the beginning, followed by the registers, while
   // GDB expects registers first.
   //
-  if (event == kSignal && mode != kCompatibilityModeGDB) {
+  if (event == kEventStop && mode != kCompatibilityModeGDB) {
     if (mode == kCompatibilityModeLLDB) {
       ss << encodeInfo(mode) << ';' << encodeRegisters();
     } else {
@@ -358,7 +368,7 @@ std::string StopCode::encode(CompatibilityMode mode) const {
 }
 
 std::string
-StopCode::encodeWithAllThreads(CompatibilityMode mode,
+StopInfo::encodeWithAllThreads(CompatibilityMode mode,
                                const JSArray &threadsStopInfo) const {
   std::ostringstream ss;
   ss << encode(mode) << "jstopinfo:" << StringToHex(threadsStopInfo.toString())
@@ -366,7 +376,7 @@ StopCode::encodeWithAllThreads(CompatibilityMode mode,
   return ss.str();
 }
 
-JSDictionary *StopCode::encodeJson() const {
+JSDictionary *StopInfo::encodeJson() const {
   auto threadObj = encodeBriefJson();
 
   if (!threadName.empty())
@@ -388,7 +398,7 @@ JSDictionary *StopCode::encodeJson() const {
   return threadObj;
 }
 
-JSDictionary *StopCode::encodeBriefJson() const {
+JSDictionary *StopInfo::encodeBriefJson() const {
   auto threadObj = JSDictionary::New();
 
   threadObj->set("tid", JSInteger::New(ptid.tid));

@@ -32,29 +32,11 @@ struct MemoryRegionInfo : public ds2::MemoryRegionInfo {
   std::string encode() const;
 };
 
-struct StopCode {
-  enum Event {
-    kSignal,
-    kCleanExit,
-    kSignalExit,
-  };
-
-  Event event;
-  StopInfo::Reason reason;
-  union {
-    int signal;
-    int status;
-  };
+struct StopInfo : public ds2::StopInfo {
   ProcessThreadId ptid;
   std::string threadName;
-  int32_t core;
   Architecture::GPRegisterStopMap registers;
   std::set<ThreadId> threads;
-
-public:
-  StopCode() : event(kSignal), reason(StopInfo::kReasonNone), core(-1) {
-    signal = 0;
-  }
 
 public:
   std::string encode(CompatibilityMode mode) const;

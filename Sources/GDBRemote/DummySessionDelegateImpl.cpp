@@ -150,18 +150,18 @@ ErrorCode DummySessionDelegateImpl::onQueryRegisterInfo(Session &, uint32_t,
 }
 
 ErrorCode DummySessionDelegateImpl::onAttach(Session &, ProcessId, AttachMode,
-                                             StopCode &) {
+                                             StopInfo &) {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onAttach(Session &, std::string const &,
-                                             AttachMode, StopCode &) {
+                                             AttachMode, StopInfo &) {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onRunAttach(Session &, std::string const &,
                                                 StringCollection const &,
-                                                StopCode &) {
+                                                StopInfo &) {
   return kErrorUnsupported;
 }
 
@@ -213,13 +213,13 @@ ErrorCode DummySessionDelegateImpl::onInterrupt(Session &) {
 
 ErrorCode DummySessionDelegateImpl::onTerminate(Session &,
                                                 ProcessThreadId const &,
-                                                StopCode &) {
+                                                StopInfo &) {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onTerminate(Session &session,
                                                 ProcessId pid) {
-  StopCode stop;
+  StopInfo stop;
   return onTerminate(session, pid, stop);
 }
 
@@ -241,7 +241,7 @@ DummySessionDelegateImpl::onQueryCurrentThread(Session &,
 }
 
 ErrorCode DummySessionDelegateImpl::onQueryThreadStopInfo(
-    Session &, ProcessThreadId const &, StopCode &) const {
+    Session &, ProcessThreadId const &, StopInfo &) const {
   return kErrorUnsupported;
 }
 
@@ -282,7 +282,7 @@ ErrorCode DummySessionDelegateImpl::onQueryProfileData(Session &,
 }
 
 ErrorCode DummySessionDelegateImpl::onResume(
-    Session &, ThreadResumeAction::Collection const &, StopCode &) {
+    Session &, ThreadResumeAction::Collection const &, StopInfo &) {
   return kErrorUnsupported;
 }
 
@@ -577,7 +577,7 @@ ErrorCode DummySessionDelegateImpl::onFlashDone(Session &) {
 }
 
 ErrorCode DummySessionDelegateImpl::fetchStopInfoForAllThreads(
-    Session &session, std::vector<StopCode> &stops, StopCode &processStop) {
+    Session &session, std::vector<StopInfo> &stops, StopInfo &processStop) {
   return kErrorUnsupported;
 }
 

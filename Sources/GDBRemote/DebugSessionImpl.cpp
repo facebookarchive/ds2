@@ -162,7 +162,7 @@ Thread *DebugSessionImpl::findThread(ProcessThreadId const &ptid) const {
 
 ErrorCode DebugSessionImpl::queryStopCode(Session &session,
                                           ProcessThreadId const &ptid,
-                                          StopCode &stop) const {
+                                          StopInfo &stop) const {
   Thread *thread = findThread(ptid);
   DS2LOG(Debug, "thread %p", thread);
 
@@ -170,7 +170,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
 #if defined(OS_WIN32)
     // TODO: This needs to go away.
     if (_process && !_process->isAlive()) {
-      stop.event = StopCode::kSignalExit;
+      stop.event = StopInfo::kEventKill;
       stop.signal = 9;
       return kSuccess;
     }
@@ -178,55 +178,45 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
     return kErrorProcessNotFound;
   }
 
-  bool readRegisters = true;
-  StopInfo const &info = thread->stopInfo();
-
-  Architecture::CPUState state;
+  // Directly copy the fields that are common between ds2::StopInfo and
+  // ds2::GDBRemote::StopInfo.
+  static_cast<ds2::StopInfo &>(stop) = thread->stopInfo();
 
   stop.ptid.pid = thread->process()->pid();
   stop.ptid.tid = thread->tid();
-  stop.core = info.core;
 
-  // This code translate a StopInfo to a StopCode that we can send back to the
-  // debugger.
-  switch (info.event) {
+  // Modify and augment the information we got from thread->stopInfo() to make
+  // it a full GDBRemote::StopInfo.
+  switch (stop.event) {
   case StopInfo::kEventNone:
-    stop.event = StopCode::kSignal;
+    stop.event = StopInfo::kEventStop;
     stop.reason = StopInfo::kReasonNone;
-    break;
 
-  case StopInfo::kEventStop:
-    stop.event = StopCode::kSignal;
-    stop.reason = info.reason;
-#if !defined(OS_WIN32)
-    stop.signal = info.signal;
-#endif
-    break;
-
-  case StopInfo::kEventExit:
-    DS2ASSERT(stop.reason == StopInfo::kReasonNone);
-    stop.event = StopCode::kCleanExit;
-    stop.status = info.status;
-    readRegisters = false;
-    break;
-
-#if !defined(OS_WIN32)
-  case StopInfo::kEventKill:
-    DS2ASSERT(stop.reason == StopInfo::kReasonNone);
-    stop.event = StopCode::kSignalExit;
-    stop.signal = info.signal;
-    readRegisters = false;
-    break;
-#endif
-  }
-
-  if (readRegisters) {
+  // fall-through from kEventNone.
+  case StopInfo::kEventStop: {
+    // Thread name won't be available if the process has exited or has been
+    // killed.
     stop.threadName = Platform::GetThreadName(stop.ptid.pid, stop.ptid.tid);
+
+    Architecture::CPUState state;
     ErrorCode error = thread->readCPUState(state);
     if (error != kSuccess)
       return error;
     state.getStopGPState(stop.registers,
                          session.mode() == kCompatibilityModeLLDB);
+  } break;
+
+  case StopInfo::kEventExit:
+#if !defined(OS_WIN32)
+  // We can't get kEventKill in StopInfo::event on Windows unless we emulate it
+  // (see top of this function).
+  case StopInfo::kEventKill:
+#endif
+    DS2ASSERT(stop.reason == StopInfo::kReasonNone);
+    break;
+
+  default:
+    DS2BUG("impossible StopInfo event: %s", Stringify::StopEvent(stop.event));
   }
 
   _process->enumerateThreads(
@@ -237,7 +227,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
 
 ErrorCode DebugSessionImpl::onQueryThreadStopInfo(Session &session,
                                                   ProcessThreadId const &ptid,
-                                                  StopCode &stop) const {
+                                                  StopInfo &stop) const {
   Thread *thread = findThread(ptid);
   if (thread == nullptr)
     return kErrorProcessNotFound;
@@ -828,7 +818,7 @@ ErrorCode DebugSessionImpl::onQueryLaunchSuccess(Session &, ProcessId) const {
 }
 
 ErrorCode DebugSessionImpl::onAttach(Session &session, ProcessId pid,
-                                     AttachMode mode, StopCode &stop) {
+                                     AttachMode mode, StopInfo &stop) {
   if (_process != nullptr)
     return kErrorAlreadyExist;
 
@@ -847,7 +837,7 @@ ErrorCode DebugSessionImpl::onAttach(Session &session, ProcessId pid,
 ErrorCode
 DebugSessionImpl::onResume(Session &session,
                            ThreadResumeAction::Collection const &actions,
-                           StopCode &stop) {
+                           StopInfo &stop) {
   ErrorCode error;
   ThreadResumeAction globalAction;
   bool hasGlobalAction = false;
@@ -968,7 +958,7 @@ DebugSessionImpl::onResume(Session &session,
       session,
       ProcessThreadId(_process->pid(), _process->currentThread()->tid()), stop);
 
-  if (stop.event == StopCode::kCleanExit || stop.event == StopCode::kSignalExit)
+  if (stop.event == StopInfo::kEventExit || stop.event == StopInfo::kEventKill)
     _spawner.flushAndExit();
 
 ret:
@@ -996,7 +986,7 @@ ErrorCode DebugSessionImpl::onDetach(Session &, ProcessId, bool stopped) {
 
 ErrorCode DebugSessionImpl::onTerminate(Session &session,
                                         ProcessThreadId const &ptid,
-                                        StopCode &stop) {
+                                        StopInfo &stop) {
   ErrorCode error;
 
   error = _process->terminate();
@@ -1102,7 +1092,7 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
 }
 
 ErrorCode DebugSessionImpl::fetchStopInfoForAllThreads(
-    Session &session, std::vector<StopCode> &stops, StopCode &processStop) {
+    Session &session, std::vector<StopInfo> &stops, StopInfo &processStop) {
   ErrorCode error =
       onQueryThreadStopInfo(session, ProcessThreadId(), processStop);
   if (error != kSuccess) {
@@ -1110,7 +1100,7 @@ ErrorCode DebugSessionImpl::fetchStopInfoForAllThreads(
   }
 
   for (auto const &tid : processStop.threads) {
-    StopCode stop;
+    StopInfo stop;
     onQueryThreadStopInfo(session, ProcessThreadId(kAnyProcessId, tid), stop);
     stops.push_back(stop);
   }
@@ -1120,8 +1110,8 @@ ErrorCode DebugSessionImpl::fetchStopInfoForAllThreads(
 
 ErrorCode DebugSessionImpl::createThreadsStopInfo(Session &session,
                                                   JSArray &threadsStopInfo) {
-  StopCode processStop;
-  std::vector<StopCode> stops;
+  StopInfo processStop;
+  std::vector<StopInfo> stops;
   ErrorCode error = fetchStopInfoForAllThreads(session, stops, processStop);
   if (error != kSuccess) {
     return error;

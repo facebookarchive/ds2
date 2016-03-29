@@ -70,12 +70,12 @@ protected: // Debugging Session
                                 RegisterInfo &info) const override;
 
   ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
-                     StopCode &stop) override;
+                     StopInfo &stop) override;
   ErrorCode onAttach(Session &session, std::string const &name, AttachMode mode,
-                     StopCode &stop) override;
+                     StopInfo &stop) override;
   ErrorCode onRunAttach(Session &session, std::string const &filename,
                         StringCollection const &arguments,
-                        StopCode &stop) override;
+                        StopInfo &stop) override;
   ErrorCode onDetach(Session &session, ProcessId pid, bool stopped) override;
   ErrorCode onQueryAttached(Session &session, ProcessId pid,
                             bool &attachedProcess) const override;
@@ -97,7 +97,7 @@ protected: // Debugging Session
   ErrorCode onRestart(Session &session, ProcessId pid) override;
   ErrorCode onInterrupt(Session &session) override;
   ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
-                        StopCode &stop) override;
+                        StopInfo &stop) override;
   ErrorCode onTerminate(Session &session, ProcessId pid) override;
 
   ErrorCode onSynchronizeThreadState(Session &session, ProcessId pid) override;
@@ -111,7 +111,7 @@ protected: // Debugging Session
                               ThreadId &tid) const override;
 
   ErrorCode onQueryThreadStopInfo(Session &session, ProcessThreadId const &ptid,
-                                  StopCode &stop) const override;
+                                  StopInfo &stop) const override;
 
   ErrorCode onQueryCurrentThread(Session &session,
                                  ProcessThreadId &ptid) const override;
@@ -135,7 +135,7 @@ protected: // Debugging Session
 
   ErrorCode onResume(Session &session,
                      ThreadResumeAction::Collection const &actions,
-                     StopCode &stop) override;
+                     StopInfo &stop) override;
 
   ErrorCode
   onReadGeneralRegisters(Session &session, ProcessThreadId const &ptid,
@@ -192,8 +192,8 @@ protected: // Debugging Session
                         std::string const &annex, uint64_t offset,
                         std::string const &buffer, size_t &nwritten) override;
   ErrorCode fetchStopInfoForAllThreads(Session &session,
-                                       std::vector<StopCode> &stops,
-                                       StopCode &processStop) override;
+                                       std::vector<StopInfo> &stops,
+                                       StopInfo &processStop) override;
   ErrorCode createThreadsStopInfo(Session &session,
                                   JSArray &threadsStopInfo) override;
 

@@ -275,7 +275,7 @@ void Session::Handle_ExclamationMark(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_QuestionMark(ProtocolInterpreter::Handler const &,
                                   std::string const &) {
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error =
       _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), stop);
   if (error != kSuccess) {
@@ -402,7 +402,7 @@ void Session::Handle_bc(ProtocolInterpreter::Handler const &,
   ThreadResumeAction::Collection actions;
   actions.push_back(action);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onResume(*this, actions, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -432,7 +432,7 @@ void Session::Handle_bs(ProtocolInterpreter::Handler const &,
   ThreadResumeAction::Collection actions;
   actions.push_back(action);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onResume(*this, actions, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -496,7 +496,7 @@ void Session::Handle_C(ProtocolInterpreter::Handler const &,
   ThreadResumeAction::Collection actions;
   actions.push_back(action);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onResume(*this, actions, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -552,7 +552,7 @@ void Session::Handle_c(ProtocolInterpreter::Handler const &,
   ThreadResumeAction::Collection actions;
   actions.push_back(action);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onResume(*this, actions, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -769,7 +769,7 @@ void Session::Handle_I(ProtocolInterpreter::Handler const &,
   ThreadResumeAction::Collection actions;
   actions.push_back(action);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onResume(*this, actions, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -814,7 +814,7 @@ void Session::Handle_i(ProtocolInterpreter::Handler const &,
   ThreadResumeAction::Collection actions;
   actions.push_back(action);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onResume(*this, actions, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -838,8 +838,8 @@ void Session::Handle_i(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
                                   std::string const &) {
-  StopCode processStop;
-  std::vector<StopCode> stops;
+  StopInfo processStop;
+  std::vector<StopInfo> stops;
   ErrorCode error =
       _delegate->fetchStopInfoForAllThreads(*this, stops, processStop);
   if (error != kSuccess) {
@@ -869,7 +869,7 @@ void Session::Handle_jThreadsInfo(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_k(ProtocolInterpreter::Handler const &,
                        std::string const &) {
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onTerminate(*this, ProcessThreadId(), stop);
   if (error != kSuccess) {
     sendError(error);
@@ -2304,7 +2304,7 @@ void Session::Handle_qThreadStopInfo(ProtocolInterpreter::Handler const &,
   ProcessThreadId ptid;
   ptid.tid = strtoull(args.c_str(), nullptr, 16);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onQueryThreadStopInfo(*this, ptid, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -2700,7 +2700,7 @@ void Session::Handle_S(ProtocolInterpreter::Handler const &,
   ThreadResumeAction::Collection actions;
   actions.push_back(action);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onResume(*this, actions, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -2756,7 +2756,7 @@ void Session::Handle_s(ProtocolInterpreter::Handler const &,
   ThreadResumeAction::Collection actions;
   actions.push_back(action);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onResume(*this, actions, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -2829,7 +2829,7 @@ void Session::Handle_t(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_vAttach(ProtocolInterpreter::Handler const &,
                              std::string const &args) {
-  StopCode stop;
+  StopInfo stop;
   ProcessId pid = std::strtoul(args.c_str(), nullptr, 16);
   ErrorCode error = _delegate->onAttach(*this, pid, kAttachNow, stop);
   if (error != kSuccess) {
@@ -2854,7 +2854,7 @@ void Session::Handle_vAttach(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_vAttachName(ProtocolInterpreter::Handler const &,
                                  std::string const &args) {
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error =
       _delegate->onAttach(*this, HexToString(args), kAttachNow, stop);
   if (error != kSuccess) {
@@ -2880,7 +2880,7 @@ void Session::Handle_vAttachName(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_vAttachOrWait(ProtocolInterpreter::Handler const &,
                                    std::string const &args) {
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error =
       _delegate->onAttach(*this, HexToString(args), kAttachOrWait, stop);
   if (error != kSuccess) {
@@ -2905,7 +2905,7 @@ void Session::Handle_vAttachOrWait(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_vAttachWait(ProtocolInterpreter::Handler const &,
                                  std::string const &args) {
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error =
       _delegate->onAttach(*this, HexToString(args), kAttachAndWait, stop);
   if (error != kSuccess) {
@@ -2987,7 +2987,7 @@ void Session::Handle_vCont(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onResume(*this, actions, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -3230,7 +3230,7 @@ void Session::Handle_vKill(ProtocolInterpreter::Handler const &,
                            std::string const &args) {
   ProcessId pid = std::strtoul(args.c_str(), nullptr, 16);
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onTerminate(*this, pid, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -3266,7 +3266,7 @@ void Session::Handle_vRun(ProtocolInterpreter::Handler const &,
     }
   });
 
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error = _delegate->onRunAttach(*this, filename, arguments, stop);
   if (error != kSuccess) {
     sendError(error);
@@ -3290,7 +3290,7 @@ void Session::Handle_vRun(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_vStopped(ProtocolInterpreter::Handler const &,
                               std::string const &) {
-  StopCode stop;
+  StopInfo stop;
   ErrorCode error =
       _delegate->onQueryThreadStopInfo(*this, ProcessThreadId(), stop);
   if (error != kSuccess && error != kErrorNotFound) {

@@ -72,12 +72,12 @@ protected: // Debugging Session
                                         RegisterInfo &info) const = 0;
 
   virtual ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
-                             StopCode &) = 0;
+                             StopInfo &stop) = 0;
   virtual ErrorCode onAttach(Session &session, std::string const &name,
-                             AttachMode mode, StopCode &) = 0;
+                             AttachMode mode, StopInfo &stop) = 0;
   virtual ErrorCode onRunAttach(Session &session, std::string const &filename,
                                 StringCollection const &arguments,
-                                StopCode &stop) = 0;
+                                StopInfo &stop) = 0;
   virtual ErrorCode onDetach(Session &session, ProcessId pid, bool stopped) = 0;
   virtual ErrorCode onQueryAttached(Session &session, ProcessId pid,
                                     bool &attachedProcess) const = 0;
@@ -85,7 +85,7 @@ protected: // Debugging Session
                                        ProcessInfo &info) const = 0;
   virtual ErrorCode onQueryThreadStopInfo(Session &session,
                                           ProcessThreadId const &ptid,
-                                          StopCode &stop) const = 0;
+                                          StopInfo &stop) const = 0;
 
   virtual ErrorCode onQueryHardwareWatchpointCount(Session &session,
                                                    size_t &count) const = 0;
@@ -104,7 +104,7 @@ protected: // Debugging Session
   virtual ErrorCode onRestart(Session &session, ProcessId pid) = 0;
   virtual ErrorCode onInterrupt(Session &session) = 0;
   virtual ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
-                                StopCode &stop) = 0;
+                                StopInfo &stop) = 0;
   virtual ErrorCode onTerminate(Session &session, ProcessId pid) = 0;
 
   virtual ErrorCode onSynchronizeThreadState(Session &session,
@@ -147,7 +147,7 @@ protected: // Debugging Session
 
   virtual ErrorCode onResume(Session &session,
                              ThreadResumeAction::Collection const &actions,
-                             StopCode &stop) = 0;
+                             StopInfo &stop) = 0;
 
   virtual ErrorCode
   onReadGeneralRegisters(Session &session, ProcessThreadId const &ptid,
@@ -212,9 +212,11 @@ protected: // Debugging Session
                                 std::string const &annex, uint64_t offset,
                                 std::string const &buffer,
                                 size_t &nwritten) = 0;
+
+protected:
   virtual ErrorCode fetchStopInfoForAllThreads(Session &session,
-                                               std::vector<StopCode> &stops,
-                                               StopCode &processStop) = 0;
+                                               std::vector<StopInfo> &stops,
+                                               StopInfo &processStop) = 0;
   virtual ErrorCode createThreadsStopInfo(Session &session,
                                           JSArray &threadsStopInfo) = 0;
 

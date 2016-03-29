@@ -71,7 +71,7 @@ protected:
   ErrorCode onQueryHardwareWatchpointCount(Session &session,
                                            size_t &count) const override;
   ErrorCode onQueryThreadStopInfo(Session &session, ProcessThreadId const &ptid,
-                                  StopCode &stop) const override;
+                                  StopInfo &stop) const override;
 
   ErrorCode onQueryThreadList(Session &session, ProcessId pid, ThreadId lastTid,
                               ThreadId &tid) const override;
@@ -137,14 +137,14 @@ protected:
 
 protected:
   ErrorCode onAttach(Session &session, ProcessId pid, AttachMode mode,
-                     StopCode &stop) override;
+                     StopInfo &stop) override;
 
 protected:
   ErrorCode onResume(Session &session,
                      ThreadResumeAction::Collection const &actions,
-                     StopCode &stop) override;
+                     StopInfo &stop) override;
   ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
-                        StopCode &stop) override;
+                        StopInfo &stop) override;
   ErrorCode onDetach(Session &session, ProcessId pid, bool stopped) override;
 
 protected:
@@ -159,12 +159,12 @@ protected:
 protected:
   Target::Thread *findThread(ProcessThreadId const &ptid) const;
   ErrorCode queryStopCode(Session &session, ProcessThreadId const &ptid,
-                          StopCode &stop) const;
+                          StopInfo &stop) const;
 
 protected:
   ErrorCode fetchStopInfoForAllThreads(Session &session,
-                                       std::vector<StopCode> &stops,
-                                       StopCode &processStop) override;
+                                       std::vector<StopInfo> &stops,
+                                       StopInfo &processStop) override;
   ErrorCode createThreadsStopInfo(Session &session,
                                   JSArray &threadsStopInfo) override;
 
