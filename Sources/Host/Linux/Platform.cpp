@@ -27,7 +27,7 @@ char const *Platform::GetOSTypeName() {
 #if defined(PLATFORM_ANDROID)
   return "linux-android";
 #elif defined(PLATFORM_TIZEN)
-  return "linux-tizen";
+  return "linux-gnueabi";
 #else
   return "linux";
 #endif
