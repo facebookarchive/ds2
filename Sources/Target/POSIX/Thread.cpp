@@ -32,7 +32,6 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     _stopInfo.status = WEXITSTATUS(waitStatus);
   } else if (WIFSIGNALED(waitStatus)) {
     _stopInfo.event = StopInfo::kEventKill;
-    _stopInfo.status = WEXITSTATUS(waitStatus);
     _stopInfo.signal = WTERMSIG(waitStatus);
   } else if (WIFSTOPPED(waitStatus)) {
     _stopInfo.event = StopInfo::kEventStop;
