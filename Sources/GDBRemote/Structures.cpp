@@ -169,16 +169,12 @@ std::string StopInfo::reasonToString() const {
   switch (reason) {
   case StopInfo::kReasonNone:
     return "none";
-  case StopInfo::kReasonTrace:
-    return "trace";
   case StopInfo::kReasonBreakpoint:
     return "breakpoint";
   case StopInfo::kReasonSignalStop:
     return "signal";
   case StopInfo::kReasonTrap:
     return "trap";
-  case StopInfo::kReasonException:
-    return "exception";
   case StopInfo::kReasonWatchpoint:
     return "watch";
   case StopInfo::kReasonRegisterWatchpoint:
@@ -188,8 +184,6 @@ std::string StopInfo::reasonToString() const {
   case StopInfo::kReasonLibraryLoad:
   case StopInfo::kReasonLibraryUnload:
     return "library";
-  case StopInfo::kReasonReplayLog:
-    return "replaylog";
   default:
     DS2_UNREACHABLE();
   }
@@ -219,15 +213,12 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode) const {
   case StopInfo::kReasonAddressWatchpoint:
   case StopInfo::kReasonLibraryLoad:
   case StopInfo::kReasonLibraryUnload:
-  case StopInfo::kReasonReplayLog:
     ss << ';' << reasonToString() << ':' << 1;
     break;
 
-  case StopInfo::kReasonTrace:
   case StopInfo::kReasonBreakpoint:
   case StopInfo::kReasonSignalStop:
   case StopInfo::kReasonTrap:
-  case StopInfo::kReasonException:
     if (mode == kCompatibilityModeLLDB)
       ss << ';' << "reason:" << reasonToString();
     break;

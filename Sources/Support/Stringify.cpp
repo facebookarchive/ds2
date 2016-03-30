@@ -63,11 +63,8 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_STRINGIFY(StopInfo::kReasonAddressWatchpoint)
     DO_STRINGIFY(StopInfo::kReasonLibraryLoad)
     DO_STRINGIFY(StopInfo::kReasonLibraryUnload)
-    DO_STRINGIFY(StopInfo::kReasonReplayLog)
     DO_STRINGIFY(StopInfo::kReasonBreakpoint)
-    DO_STRINGIFY(StopInfo::kReasonTrace)
     DO_STRINGIFY(StopInfo::kReasonSignalStop)
-    DO_STRINGIFY(StopInfo::kReasonException)
     DO_STRINGIFY(StopInfo::kReasonTrap)
     DO_DEFAULT("unknown StopInfo reason", reason);
   }
