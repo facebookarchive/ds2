@@ -51,6 +51,15 @@ private:
   void encodeRegisters(std::map<std::string, std::string> &regs,
                        bool hexIndex) const;
   std::string encodeRegisters() const;
+
+public:
+  inline void clear() {
+    ptid.clear();
+    threadName.clear();
+    registers.clear();
+    threads.clear();
+    ds2::StopInfo::clear();
+  }
 };
 
 enum ResumeAction {
