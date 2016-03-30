@@ -102,6 +102,11 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       _stopInfo.reason = StopInfo::kReasonMemoryError;
       break;
 
+    case EXCEPTION_DATATYPE_MISALIGNMENT:
+      _stopInfo.event = StopInfo::kEventStop;
+      _stopInfo.reason = StopInfo::kReasonMemoryAlignment;
+      break;
+
     case EXCEPTION_FLT_DENORMAL_OPERAND:
     case EXCEPTION_FLT_DIVIDE_BY_ZERO:
     case EXCEPTION_FLT_INEXACT_RESULT:

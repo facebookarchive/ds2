@@ -106,6 +106,7 @@ struct StopInfo {
     kReasonTrap,
 #if defined(OS_WIN32)
     kReasonMemoryError,
+    kReasonMemoryAlignment,
     kReasonMathError,
     kReasonInstructionError,
     kReasonLibraryEvent,

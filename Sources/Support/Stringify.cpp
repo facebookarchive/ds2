@@ -66,6 +66,7 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_STRINGIFY(StopInfo::kReasonTrap)
 #if defined(OS_WIN32)
     DO_STRINGIFY(StopInfo::kReasonMemoryError)
+    DO_STRINGIFY(StopInfo::kReasonMemoryAlignment)
     DO_STRINGIFY(StopInfo::kReasonMathError)
     DO_STRINGIFY(StopInfo::kReasonInstructionError)
     DO_STRINGIFY(StopInfo::kReasonLibraryEvent)

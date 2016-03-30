@@ -183,6 +183,7 @@ std::string StopInfo::reasonToString() const {
     return "awatch";
 #if defined(OS_WIN32)
   case StopInfo::kReasonMemoryError:
+  case StopInfo::kReasonMemoryAlignment:
   case StopInfo::kReasonMathError:
   case StopInfo::kReasonInstructionError:
     return "";
@@ -231,6 +232,7 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode) const {
 
 #if defined(OS_WIN32)
   case StopInfo::kReasonMemoryError:
+  case StopInfo::kReasonMemoryAlignment:
   case StopInfo::kReasonMathError:
   case StopInfo::kReasonInstructionError:
     break;
@@ -338,6 +340,9 @@ std::string StopInfo::encode(CompatibilityMode mode) const {
       break;
     case StopInfo::kReasonMemoryError:
       ss << 11; // SIGSEGV
+      break;
+    case StopInfo::kReasonMemoryAlignment:
+      ss << 7; // SIGBUS
       break;
     case StopInfo::kReasonMathError:
       ss << 8; // SIGFPE
