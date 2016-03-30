@@ -101,8 +101,6 @@ struct StopInfo {
     kReasonWatchpoint,
     kReasonRegisterWatchpoint,
     kReasonAddressWatchpoint,
-    kReasonLibraryLoad,
-    kReasonLibraryUnload,
     kReasonBreakpoint,
     kReasonSignalStop, // TODO better name
     kReasonTrap,
@@ -110,6 +108,7 @@ struct StopInfo {
     kReasonMemoryError,
     kReasonMathError,
     kReasonInstructionError,
+    kReasonLibraryEvent,
 #endif
   };
 

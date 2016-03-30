@@ -181,14 +181,13 @@ std::string StopInfo::reasonToString() const {
     return "rwatch";
   case StopInfo::kReasonAddressWatchpoint:
     return "awatch";
-  case StopInfo::kReasonLibraryLoad:
-  case StopInfo::kReasonLibraryUnload:
-    return "library";
 #if defined(OS_WIN32)
   case StopInfo::kReasonMemoryError:
   case StopInfo::kReasonMathError:
   case StopInfo::kReasonInstructionError:
     return "";
+  case StopInfo::kReasonLibraryEvent:
+    return "library";
 #endif
   default:
     DS2_UNREACHABLE();
@@ -217,8 +216,9 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode) const {
   case StopInfo::kReasonWatchpoint:
   case StopInfo::kReasonRegisterWatchpoint:
   case StopInfo::kReasonAddressWatchpoint:
-  case StopInfo::kReasonLibraryLoad:
-  case StopInfo::kReasonLibraryUnload:
+#if defined(OS_WIN32)
+  case StopInfo::kReasonLibraryEvent:
+#endif
     ss << ';' << reasonToString() << ':' << 1;
     break;
 
@@ -330,8 +330,7 @@ std::string StopInfo::encode(CompatibilityMode mode) const {
     // needs some sort of emulation for these.
     switch (reason) {
     case StopInfo::kReasonNone:
-    case StopInfo::kReasonLibraryLoad:
-    case StopInfo::kReasonLibraryUnload:
+    case StopInfo::kReasonLibraryEvent:
       ss << 0;
       break;
     case StopInfo::kReasonBreakpoint:

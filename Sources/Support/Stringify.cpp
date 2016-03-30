@@ -61,8 +61,6 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_STRINGIFY(StopInfo::kReasonWatchpoint)
     DO_STRINGIFY(StopInfo::kReasonRegisterWatchpoint)
     DO_STRINGIFY(StopInfo::kReasonAddressWatchpoint)
-    DO_STRINGIFY(StopInfo::kReasonLibraryLoad)
-    DO_STRINGIFY(StopInfo::kReasonLibraryUnload)
     DO_STRINGIFY(StopInfo::kReasonBreakpoint)
     DO_STRINGIFY(StopInfo::kReasonSignalStop)
     DO_STRINGIFY(StopInfo::kReasonTrap)
@@ -70,6 +68,7 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_STRINGIFY(StopInfo::kReasonMemoryError)
     DO_STRINGIFY(StopInfo::kReasonMathError)
     DO_STRINGIFY(StopInfo::kReasonInstructionError)
+    DO_STRINGIFY(StopInfo::kReasonLibraryEvent)
 #endif
     DO_DEFAULT("unknown StopInfo reason", reason);
   }

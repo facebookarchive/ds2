@@ -181,14 +181,14 @@ void Thread::updateState(DEBUG_EVENT const &de) {
 
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
-    _stopInfo.reason = StopInfo::kReasonLibraryLoad;
+    _stopInfo.reason = StopInfo::kReasonLibraryEvent;
   } break;
 
   case UNLOAD_DLL_DEBUG_EVENT:
     DS2LOG(Debug, "DLL unloaded, base=%p", de.u.UnloadDll.lpBaseOfDll);
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
-    _stopInfo.reason = StopInfo::kReasonLibraryUnload;
+    _stopInfo.reason = StopInfo::kReasonLibraryEvent;
     break;
 
   case OUTPUT_DEBUG_STRING_EVENT:
