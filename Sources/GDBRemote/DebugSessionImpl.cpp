@@ -180,7 +180,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
 
   // Directly copy the fields that are common between ds2::StopInfo and
   // ds2::GDBRemote::StopInfo.
-  static_cast<ds2::StopInfo &>(stop) = thread->stopInfo();
+  stop = thread->stopInfo();
 
   stop.ptid.pid = thread->process()->pid();
   stop.ptid.tid = thread->tid();

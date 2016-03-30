@@ -33,6 +33,17 @@ struct MemoryRegionInfo : public ds2::MemoryRegionInfo {
 };
 
 struct StopInfo : public ds2::StopInfo {
+public:
+  // Allow copying and constructing from a ds2::StopInfo directly.
+  StopInfo() = default;
+  StopInfo(ds2::StopInfo const &info) : ds2::StopInfo(info) {}
+  StopInfo &operator=(ds2::StopInfo const &info) {
+    clear();
+    new (this) ds2::StopInfo(info);
+    return *this;
+  }
+
+public:
   ProcessThreadId ptid;
   std::string threadName;
   Architecture::GPRegisterStopMap registers;
