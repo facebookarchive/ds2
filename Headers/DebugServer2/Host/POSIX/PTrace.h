@@ -133,6 +133,14 @@ public:
   virtual int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) = 0;
   virtual int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) = 0;
   virtual int getMaxWatchpointSize(ProcessThreadId const &ptid) = 0;
+
+public:
+  virtual ErrorCode writeHardwareBreakpoint(ProcessThreadId const &ptid,
+                                            uint32_t addr, uint32_t ctrl,
+                                            size_t idx) = 0;
+  virtual ErrorCode writeHardwareWatchpoint(ProcessThreadId const &ptid,
+                                            uint32_t addr, uint32_t ctrl,
+                                            size_t idx) = 0;
 #endif
 
   virtual ErrorCode ptidToPid(ProcessThreadId const &ptid, pid_t &pid);
