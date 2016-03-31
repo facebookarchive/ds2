@@ -1019,15 +1019,40 @@ ErrorCode DebugSessionImpl::onInsertBreakpoint(
   //    if (session.mode() != kCompatibilityModeLLDB)
   //        return kErrorUnsupported;
 
-  if (type != kSoftwareBreakpoint)
-    return kErrorUnsupported;
+  BreakpointManager *bpm = nullptr;
+  BreakpointManager::Mode mode;
+  switch (type) {
+  case kSoftwareBreakpoint:
+    bpm = _process->softwareBreakpointManager();
+    mode = BreakpointManager::kModeExec;
+    break;
 
-  SoftwareBreakpointManager *bpm = _process->softwareBreakpointManager();
+  case kHardwareBreakpoint:
+    bpm = _process->hardwareBreakpointManager();
+    mode = BreakpointManager::kModeExec;
+    break;
+
+  case kReadWatchpoint:
+    bpm = _process->hardwareBreakpointManager();
+    mode = BreakpointManager::kModeRead;
+    break;
+
+  case kWriteWatchpoint:
+    bpm = _process->hardwareBreakpointManager();
+    mode = BreakpointManager::kModeWrite;
+    break;
+
+  case kAccessWatchpoint:
+    bpm = _process->hardwareBreakpointManager();
+    mode = static_cast<BreakpointManager::Mode>(BreakpointManager::kModeRead |
+                                                BreakpointManager::kModeWrite);
+    break;
+  }
+
   if (bpm == nullptr)
     return kErrorUnsupported;
 
-  return bpm->add(address, BreakpointManager::kTypePermanent, size,
-                  BreakpointManager::kModeExec);
+  return bpm->add(address, BreakpointManager::kTypePermanent, size, mode);
 }
 
 ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
