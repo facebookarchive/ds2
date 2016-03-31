@@ -32,7 +32,8 @@ public:
   void clear() override;
 
 public:
-  ErrorCode add(Address const &address, Type type, size_t size) override;
+  ErrorCode add(Address const &address, Type type, size_t size,
+                Mode mode) override;
 
 protected:
   void enableLocation(Site const &site) override;

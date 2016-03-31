@@ -22,13 +22,16 @@ BreakpointManager::~BreakpointManager() {
 
 void BreakpointManager::clear() { _sites.clear(); }
 
-ErrorCode BreakpointManager::add(Address const &address, Type type,
-                                 size_t size) {
+ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
+                                 Mode mode) {
   if (!address.valid())
     return kErrorInvalidArgument;
 
   auto it = _sites.find(address);
   if (it != _sites.end()) {
+    if (it->second.mode != mode)
+      return kErrorInvalidArgument;
+
     it->second.type = static_cast<Type>(it->second.type | type);
     if (type == kTypePermanent)
       ++it->second.refs;
@@ -40,6 +43,7 @@ ErrorCode BreakpointManager::add(Address const &address, Type type,
       ++site.refs;
     site.address = address;
     site.type = type;
+    site.mode = mode;
     site.size = size;
 
     //

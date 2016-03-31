@@ -22,6 +22,12 @@ public:
   HardwareBreakpointManager(Target::Process *process);
   ~HardwareBreakpointManager() override;
 
+public:
+  virtual ErrorCode add(Address const &address, Type type, size_t size,
+                        Mode mode) override {
+    return kErrorUnsupported;
+  };
+
 protected:
   virtual bool hit(Target::Thread *thread) override { return false; };
 

@@ -25,6 +25,12 @@ public:
     kTypeTemporaryUntilHit = (1 << 2),
   };
 
+  enum Mode : unsigned int {
+    kModeExec = (1 << 0),
+    kModeRead = (1 << 1),
+    kModeWrite = (1 << 2),
+  };
+
 public:
   struct Site {
   protected:
@@ -34,6 +40,7 @@ public:
   public:
     Address address;
     Type type;
+    Mode mode;
     size_t size;
   };
 
@@ -59,7 +66,8 @@ public:
   virtual void clear();
 
 public:
-  virtual ErrorCode add(Address const &address, Type type, size_t size);
+  virtual ErrorCode add(Address const &address, Type type, size_t size,
+                        Mode mode);
   virtual ErrorCode remove(Address const &address);
 
 public:

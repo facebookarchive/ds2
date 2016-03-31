@@ -34,9 +34,12 @@ void SoftwareBreakpointManager::clear() {
 }
 
 ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
-                                         size_t size) {
+                                         size_t size, Mode mode) {
   DS2ASSERT(size == 0 || size == 1);
-  return super::add(address, type, size);
+  if (mode != kModeExec)
+    return kErrorInvalidArgument;
+
+  return super::add(address, type, size, mode);
 }
 
 bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
