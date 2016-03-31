@@ -45,6 +45,10 @@ typedef SSIZE_T ssize_t;
 #error "Target not supported."
 #endif
 
+#if defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_DARWIN)
+#define OS_POSIX
+#endif
+
 #if defined(__TIZEN__)
 #define PLATFORM_TIZEN
 #elif defined(__ANDROID__)
