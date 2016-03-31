@@ -87,8 +87,8 @@ protected:
 protected:
   virtual void enable();
   virtual void disable();
-  virtual void enableLocation(Site const &site) = 0;
-  virtual void disableLocation(Site const &site) = 0;
+  virtual ErrorCode enableLocation(Site const &site) = 0;
+  virtual ErrorCode disableLocation(Site const &site) = 0;
 };
 }
 

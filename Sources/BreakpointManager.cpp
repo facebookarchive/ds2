@@ -24,6 +24,8 @@ void BreakpointManager::clear() { _sites.clear(); }
 
 ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
                                  Mode mode) {
+  ErrorCode error = kSuccess;
+
   if (!address.valid())
     return kErrorInvalidArgument;
 
@@ -51,13 +53,15 @@ ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
     // the newly added breakpoint too.
     //
     if (_enabled)
-      enableLocation(site);
+      error = enableLocation(site);
   }
 
-  return kSuccess;
+  return error;
 }
 
 ErrorCode BreakpointManager::remove(Address const &address) {
+  ErrorCode error = kSuccess;
+
   if (!address.valid())
     return kErrorInvalidArgument;
 
@@ -93,9 +97,9 @@ do_remove:
   // the newly removed breakpoint too.
   //
   if (_enabled)
-    disableLocation(it->second);
+    error = disableLocation(it->second);
   _sites.erase(it);
-  return kSuccess;
+  return error;
 }
 
 bool BreakpointManager::has(Address const &address) const {

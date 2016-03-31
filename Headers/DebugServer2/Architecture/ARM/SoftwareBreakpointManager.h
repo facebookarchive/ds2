@@ -47,8 +47,8 @@ protected:
   virtual void getOpcode(uint32_t type, std::string &opcode) const;
 
 protected:
-  virtual void enableLocation(Site const &site) override;
-  virtual void disableLocation(Site const &site) override;
+  virtual ErrorCode enableLocation(Site const &site) override;
+  virtual ErrorCode disableLocation(Site const &site) override;
 
 protected:
   friend Target::ProcessBase;
