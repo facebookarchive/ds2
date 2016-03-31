@@ -29,8 +29,8 @@ public:
   virtual void clear() override;
 
 public:
-  virtual ErrorCode add(Address const &address, Type type,
-                        size_t size) override;
+  virtual ErrorCode add(Address const &address, Type type, size_t size,
+                        Mode mode) override;
   virtual ErrorCode remove(Address const &address) override;
 
 public:
