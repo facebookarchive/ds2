@@ -70,7 +70,7 @@ bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
   return false;
 }
 
-void SoftwareBreakpointManager::enableLocation(Site const &site) {
+ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
   uint8_t const opcode = 0xcc; // int 3
   uint8_t old;
   ErrorCode error;
@@ -79,23 +79,25 @@ void SoftwareBreakpointManager::enableLocation(Site const &site) {
   if (error != kSuccess) {
     DS2LOG(Error, "cannot enable breakpoint at %#lx",
            (unsigned long)site.address.value());
-    return;
+    return error;
   }
 
   error = _process->writeMemory(site.address, &opcode, sizeof(opcode));
   if (error != kSuccess) {
     DS2LOG(Error, "cannot enable breakpoint at %#lx",
            (unsigned long)site.address.value());
-    return;
+    return error;
   }
 
   DS2LOG(Debug, "set breakpoint instruction %#x at %#lx (saved insn %#x)",
          opcode, (unsigned long)site.address.value(), old);
 
   _insns[site.address] = old;
+
+  return kSuccess;
 }
 
-void SoftwareBreakpointManager::disableLocation(Site const &site) {
+ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site) {
   ErrorCode error;
   uint8_t old = _insns[site.address];
 
@@ -103,13 +105,15 @@ void SoftwareBreakpointManager::disableLocation(Site const &site) {
   if (error != kSuccess) {
     DS2LOG(Error, "cannot restore instruction at %#lx",
            (unsigned long)site.address.value());
-    return;
+    return error;
   }
 
   DS2LOG(Debug, "reset instruction %#x at %#lx", old,
          (unsigned long)site.address.value());
 
   _insns.erase(site.address);
+
+  return kSuccess;
 }
 }
 }

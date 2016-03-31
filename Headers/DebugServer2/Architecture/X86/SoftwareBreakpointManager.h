@@ -36,8 +36,8 @@ public:
                 Mode mode) override;
 
 protected:
-  void enableLocation(Site const &site) override;
-  void disableLocation(Site const &site) override;
+  ErrorCode enableLocation(Site const &site) override;
+  ErrorCode disableLocation(Site const &site) override;
 
 protected:
   friend Target::ProcessBase;
