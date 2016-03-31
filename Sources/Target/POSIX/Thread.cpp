@@ -29,13 +29,13 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
 
   if (WIFEXITED(waitStatus)) {
     _stopInfo.event = StopInfo::kEventExit;
-    _stopInfo.status = WEXITSTATUS(waitStatus);
+    _stopInfo.setStatus(WEXITSTATUS(waitStatus));
   } else if (WIFSIGNALED(waitStatus)) {
     _stopInfo.event = StopInfo::kEventKill;
-    _stopInfo.signal = WTERMSIG(waitStatus);
+    _stopInfo.setSignal(WTERMSIG(waitStatus));
   } else if (WIFSTOPPED(waitStatus)) {
     _stopInfo.event = StopInfo::kEventStop;
-    _stopInfo.signal = WSTOPSIG(waitStatus);
+    _stopInfo.setSignal(WSTOPSIG(waitStatus));
   }
 
   return error;

@@ -108,14 +108,14 @@ ErrorCode Thread::resume(int signal, Address const &address) {
 
   if (_state == kStopped || _state == kStepped) {
     if (signal == 0) {
-      switch (_stopInfo.signal) {
+      switch (_stopInfo.getSignal()) {
       case SIGCHLD:
       case SIGSTOP:
       case SIGTRAP:
         signal = 0;
         break;
       default:
-        signal = _stopInfo.signal;
+        signal = _stopInfo.getSignal();
         break;
       }
     }
@@ -130,7 +130,7 @@ ErrorCode Thread::resume(int signal, Address const &address) {
                                        info, signal, address);
     if (error == kSuccess) {
       _state = kRunning;
-      _stopInfo.signal = 0;
+      _stopInfo.setSignal(0);
     }
   } else if (_state == kTerminated) {
     error = kErrorProcessNotFound;
@@ -221,12 +221,12 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) { // (2)
       // The only signal we are supposed to send to the inferior is a
       // SIGSTOP anyway.
-      DS2ASSERT(_stopInfo.signal == SIGSTOP);
+      DS2ASSERT(_stopInfo.getSignal() == SIGSTOP);
       _stopInfo.event = StopInfo::kEventNone;
     } else if (si.si_code == SI_USER && si.si_pid == 0 &&
-               _stopInfo.signal == SIGSTOP) { // (3)
+               _stopInfo.getSignal() == SIGSTOP) { // (3)
       _stopInfo.reason = StopInfo::kReasonTrap;
-    } else if (_stopInfo.signal == SIGTRAP) { // (4)
+    } else if (_stopInfo.getSignal() == SIGTRAP) { // (4)
       _stopInfo.reason = StopInfo::kReasonBreakpoint;
     } else {
       // This is not a signal that we originated. We can output a
@@ -236,7 +236,7 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
           si.si_pid != tid())
         DS2LOG(Warning,
                "tid %d received signal %s from an external source (sender=%d)",
-               tid(), strsignal(_stopInfo.signal), si.si_pid);
+               tid(), strsignal(_stopInfo.getSignal()), si.si_pid);
     }
   } break;
   }

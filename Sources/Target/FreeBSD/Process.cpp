@@ -241,7 +241,7 @@ continue_waiting:
       goto continue_waiting;
     }
 
-    signal = _currentThread->_stopInfo.signal;
+    signal = _currentThread->_stopInfo.getSignal();
 
     if (signal == SIGSTOP || signal == SIGCHLD || signal == SIGRTMIN) {
       //

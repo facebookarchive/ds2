@@ -113,14 +113,14 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   ErrorCode error = kSuccess;
   if (_state == kStopped || _state == kStepped) {
     if (signal == 0) {
-      switch (_stopInfo.signal) {
+      switch (_stopInfo.getSignal()) {
       case SIGCHLD:
       case SIGSTOP:
       case SIGTRAP:
         signal = 0;
         break;
       default:
-        signal = _stopInfo.signal;
+        signal = _stopInfo.getSignal();
         break;
       }
     }
@@ -135,7 +135,7 @@ ErrorCode Thread::resume(int signal, Address const &address) {
                                        info, signal, address);
     if (error == kSuccess) {
       _state = kRunning;
-      _stopInfo.signal = 0;
+      _stopInfo.setSignal(0);
     }
   } else if (_state == kTerminated) {
     error = kErrorProcessNotFound;
