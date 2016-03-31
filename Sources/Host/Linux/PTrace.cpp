@@ -372,6 +372,21 @@ ErrorCode PTrace::writeRegisterSet(ProcessThreadId const &ptid, int regSetCode,
 
   return kSuccess;
 }
+
+ErrorCode PTrace::writeUserData(ProcessThreadId const &ptid, uint64_t offset,
+                                uint64_t val) {
+  pid_t pid;
+
+  ErrorCode error = ptidToPid(ptid, pid);
+
+  if (error != kSuccess)
+    return error;
+
+  if (wrapPtrace(PTRACE_POKEUSER, pid, offset, val) < 0)
+    return Platform::TranslateError();
+
+  return kSuccess;
+}
 }
 }
 }
