@@ -23,8 +23,6 @@
 
 namespace ds2 {
 
-static const int kMaxHWStoppoints = 32;
-
 #if defined(ARCH_ARM) || defined(ARCH_ARM64)
 using Architecture::ARM::HardwareBreakpointManager;
 #elif defined(ARCH_X86) || defined(ARCH_X86_64)

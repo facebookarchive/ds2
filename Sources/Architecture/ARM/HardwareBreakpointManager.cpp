@@ -19,6 +19,8 @@ namespace ds2 {
 namespace Architecture {
 namespace ARM {
 
+static const int kMaxHWStoppoints = 32;
+
 HardwareBreakpointManager::HardwareBreakpointManager(Target::Process *process)
     : super(process), _maxBreakpoints(std::min(_process->getMaxBreakpoints(),
                                                kMaxHWStoppoints)),
