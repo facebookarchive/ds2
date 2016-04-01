@@ -15,6 +15,7 @@
 #define super ds2::Host::POSIX::PTrace
 
 #include <elf.h>
+#include <stddef.h>
 #include <sys/ptrace.h>
 #include <sys/uio.h>
 #include <sys/user.h>
@@ -225,6 +226,15 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   }
 
   return kSuccess;
+}
+
+ErrorCode PTrace::writeDebugReg(ProcessThreadId const &ptid, size_t idx,
+                                uint32_t val) {
+  size_t debug_offset = offsetof(struct user, u_debugreg);
+  size_t reg_size = sizeof(((struct user*) 0)->u_debugreg[idx]);
+  size_t reg_offset = debug_offset + (reg_size * idx);
+
+  return writeUserData(ptid, reg_offset, val);
 }
 }
 }

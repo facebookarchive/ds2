@@ -83,6 +83,10 @@ protected:
   void initCPUState(ProcessId pid);
   void doneCPUState();
 
+protected:
+  ErrorCode writeUserData(ProcessThreadId const &ptid, uint64_t offset,
+                          uint64_t val);
+
 // Debug register ptrace APIs only exist for Linux ARM
 #if defined(ARCH_ARM)
 private:
@@ -92,6 +96,20 @@ public:
   int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) override;
   int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) override;
   int getMaxWatchpointSize(ProcessThreadId const &ptid) override;
+
+private:
+  ErrorCode writeStoppoint(ProcessThreadId const &ptid, size_t idx,
+                           uint32_t *val);
+
+public:
+  ErrorCode writeHardwareBreakpoint(ProcessThreadId const &ptid, uint32_t addr,
+                                    uint32_t ctrl, size_t idx) override;
+  ErrorCode writeHardwareWatchpoint(ProcessThreadId const &ptid, uint32_t addr,
+                                    uint32_t ctrl, size_t idx) override;
+#elif defined(ARCH_X86)
+public:
+  ErrorCode writeDebugReg(ProcessThreadId const &ptid, size_t idx,
+                          uint32_t val);
 #endif
 
 public:

@@ -29,8 +29,8 @@ public:
   virtual void clear() override;
 
 public:
-  virtual ErrorCode add(Address const &address, Type type,
-                        size_t size) override;
+  virtual ErrorCode add(Address const &address, Type type, size_t size,
+                        Mode mode) override;
   virtual ErrorCode remove(Address const &address) override;
 
 public:
@@ -47,8 +47,8 @@ protected:
   virtual void getOpcode(uint32_t type, std::string &opcode) const;
 
 protected:
-  virtual void enableLocation(Site const &site) override;
-  virtual void disableLocation(Site const &site) override;
+  virtual ErrorCode enableLocation(Site const &site) override;
+  virtual ErrorCode disableLocation(Site const &site) override;
 
 protected:
   friend Target::ProcessBase;

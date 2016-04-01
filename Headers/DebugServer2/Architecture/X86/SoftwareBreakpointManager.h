@@ -32,11 +32,12 @@ public:
   void clear() override;
 
 public:
-  ErrorCode add(Address const &address, Type type, size_t size) override;
+  ErrorCode add(Address const &address, Type type, size_t size,
+                Mode mode) override;
 
 protected:
-  void enableLocation(Site const &site) override;
-  void disableLocation(Site const &site) override;
+  ErrorCode enableLocation(Site const &site) override;
+  ErrorCode disableLocation(Site const &site) override;
 
 protected:
   friend Target::ProcessBase;

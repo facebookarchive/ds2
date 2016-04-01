@@ -22,12 +22,23 @@ public:
   HardwareBreakpointManager(Target::Process *process);
   ~HardwareBreakpointManager() override;
 
+public:
+  virtual ErrorCode add(Address const &address, Type type, size_t size,
+                        Mode mode) override {
+    return kErrorUnsupported;
+  };
+
 protected:
   virtual bool hit(Target::Thread *thread) override { return false; };
 
 protected:
-  virtual void enableLocation(Site const &site) override{};
-  virtual void disableLocation(Site const &site) override{};
+  virtual ErrorCode enableLocation(Site const &site) override {
+    return kErrorUnsupported;
+  };
+
+  virtual ErrorCode disableLocation(Site const &site) override {
+    return kErrorUnsupported;
+  };
 
 public:
   virtual int maxWatchpoints();

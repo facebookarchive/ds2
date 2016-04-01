@@ -367,7 +367,8 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   if (branchPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(branchPCSize != 0);
     error = process()->softwareBreakpointManager()->add(
-        branchPC, BreakpointManager::kTypeTemporaryOneShot, branchPCSize);
+        branchPC, BreakpointManager::kTypeTemporaryOneShot, branchPCSize,
+        BreakpointManager::kModeExec);
     if (error != kSuccess)
       return error;
   }
@@ -375,7 +376,8 @@ ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
   if (nextPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(nextPCSize != 0);
     error = process()->softwareBreakpointManager()->add(
-        nextPC, BreakpointManager::kTypeTemporaryOneShot, nextPCSize);
+        nextPC, BreakpointManager::kTypeTemporaryOneShot, nextPCSize,
+        BreakpointManager::kModeExec);
     if (error != kSuccess)
       return error;
   }
