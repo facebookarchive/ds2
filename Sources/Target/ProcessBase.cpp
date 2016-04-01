@@ -16,6 +16,8 @@
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <list>
+
 namespace ds2 {
 namespace Target {
 
@@ -184,13 +186,14 @@ ErrorCode ProcessBase::beforeResume() {
   if (!isAlive())
     return kErrorProcessNotFound;
 
-  SoftwareBreakpointManager *bpm = softwareBreakpointManager();
-
   //
   // Enable breakpoints.
   //
-  if (bpm != nullptr) {
-    bpm->enable();
+  for (auto bpm : std::list<BreakpointManager *>{softwareBreakpointManager(),
+                                                 hardwareBreakpointManager()}) {
+    if (bpm != nullptr) {
+      bpm->enable();
+    }
   }
 
   return kSuccess;
@@ -202,18 +205,19 @@ ErrorCode ProcessBase::afterResume() {
 
   DS2LOG(Debug, "process still alive, _pid=%" PRIu64, (uint64_t)_pid);
 
-  SoftwareBreakpointManager *bpm = softwareBreakpointManager();
-
   //
   // Disable breakpoints and try to hit the breakpoint.
   //
-  if (bpm != nullptr) {
-    bpm->disable();
+  for (auto bpm : std::list<BreakpointManager *>{softwareBreakpointManager(),
+                                                 hardwareBreakpointManager()}) {
+    if (bpm != nullptr) {
+      bpm->disable();
 
-    for (auto it : _threads) {
-      if (bpm->hit(it.second)) {
-        DS2LOG(Debug, "hit breakpoint for tid %" PRIu64,
-               (uint64_t)it.second->tid());
+      for (auto it : _threads) {
+        if (bpm->hit(it.second)) {
+          DS2LOG(Debug, "hit breakpoint for tid %" PRIu64,
+                 (uint64_t)it.second->tid());
+        }
       }
     }
   }
