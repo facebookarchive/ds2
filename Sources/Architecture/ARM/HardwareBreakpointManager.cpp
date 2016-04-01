@@ -20,10 +20,8 @@ namespace Architecture {
 namespace ARM {
 
 HardwareBreakpointManager::HardwareBreakpointManager(Target::Process *process)
-    : super(process), _maxBreakpoints(std::min(_process->getMaxBreakpoints(),
-                                               kMaxHWStoppoints)),
-      _maxWatchpoints(
-          std::min(_process->getMaxBreakpoints(), kMaxHWStoppoints)),
+    : super(process), _maxBreakpoints(_process->getMaxBreakpoints()),
+      _maxWatchpoints(_process->getMaxBreakpoints()),
       _maxWatchpointSize(_process->getMaxWatchpointSize()) {}
 
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
