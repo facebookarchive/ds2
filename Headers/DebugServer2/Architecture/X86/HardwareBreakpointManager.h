@@ -45,6 +45,9 @@ public:
 
 protected:
   friend Target::ProcessBase;
+
+protected:
+  vector<bool> _locations;
 };
 }
 }
