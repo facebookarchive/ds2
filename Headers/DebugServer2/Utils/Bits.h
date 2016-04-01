@@ -91,6 +91,14 @@ template <typename T> static inline unsigned int PopCount(T number) {
   }
   return count;
 }
+
+template <typename T> static inline void EnableBit(T &number, int idx) {
+  number |= static_cast<typename std::make_unsigned<T>::type>(1) << idx;
+}
+
+template <typename T> static inline void DisableBit(T &number, int idx) {
+  number &= ~(static_cast<typename std::make_unsigned<T>::type>(1) << idx);
+}
 }
 }
 
