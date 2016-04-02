@@ -1065,10 +1065,20 @@ ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
   //    if (session.mode() != kCompatibilityModeLLDB)
   //        return kErrorUnsupported;
 
-  if (type != kSoftwareBreakpoint)
-    return kErrorUnsupported;
+  BreakpointManager *bpm = nullptr;
+  switch (type) {
+  case kSoftwareBreakpoint:
+    bpm = _process->softwareBreakpointManager();
+    break;
 
-  SoftwareBreakpointManager *bpm = _process->softwareBreakpointManager();
+  case kHardwareBreakpoint:
+  case kReadWatchpoint:
+  case kWriteWatchpoint:
+  case kAccessWatchpoint:
+    bpm = _process->hardwareBreakpointManager();
+    break;
+  }
+
   if (bpm == nullptr)
     return kErrorUnsupported;
 
