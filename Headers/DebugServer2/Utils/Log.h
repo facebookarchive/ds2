@@ -51,33 +51,6 @@ void Log(int level, char const *classname, char const *funcname,
   ds2::Log(ds2::kLogLevel##LVL, nullptr, __FUNCTION__, __VA_ARGS__)
 #endif
 
-// Provide usable 64-bit integer format strings on Windows.
-// This is required because Microsoft's implementation of the C language
-// doesn't support "%llu"; "%I64u" needs to be used instead. By defining these
-// here, we make sure that the rest of the project can use these format strings
-// without worrying about the underlying platform.
-#if defined(OS_WIN32)
-#if defined(PRIu64)
-#undef PRIu64
-#endif
-#define PRIu64 "I64u"
-
-#if defined(PRIi64)
-#undef PRIi64
-#endif
-#define PRIi64 "I64i"
-
-#if defined(PRId64)
-#undef PRId64
-#endif
-#define PRId64 "I64d"
-
-#if defined(PRIx64)
-#undef PRIx64
-#endif
-#define PRIx64 "I64x"
-#endif
-
 #if !defined(NDEBUG)
 #define DS2ASSERT(COND)                                                        \
   do {                                                                         \

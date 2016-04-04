@@ -33,8 +33,16 @@
 #endif
 
 #if __has_attribute(format)
+#if defined(PLATFORM_MINGW)
+// MinGW uses printf wrappers to provide standard format string behavior on
+// Windows. We need to use __MINGW_PRINTF_FORMAT as GCC assumes MS style printf
+// arguments with `__format__(printf, ...)`.
+#define DS2_ATTRIBUTE_PRINTF(FORMAT, START)                                    \
+  __attribute__((__format__(__MINGW_PRINTF_FORMAT, FORMAT, START)))
+#else
 #define DS2_ATTRIBUTE_PRINTF(FORMAT, START)                                    \
   __attribute__((__format__(printf, FORMAT, START)))
+#endif
 #else
 #define DS2_ATTRIBUTE_PRINTF(FORMAT, START)
 #endif
