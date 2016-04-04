@@ -13,6 +13,7 @@
 #include "jsoncb.h"
 
 #include <cassert>
+#include <cinttypes>
 #include <csetjmp>
 #include <cstdio>
 #include <cstdlib>
@@ -133,11 +134,7 @@ inline std::string JSObject::QuoteString(std::string const &s) {
 
 void JSInteger::dump1(FILE *fp, size_t indent, size_t) const {
   JSObject::Indent(fp, indent);
-#if defined(_MSC_VER)
-  fprintf(fp, "%I64d", (__int64)value());
-#else
-  fprintf(fp, "%lld", (long long)value());
-#endif
+  fprintf(fp, "%" PRId64, (int64_t)value());
 }
 
 std::string JSInteger::toString1() const {

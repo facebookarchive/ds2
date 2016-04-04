@@ -234,11 +234,11 @@ ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
         thread->state() == Thread::kStepped) {
       Architecture::CPUState state;
       thread->readCPUState(state);
-      DS2LOG(Debug, "resuming tid %I64u from pc %#I64x",
+      DS2LOG(Debug, "resuming tid %" PRIu64 " from pc %#" PRIx64,
              (uint64_t)thread->tid(), (uint64_t)state.pc());
       ErrorCode error = thread->resume(signal);
       if (error != kSuccess) {
-        DS2LOG(Warning, "failed resuming tid %I64u, error=%d",
+        DS2LOG(Warning, "failed resuming tid %" PRIu64 ", error=%d",
                (uint64_t)thread->tid(), error);
       }
     }
@@ -330,7 +330,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   if (error != kSuccess)
     goto fail;
 
-  DS2LOG(Debug, "created process %I64u", (uint64_t)spawner.pid());
+  DS2LOG(Debug, "created process %" PRIu64, (uint64_t)spawner.pid());
 
   //
   // Wait the process.
