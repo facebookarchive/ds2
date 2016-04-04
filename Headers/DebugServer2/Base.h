@@ -49,10 +49,16 @@ typedef SSIZE_T ssize_t;
 #define OS_POSIX
 #endif
 
+#if defined(OS_LINUX)
 #if defined(__TIZEN__)
 #define PLATFORM_TIZEN
 #elif defined(__ANDROID__)
 #define PLATFORM_ANDROID
+#endif
+#elif defined(OS_WIN32)
+#if defined(__MINGW32__)
+#define PLATFORM_MINGW
+#endif
 #endif
 
 #if defined(__arm__) || defined(_M_ARM)
