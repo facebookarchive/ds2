@@ -11,36 +11,22 @@
 #ifndef __DebugServer2_Host_Linux_ExtraWrappers_h
 #define __DebugServer2_Host_Linux_ExtraWrappers_h
 
-#include "DebugServer2/Utils/CompilerSupport.h"
-
+#include <asm/unistd.h>
 #include <fcntl.h>
-// Older android native sysroots don't have sys/personality.h.
-#if defined(HAVE_SYS_PERSONALITY_H)
-#include <sys/personality.h>
-#else
-#include <linux/personality.h>
-#undef personality
-#endif
+#include <sys/syscall.h>
 #include <unistd.h>
 
-#if defined(ARCH_X86) && defined(PLATFORM_ANDROID)
-#include <sys/user.h>
+#if !defined(__ANDROID__)
+// Android headers do have a wrapper for `gettid`, unlike glibc.
+static inline pid_t gettid() { return ::syscall(SYS_gettid); }
 #endif
 
-extern "C" {
+static inline int tgkill(pid_t pid, pid_t tid, int signo) {
+  return ::syscall(SYS_tgkill, pid, tid, signo);
+}
 
-pid_t gettid() DS2_ATTRIBUTE_WEAK;
-
-int personality(unsigned long persona) DS2_ATTRIBUTE_WEAK;
-
-// Older android native sysroots don't have posix_openpt.
-int posix_openpt(int flags) DS2_ATTRIBUTE_WEAK;
-
-// No glibc wrapper for tgkill
-int tgkill(pid_t pid, pid_t tid, int signo) DS2_ATTRIBUTE_WEAK;
-
-// No glibc wrapper for tkill
-int tkill(pid_t tid, int signo) DS2_ATTRIBUTE_WEAK;
+static inline int tkill(pid_t tid, int signo) {
+  return ::syscall(SYS_tkill, tid, signo);
 }
 
 #endif // !__DebugServer2_Host_Linux_ExtraWrappers_h

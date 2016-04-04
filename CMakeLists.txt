@@ -104,7 +104,6 @@ set(HOST_POSIX_SOURCES
 
 set(HOST_Linux_SOURCES
     ${HOST_POSIX_SOURCES}
-    Sources/Host/Linux/ExtraWrappers.cpp
     Sources/Host/Linux/ProcFS.cpp
     Sources/Host/Linux/Platform.cpp
     Sources/Host/Linux/PTrace.cpp
@@ -261,14 +260,6 @@ endif ()
 target_include_directories(ds2 PUBLIC Headers)
 set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET ds2 PROPERTY CXX_STANDARD_REQUIRED ON)
-
-if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "FreeBSD")
-  include(CheckIncludeFile)
-  CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
-  if (HAVE_SYS_PERSONALITY_H)
-    target_compile_definitions(ds2 PRIVATE HAVE_SYS_PERSONALITY_H)
-  endif ()
-endif ()
 
 if ("${OS_NAME}" MATCHES "Windows")
   target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)

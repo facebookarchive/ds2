@@ -19,6 +19,7 @@
 #include <csignal>
 #include <cstdio>
 #include <limits>
+#include <sys/personality.h>
 #include <sys/wait.h>
 
 #define super ds2::Host::POSIX::PTrace
