@@ -530,8 +530,7 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
           nargs, std::string(reinterpret_cast<char const *>(&bc[pc]), offset));
       if (err != kSuccess)
         return err;
-      pc += offset -
-            1; // -1 because it will be incremented at beginning of the loop
+      pc += offset - 1; // -1 because pc is incremented at beginning of the loop
     } break;
 
     default:
