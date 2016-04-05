@@ -205,6 +205,7 @@ set(SUPPORT_COMMON_SOURCES
     Sources/MessageQueue.cpp
     Sources/SessionThread.cpp
     Sources/Support/Stringify.cpp
+    Sources/Utils/Backtrace.cpp
     Sources/Utils/Log.cpp
     Sources/Utils/OptParse.cpp
     Sources/Utils/Paths.cpp
@@ -293,9 +294,13 @@ endif ()
 add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
 target_link_libraries(ds2 jsobjects)
 
-if (ANDROID)
-  target_link_libraries(ds2 log)
-endif ()
+if ("${OS_NAME}" MATCHES "Linux")
+  if (ANDROID)
+    target_link_libraries(ds2 log)
+  elseif (NOT TIZEN)
+    target_link_libraries(ds2 dl)
+  endif ()
+endif()
 
 if ("${OS_NAME}" MATCHES "FreeBSD")
   target_link_libraries(ds2 util procstat)
