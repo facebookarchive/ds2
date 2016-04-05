@@ -30,43 +30,43 @@ protected:
   Process();
 
 public:
-  virtual ~Process();
+  ~Process() override;
 
 protected:
-  virtual ErrorCode initialize(ProcessId pid, uint32_t flags);
+  ErrorCode initialize(ProcessId pid, uint32_t flags) override;
   ErrorCode attach(int waitStatus);
 
 public:
-  virtual ErrorCode terminate();
+  ErrorCode terminate() override;
 
 public:
-  virtual ErrorCode suspend();
+  ErrorCode suspend() override;
 
 public:
-  virtual ErrorCode getMemoryRegionInfo(Address const &address,
-                                        MemoryRegionInfo &info);
+  ErrorCode getMemoryRegionInfo(Address const &address,
+                                MemoryRegionInfo &info) override;
 
 public:
-  virtual ErrorCode allocateMemory(size_t size, uint32_t protection,
-                                   uint64_t *address);
-  virtual ErrorCode deallocateMemory(uint64_t address, size_t size);
+  ErrorCode allocateMemory(size_t size, uint32_t protection,
+                           uint64_t *address) override;
+  ErrorCode deallocateMemory(uint64_t address, size_t size) override;
 
 public:
-  virtual ErrorCode wait(int *status = nullptr);
+  ErrorCode wait(int *status = nullptr) override;
 
 public:
-  virtual Host::POSIX::PTrace &ptrace() const;
+  Host::POSIX::PTrace &ptrace() const override;
 
 protected:
-  virtual ErrorCode updateInfo();
-  virtual ErrorCode updateAuxiliaryVector();
+  ErrorCode updateInfo() override;
+  ErrorCode updateAuxiliaryVector() override;
 
 public:
-  virtual bool isSingleStepSupported() const;
+  bool isSingleStepSupported() const override;
 
 public:
-  virtual SoftwareBreakpointManager *softwareBreakpointManager() const;
-  virtual HardwareBreakpointManager *hardwareBreakpointManager() const;
+  SoftwareBreakpointManager *softwareBreakpointManager() const override;
+  HardwareBreakpointManager *hardwareBreakpointManager() const override;
 
 protected:
   friend class Thread;
@@ -76,17 +76,17 @@ protected:
                           uint32_t flags = 0);
 
 public:
-  virtual ErrorCode readString(Address const &address, std::string &str,
-                               size_t length, size_t *nread = nullptr);
-  virtual ErrorCode readMemory(Address const &address, void *data,
-                               size_t length, size_t *count = nullptr);
-  virtual ErrorCode writeMemory(Address const &address, void const *data,
-                                size_t length, size_t *count = nullptr);
+  ErrorCode readString(Address const &address, std::string &str, size_t length,
+                       size_t *nread = nullptr) override;
+  ErrorCode readMemory(Address const &address, void *data, size_t length,
+                       size_t *count = nullptr) override;
+  ErrorCode writeMemory(Address const &address, void const *data, size_t length,
+                        size_t *count = nullptr) override;
 
 public:
-  virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const;
-  virtual Architecture::LLDBDescriptor const *
-  getLLDBRegistersDescriptor() const;
+  Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
+  Architecture::LLDBDescriptor const *
+  getLLDBRegistersDescriptor() const override;
 };
 }
 }

@@ -28,80 +28,80 @@ protected:
   Process();
 
 public:
-  virtual ~Process();
+  ~Process() override;
 
 public:
   inline HANDLE handle() const { return _handle; }
 
 protected:
-  virtual ErrorCode initialize(ProcessId pid, HANDLE handle, ThreadId tid,
-                               HANDLE threadHandle, uint32_t flags);
+  ErrorCode initialize(ProcessId pid, HANDLE handle, ThreadId tid,
+                       HANDLE threadHandle, uint32_t flags);
 
 public:
-  virtual ErrorCode detach();
-  virtual ErrorCode interrupt();
-  virtual ErrorCode terminate();
-  virtual bool isAlive() const;
+  ErrorCode detach() override;
+  ErrorCode interrupt() override;
+  ErrorCode terminate() override;
+  bool isAlive() const override;
 
 public:
-  virtual ErrorCode suspend() { return kErrorUnsupported; }
-  virtual ErrorCode
+  ErrorCode suspend() override { return kErrorUnsupported; }
+  ErrorCode
   resume(int signal = 0,
-         std::set<Thread *> const &excluded = std::set<Thread *>());
+         std::set<Thread *> const &excluded = std::set<Thread *>()) override;
 
 public:
   ErrorCode readString(Address const &address, std::string &str, size_t length,
-                       size_t *nread = nullptr);
+                       size_t *nread = nullptr) override;
   ErrorCode readMemory(Address const &address, void *data, size_t length,
-                       size_t *nread = nullptr);
+                       size_t *nread = nullptr) override;
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,
-                        size_t *nwritten = nullptr);
+                        size_t *nwritten = nullptr) override;
 
 public:
-  virtual ErrorCode getMemoryRegionInfo(Address const &address,
-                                        MemoryRegionInfo &info) {
+  ErrorCode getMemoryRegionInfo(Address const &address,
+                                MemoryRegionInfo &info) override {
     return kErrorUnsupported;
   }
 
 public:
-  virtual ErrorCode updateInfo();
+  ErrorCode updateInfo() override;
 
 public:
-  virtual SoftwareBreakpointManager *softwareBreakpointManager() const;
-  virtual HardwareBreakpointManager *hardwareBreakpointManager() const {
+  SoftwareBreakpointManager *softwareBreakpointManager() const override;
+  HardwareBreakpointManager *hardwareBreakpointManager() const override {
     return nullptr;
   }
 
 public:
-  virtual bool isELFProcess() const { return false; }
+  bool isELFProcess() const override { return false; }
 
 public:
-  virtual ErrorCode allocateMemory(size_t size, uint32_t protection,
-                                   uint64_t *address);
-  virtual ErrorCode deallocateMemory(uint64_t address, size_t size);
+  ErrorCode allocateMemory(size_t size, uint32_t protection,
+                           uint64_t *address) override;
+  ErrorCode deallocateMemory(uint64_t address, size_t size) override;
 
 public:
   void resetSignalPass() {}
   void setSignalPass(int signo, bool set) {}
 
 public:
-  virtual ErrorCode wait(int *status = nullptr);
+  ErrorCode wait(int *status = nullptr);
 
 public:
   static Target::Process *Create(Host::ProcessSpawner &spawner);
   static Target::Process *Attach(ProcessId pid);
 
 public:
-  virtual ErrorCode getSharedLibraryInfoAddress(Address &address) {
+  ErrorCode getSharedLibraryInfoAddress(Address &address) {
     return kErrorUnsupported;
   }
-  virtual ErrorCode enumerateSharedLibraries(
+  ErrorCode enumerateSharedLibraries(
       std::function<void(SharedLibraryInfo const &)> const &cb);
 
 public:
-  virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const;
-  virtual Architecture::LLDBDescriptor const *
-  getLLDBRegistersDescriptor() const;
+  Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
+  Architecture::LLDBDescriptor const *
+  getLLDBRegistersDescriptor() const override;
 
 #if defined(ARCH_ARM)
 public:
