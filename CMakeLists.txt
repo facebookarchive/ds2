@@ -279,8 +279,11 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     target_compile_options(ds2 PRIVATE -Wno-deprecated-declarations)
   endif ()
 
-  if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" AND NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "5.1")
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "5.1")
     target_compile_options(ds2 PRIVATE -Wsuggest-override)
+  endif ()
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    target_compile_options(ds2 PRIVATE -Winconsistent-missing-override)
   endif ()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(ds2 PRIVATE /W3 /DSTRICT /wd4244 /wd4996)
