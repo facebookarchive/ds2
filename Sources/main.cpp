@@ -47,6 +47,18 @@ static std::string gDefaultPort = "12345";
 static std::string gDefaultHost = "127.0.0.1";
 static bool gKeepAlive = false;
 static bool gGDBCompat = false;
+static std::string const kRunModeEnvName = "DS2_RUN_MODE";
+static std::string const kPortEnvName = "DS2_PORT";
+static std::string const kHostEnvName = "DS2_HOST";
+static std::string const kProgramEnvName = "DS2_PROGRAM";
+
+enum RunMode {
+  kRunModeNormal,
+#if !defined(OS_WIN32)
+  kRunModePlatform,
+  kRunModeSlave,
+#endif
+};
 
 // This function creates and initializes a socket than can be either a client
 // (if reverse is true), or a server (if reverse is false) that will then need
@@ -232,6 +244,60 @@ DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
   exit(EXIT_SUCCESS);
 }
 
+void ModifyCurrentEnvironmentWithOpts(ds2::OptParse &opts,
+                                      ds2::EnvironmentBlock &env) {
+  for (auto const &e : opts.getVector("set-env")) {
+    char const *arg = e.c_str();
+    char const *equal = strchr(arg, '=');
+    if (equal == nullptr || equal == arg) {
+      DS2LOG(Error, "trying to add invalid environment value '%s', skipping",
+             e.c_str());
+      continue;
+    }
+    env[std::string(arg, equal)] = equal + 1;
+  }
+
+  for (auto const &e : opts.getVector("unset-env")) {
+    if (env.find(e) == env.end()) {
+      DS2LOG(Warning, "trying to remove '%s' not present in the environment",
+             e.c_str());
+      continue;
+    }
+    env.erase(e);
+  }
+}
+
+char GetRawRunMode(int argc, char **argv, ds2::EnvironmentBlock const &env) {
+  if (argc >= 2) {
+    return argv[1][0];
+  }
+  auto envVar = env.find(kRunModeEnvName);
+  if (envVar != env.end()) {
+    return envVar->second[0];
+  }
+  return '\0';
+}
+
+RunMode GetRunMode(int argc, char **argv, ds2::EnvironmentBlock const &env,
+                   ds2::OptParse &opts) {
+  switch (GetRawRunMode(argc, argv, env)) {
+  case 'g':
+    return kRunModeNormal;
+#if !defined(OS_WIN32)
+  case 'p':
+    return kRunModePlatform;
+    break;
+  case 's':
+    return kRunModeSlave;
+    break;
+#endif
+  default:
+    opts.usageDie("first argument must be g[dbserver] or p[latform]. You can "
+                  "also set the environment variable DS2_RUN_MODE");
+  }
+  DS2_UNREACHABLE();
+}
+
 #if defined(OS_WIN32)
 // On certain Windows targets (Windows Phone in particular), we build ds2 as a
 // library and load it from another process. To achieve this, we need `main` to
@@ -255,20 +321,14 @@ int main(int argc, char **argv) {
 #endif
   ds2::SetLogLevel(ds2::kLogLevelInfo);
 
-  enum RunMode {
-    kRunModeNormal,
-#if !defined(OS_WIN32)
-    kRunModePlatform,
-    kRunModeSlave,
-#endif
-  };
-
   int attachPid = -1;
-  std::string port;
-  std::string host;
   std::string namedPipePath;
-  RunMode mode = kRunModeNormal;
   bool reverse = false;
+
+  ds2::EnvironmentBlock env;
+  Platform::GetCurrentEnvironment(env);
+
+  RunMode mode = GetRunMode(argc, argv, env, opts);
 
   // Logging options.
   opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
@@ -285,6 +345,10 @@ int main(int argc, char **argv) {
                  "list processes debuggable by the current user");
 
   // Target debug options.
+  opts.addOption(ds2::OptParse::stringOption, "host", 'H',
+                 "another way to specify the host", false, kHostEnvName);
+  opts.addOption(ds2::OptParse::stringOption, "port", 'p',
+                 "another way to specify the port", false, kPortEnvName);
   opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
                  "add an element to the environment before launch");
   opts.addOption(ds2::OptParse::vectorOption, "unset-env", 'E',
@@ -306,26 +370,9 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
                  "make ds2 run in its own session (no-op)", true);
 
-  if (argc < 2)
-    opts.usageDie("first argument must be g[dbserver] or p[latform]");
-
-  switch (argv[1][0]) {
-  case 'g':
-    mode = kRunModeNormal;
-    break;
-#if !defined(OS_WIN32)
-  case 'p':
-    mode = kRunModePlatform;
-    break;
-  case 's':
-    mode = kRunModeSlave;
-    break;
-#endif
-  default:
-    opts.usageDie("first argument must be g[dbserver] or p[latform]");
-  }
-
-  idx = opts.parse(argc, argv, host, port);
+  idx = opts.parse(argc, argv, env);
+  std::string port = opts.getString("port");
+  std::string host = opts.getString("host");
   argc -= idx, argv += idx;
 
   // Logging options.
@@ -365,32 +412,18 @@ int main(int argc, char **argv) {
 
   // Target debug options and program arguments.
   ds2::StringCollection args(&argv[0], &argv[argc]);
+  if (args.empty()) {
+    auto it = env.find(kProgramEnvName);
+    if (it != env.end()) {
+      args.push_back(it->second);
+    }
+  }
+
   if (mode != kRunModeNormal && !args.empty()) {
     opts.usageDie("PROGRAM and ARGUMENTS only supported in gdbserver mode");
   }
 
-  ds2::EnvironmentBlock env;
-  Platform::GetCurrentEnvironment(env);
-
-  for (auto const &e : opts.getVector("set-env")) {
-    char const *arg = e.c_str();
-    char const *equal = strchr(arg, '=');
-    if (equal == nullptr || equal == arg) {
-      DS2LOG(Error, "trying to add invalid environment value '%s', skipping",
-             e.c_str());
-      continue;
-    }
-    env[std::string(arg, equal)] = equal + 1;
-  }
-
-  for (auto const &e : opts.getVector("unset-env")) {
-    if (env.find(e) == env.end()) {
-      DS2LOG(Warning, "trying to remove '%s' not present in the environment",
-             e.c_str());
-      continue;
-    }
-    env.erase(e);
-  }
+  ModifyCurrentEnvironmentWithOpts(opts, env);
 
   if (!opts.getString("attach").empty()) {
     attachPid = atoi(opts.getString("attach").c_str());

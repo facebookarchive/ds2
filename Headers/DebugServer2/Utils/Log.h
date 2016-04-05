@@ -42,6 +42,8 @@ void SetLogOutputStream(FILE *stream);
 void Log(int level, char const *classname, char const *funcname,
          char const *format, ...) DS2_ATTRIBUTE_PRINTF(4, 5);
 
+void Print(char const *format, ...);
+
 #if defined(__DS2_LOG_CLASS_NAME__)
 #define DS2LOG(LVL, ...)                                                       \
   ds2::Log(ds2::kLogLevel##LVL, __DS2_LOG_CLASS_NAME__, __FUNCTION__,          \
