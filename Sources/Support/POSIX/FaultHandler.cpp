@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Support/Stringify.h"
+#include "DebugServer2/Utils/Backtrace.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
@@ -28,7 +29,7 @@ private:
     DS2LOG(Error, "received %s with code %s at address %p, crashing",
            Stringify::Signal(si->si_signo),
            Stringify::SignalCode(si->si_signo, si->si_code), si->si_addr);
-
+    ds2::Utils::PrintBacktrace();
     _exit(si->si_signo);
   }
 
