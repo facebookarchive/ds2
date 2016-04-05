@@ -85,7 +85,7 @@ protected:
 
 // Debug register ptrace APIs only exist for Linux ARM
 #if defined(ARCH_ARM)
-private:
+protected:
   uint32_t getStoppointData(ProcessThreadId const &ptid);
 
 public:
