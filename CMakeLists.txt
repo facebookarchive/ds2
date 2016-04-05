@@ -45,6 +45,11 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
   endif ()
 
+  if (COVERAGE)
+    set(COMMON_FLAGS "${COMMON_FLAGS} -fprofile-arcs -ftest-coverage")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+  endif ()
+
   if ("${ARCH_NAME}" STREQUAL "X86")
     set(COMMON_FLAGS "${COMMON_FLAGS} -m32")
   endif ()
@@ -313,6 +318,14 @@ if ("${OS_NAME}" MATCHES "Windows")
   else ()
     target_link_libraries(ds2 psapi)
   endif()
+endif ()
+
+if (COVERAGE)
+  if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    target_link_libraries(ds2 gcov)
+  elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_link_libraries(ds2 profiler_rt)
+  endif ()
 endif ()
 
 include(FindThreads)
