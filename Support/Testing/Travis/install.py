@@ -66,6 +66,10 @@ if os.getenv('LLDB_TESTS') != None:
         packages.append('liblldb-3.7')
         packages.append('python-lldb-3.7')
 
+if os.getenv('COVERAGE') == '1':
+    packages.append('python-pip')
+    packages.append('python-yaml')
+
 if "Ubuntu" in platform.linux_distribution():
     packages.append('realpath')
 
@@ -74,3 +78,8 @@ if len(packages) > 0:
         check_call('sudo yum install -y "%s"' % '" "'.join(packages), shell=True)
     else:
         check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
+
+if os.getenv('COVERAGE') == '1':
+    check_call('sudo pip install --upgrade pip', shell=True)
+    check_call('pip install --user pyyaml', shell=True)
+    check_call('pip install --user cpp-coveralls', shell=True)
