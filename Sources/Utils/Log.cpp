@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Utils/Backtrace.h"
 #include "DebugServer2/Utils/CompilerSupport.h"
 #include "DebugServer2/Utils/String.h"
 
@@ -147,8 +148,10 @@ void vLog(int level, char const *classname, char const *funcname,
   fputs(ss.str().c_str(), sOutputStream);
   fflush(sOutputStream);
 
-  if (level == kLogLevelFatal)
+  if (level == kLogLevelFatal) {
+    ds2::Utils::PrintBacktrace();
     abort();
+  }
 }
 
 void Log(int level, char const *classname, char const *funcname,
