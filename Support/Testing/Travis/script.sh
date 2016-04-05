@@ -107,6 +107,10 @@ else
   cmake_options+=(-DCMAKE_BUILD_TYPE="Debug")
 fi
 
+if [[ "${COVERAGE-}" = "1" ]]; then
+  cmake_options+=(-DCOVERAGE="1")
+fi
+
 cmake "${cmake_options[@]}" "$top"
 make -j$(num_cpus)
 
