@@ -78,41 +78,43 @@ DebugSessionImpl::onQuerySupported(Session &session,
   for (auto feature : remoteFeatures) {
     DS2LOG(Debug, "gdb feature: %s", feature.name.c_str());
   }
-
   // TODO PacketSize should be respected
   localFeatures.push_back(std::string("PacketSize=3fff"));
-  localFeatures.push_back(std::string("ConditionalBreakpoints-"));
-  localFeatures.push_back(std::string("BreakpointCommands+"));
-  localFeatures.push_back(std::string("multiprocess+"));
-  localFeatures.push_back(std::string("QPassSignals+"));
   localFeatures.push_back(std::string("QStartNoAckMode+"));
-  localFeatures.push_back(std::string("QDisableRandomization+"));
-  localFeatures.push_back(std::string("QNonStop+"));
-#if defined(OS_LINUX)
-  localFeatures.push_back(std::string("QProgramSignals+"));
-  localFeatures.push_back(std::string("qXfer:siginfo:read+"));
-  localFeatures.push_back(std::string("qXfer:siginfo:write+"));
-#else
-  localFeatures.push_back(std::string("QProgramSignals-"));
-  localFeatures.push_back(std::string("qXfer:siginfo:read-"));
-  localFeatures.push_back(std::string("qXfer:siginfo:write-"));
-#endif
+  localFeatures.push_back(std::string("qXfer:features:read+"));
 #if defined(OS_LINUX) || defined(OS_FREEBSD)
   localFeatures.push_back(std::string("qXfer:auxv:read+"));
   localFeatures.push_back(std::string("qXfer:libraries-svr4:read+"));
 #elif defined(OS_WIN32)
   localFeatures.push_back(std::string("qXfer:libraries:read+"));
 #endif
-  localFeatures.push_back(std::string("qXfer:features:read+"));
-  localFeatures.push_back(std::string("qXfer:osdata:read+"));
-  localFeatures.push_back(std::string("qXfer:threads:read+"));
-  // Disable unsupported tracepoints
-  localFeatures.push_back(std::string("Qbtrace:bts-"));
-  localFeatures.push_back(std::string("Qbtrace:off-"));
-  localFeatures.push_back(std::string("tracenz-"));
-  localFeatures.push_back(std::string("ConditionalTracepoints-"));
-  localFeatures.push_back(std::string("TracepointSource-"));
-  localFeatures.push_back(std::string("EnableDisableTracepoints-"));
+
+  if (session.mode() != kCompatibilityModeLLDB) {
+    localFeatures.push_back(std::string("ConditionalBreakpoints-"));
+    localFeatures.push_back(std::string("BreakpointCommands+"));
+    localFeatures.push_back(std::string("multiprocess+"));
+    localFeatures.push_back(std::string("QPassSignals+"));
+    localFeatures.push_back(std::string("QDisableRandomization+"));
+    localFeatures.push_back(std::string("QNonStop+"));
+#if defined(OS_LINUX)
+    localFeatures.push_back(std::string("QProgramSignals+"));
+    localFeatures.push_back(std::string("qXfer:siginfo:read+"));
+    localFeatures.push_back(std::string("qXfer:siginfo:write+"));
+#else
+    localFeatures.push_back(std::string("QProgramSignals-"));
+    localFeatures.push_back(std::string("qXfer:siginfo:read-"));
+    localFeatures.push_back(std::string("qXfer:siginfo:write-"));
+#endif
+    localFeatures.push_back(std::string("qXfer:osdata:read+"));
+    localFeatures.push_back(std::string("qXfer:threads:read+"));
+    // Disable unsupported tracepoints
+    localFeatures.push_back(std::string("Qbtrace:bts-"));
+    localFeatures.push_back(std::string("Qbtrace:off-"));
+    localFeatures.push_back(std::string("tracenz-"));
+    localFeatures.push_back(std::string("ConditionalTracepoints-"));
+    localFeatures.push_back(std::string("TracepointSource-"));
+    localFeatures.push_back(std::string("EnableDisableTracepoints-"));
+  }
 
   return kSuccess;
 }
