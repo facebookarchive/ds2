@@ -65,15 +65,18 @@ case "$1" in
     ;;
 esac
 
+# gcc version isn't guaranteed to match toolchain version - for example, 4.9 vs 4.9.x
+gcc_version="$( "${toolchain_path}/bin/${toolchain_triple}-gcc" --version | awk 'NR==1{print $3}' )"
+
 # Copy C++ stuff
-clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/include" "${toolchain_path}/include/c++/${toolchain_version}"
+clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/include" "${toolchain_path}/include/c++/${gcc_version}"
 copy_cpp_binaries() {
   clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/libgnustl_static.a" "${toolchain_path}/${toolchain_triple}/$2/libstdc++.a"
   clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/libgnustl_shared.so" "${toolchain_path}/${toolchain_triple}/$2/libgnustl_shared.so"
   clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/libsupc++.a" "${toolchain_path}/${toolchain_triple}/$2/libsupc++.a"
 }
 copy_cpp_bits() {
-  clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/include/bits" "${toolchain_path}/include/c++/${toolchain_version}/${toolchain_triple}/$2"
+  clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/include/bits" "${toolchain_path}/include/c++/${gcc_version}/${toolchain_triple}/$2"
 }
 case "$1" in
   "aarch64")
