@@ -19,6 +19,14 @@
 namespace ds2 {
 namespace Utils {
 
+#if defined(OS_DARWIN) || defined(OS_WIN32) || defined(__GLIBC__)
+static void PrintBacktraceEntrySimple(void *address) {
+  static const int kPointerWidth = sizeof(void *) * 2;
+  DS2LOG(Error, "%0#*" PRIxPTR, kPointerWidth,
+         reinterpret_cast<uintptr_t>(address));
+}
+#endif
+
 #if defined(OS_DARWIN) || defined(__GLIBC__)
 void PrintBacktrace() {
   static const int kStackSize = 100;
@@ -32,8 +40,7 @@ void PrintBacktrace() {
 
     res = ::dladdr(stack[i], &info);
     if (res < 0) {
-      DS2LOG(Error, "%0#*" PRIxPTR, kPointerWidth,
-             reinterpret_cast<uintptr_t>(stack[i]));
+      PrintBacktraceEntrySimple(stack[i]);
       continue;
     }
 
@@ -56,6 +63,16 @@ void PrintBacktrace() {
            info.dli_fname);
 
     ::free(demangled);
+  }
+}
+#elif defined(OS_WIN32)
+void PrintBacktrace() {
+  static const int kStackSize = 62;
+  static PVOID stack[kStackSize];
+  int stackEntries = CaptureStackBackTrace(0, kStackSize, stack, nullptr);
+
+  for (int i = 0; i < stackEntries; ++i) {
+    PrintBacktraceEntrySimple(stack[i]);
   }
 }
 #else
