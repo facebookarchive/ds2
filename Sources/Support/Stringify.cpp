@@ -58,9 +58,9 @@ char const *Stringify::StopEvent(StopInfo::Event event) {
 char const *Stringify::StopReason(StopInfo::Reason reason) {
   switch (reason) {
     DO_STRINGIFY(StopInfo::kReasonNone)
-    DO_STRINGIFY(StopInfo::kReasonWatchpoint)
-    DO_STRINGIFY(StopInfo::kReasonRegisterWatchpoint)
-    DO_STRINGIFY(StopInfo::kReasonAddressWatchpoint)
+    DO_STRINGIFY(StopInfo::kReasonWriteWatchpoint)
+    DO_STRINGIFY(StopInfo::kReasonReadWatchpoint)
+    DO_STRINGIFY(StopInfo::kReasonAccessWatchpoint)
     DO_STRINGIFY(StopInfo::kReasonBreakpoint)
     DO_STRINGIFY(StopInfo::kReasonSignalStop)
     DO_STRINGIFY(StopInfo::kReasonTrap)

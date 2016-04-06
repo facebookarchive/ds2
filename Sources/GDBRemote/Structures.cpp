@@ -175,11 +175,11 @@ std::string StopInfo::reasonToString() const {
     return "signal";
   case StopInfo::kReasonTrap:
     return "trap";
-  case StopInfo::kReasonWatchpoint:
+  case StopInfo::kReasonWriteWatchpoint:
     return "watch";
-  case StopInfo::kReasonRegisterWatchpoint:
+  case StopInfo::kReasonReadWatchpoint:
     return "rwatch";
-  case StopInfo::kReasonAddressWatchpoint:
+  case StopInfo::kReasonAccessWatchpoint:
     return "awatch";
 #if defined(OS_WIN32)
   case StopInfo::kReasonMemoryError:
@@ -214,9 +214,9 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
   case StopInfo::kReasonNone:
     break;
 
-  case StopInfo::kReasonWatchpoint:
-  case StopInfo::kReasonRegisterWatchpoint:
-  case StopInfo::kReasonAddressWatchpoint:
+  case StopInfo::kReasonWriteWatchpoint:
+  case StopInfo::kReasonReadWatchpoint:
+  case StopInfo::kReasonAccessWatchpoint:
 #if defined(OS_WIN32)
   case StopInfo::kReasonLibraryEvent:
 #endif

@@ -98,9 +98,9 @@ struct StopInfo {
 
   enum Reason {
     kReasonNone,
-    kReasonWatchpoint,
-    kReasonRegisterWatchpoint,
-    kReasonAddressWatchpoint,
+    kReasonWriteWatchpoint,
+    kReasonReadWatchpoint,
+    kReasonAccessWatchpoint,
     kReasonBreakpoint,
     kReasonSignalStop, // TODO better name
     kReasonTrap,
