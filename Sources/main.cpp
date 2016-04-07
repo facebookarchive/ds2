@@ -271,7 +271,7 @@ int main(int argc, char **argv) {
   bool reverse = false;
 
   // Logging options.
-  opts.addOption(ds2::OptParse::stringOption, "log-output", 'o',
+  opts.addOption(ds2::OptParse::stringOption, "log-file", 'o',
                  "output log messages to the file specified");
   opts.addOption(ds2::OptParse::boolOption, "debug-remote", 'D',
                  "enable log for remote protocol packets");
@@ -329,11 +329,11 @@ int main(int argc, char **argv) {
   argc -= idx, argv += idx;
 
   // Logging options.
-  if (!opts.getString("log-output").empty()) {
-    FILE *stream = fopen(opts.getString("log-output").c_str(), "a");
+  if (!opts.getString("log-file").empty()) {
+    FILE *stream = fopen(opts.getString("log-file").c_str(), "a");
     if (stream == nullptr) {
       DS2LOG(Error, "unable to open %s for writing: %s",
-             opts.getString("log-output").c_str(), strerror(errno));
+             opts.getString("log-file").c_str(), strerror(errno));
     } else {
 #if !defined(OS_WIN32)
       // When ds2 is spawned by an app (e.g.: on Android), it will run with the
