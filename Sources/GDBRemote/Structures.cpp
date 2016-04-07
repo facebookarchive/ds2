@@ -198,11 +198,10 @@ std::string StopInfo::reasonToString() const {
 std::string StopInfo::encodeInfo(CompatibilityMode mode) const {
   std::ostringstream ss;
 
-  if (mode == kCompatibilityModeLLDB) {
-    ss << "thread:" << ptid.encode(kCompatibilityModeLLDBThread);
-  } else {
-    ss << "thread:" << ptid.encode(mode);
-  }
+  CompatibilityMode threadMode =
+      (mode == kCompatibilityModeLLDB) ? kCompatibilityModeLLDBThread : mode;
+
+  ss << "thread:" << ptid.encode(threadMode);
   if (!threadName.empty()) {
     ss << ';' << "name:" << threadName;
   }
@@ -245,7 +244,7 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode) const {
       //
       // Best effort, send only this thread.
       //
-      ss << ptid.encode(kCompatibilityModeLLDBThread);
+      ss << ptid.encode(threadMode);
     } else {
       bool first = true;
       for (auto &tid : threads) {
