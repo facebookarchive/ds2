@@ -44,12 +44,10 @@ Process::Process()
 Process::~Process() { terminate(); }
 
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
-  //
-  // Wait the main thread.
-  //
   int status;
+
+  // Wait the main thread.
   ErrorCode error = ptrace().wait(pid, &status);
-  DS2LOG(Debug, "wait result=%d", error);
   if (error != kSuccess)
     return error;
 
@@ -126,7 +124,7 @@ ErrorCode Process::attach(int waitStatus) {
   return kSuccess;
 }
 
-ErrorCode Process::wait(int *rstatus) {
+ErrorCode Process::wait() {
   int status, signal;
   struct ptrace_lwpinfo lwpinfo;
   ProcessInfo info;
@@ -137,20 +135,17 @@ ErrorCode Process::wait(int *rstatus) {
   DS2ASSERT(!_threads.empty());
 
 continue_waiting:
-  err = super::wait(&status);
+  err = ptrace().wait(_pid, &status);
   if (err != kSuccess)
     return err;
 
   DS2LOG(Debug, "stopped: status=%d", status);
 
   if (WIFEXITED(status)) {
-    err = super::wait(&status);
+    err = ptrace().wait(_pid, &status);
     DS2LOG(Debug, "exited: status=%d", status);
     _currentThread->updateStopInfo(status);
     _terminated = true;
-    if (rstatus != nullptr) {
-      *rstatus = status;
-    }
 
     return kSuccess;
   }
@@ -309,10 +304,6 @@ continue_waiting:
 
   if ((WIFEXITED(status) || WIFSIGNALED(status))) {
     _terminated = true;
-  }
-
-  if (rstatus != nullptr) {
-    *rstatus = status;
   }
 
   return kSuccess;

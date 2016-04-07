@@ -52,7 +52,7 @@ public:
   ErrorCode deallocateMemory(uint64_t address, size_t size) override;
 
 public:
-  ErrorCode wait(int *status = nullptr) override;
+  ErrorCode wait() override;
 
 public:
   Host::POSIX::PTrace &ptrace() const override;
