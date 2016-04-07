@@ -148,7 +148,7 @@ ErrorCode Process::checkMemoryErrorCode(uint64_t address) {
   return kSuccess;
 }
 
-ErrorCode Process::wait(int *rstatus) {
+ErrorCode Process::wait() {
   int status, signal;
   ProcessInfo info;
   ThreadId tid;
@@ -286,10 +286,6 @@ ErrorCode Process::wait(int *rstatus) {
 
   if ((WIFEXITED(status) || WIFSIGNALED(status)) && tid == _pid) {
     _terminated = true;
-  }
-
-  if (rstatus != nullptr) {
-    *rstatus = status;
   }
 
   return kSuccess;

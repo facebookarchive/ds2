@@ -85,7 +85,7 @@ public:
   void setSignalPass(int signo, bool set) {}
 
 public:
-  ErrorCode wait(int *status = nullptr);
+  ErrorCode wait() override;
 
 public:
   static Target::Process *Create(Host::ProcessSpawner &spawner);

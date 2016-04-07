@@ -106,6 +106,9 @@ public:
                               size_t length, size_t *nwritten = nullptr);
 
 public:
+  virtual ErrorCode wait() = 0;
+
+public:
   virtual ErrorCode allocateMemory(size_t size, uint32_t protection,
                                    uint64_t *address) = 0;
   virtual ErrorCode deallocateMemory(uint64_t address, size_t size) = 0;
