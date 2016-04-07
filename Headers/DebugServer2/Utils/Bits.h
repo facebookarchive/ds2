@@ -13,6 +13,9 @@
 
 #include "DebugServer2/Utils/CompilerSupport.h"
 
+#if defined(OS_WIN32)
+#include <intrin.h>
+#endif
 #include <type_traits>
 
 namespace ds2 {
@@ -51,7 +54,7 @@ static inline unsigned int FFS(unsigned int number) {
 static inline unsigned int PopCount(unsigned int number) {
 #if __has_builtin(__builtin_popcount)
   return __builtin_popcount(number);
-#elif defined(COMPILER_MSVC)
+#elif defined(COMPILER_MSVC) && defined(ARCH_ARM)
   return _CountOneBits(number);
 #else
   unsigned int count = 0;
