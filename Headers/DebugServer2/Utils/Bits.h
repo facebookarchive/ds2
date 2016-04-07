@@ -13,6 +13,9 @@
 
 #include "DebugServer2/Utils/CompilerSupport.h"
 
+#if defined(OS_WIN32)
+#include <cmnintrin.h>
+#endif
 #include <type_traits>
 
 namespace ds2 {
