@@ -92,7 +92,7 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
   return ptrace().writeMemory(_pid, address, data, length, count);
 }
 
-ErrorCode Process::wait(int *status) { return ptrace().wait(_pid, status); }
+ErrorCode Process::wait() { return ptrace().wait(_pid, nullptr); }
 
 ds2::Target::Process *Process::Attach(ProcessId pid) {
   if (pid <= 0)
