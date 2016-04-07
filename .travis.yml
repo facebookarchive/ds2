@@ -15,8 +15,6 @@ branches:
     - master
 matrix:
   fast_finish: true
-git:
-  depth: 1
 
 env:
   - TARGET="Style"
