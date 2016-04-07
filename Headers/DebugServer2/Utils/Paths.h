@@ -20,4 +20,4 @@ std::string Basename(std::string const &path);
 }
 }
 
-#endif // !__DebugServer2_Utils_Bits_h
+#endif // !__DebugServer2_Utils_Paths_h
