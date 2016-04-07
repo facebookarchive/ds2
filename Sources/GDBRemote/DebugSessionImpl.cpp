@@ -78,6 +78,7 @@ DebugSessionImpl::onQuerySupported(Session &session,
   for (auto feature : remoteFeatures) {
     DS2LOG(Debug, "gdb feature: %s", feature.name.c_str());
   }
+
   // TODO PacketSize should be respected
   localFeatures.push_back(std::string("PacketSize=3fff"));
   localFeatures.push_back(std::string("QStartNoAckMode+"));
@@ -88,6 +89,7 @@ DebugSessionImpl::onQuerySupported(Session &session,
 #elif defined(OS_WIN32)
   localFeatures.push_back(std::string("qXfer:libraries:read+"));
 #endif
+  localFeatures.push_back(std::string("QListThreadsInStopReply+"));
 
   if (session.mode() != kCompatibilityModeLLDB) {
     localFeatures.push_back(std::string("ConditionalBreakpoints-"));
