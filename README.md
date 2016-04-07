@@ -48,7 +48,7 @@ usage: ds2 [RUN_MODE] [OPTIONS] [[HOST]:PORT] [-- PROGRAM [ARGUMENTS...]]
   -g, --gdb-compat           force ds2 to run in gdb compat mode
   -k, --keep-alive           keep the server alive after the client disconnects
   -L, --list-processes       list processes debuggable by the current user
-  -o, --log-output ARG       output log messages to the file specified
+  -o, --log-file ARG         output log messages to the file specified
   -N, --named-pipe ARG       determine a port dynamically and write back to FIFO
   -n, --no-colors            disable colored output
   -R, --reverse-connect      connect back to the debugger at [HOST]:PORT
