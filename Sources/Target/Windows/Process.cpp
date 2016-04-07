@@ -18,6 +18,7 @@
 
 #include <psapi.h>
 #include <tlhelp32.h>
+#include <vector>
 
 using ds2::Host::ProcessSpawner;
 using ds2::Host::Platform;
@@ -51,29 +52,26 @@ ErrorCode Process::initialize(ProcessId pid, HANDLE handle, ThreadId tid,
   return kSuccess;
 }
 
-static ThreadId GetFirstThreadIdForProcess(ProcessId pid) {
+static std::vector<ThreadId> GetThreadsForProcess(ProcessId pid) {
+  std::vector<ThreadId> result;
+
   HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
   if (snapshot == INVALID_HANDLE_VALUE)
-    return kAnyThreadId;
+    return result;
 
   THREADENTRY32 threadEntry;
-
   threadEntry.dwSize = sizeof(THREADENTRY32);
-  if (!Thread32First(snapshot, &threadEntry))
-    goto thread_fail;
 
-  do {
-    DS2ASSERT(threadEntry.dwSize >= sizeof(THREADENTRY32));
+  for (BOOL res = Thread32First(snapshot, &threadEntry); res;
+       res = Thread32Next(snapshot, &threadEntry)) {
+    DS2ASSERT(threadEntry.dwSize == sizeof(THREADENTRY32));
     if (threadEntry.th32OwnerProcessID == pid) {
-      CloseHandle(snapshot);
-      return threadEntry.th32ThreadID;
+      result.push_back(threadEntry.th32ThreadID);
     }
-    threadEntry.dwSize = sizeof(THREADENTRY32);
-  } while (Thread32Next(snapshot, &threadEntry));
+  }
 
-thread_fail:
   CloseHandle(snapshot);
-  return kAnyThreadId;
+  return result;
 }
 
 Target::Process *Process::Attach(ProcessId pid) {
@@ -82,7 +80,7 @@ Target::Process *Process::Attach(ProcessId pid) {
 
   BOOL result;
   HANDLE handle, threadHandle;
-  ThreadId tid;
+  std::vector<ThreadId> tids;
   ErrorCode error;
 
   auto process = new Target::Process;
@@ -95,18 +93,30 @@ Target::Process *Process::Attach(ProcessId pid) {
   if (!handle)
     goto fail;
 
-  tid = GetFirstThreadIdForProcess(pid);
-  if (tid == kAnyThreadId)
+  tids = GetThreadsForProcess(pid);
+  if (tids.empty())
     goto proc_fail;
 
-  threadHandle = OpenThread(THREAD_ALL_ACCESS, false, tid);
-  if (!threadHandle)
+  // Main thread is going to be first in the vector returned from
+  // GetThreadsForProcess. Initialize the process with that.
+  threadHandle = OpenThread(THREAD_ALL_ACCESS, false, tids[0]);
+  if (threadHandle == NULL)
     goto proc_fail;
 
-  error =
-      process->initialize(pid, handle, tid, threadHandle, kFlagAttachedProcess);
+  error = process->initialize(pid, handle, tids[0], threadHandle,
+                              kFlagAttachedProcess);
   if (error != kSuccess)
     goto init_fail;
+
+  // Create all the other threads.
+  for (size_t i = 1; i < tids.size(); ++i) {
+    threadHandle = OpenThread(THREAD_ALL_ACCESS, false, tids[i]);
+    if (threadHandle == NULL)
+      goto proc_fail;
+
+    // Automatically stored in process.
+    new Thread(process, tids[i], threadHandle);
+  }
 
   return process;
 
