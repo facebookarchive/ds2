@@ -24,6 +24,7 @@ class Session : public SessionBase {
 protected:
   std::map<char, ProcessThreadId> _ptids;
   CompatibilityMode _compatMode;
+  bool _threadsInStopReply;
 
 public:
   Session(CompatibilityMode mode);
