@@ -50,7 +50,7 @@ public:
   std::set<ThreadId> threads;
 
 public:
-  std::string encode(CompatibilityMode mode) const;
+  std::string encode(CompatibilityMode mode, bool listThreads) const;
   std::string encodeWithAllThreads(CompatibilityMode mode,
                                    const JSArray &threadsStopInfo) const;
   JSDictionary *encodeJson() const;
@@ -58,7 +58,7 @@ public:
 
 private:
   std::string reasonToString() const;
-  std::string encodeInfo(CompatibilityMode mode) const;
+  std::string encodeInfo(CompatibilityMode mode, bool listThreads) const;
   void encodeRegisters(std::map<std::string, std::string> &regs,
                        bool hexIndex) const;
   std::string encodeRegisters() const;

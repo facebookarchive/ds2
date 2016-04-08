@@ -284,7 +284,7 @@ void Session::Handle_QuestionMark(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -410,7 +410,7 @@ void Session::Handle_bc(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -440,7 +440,7 @@ void Session::Handle_bs(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -504,7 +504,7 @@ void Session::Handle_C(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -560,7 +560,7 @@ void Session::Handle_c(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -777,7 +777,7 @@ void Session::Handle_I(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -822,7 +822,7 @@ void Session::Handle_i(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -877,7 +877,7 @@ void Session::Handle_k(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -2709,7 +2709,7 @@ void Session::Handle_S(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -2765,7 +2765,7 @@ void Session::Handle_s(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -2839,7 +2839,7 @@ void Session::Handle_vAttach(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -2864,7 +2864,7 @@ void Session::Handle_vAttachName(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -2890,7 +2890,7 @@ void Session::Handle_vAttachOrWait(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -2915,7 +2915,7 @@ void Session::Handle_vAttachWait(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -2996,7 +2996,7 @@ void Session::Handle_vCont(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -3239,7 +3239,7 @@ void Session::Handle_vKill(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -3275,7 +3275,7 @@ void Session::Handle_vRun(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(stop.encode(_compatMode));
+  send(stop.encode(_compatMode, _threadsInStopReply));
 
   if (_compatMode != kCompatibilityModeLLDB) {
     //
@@ -3301,7 +3301,7 @@ void Session::Handle_vStopped(ProtocolInterpreter::Handler const &,
   }
 
   if (error == kSuccess) {
-    send(stop.encode(_compatMode));
+    send(stop.encode(_compatMode, _threadsInStopReply));
 
     if (_compatMode != kCompatibilityModeLLDB) {
       //

@@ -195,7 +195,8 @@ std::string StopInfo::reasonToString() const {
   }
 }
 
-std::string StopInfo::encodeInfo(CompatibilityMode mode) const {
+std::string StopInfo::encodeInfo(CompatibilityMode mode,
+                                 bool listThreads) const {
   std::ostringstream ss;
 
   CompatibilityMode threadMode =
@@ -238,7 +239,7 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode) const {
 #endif
   }
 
-  if (mode == kCompatibilityModeLLDB) {
+  if (listThreads) {
     ss << ';' << "threads:";
     if (threads.empty()) {
       //
@@ -302,7 +303,7 @@ std::string StopInfo::encodeRegisters() const {
   return ss.str();
 }
 
-std::string StopInfo::encode(CompatibilityMode mode) const {
+std::string StopInfo::encode(CompatibilityMode mode, bool listThreads) const {
   // We shouldn't be trying to encode something that has no stop event.
   DS2ASSERT(event != kEventNone);
 
@@ -375,9 +376,9 @@ std::string StopInfo::encode(CompatibilityMode mode) const {
   //
   if (event == kEventStop && mode != kCompatibilityModeGDB) {
     if (mode == kCompatibilityModeLLDB) {
-      ss << encodeInfo(mode) << ';' << encodeRegisters();
+      ss << encodeInfo(mode, listThreads) << ';' << encodeRegisters();
     } else {
-      ss << encodeRegisters() << ';' << encodeInfo(mode);
+      ss << encodeRegisters() << ';' << encodeInfo(mode, listThreads);
     }
 
     ss << ';';
@@ -389,8 +390,8 @@ std::string
 StopInfo::encodeWithAllThreads(CompatibilityMode mode,
                                const JSArray &threadsStopInfo) const {
   std::ostringstream ss;
-  ss << encode(mode) << "jstopinfo:" << StringToHex(threadsStopInfo.toString())
-     << ";";
+  ss << encode(mode, true)
+     << "jstopinfo:" << StringToHex(threadsStopInfo.toString()) << ";";
   return ss.str();
 }
 
