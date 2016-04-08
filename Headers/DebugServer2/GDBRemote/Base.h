@@ -27,12 +27,13 @@ enum CompatibilityMode {
 
 enum AttachMode { kAttachNow, kAttachAndWait, kAttachOrWait };
 
-enum BreakpointType {
+enum BreakpointType : unsigned {
   kSoftwareBreakpoint = 0,
   kHardwareBreakpoint = 1,
   kWriteWatchpoint = 2,
   kReadWatchpoint = 3,
-  kAccessWatchpoint = 4
+  kAccessWatchpoint = 4,
+  kBreakpointTypeMax = 5
 };
 }
 }

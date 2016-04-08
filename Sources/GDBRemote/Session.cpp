@@ -3395,6 +3395,10 @@ void Session::Handle_Z(ProtocolInterpreter::Handler const &,
   uint32_t kind;
 
   type = static_cast<BreakpointType>(std::strtoul(args.c_str(), &eptr, 16));
+  if (type >= kBreakpointTypeMax) {
+    sendError(kErrorInvalidArgument);
+    return;
+  }
   if (*eptr++ != ',') {
     sendError(kErrorInvalidArgument);
     return;
