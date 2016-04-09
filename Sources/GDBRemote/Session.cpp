@@ -3410,9 +3410,7 @@ void Session::Handle_Z(ProtocolInterpreter::Handler const &,
   }
   kind = std::strtoul(eptr, &eptr, 16);
 
-  //
-  // TODO cond_list etc
-  //
+  // TODO: cond_list, cmd_list.
   sendError(_delegate->onInsertBreakpoint(*this, type, address, kind,
                                           StringCollection(),
                                           StringCollection(), false));

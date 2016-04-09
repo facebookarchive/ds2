@@ -1013,7 +1013,10 @@ ErrorCode DebugSessionImpl::onTerminate(Session &session,
 // GDB handle the breakpoints.
 ErrorCode DebugSessionImpl::onInsertBreakpoint(
     Session &session, BreakpointType type, Address const &address,
-    uint32_t size, StringCollection const &, StringCollection const &, bool) {
+    uint32_t size, StringCollection const &conditions,
+    StringCollection const &commands, bool persistentCommands) {
+  DS2ASSERT(conditions.empty() && commands.empty() && !persistentCommands);
+
   BreakpointManager *bpm = nullptr;
   BreakpointManager::Mode mode;
   switch (type) {
