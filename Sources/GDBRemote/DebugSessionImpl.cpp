@@ -1077,6 +1077,9 @@ ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
   case kAccessWatchpoint:
     bpm = _process->hardwareBreakpointManager();
     break;
+
+  default:
+    DS2BUG("impossible breakpoint type");
   }
 
   if (bpm == nullptr)
