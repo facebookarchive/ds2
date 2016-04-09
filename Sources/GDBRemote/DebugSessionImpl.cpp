@@ -1008,17 +1008,12 @@ ErrorCode DebugSessionImpl::onTerminate(Session &session,
   return queryStopCode(session, _process->pid(), stop);
 }
 
-//
 // For LLDB we need to support breakpoints through the breakpoint manager
-// because LLDB is unable to handle software breakpoints.
-// In GDB mode we let GDB handle the breakpoints.
-//
+// because LLDB is unable to handle software breakpoints. In GDB mode we let
+// GDB handle the breakpoints.
 ErrorCode DebugSessionImpl::onInsertBreakpoint(
     Session &session, BreakpointType type, Address const &address,
     uint32_t size, StringCollection const &, StringCollection const &, bool) {
-  //    if (session.mode() != kCompatibilityModeLLDB)
-  //        return kErrorUnsupported;
-
   BreakpointManager *bpm = nullptr;
   BreakpointManager::Mode mode;
   switch (type) {
@@ -1062,9 +1057,6 @@ ErrorCode DebugSessionImpl::onRemoveBreakpoint(Session &session,
                                                BreakpointType type,
                                                Address const &address,
                                                uint32_t size) {
-  //    if (session.mode() != kCompatibilityModeLLDB)
-  //        return kErrorUnsupported;
-
   BreakpointManager *bpm = nullptr;
   switch (type) {
   case kSoftwareBreakpoint:
