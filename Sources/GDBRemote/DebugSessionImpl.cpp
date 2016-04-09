@@ -1047,6 +1047,9 @@ ErrorCode DebugSessionImpl::onInsertBreakpoint(
     mode = static_cast<BreakpointManager::Mode>(BreakpointManager::kModeRead |
                                                 BreakpointManager::kModeWrite);
     break;
+
+  default:
+    DS2BUG("impossible breakpoint type");
   }
 
   if (bpm == nullptr)
