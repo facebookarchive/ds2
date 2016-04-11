@@ -20,8 +20,8 @@
 #include <sys/types.h>
 #include <sys/user.h>
 
+#include <cstdlib>
 #include <libproc.h>
-#include <stdlib.h>
 #include <string>
 #include <util.h>
 

@@ -13,10 +13,10 @@
 
 #include "DebugServer2/Types.h"
 
+#include <cstdio>
 #include <dirent.h>
 #include <fcntl.h>
 #include <functional>
-#include <stdio.h>
 #include <sys/stat.h>
 #include <unistd.h>
 

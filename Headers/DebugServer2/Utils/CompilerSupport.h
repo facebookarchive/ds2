@@ -64,7 +64,7 @@
 #elif __has_builtin(__builtin_unreachable)
 #define DS2_UNREACHABLE() __builtin_unreachable()
 #else
-#include <stdlib.h>
+#include <cstdlib>
 #define DS2_UNREACHABLE() abort()
 #endif
 

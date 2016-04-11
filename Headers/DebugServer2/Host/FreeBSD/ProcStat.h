@@ -14,10 +14,10 @@
 #include "DebugServer2/Support/POSIX/ELFSupport.h"
 #include "DebugServer2/Types.h"
 
+#include <cstdio>
 #include <dirent.h>
 #include <fcntl.h>
 #include <functional>
-#include <stdio.h>
 #include <sys/proc.h>
 #include <sys/stat.h>
 #include <unistd.h>

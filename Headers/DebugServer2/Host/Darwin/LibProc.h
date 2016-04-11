@@ -14,10 +14,10 @@
 #include "DebugServer2/Target/ThreadBase.h"
 #include "DebugServer2/Types.h"
 
+#include <cstdio>
 #include <dirent.h>
 #include <fcntl.h>
 #include <functional>
-#include <stdio.h>
 #include <unistd.h>
 
 #include <sys/stat.h>

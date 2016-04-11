@@ -17,10 +17,10 @@
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <cerrno>
 #include <climits>
 #include <cstdlib>
 #include <cstring>
-#include <errno.h>
 #include <fcntl.h>
 #include <libgen.h>
 #include <poll.h>

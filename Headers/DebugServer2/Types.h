@@ -16,8 +16,8 @@
 #include "DebugServer2/Constants.h"
 
 #include <cstdint>
+#include <cstdlib>
 #include <map>
-#include <stdlib.h>
 #include <string>
 #include <vector>
 #if !defined(OS_WIN32)

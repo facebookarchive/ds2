@@ -12,8 +12,8 @@
 #include "DebugServer2/Support/StringifyPrivate.h"
 #include "DebugServer2/Utils/Log.h"
 
-#include <errno.h>
-#include <signal.h>
+#include <cerrno>
+#include <csignal>
 // clang-format off
 #include <sys/types.h>
 #include <sys/ptrace.h>

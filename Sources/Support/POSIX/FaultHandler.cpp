@@ -13,10 +13,10 @@
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
+#include <csignal>
 #include <cstdio>
 #include <cstdlib>
 #include <map>
-#include <signal.h>
 #include <unistd.h>
 
 namespace {

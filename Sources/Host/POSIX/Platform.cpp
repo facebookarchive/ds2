@@ -13,10 +13,10 @@
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
+#include <climits>
 #include <cstring>
 #include <fcntl.h>
 #include <grp.h>
-#include <limits.h>
 #include <netdb.h>
 #include <pwd.h>
 #include <string>

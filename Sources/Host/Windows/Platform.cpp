@@ -15,10 +15,10 @@
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
 
+#include <cstdio>
 #include <lmcons.h>
 #include <psapi.h>
 #include <shlwapi.h>
-#include <stdio.h>
 #include <stringapiset.h>
 #include <vector>
 #include <windows.h>
