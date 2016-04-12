@@ -35,12 +35,6 @@ public:
   bool isAlive() const override;
 
 public:
-  ErrorCode suspend() override;
-  ErrorCode resume(int signal = 0,
-                   std::set<ds2::Target::Thread *> const &excluded =
-                       std::set<ds2::Target::Thread *>()) override;
-
-public:
   ErrorCode readString(Address const &address, std::string &str, size_t length,
                        size_t *count = nullptr) override;
   ErrorCode readMemory(Address const &address, void *data, size_t length,

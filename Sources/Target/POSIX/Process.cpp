@@ -64,19 +64,6 @@ ErrorCode Process::terminate() {
 
 bool Process::isAlive() const { return (_pid > 0 && ::kill(_pid, 0) == 0); }
 
-ErrorCode Process::suspend() { return ptrace().suspend(_pid); }
-
-ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
-  ProcessInfo info;
-  ErrorCode error;
-
-  error = getInfo(info);
-  if (error != kSuccess)
-    return error;
-
-  return ptrace().resume(_pid, info, signal);
-}
-
 ErrorCode Process::readString(Address const &address, std::string &str,
                               size_t length, size_t *count) {
   return ptrace().readString(_pid, address, str, length, count);

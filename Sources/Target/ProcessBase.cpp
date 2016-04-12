@@ -76,6 +76,68 @@ ErrorCode ProcessBase::initialize(ProcessId pid, uint32_t flags) {
   return error;
 }
 
+ErrorCode ProcessBase::suspend() {
+  std::set<Thread *> threads;
+  enumerateThreads([&](Thread *thread) { threads.insert(thread); });
+
+  for (auto thread : threads) {
+    Architecture::CPUState state;
+    if (thread->state() != Thread::kRunning) {
+      thread->readCPUState(state);
+    }
+    DS2LOG(Debug, "tid %" PRI_PID " state %d at pc %#" PRIx64, thread->tid(),
+           thread->state(),
+           thread->state() == Thread::kStopped ? (uint64_t)state.pc() : 0);
+    if (thread->state() == Thread::kRunning) {
+      ErrorCode error;
+
+      DS2LOG(Debug, "suspending tid %" PRI_PID, thread->tid());
+      error = thread->suspend();
+
+      if (error == kSuccess) {
+        DS2LOG(Debug, "suspended tid %" PRI_PID " at pc %#" PRIx64,
+               thread->tid(), (uint64_t)state.pc());
+        thread->readCPUState(state);
+      } else if (error == kErrorProcessNotFound) {
+        // Thread is dead.
+        removeThread(thread->tid());
+        DS2LOG(Debug,
+               "tried to suspended tid %" PRI_PID " which is already dead",
+               thread->tid());
+      } else {
+        return error;
+      }
+    } else if (thread->state() == Thread::kTerminated) {
+      // Thread is dead.
+      removeThread(thread->tid());
+    }
+  }
+
+  return kSuccess;
+}
+
+ErrorCode ProcessBase::resume(int signal, std::set<Thread *> const &excluded) {
+  enumerateThreads([&](Thread *thread) {
+    if (excluded.find(thread) != excluded.end())
+      return;
+
+    if (thread->state() == Thread::kStopped ||
+        thread->state() == Thread::kStepped) {
+      Architecture::CPUState state;
+      thread->readCPUState(state);
+      DS2LOG(Debug, "resuming tid %" PRI_PID " from pc %#" PRIx64,
+             thread->tid(), (uint64_t)state.pc());
+      ErrorCode error = thread->resume(signal);
+      if (error != kSuccess) {
+        DS2LOG(Warning, "failed resuming tid %" PRI_PID ", error=%d",
+               thread->tid(), error);
+      }
+    }
+  });
+
+  return kSuccess;
+}
+
 // ELF only
 ErrorCode ProcessBase::getAuxiliaryVector(std::string &auxv) {
   return kErrorUnsupported;

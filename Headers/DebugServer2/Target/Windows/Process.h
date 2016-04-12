@@ -43,12 +43,6 @@ public:
   bool isAlive() const override;
 
 public:
-  ErrorCode suspend() override { return kErrorUnsupported; }
-  ErrorCode
-  resume(int signal = 0,
-         std::set<Thread *> const &excluded = std::set<Thread *>()) override;
-
-public:
   ErrorCode readString(Address const &address, std::string &str, size_t length,
                        size_t *nread = nullptr) override;
   ErrorCode readMemory(Address const &address, void *data, size_t length,

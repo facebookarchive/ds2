@@ -41,12 +41,6 @@ public:
   bool isAlive() const override;
 
 public:
-  ErrorCode suspend() override;
-  ErrorCode
-  resume(int signal = 0,
-         std::set<Thread *> const &excluded = std::set<Thread *>()) override;
-
-public:
   ErrorCode getMemoryRegionInfo(Address const &address,
                                 MemoryRegionInfo &info) override;
 

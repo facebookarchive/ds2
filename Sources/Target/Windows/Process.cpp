@@ -208,28 +208,6 @@ ErrorCode Process::wait() {
   }
 }
 
-ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
-  enumerateThreads([&](Thread *thread) {
-    if (excluded.find(thread) != excluded.end())
-      return;
-
-    if (thread->state() == Thread::kStopped ||
-        thread->state() == Thread::kStepped) {
-      Architecture::CPUState state;
-      thread->readCPUState(state);
-      DS2LOG(Debug, "resuming tid %" PRIu64 " from pc %#" PRIx64,
-             (uint64_t)thread->tid(), (uint64_t)state.pc());
-      ErrorCode error = thread->resume(signal);
-      if (error != kSuccess) {
-        DS2LOG(Warning, "failed resuming tid %" PRIu64 ", error=%d",
-               (uint64_t)thread->tid(), error);
-      }
-    }
-  });
-
-  return kSuccess;
-}
-
 ErrorCode Process::readString(Address const &address, std::string &str,
                               size_t length, size_t *nread) {
   return kErrorUnsupported;

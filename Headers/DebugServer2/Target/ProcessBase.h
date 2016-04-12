@@ -75,10 +75,10 @@ public:
   virtual ErrorCode detach() = 0;
 
 public:
-  virtual ErrorCode suspend() = 0;
+  virtual ErrorCode suspend();
   virtual ErrorCode
   resume(int signal = 0,
-         std::set<Thread *> const &excluded = std::set<Thread *>()) = 0;
+         std::set<Thread *> const &excluded = std::set<Thread *>());
 
 public:
   virtual ErrorCode interrupt() = 0;
