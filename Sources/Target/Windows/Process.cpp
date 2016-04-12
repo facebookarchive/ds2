@@ -128,15 +128,13 @@ ErrorCode Process::wait() {
   if (_terminated)
     return kSuccess;
 
-  DEBUG_EVENT de;
-  bool keepGoing = true;
+  for (;;) {
+    _currentThread = nullptr;
 
-  while (keepGoing) {
+    DEBUG_EVENT de;
     BOOL result = WaitForDebugEvent(&de, INFINITE);
     if (!result)
       return Platform::TranslateError();
-
-    keepGoing = false;
 
     DS2LOG(Debug, "debug event from inferior, event=%s",
            Stringify::DebugEvent(de.dwDebugEventCode));
@@ -158,21 +156,28 @@ ErrorCode Process::wait() {
       _terminated = true;
       return kSuccess;
 
-    case CREATE_THREAD_DEBUG_EVENT:
-      // No need to save the new thread pointer, as it gets added automatically
-      // to the process.
-      new Thread(this, GetThreadId(de.u.CreateThread.hThread),
-                 de.u.CreateThread.hThread);
-      return kSuccess;
+    case CREATE_THREAD_DEBUG_EVENT: {
+      _currentThread = new Thread(this, GetThreadId(de.u.CreateThread.hThread),
+                                  de.u.CreateThread.hThread);
+      ErrorCode error = _currentThread->resume();
+      if (error != kSuccess) {
+        return error;
+      }
+      continue;
+    }
 
     case EXIT_THREAD_DEBUG_EVENT: {
       auto threadIt = _threads.find(de.dwThreadId);
       DS2ASSERT(threadIt != _threads.end());
-      auto tid = threadIt->second->tid();
-      ContinueDebugEvent(_pid, tid, DBG_CONTINUE);
-      removeThread(threadIt->second->tid());
-      keepGoing = true;
-    } break;
+
+      _currentThread = threadIt->second;
+      ErrorCode error = _currentThread->resume();
+      if (error != kSuccess) {
+        return error;
+      }
+      removeThread(_currentThread->tid());
+      continue;
+    }
 
     case RIP_EVENT:
       DS2LOG(Fatal, "debug event RIP");
@@ -181,18 +186,25 @@ ErrorCode Process::wait() {
     case LOAD_DLL_DEBUG_EVENT:
     case UNLOAD_DLL_DEBUG_EVENT:
     case OUTPUT_DEBUG_STRING_EVENT: {
+      // When WaitForDebugEvent returns successfully, all threads are stopped.
+      for (auto const &e : _threads) {
+        auto t = e.second;
+        t->_state = Thread::kStopped;
+        t->_stopInfo.event = StopInfo::kEventStop;
+        t->_stopInfo.reason = StopInfo::kReasonNone;
+      }
+
       auto threadIt = _threads.find(de.dwThreadId);
       DS2ASSERT(threadIt != _threads.end());
       _currentThread = threadIt->second;
       _currentThread->updateState(de);
-    } break;
+      return kSuccess;
+    }
 
     default:
       DS2BUG("unknown debug event code: %lu", de.dwDebugEventCode);
     }
   }
-
-  return kSuccess;
 }
 
 ErrorCode Process::resume(int signal, std::set<Thread *> const &excluded) {
