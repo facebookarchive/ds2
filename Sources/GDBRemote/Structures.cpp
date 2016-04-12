@@ -223,13 +223,15 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
       ss << ';' << "reason:" << reasonToString();
     break;
 
+  case StopInfo::kReasonThreadCreate:
+  case StopInfo::kReasonThreadExit:
 #if defined(OS_WIN32)
   case StopInfo::kReasonMemoryError:
   case StopInfo::kReasonMemoryAlignment:
   case StopInfo::kReasonMathError:
   case StopInfo::kReasonInstructionError:
-    break;
 #endif
+    break;
   }
 
   if (listThreads) {

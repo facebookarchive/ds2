@@ -104,6 +104,8 @@ struct StopInfo {
     kReasonBreakpoint,
     kReasonSignalStop, // TODO better name
     kReasonTrap,
+    kReasonThreadCreate,
+    kReasonThreadExit,
 #if defined(OS_WIN32)
     kReasonMemoryError,
     kReasonMemoryAlignment,
