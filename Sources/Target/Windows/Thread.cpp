@@ -28,14 +28,6 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
-Thread::Thread(Process *process, ThreadId tid, HANDLE handle)
-    : super(process, tid), _handle(handle) {
-  // Initially the thread is stopped.
-  _state = kStopped;
-  _stopInfo.event = StopInfo::kEventStop;
-  _stopInfo.reason = StopInfo::kReasonNone;
-}
-
 Thread::~Thread() { CloseHandle(_handle); }
 
 ErrorCode Thread::terminate() {
@@ -55,6 +47,8 @@ ErrorCode Thread::suspend() {
   }
 
   _state = kStopped;
+  _stopInfo.event = StopInfo::kEventStop;
+  _stopInfo.reason = StopInfo::kReasonNone;
   return kSuccess;
 }
 
@@ -71,12 +65,22 @@ ErrorCode Thread::resume(int signal, Address const &address) {
     ProcessInfo info;
 
     error = process()->getInfo(info);
-    if (error != kSuccess)
+    if (error != kSuccess) {
       return error;
+    }
 
-    BOOL result = ContinueDebugEvent(_process->pid(), _tid, DBG_CONTINUE);
-    if (!result)
-      return Host::Platform::TranslateError();
+    if (_stopInfo.event == StopInfo::kEventStop &&
+        _stopInfo.reason == StopInfo::kReasonNone) {
+      DWORD result = ResumeThread(_handle);
+      if (result == (DWORD)-1) {
+        return Platform::TranslateError();
+      }
+    } else {
+      BOOL result = ContinueDebugEvent(_process->pid(), _tid, DBG_CONTINUE);
+      if (!result) {
+        return Platform::TranslateError();
+      }
+    }
 
     _state = kRunning;
   } else if (_state == kTerminated) {
@@ -213,6 +217,19 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonLibraryEvent;
+    break;
+
+  case CREATE_PROCESS_DEBUG_EVENT:
+  case CREATE_THREAD_DEBUG_EVENT:
+    _state = kStopped;
+    _stopInfo.event = StopInfo::kEventStop;
+    _stopInfo.reason = StopInfo::kReasonThreadCreate;
+    break;
+
+  case EXIT_THREAD_DEBUG_EVENT:
+    _state = kStopped;
+    _stopInfo.event = StopInfo::kEventStop;
+    _stopInfo.reason = StopInfo::kReasonThreadExit;
     break;
 
   case OUTPUT_DEBUG_STRING_EVENT:

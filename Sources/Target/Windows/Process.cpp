@@ -144,13 +144,15 @@ ErrorCode Process::wait() {
       DS2ASSERT(_handle == nullptr);
       DS2ASSERT(de.u.CreateProcessInfo.hProcess != NULL);
       DS2ASSERT(de.u.CreateProcessInfo.hThread != NULL);
+      if (de.u.CreateProcessInfo.hFile != NULL) {
+        CloseHandle(de.u.CreateProcessInfo.hFile);
+      }
+
       _handle = de.u.CreateProcessInfo.hProcess;
       _currentThread =
           new Thread(this, GetThreadId(de.u.CreateProcessInfo.hThread),
                      de.u.CreateProcessInfo.hThread);
-      if (de.u.CreateProcessInfo.hFile != NULL) {
-        CloseHandle(de.u.CreateProcessInfo.hFile);
-      }
+      _currentThread->updateState(de);
       return kSuccess;
 
     case EXIT_PROCESS_DEBUG_EVENT:
@@ -160,6 +162,7 @@ ErrorCode Process::wait() {
     case CREATE_THREAD_DEBUG_EVENT: {
       _currentThread = new Thread(this, GetThreadId(de.u.CreateThread.hThread),
                                   de.u.CreateThread.hThread);
+      _currentThread->updateState(de);
       ErrorCode error = _currentThread->resume();
       if (error != kSuccess) {
         return error;
@@ -172,6 +175,7 @@ ErrorCode Process::wait() {
       DS2ASSERT(threadIt != _threads.end());
 
       _currentThread = threadIt->second;
+      _currentThread->updateState(de);
       ErrorCode error = _currentThread->resume();
       if (error != kSuccess) {
         return error;
@@ -187,18 +191,16 @@ ErrorCode Process::wait() {
     case LOAD_DLL_DEBUG_EVENT:
     case UNLOAD_DLL_DEBUG_EVENT:
     case OUTPUT_DEBUG_STRING_EVENT: {
-      // When WaitForDebugEvent returns successfully, all threads are stopped.
-      for (auto const &e : _threads) {
-        auto t = e.second;
-        t->_state = Thread::kStopped;
-        t->_stopInfo.event = StopInfo::kEventStop;
-        t->_stopInfo.reason = StopInfo::kReasonNone;
-      }
-
       auto threadIt = _threads.find(de.dwThreadId);
       DS2ASSERT(threadIt != _threads.end());
       _currentThread = threadIt->second;
       _currentThread->updateState(de);
+
+      ErrorCode error = suspend();
+      if (error != kSuccess) {
+        return error;
+      }
+
       return kSuccess;
     }
 
