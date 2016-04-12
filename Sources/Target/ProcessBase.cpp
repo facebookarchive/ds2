@@ -100,10 +100,10 @@ ErrorCode ProcessBase::suspend() {
         thread->readCPUState(state);
       } else if (error == kErrorProcessNotFound) {
         // Thread is dead.
-        removeThread(thread->tid());
         DS2LOG(Debug,
                "tried to suspended tid %" PRI_PID " which is already dead",
                thread->tid());
+        removeThread(thread->tid());
       } else {
         return error;
       }
