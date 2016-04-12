@@ -21,6 +21,7 @@
 
 #define super ds2::Target::ThreadBase
 
+using ds2::Host::Platform;
 using ds2::Support::Stringify;
 
 namespace ds2 {
@@ -36,6 +37,26 @@ Thread::Thread(Process *process, ThreadId tid, HANDLE handle)
 }
 
 Thread::~Thread() { CloseHandle(_handle); }
+
+ErrorCode Thread::terminate() {
+  BOOL result = TerminateThread(_handle, 0);
+  if (!result) {
+    return Platform::TranslateError();
+  }
+
+  _state = kTerminated;
+  return kSuccess;
+}
+
+ErrorCode Thread::suspend() {
+  DWORD result = SuspendThread(_handle);
+  if (result == (DWORD)-1) {
+    return Platform::TranslateError();
+  }
+
+  _state = kStopped;
+  return kSuccess;
+}
 
 ErrorCode Thread::resume(int signal, Address const &address) {
   // TODO(sas): Not sure how to translate the signal concept to Windows yet.

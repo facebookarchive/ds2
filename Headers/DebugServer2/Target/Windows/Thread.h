@@ -29,10 +29,10 @@ public:
   virtual ~Thread();
 
 public:
-  virtual ErrorCode terminate() { return kErrorUnsupported; }
+  virtual ErrorCode terminate() override;
 
 public:
-  virtual ErrorCode suspend() { return kErrorUnsupported; }
+  virtual ErrorCode suspend() override;
 
 public:
   virtual ErrorCode step(int signal = 0, Address const &address = Address());
