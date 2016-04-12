@@ -23,6 +23,7 @@ namespace Windows {
 
 class Stringify {
 public:
+  static char const *DebugEvent(DWORD event);
   static char const *ExceptionCode(DWORD code);
 };
 }

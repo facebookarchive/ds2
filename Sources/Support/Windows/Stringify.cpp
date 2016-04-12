@@ -16,6 +16,21 @@ namespace ds2 {
 namespace Support {
 namespace Windows {
 
+char const *Stringify::DebugEvent(DWORD event) {
+  switch (event) {
+    DO_STRINGIFY(EXCEPTION_DEBUG_EVENT)
+    DO_STRINGIFY(CREATE_THREAD_DEBUG_EVENT)
+    DO_STRINGIFY(CREATE_PROCESS_DEBUG_EVENT)
+    DO_STRINGIFY(EXIT_THREAD_DEBUG_EVENT)
+    DO_STRINGIFY(EXIT_PROCESS_DEBUG_EVENT)
+    DO_STRINGIFY(LOAD_DLL_DEBUG_EVENT)
+    DO_STRINGIFY(UNLOAD_DLL_DEBUG_EVENT)
+    DO_STRINGIFY(OUTPUT_DEBUG_STRING_EVENT)
+    DO_STRINGIFY(RIP_EVENT)
+    DO_DEFAULT("unknown debug event", event)
+  }
+}
+
 char const *Stringify::ExceptionCode(DWORD code) {
   switch (code) {
     DO_STRINGIFY(EXCEPTION_ACCESS_VIOLATION)
