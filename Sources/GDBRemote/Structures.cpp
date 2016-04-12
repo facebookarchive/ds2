@@ -167,8 +167,6 @@ std::string ProcessThreadId::encode(CompatibilityMode mode) const {
 
 std::string StopInfo::reasonToString() const {
   switch (reason) {
-  case StopInfo::kReasonNone:
-    return "none";
   case StopInfo::kReasonBreakpoint:
     return "breakpoint";
   case StopInfo::kReasonSignalStop:
@@ -182,16 +180,11 @@ std::string StopInfo::reasonToString() const {
   case StopInfo::kReasonAccessWatchpoint:
     return "awatch";
 #if defined(OS_WIN32)
-  case StopInfo::kReasonMemoryError:
-  case StopInfo::kReasonMemoryAlignment:
-  case StopInfo::kReasonMathError:
-  case StopInfo::kReasonInstructionError:
-    return "";
   case StopInfo::kReasonLibraryEvent:
     return "library";
 #endif
   default:
-    DS2_UNREACHABLE();
+    DS2BUG("impossible to convert %s to string", Stringify::StopReason(reason));
   }
 }
 
@@ -421,7 +414,18 @@ JSDictionary *StopInfo::encodeBriefJson() const {
   auto threadObj = JSDictionary::New();
 
   threadObj->set("tid", JSInteger::New(ptid.tid));
-  threadObj->set("reason", JSString::New(reasonToString()));
+
+  switch (reason) {
+  case StopInfo::kReasonBreakpoint:
+  case StopInfo::kReasonSignalStop:
+  case StopInfo::kReasonTrap:
+  case StopInfo::kReasonWriteWatchpoint:
+  case StopInfo::kReasonReadWatchpoint:
+  case StopInfo::kReasonAccessWatchpoint:
+    threadObj->set("reason", JSString::New(reasonToString()));
+  default:
+    break;
+  }
 
   return threadObj;
 }
