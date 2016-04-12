@@ -29,9 +29,7 @@ namespace Windows {
 
 Thread::Thread(Process *process, ThreadId tid, HANDLE handle)
     : super(process, tid), _handle(handle) {
-  //
   // Initially the thread is stopped.
-  //
   _state = kStopped;
   _stopInfo.event = StopInfo::kEventStop;
   _stopInfo.reason = StopInfo::kReasonNone;

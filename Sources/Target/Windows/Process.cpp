@@ -17,7 +17,6 @@
 #include "DebugServer2/Utils/Log.h"
 
 #include <psapi.h>
-#include <tlhelp32.h>
 #include <vector>
 
 using ds2::Host::ProcessSpawner;
@@ -35,101 +34,36 @@ Process::Process()
 
 Process::~Process() { CloseHandle(_handle); }
 
-ErrorCode Process::initialize(ProcessId pid, HANDLE handle, ThreadId tid,
-                              HANDLE threadHandle, uint32_t flags) {
+ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
+  // The first call to `wait()` will receive a CREATE_PROCESS_DEBUG_EVENT event
+  // which will fill in `_handle` and create the main thread for this process.
   ErrorCode error = wait();
-  if (error != kSuccess)
+  if (error != kSuccess) {
     return error;
-
-  error = super::initialize(pid, flags);
-  if (error != kSuccess)
-    return error;
-
-  _handle = handle;
-
-  _currentThread = new Thread(this, tid, threadHandle);
-
-  return kSuccess;
-}
-
-static std::vector<ThreadId> GetThreadsForProcess(ProcessId pid) {
-  std::vector<ThreadId> result;
-
-  HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
-  if (snapshot == INVALID_HANDLE_VALUE)
-    return result;
-
-  THREADENTRY32 threadEntry;
-  threadEntry.dwSize = sizeof(THREADENTRY32);
-
-  for (BOOL res = Thread32First(snapshot, &threadEntry); res;
-       res = Thread32Next(snapshot, &threadEntry)) {
-    DS2ASSERT(threadEntry.dwSize == sizeof(THREADENTRY32));
-    if (threadEntry.th32OwnerProcessID == pid) {
-      result.push_back(threadEntry.th32ThreadID);
-    }
   }
 
-  CloseHandle(snapshot);
-  return result;
+  return super::initialize(pid, flags);
 }
 
 Target::Process *Process::Attach(ProcessId pid) {
   if (pid <= 0)
     return nullptr;
 
-  BOOL result;
-  HANDLE handle, threadHandle;
-  std::vector<ThreadId> tids;
-  ErrorCode error;
+  BOOL result = DebugActiveProcess(pid);
+  if (!result) {
+    return nullptr;
+  }
 
-  auto process = new Target::Process;
+  DS2LOG(Debug, "attached to process %" PRIu64, (uint64_t)pid);
 
-  result = DebugActiveProcess(pid);
-  if (!result)
-    goto fail;
-
-  handle = OpenProcess(PROCESS_ALL_ACCESS, false, pid);
-  if (!handle)
-    goto fail;
-
-  tids = GetThreadsForProcess(pid);
-  if (tids.empty())
-    goto proc_fail;
-
-  // Main thread is going to be first in the vector returned from
-  // GetThreadsForProcess. Initialize the process with that.
-  threadHandle = OpenThread(THREAD_ALL_ACCESS, false, tids[0]);
-  if (threadHandle == NULL)
-    goto proc_fail;
-
-  error = process->initialize(pid, handle, tids[0], threadHandle,
-                              kFlagAttachedProcess);
-  if (error != kSuccess)
-    goto init_fail;
-
-  // Create all the other threads.
-  for (size_t i = 1; i < tids.size(); ++i) {
-    threadHandle = OpenThread(THREAD_ALL_ACCESS, false, tids[i]);
-    if (threadHandle == NULL)
-      goto proc_fail;
-
-    // Automatically stored in process.
-    new Thread(process, tids[i], threadHandle);
+  auto process = new Process;
+  ErrorCode error = process->initialize(pid, 0);
+  if (error != kSuccess) {
+    delete process;
+    return nullptr;
   }
 
   return process;
-
-init_fail:
-  process->detach();
-  CloseHandle(threadHandle);
-
-proc_fail:
-  CloseHandle(handle);
-
-fail:
-  delete process;
-  return nullptr;
 }
 
 ErrorCode Process::detach() {
@@ -180,30 +114,26 @@ ErrorCode Process::wait() {
 
     switch (de.dwDebugEventCode) {
     case CREATE_PROCESS_DEBUG_EVENT:
-#define CHECK_AND_CLOSE(HAN)                                                   \
-  do {                                                                         \
-    if ((de.u.CreateProcessInfo.HAN) != NULL)                                  \
-      CloseHandle(de.u.CreateProcessInfo.HAN);                                 \
-  } while (0)
-      CHECK_AND_CLOSE(hFile);
-      CHECK_AND_CLOSE(hProcess);
-      CHECK_AND_CLOSE(hThread);
-#undef CHECK_AND_CLOSE
+      DS2ASSERT(de.u.CreateProcessInfo.hProcess != NULL);
+      _handle = de.u.CreateProcessInfo.hProcess;
+      _currentThread =
+          new Thread(this, GetThreadId(de.u.CreateProcessInfo.hThread),
+                     de.u.CreateProcessInfo.hThread);
+      if (de.u.CreateProcessInfo.hFile != NULL) {
+        CloseHandle(de.u.CreateProcessInfo.hFile);
+      }
       return kSuccess;
 
     case EXIT_PROCESS_DEBUG_EVENT:
       _terminated = true;
       return kSuccess;
 
-    case CREATE_THREAD_DEBUG_EVENT: {
-      auto threadHandle = de.u.CreateThread.hThread;
-      auto tid = GetThreadId(threadHandle);
+    case CREATE_THREAD_DEBUG_EVENT:
       // No need to save the new thread pointer, as it gets added automatically
       // to the process.
-      new Thread(this, tid, threadHandle);
-      resume();
-      keepGoing = true;
-    } break;
+      new Thread(this, GetThreadId(de.u.CreateThread.hThread),
+                 de.u.CreateThread.hThread);
+      return kSuccess;
 
     case EXIT_THREAD_DEBUG_EVENT: {
       auto threadIt = _threads.find(de.dwThreadId);
@@ -328,32 +258,21 @@ ErrorCode Process::updateInfo() {
 }
 
 ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
-  ErrorCode error;
-
-  //
-  // Create the process.
-  //
-  auto process = new Target::Process;
-
-  error = spawner.run();
-  if (error != kSuccess)
-    goto fail;
+  ErrorCode error = spawner.run();
+  if (error != kSuccess) {
+    return nullptr;
+  }
 
   DS2LOG(Debug, "created process %" PRIu64, (uint64_t)spawner.pid());
 
-  //
-  // Wait the process.
-  //
-  error = process->initialize(spawner.pid(), spawner.handle(), spawner.tid(),
-                              spawner.threadHandle(), 0);
-  if (error != kSuccess)
-    goto fail;
+  auto process = new Process;
+  error = process->initialize(spawner.pid(), 0);
+  if (error != kSuccess) {
+    delete process;
+    return nullptr;
+  }
 
   return process;
-
-fail:
-  delete process;
-  return nullptr;
 }
 
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,

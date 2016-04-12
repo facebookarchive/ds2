@@ -34,8 +34,7 @@ public:
   inline HANDLE handle() const { return _handle; }
 
 protected:
-  ErrorCode initialize(ProcessId pid, HANDLE handle, ThreadId tid,
-                       HANDLE threadHandle, uint32_t flags);
+  ErrorCode initialize(ProcessId pid, uint32_t flags) override;
 
 public:
   ErrorCode detach() override;
