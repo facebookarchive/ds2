@@ -42,7 +42,31 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
     return error;
   }
 
-  return super::initialize(pid, flags);
+  error = super::initialize(pid, flags);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  // Then we can continue resuming and waiting for the process until we hit a
+  // breakpoint.
+  // If we are creating the process ourselves, the first breakpoint will be in
+  // some system library before running user code.
+  // If we are attaching to an already running process, we will break in
+  // `DbgBreakPoint`, which is called by the remote thread `DebugActiveProcess`
+  // creates.
+  do {
+    error = resume();
+    if (error != kSuccess) {
+      return error;
+    }
+    error = wait();
+    if (error != kSuccess) {
+      return error;
+    }
+  } while (currentThread()->stopInfo().event != StopInfo::kEventStop ||
+           currentThread()->stopInfo().reason != StopInfo::kReasonBreakpoint);
+
+  return kSuccess;
 }
 
 Target::Process *Process::Attach(ProcessId pid) {
@@ -153,7 +177,8 @@ ErrorCode Process::wait() {
     case OUTPUT_DEBUG_STRING_EVENT: {
       auto threadIt = _threads.find(de.dwThreadId);
       DS2ASSERT(threadIt != _threads.end());
-      threadIt->second->updateState(de);
+      _currentThread = threadIt->second;
+      _currentThread->updateState(de);
     } break;
 
     default:
