@@ -143,6 +143,7 @@ ErrorCode Process::wait() {
 
     switch (de.dwDebugEventCode) {
     case CREATE_PROCESS_DEBUG_EVENT:
+      DS2ASSERT(_handle == nullptr);
       DS2ASSERT(de.u.CreateProcessInfo.hProcess != NULL);
       _handle = de.u.CreateProcessInfo.hProcess;
       _currentThread =
