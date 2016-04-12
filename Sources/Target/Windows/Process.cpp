@@ -143,6 +143,7 @@ ErrorCode Process::wait() {
     case CREATE_PROCESS_DEBUG_EVENT:
       DS2ASSERT(_handle == nullptr);
       DS2ASSERT(de.u.CreateProcessInfo.hProcess != NULL);
+      DS2ASSERT(de.u.CreateProcessInfo.hThread != NULL);
       _handle = de.u.CreateProcessInfo.hProcess;
       _currentThread =
           new Thread(this, GetThreadId(de.u.CreateProcessInfo.hThread),
