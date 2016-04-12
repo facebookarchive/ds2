@@ -41,7 +41,7 @@ char const *Stringify::Error(ErrorCode error) {
     DO_STRINGIFY(kErrorNameTooLong)
     DO_STRINGIFY(kErrorUnknown)
     DO_STRINGIFY(kErrorUnsupported)
-    DO_DEFAULT("unknown error code", error);
+    DO_DEFAULT("unknown error code", error)
   }
 }
 
@@ -51,7 +51,7 @@ char const *Stringify::StopEvent(StopInfo::Event event) {
     DO_STRINGIFY(StopInfo::kEventStop)
     DO_STRINGIFY(StopInfo::kEventExit)
     DO_STRINGIFY(StopInfo::kEventKill)
-    DO_DEFAULT("unknown StopInfo event", event);
+    DO_DEFAULT("unknown StopInfo event", event)
   }
 }
 
@@ -71,7 +71,7 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_STRINGIFY(StopInfo::kReasonInstructionError)
     DO_STRINGIFY(StopInfo::kReasonLibraryEvent)
 #endif
-    DO_DEFAULT("unknown StopInfo reason", reason);
+    DO_DEFAULT("unknown StopInfo reason", reason)
   }
 }
 }

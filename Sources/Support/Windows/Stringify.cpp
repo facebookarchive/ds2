@@ -53,7 +53,7 @@ char const *Stringify::ExceptionCode(DWORD code) {
     DO_STRINGIFY(EXCEPTION_PRIV_INSTRUCTION)
     DO_STRINGIFY(EXCEPTION_SINGLE_STEP)
     DO_STRINGIFY(EXCEPTION_STACK_OVERFLOW)
-    DO_DEFAULT("unknown exception code", code);
+    DO_DEFAULT("unknown exception code", code)
   }
 }
 }
