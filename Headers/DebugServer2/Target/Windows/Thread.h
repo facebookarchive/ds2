@@ -35,15 +35,17 @@ public:
   virtual ErrorCode suspend() override;
 
 public:
-  virtual ErrorCode step(int signal = 0, Address const &address = Address());
-  virtual ErrorCode resume(int signal = 0, Address const &address = Address());
+  virtual ErrorCode step(int signal = 0,
+                         Address const &address = Address()) override;
+  virtual ErrorCode resume(int signal = 0,
+                           Address const &address = Address()) override;
 
 public:
-  virtual ErrorCode readCPUState(Architecture::CPUState &state);
-  virtual ErrorCode writeCPUState(Architecture::CPUState const &state);
+  virtual ErrorCode readCPUState(Architecture::CPUState &state) override;
+  virtual ErrorCode writeCPUState(Architecture::CPUState const &state) override;
 
 protected:
-  virtual void updateState();
+  virtual void updateState() override;
   virtual void updateState(DEBUG_EVENT const &de);
 };
 }
