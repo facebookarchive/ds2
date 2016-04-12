@@ -35,11 +35,13 @@ typedef DWORD ProcessId;
 typedef DWORD ThreadId;
 typedef PSID UserId;
 typedef PSID GroupId;
+#define PRI_PID "lu"
 #else
 typedef pid_t ProcessId;
 typedef pid_t ThreadId;
 typedef uid_t UserId;
 typedef gid_t GroupId;
+#define PRI_PID "d"
 #endif
 
 static const ProcessId kAllProcessId = static_cast<ProcessId>(-1);
