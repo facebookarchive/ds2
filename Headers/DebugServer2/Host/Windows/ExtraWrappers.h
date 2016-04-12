@@ -254,6 +254,15 @@ WINBASEAPI DWORD WINAPI ResumeThread(
   _In_  HANDLE hThread
 );
 
+WINBASEAPI BOOL WINAPI TerminateThread(
+  _Inout_ HANDLE hThread,
+  _In_    DWORD  dwExitCode
+);
+
+WINBASEAPI DWORD WINAPI SuspendThread(
+  _In_ HANDLE hThread
+);
+
 WINBASEAPI BOOL WINAPI GetThreadContext(
   _In_     HANDLE hThread,
   _Inout_  LPCONTEXT lpContext
