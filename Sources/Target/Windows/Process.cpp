@@ -13,6 +13,7 @@
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
+#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -21,6 +22,7 @@
 
 using ds2::Host::ProcessSpawner;
 using ds2::Host::Platform;
+using ds2::Support::Stringify;
 
 #define super ds2::Target::ProcessBase
 
@@ -135,6 +137,9 @@ ErrorCode Process::wait() {
       return Platform::TranslateError();
 
     keepGoing = false;
+
+    DS2LOG(Debug, "debug event from inferior, event=%s",
+           Stringify::DebugEvent(de.dwDebugEventCode));
 
     switch (de.dwDebugEventCode) {
     case CREATE_PROCESS_DEBUG_EVENT:

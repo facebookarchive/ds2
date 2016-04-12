@@ -81,7 +81,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     _state = kStopped;
 
     DS2LOG(
-        Debug, "exception from inferior, code=%s, address=%p",
+        Debug, "exception from inferior, tid=%lu, code=%s, address=%p", tid(),
         Stringify::ExceptionCode(de.u.Exception.ExceptionRecord.ExceptionCode),
         de.u.Exception.ExceptionRecord.ExceptionAddress);
 
