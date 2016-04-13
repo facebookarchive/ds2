@@ -235,7 +235,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   case OUTPUT_DEBUG_STRING_EVENT:
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
-    _stopInfo.reason = StopInfo::kReasonNone;
+    _stopInfo.reason = StopInfo::kReasonDebugOutput;
     break;
 
   default:
