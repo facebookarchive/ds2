@@ -142,8 +142,6 @@ HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
   return _hardwareBreakpointManager;
 }
 
-bool Process::isSingleStepSupported() const { return true; }
-
 GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
   return &Architecture::X86::GDB;
 }

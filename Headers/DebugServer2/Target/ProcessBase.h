@@ -131,9 +131,6 @@ public:
   virtual bool isELFProcess() const = 0;
 
 public:
-  virtual bool isSingleStepSupported() const;
-
-public:
   virtual void prepareForDetach();
   virtual ErrorCode beforeResume();
   virtual ErrorCode afterResume();

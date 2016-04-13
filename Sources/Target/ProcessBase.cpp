@@ -180,8 +180,6 @@ void ProcessBase::removeThread(ThreadId tid) {
 
 void ProcessBase::remove(ThreadBase *thread) { removeThread(thread->tid()); }
 
-bool ProcessBase::isSingleStepSupported() const { return true; }
-
 ErrorCode ProcessBase::beforeResume() {
   if (!isAlive())
     return kErrorProcessNotFound;

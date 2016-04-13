@@ -8,26 +8,22 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "Target::Thread"
-
-#include "DebugServer2/Target/Thread.h"
+#include "DebugServer2/Architecture/ARM/SoftwareSingleStep.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
-#include "DebugServer2/SoftwareBreakpointManager.h"
-#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
-using ds2::Target::Linux::Process;
+using ds2::Architecture::CPUState;
+using ds2::Target::Process;
 
 namespace ds2 {
-namespace Target {
-namespace Linux {
+namespace Architecture {
+namespace ARM {
 
-namespace {
-
-static ErrorCode PrepareThumbSoftwareSingleStep(
-    Process *process, uint32_t pc, ds2::Architecture::CPUState const &state,
-    bool &link, uint32_t &nextPC, uint32_t &nextPCSize, uint32_t &branchPC,
-    uint32_t &branchPCSize) {
+ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
+                                         CPUState const &state, bool &link,
+                                         uint32_t &nextPC, uint32_t &nextPCSize,
+                                         uint32_t &branchPC,
+                                         uint32_t &branchPCSize) {
   ErrorCode error;
   uint32_t insns[2];
 
@@ -205,11 +201,11 @@ static ErrorCode PrepareThumbSoftwareSingleStep(
   return ds2::kSuccess;
 }
 
-static ErrorCode
-PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
-                             ds2::Architecture::CPUState const &state,
-                             bool &link, uint32_t &nextPC, uint32_t &nextPCSize,
-                             uint32_t &branchPC, uint32_t &branchPCSize) {
+ErrorCode PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
+                                       CPUState const &state, bool &link,
+                                       uint32_t &nextPC, uint32_t &nextPCSize,
+                                       uint32_t &branchPC,
+                                       uint32_t &branchPCSize) {
   ErrorCode error;
   uint32_t insn;
 
@@ -334,55 +330,6 @@ PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
   }
 
   return ds2::kSuccess;
-}
-}
-
-ErrorCode Thread::prepareSoftwareSingleStep(Address const &address) {
-  Architecture::CPUState state;
-
-  ErrorCode error = readCPUState(state);
-  if (error != kSuccess)
-    return error;
-
-  bool link = false;
-  bool isThumb = (state.gp.cpsr & (1 << 5));
-  uint32_t pc = address.valid() ? address.value() : state.pc();
-  uint32_t nextPC = static_cast<uint32_t>(-1);
-  uint32_t nextPCSize = 0;
-  uint32_t branchPC = static_cast<uint32_t>(-1);
-  uint32_t branchPCSize = 0;
-
-  if (isThumb) {
-    error = PrepareThumbSoftwareSingleStep(process(), pc, state, link, nextPC,
-                                           nextPCSize, branchPC, branchPCSize);
-  } else {
-    error = PrepareARMSoftwareSingleStep(process(), pc, state, link, nextPC,
-                                         nextPCSize, branchPC, branchPCSize);
-  }
-
-  DS2LOG(Debug, "PC=%#x, branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]",
-         pc, branchPC, branchPCSize, link ? "true" : "false", nextPC,
-         nextPCSize);
-
-  if (branchPC != static_cast<uint32_t>(-1)) {
-    DS2ASSERT(branchPCSize != 0);
-    error = process()->softwareBreakpointManager()->add(
-        branchPC, BreakpointManager::kTypeTemporaryOneShot, branchPCSize,
-        BreakpointManager::kModeExec);
-    if (error != kSuccess)
-      return error;
-  }
-
-  if (nextPC != static_cast<uint32_t>(-1)) {
-    DS2ASSERT(nextPCSize != 0);
-    error = process()->softwareBreakpointManager()->add(
-        nextPC, BreakpointManager::kTypeTemporaryOneShot, nextPCSize,
-        BreakpointManager::kModeExec);
-    if (error != kSuccess)
-      return error;
-  }
-
-  return kSuccess;
 }
 }
 }

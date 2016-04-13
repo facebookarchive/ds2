@@ -53,9 +53,6 @@ protected:
 
 private:
   void updateState(bool force);
-
-protected:
-  virtual ErrorCode prepareSoftwareSingleStep(Address const &address);
 };
 }
 }

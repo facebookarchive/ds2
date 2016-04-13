@@ -69,9 +69,6 @@ protected:
   ErrorCode updateAuxiliaryVector() override;
 
 public:
-  bool isSingleStepSupported() const override;
-
-public:
   SoftwareBreakpointManager *softwareBreakpointManager() const override;
   HardwareBreakpointManager *hardwareBreakpointManager() const override;
 

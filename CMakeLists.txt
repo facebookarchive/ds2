@@ -76,6 +76,7 @@ set(ARCHITECTURE_ARM_SOURCES
     Sources/Architecture/ARM/HardwareBreakpointManager.cpp
     Sources/Architecture/ARM/SoftwareBreakpointManager.cpp
     Sources/Architecture/ARM/RegistersDescriptors.cpp
+    Sources/Architecture/ARM/SoftwareSingleStep.cpp
     )
 
 set(ARCHITECTURE_ARM64_SOURCES
@@ -154,7 +155,6 @@ set(TARGET_Linux_SOURCES
     ${TARGET_POSIX_ELF_SOURCES}
     ${TARGET_POSIX_SOURCES}
     Sources/Target/Linux/${ARCH_NAME}/Process${ARCH_NAME}.cpp
-    Sources/Target/Linux/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Linux/Process.cpp
     Sources/Target/Linux/Thread.cpp
     )
@@ -163,7 +163,6 @@ set(TARGET_Darwin_SOURCES
     ${TARGET_POSIX_SOURCES}
     Sources/Target/Darwin/MachOProcess.cpp
     Sources/Target/Darwin/Process.cpp
-    Sources/Target/Darwin/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Darwin/${ARCH_NAME}/Process${ARCH_NAME}.cpp
     Sources/Target/Darwin/Thread.cpp
     )

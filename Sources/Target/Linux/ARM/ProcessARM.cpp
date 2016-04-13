@@ -383,14 +383,6 @@ int Process::getMaxWatchpointSize() const {
   return ptrace().getMaxWatchpointSize(_pid);
 }
 
-bool Process::isSingleStepSupported() const {
-  //
-  // Linux/ARM has no single step support, it must be emulated, this
-  // is important for LLDB.
-  //
-  return false;
-}
-
 GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
   return &Architecture::ARM::GDB;
 }

@@ -44,9 +44,6 @@ public:
 protected:
   ErrorCode updateStopInfo(int waitStatus) override;
   void updateState() override;
-
-protected:
-  ErrorCode prepareSoftwareSingleStep(Address const &address) override;
 };
 }
 }

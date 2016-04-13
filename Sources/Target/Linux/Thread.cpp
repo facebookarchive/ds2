@@ -11,8 +11,12 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
 #include "DebugServer2/Target/Linux/Thread.h"
+#if defined(ARCH_ARM)
+#include "DebugServer2/Architecture/ARM/SoftwareSingleStep.h"
+#endif
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
+#include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -20,9 +24,9 @@
 #include <cstdio>
 #include <cstring>
 
-#define super ds2::Target::POSIX::Thread
-
 using ds2::Host::Linux::ProcFS;
+
+#define super ds2::Target::POSIX::Thread
 
 namespace ds2 {
 namespace Target {
@@ -69,39 +73,89 @@ ErrorCode Thread::suspend() {
   return error;
 }
 
+#if defined(ARCH_ARM)
 ErrorCode Thread::step(int signal, Address const &address) {
-  ErrorCode error = kSuccess;
-  if (_state == kStopped || _state == kStepped) {
-    DS2LOG(Debug, "stepping tid %d", tid());
-    if (process()->isSingleStepSupported()) {
-      ProcessInfo info;
-
-      error = process()->getInfo(info);
-      if (error != kSuccess)
-        return error;
-
-      error = process()->ptrace().step(ProcessThreadId(process()->pid(), tid()),
-                                       info, signal, address);
-
-      if (error == kSuccess) {
-        _state = kStepped;
-      }
-    } else {
-      //
-      // Prepare a software (arch-dependent) single step and
-      // resume execution.
-      //
-      error = prepareSoftwareSingleStep(address);
-      if (error != kSuccess)
-        return error;
-
-      error = resume(signal, address);
-    }
+  if (_state == kInvalid || _state == kRunning) {
+    return kErrorInvalidArgument;
   } else if (_state == kTerminated) {
-    error = kErrorProcessNotFound;
+    return kErrorProcessNotFound;
   }
-  return error;
+
+  DS2LOG(Debug, "stepping tid %d", tid());
+
+  // Prepare a software (arch-dependent) single step and resume execution.
+  Architecture::CPUState state;
+  ErrorCode error = readCPUState(state);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  bool link = false;
+  bool isThumb = (state.gp.cpsr & (1 << 5));
+  uint32_t pc = address.valid() ? address.value() : state.pc();
+  uint32_t nextPC = static_cast<uint32_t>(-1);
+  uint32_t nextPCSize = 0;
+  uint32_t branchPC = static_cast<uint32_t>(-1);
+  uint32_t branchPCSize = 0;
+
+  if (isThumb) {
+    error = PrepareThumbSoftwareSingleStep(process(), pc, state, link, nextPC,
+                                           nextPCSize, branchPC, branchPCSize);
+  } else {
+    error = PrepareARMSoftwareSingleStep(process(), pc, state, link, nextPC,
+                                         nextPCSize, branchPC, branchPCSize);
+  }
+
+  DS2LOG(Debug, "PC=%#x, branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]",
+         pc, branchPC, branchPCSize, link ? "true" : "false", nextPC,
+         nextPCSize);
+
+  if (branchPC != static_cast<uint32_t>(-1)) {
+    DS2ASSERT(branchPCSize != 0);
+    error = process()->softwareBreakpointManager()->add(
+        branchPC, BreakpointManager::kTypeTemporaryOneShot, branchPCSize,
+        BreakpointManager::kModeExec);
+    if (error != kSuccess)
+      return error;
+  }
+
+  if (nextPC != static_cast<uint32_t>(-1)) {
+    DS2ASSERT(nextPCSize != 0);
+    error = process()->softwareBreakpointManager()->add(
+        nextPC, BreakpointManager::kTypeTemporaryOneShot, nextPCSize,
+        BreakpointManager::kModeExec);
+    if (error != kSuccess)
+      return error;
+  }
+
+  return resume(signal, address);
 }
+#else
+ErrorCode Thread::step(int signal, Address const &address) {
+  if (_state == kInvalid || _state == kRunning) {
+    return kErrorInvalidArgument;
+  } else if (_state == kTerminated) {
+    return kErrorProcessNotFound;
+  }
+
+  DS2LOG(Debug, "stepping tid %d", tid());
+
+  ProcessInfo info;
+  ErrorCode error = process()->getInfo(info);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  error = process()->ptrace().step(ProcessThreadId(process()->pid(), tid()),
+                                   info, signal, address);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  _state = kStepped;
+  return kSuccess;
+}
+#endif
 
 ErrorCode Thread::resume(int signal, Address const &address) {
   ErrorCode error = kSuccess;
