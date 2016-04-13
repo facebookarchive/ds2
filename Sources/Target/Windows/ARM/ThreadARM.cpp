@@ -10,6 +10,7 @@
 
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
+#include "DebugServer2/Architecture/ARM/SoftwareSingleStep.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #include "DebugServer2/Target/Thread.h"
@@ -24,7 +25,28 @@ namespace Target {
 namespace Windows {
 
 ErrorCode Thread::step(int signal, Address const &address) {
-  DS2BUG("not implemented");
+  if (_state == kInvalid || _state == kRunning) {
+    return kErrorInvalidArgument;
+  } else if (_state == kTerminated) {
+    return kErrorProcessNotFound;
+  }
+
+  DS2LOG(Debug, "stepping tid %d", tid());
+
+  // Prepare a software (arch-dependent) single step and resume execution.
+  Architecture::CPUState state;
+  ErrorCode error = readCPUState(state);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  error = PrepareSoftwareSingleStep(
+      process(), process()->softwareBreakpointManager(), state, address);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  return resume(signal, address);
 }
 
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
