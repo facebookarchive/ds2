@@ -11,6 +11,7 @@
 #ifndef __DebugServer2_Host_Darwin_PTrace_h
 #define __DebugServer2_Host_Darwin_PTrace_h
 
+#include "DebugServer2/Architecture/CPUState.h"
 #include "DebugServer2/Host/POSIX/PTrace.h"
 
 namespace ds2 {

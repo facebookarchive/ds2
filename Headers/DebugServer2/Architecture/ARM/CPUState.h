@@ -11,6 +11,10 @@
 #ifndef __DebugServer2_Architecture_ARM_CPUState_h
 #define __DebugServer2_Architecture_ARM_CPUState_h
 
+#ifndef __DebugServer2_Architecture_CPUState_h
+#error "You shall not include this file directly."
+#endif
+
 #include "DebugServer2/Architecture/ARM/RegistersDescriptors.h"
 
 #include <cstring>

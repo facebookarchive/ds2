@@ -11,6 +11,10 @@
 #ifndef __DebugServer2_Architecture_ARM64_CPUState_h
 #define __DebugServer2_Architecture_ARM64_CPUState_h
 
+#ifndef __DebugServer2_Architecture_CPUState_h
+#error "You shall not include this file directly."
+#endif
+
 #include "DebugServer2/Architecture/ARM/CPUState.h" // Include the A32 variant
 #include "DebugServer2/Architecture/ARM64/RegistersDescriptors.h"
 
