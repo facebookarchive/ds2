@@ -48,11 +48,12 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
 
   memset(&context, 0, sizeof(context));
   // TODO(sas): Handle AVX.
-  context.ContextFlags = CONTEXT_INTEGER |           // GP registers.
-                         CONTEXT_CONTROL |           // Some more GP + cs/ss.
-                         CONTEXT_SEGMENTS |          // Data segment selectors.
-                         CONTEXT_FLOATING_POINT |    // FP registers.
-                         CONTEXT_EXTENDED_REGISTERS; // SSE registers.
+  context.ContextFlags = CONTEXT_INTEGER |            // GP registers.
+                         CONTEXT_CONTROL |            // Some more GP + cs/ss.
+                         CONTEXT_SEGMENTS |           // Data segment selectors.
+                         CONTEXT_FLOATING_POINT |     // FP registers.
+                         CONTEXT_EXTENDED_REGISTERS | // SSE registers.
+                         CONTEXT_DEBUG_REGISTERS;     // Debug registers.
 
   BOOL result = GetThreadContext(_handle, &context);
   if (!result) {
@@ -117,7 +118,7 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
   CONTEXT context;
 
   memset(&context, 0, sizeof(context));
-  // TODO(sas): Handle floats, SSE and AVX.
+  // TODO(sas): Handle floats, SSE, AVX and debug registers.
   context.ContextFlags = CONTEXT_INTEGER | // GP registers.
                          CONTEXT_CONTROL | // Some more GP + cs/ss.
                          CONTEXT_SEGMENTS; // Data segment selectors.
