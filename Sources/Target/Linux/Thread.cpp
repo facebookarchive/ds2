@@ -90,48 +90,10 @@ ErrorCode Thread::step(int signal, Address const &address) {
     return error;
   }
 
-  bool link = false;
-  bool isThumb = (state.gp.cpsr & (1 << 5));
-  uint32_t pc = address.valid() ? address.value() : state.pc();
-  uint32_t nextPC = static_cast<uint32_t>(-1);
-  uint32_t nextPCSize = 0;
-  uint32_t branchPC = static_cast<uint32_t>(-1);
-  uint32_t branchPCSize = 0;
-
-  if (isThumb) {
-    error = PrepareThumbSoftwareSingleStep(process(), pc, state, link, nextPC,
-                                           nextPCSize, branchPC, branchPCSize);
-  } else {
-    error = PrepareARMSoftwareSingleStep(process(), pc, state, link, nextPC,
-                                         nextPCSize, branchPC, branchPCSize);
-  }
-
+  error = PrepareSoftwareSingleStep(
+      process(), process()->softwareBreakpointManager(), state, address);
   if (error != kSuccess) {
     return error;
-  }
-
-  DS2LOG(Debug, "PC=%#x, branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]",
-         pc, branchPC, branchPCSize, link ? "true" : "false", nextPC,
-         nextPCSize);
-
-  if (branchPC != static_cast<uint32_t>(-1)) {
-    DS2ASSERT(branchPCSize != 0);
-    error = process()->softwareBreakpointManager()->add(
-        branchPC, BreakpointManager::kTypeTemporaryOneShot, branchPCSize,
-        BreakpointManager::kModeExec);
-    if (error != kSuccess) {
-      return error;
-    }
-  }
-
-  if (nextPC != static_cast<uint32_t>(-1)) {
-    DS2ASSERT(nextPCSize != 0);
-    error = process()->softwareBreakpointManager()->add(
-        nextPC, BreakpointManager::kTypeTemporaryOneShot, nextPCSize,
-        BreakpointManager::kModeExec);
-    if (error != kSuccess) {
-      return error;
-    }
   }
 
   return resume(signal, address);

@@ -12,6 +12,7 @@
 #define __DebugServer2_Architecture_ARM_SoftwareSingleStep_h
 
 #include "DebugServer2/Architecture/CPUState.h"
+#include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
 
 namespace ds2 {
@@ -30,6 +31,11 @@ ErrorCode PrepareARMSoftwareSingleStep(Target::Process *process, uint32_t pc,
                                        bool &link, uint32_t &nextPC,
                                        uint32_t &nextPCSize, uint32_t &branchPC,
                                        uint32_t &branchPCSize);
+
+ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
+                                    BreakpointManager *manager,
+                                    CPUState const &state,
+                                    Address const &address);
 }
 }
 }
