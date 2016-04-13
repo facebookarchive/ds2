@@ -11,6 +11,10 @@
 #ifndef __DebugServer2_Architecture_X86_64_CPUState_h
 #define __DebugServer2_Architecture_X86_64_CPUState_h
 
+#ifndef __DebugServer2_Architecture_CPUState_h
+#error "You shall not include this file directly."
+#endif
+
 #include "DebugServer2/Architecture/X86/CPUState.h" // Include the X86 variant
 #include "DebugServer2/Architecture/X86_64/RegistersDescriptors.h"
 

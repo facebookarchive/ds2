@@ -10,8 +10,6 @@
 //
 
 #include "DebugServer2/Host/Darwin/PTrace.h"
-#include "DebugServer2/Architecture/X86/CPUState.h"
-#include "DebugServer2/Architecture/X86_64/CPUState.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
