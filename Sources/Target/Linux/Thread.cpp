@@ -106,6 +106,10 @@ ErrorCode Thread::step(int signal, Address const &address) {
                                          nextPCSize, branchPC, branchPCSize);
   }
 
+  if (error != kSuccess) {
+    return error;
+  }
+
   DS2LOG(Debug, "PC=%#x, branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]",
          pc, branchPC, branchPCSize, link ? "true" : "false", nextPC,
          nextPCSize);
@@ -115,8 +119,9 @@ ErrorCode Thread::step(int signal, Address const &address) {
     error = process()->softwareBreakpointManager()->add(
         branchPC, BreakpointManager::kTypeTemporaryOneShot, branchPCSize,
         BreakpointManager::kModeExec);
-    if (error != kSuccess)
+    if (error != kSuccess) {
       return error;
+    }
   }
 
   if (nextPC != static_cast<uint32_t>(-1)) {
@@ -124,8 +129,9 @@ ErrorCode Thread::step(int signal, Address const &address) {
     error = process()->softwareBreakpointManager()->add(
         nextPC, BreakpointManager::kTypeTemporaryOneShot, nextPCSize,
         BreakpointManager::kModeExec);
-    if (error != kSuccess)
+    if (error != kSuccess) {
       return error;
+    }
   }
 
   return resume(signal, address);
