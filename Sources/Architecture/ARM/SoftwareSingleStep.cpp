@@ -156,7 +156,7 @@ ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
   //
   case ds2::Architecture::ARM::kBranchTypeBLX_i:
     branchPC = pc + info.disp;
-    branchPC = (branchPC + info.align - 1) & -info.align;
+    branchPC = (branchPC + info.align - 1) & ~info.align;
     branchPCSize = 4;
     break;
 
