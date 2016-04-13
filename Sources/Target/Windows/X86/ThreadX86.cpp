@@ -15,6 +15,10 @@
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <windows.h>
+
+using ds2::Host::Platform;
+
 namespace ds2 {
 namespace Target {
 namespace Windows {
@@ -51,8 +55,9 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
                          CONTEXT_EXTENDED_REGISTERS; // SSE registers.
 
   BOOL result = GetThreadContext(_handle, &context);
-  if (!result)
-    return Host::Platform::TranslateError();
+  if (!result) {
+    return Platform::TranslateError();
+  }
 
   // GP registers + segment selectors.
   state.gp.eax = context.Eax;
@@ -135,8 +140,9 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
   context.EFlags = state.gp.eflags;
 
   BOOL result = SetThreadContext(_handle, &context);
-  if (!result)
-    return Host::Platform::TranslateError();
+  if (!result) {
+    return Platform::TranslateError();
+  }
 
   return kSuccess;
 }
