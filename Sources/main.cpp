@@ -240,6 +240,15 @@ DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
 __declspec(dllexport)
 #endif
 int main(int argc, char **argv) {
+#if defined(OS_POSIX)
+  // When ds2 is launched inside the lldb test-runner, python will leak file
+  // descriptors to its inferior (ds2). Clean up these file descriptors before
+  // running.
+  for (int i = 3; i < 1024; ++i) {
+    ::close(i);
+  }
+#endif
+
   // clang-format on
   std::ostringstream ss;
   for (int i = 0; i < argc; ++i)
