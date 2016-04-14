@@ -335,12 +335,13 @@ int main(int argc, char **argv) {
       DS2LOG(Error, "unable to open %s for writing: %s",
              opts.getString("log-file").c_str(), strerror(errno));
     } else {
-#if !defined(OS_WIN32)
+#if defined(OS_POSIX)
       // When ds2 is spawned by an app (e.g.: on Android), it will run with the
       // app's user/group ID, and will create its log file owned by the app. By
       // default, the permissions will be 0600 (rw-------) which makes us
       // unable to get the log files. chmod() them to be able to access them.
       fchmod(fileno(stream), 0644);
+      fcntl(F_SETFD, fileno(stream), FD_CLOEXEC);
 #endif
       ds2::SetLogColorsEnabled(false);
       ds2::SetLogOutputStream(stream);
