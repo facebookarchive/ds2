@@ -342,7 +342,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   _pid = ::fork();
   if (_pid < 0) {
     close_terminal(term);
-    return kErrorNoMemory;
+    return Platform::TranslateError();
   }
 
   if (_pid == 0) {
@@ -386,8 +386,9 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
 
       if (!_workingDirectory.empty()) {
         int res = ::chdir(_workingDirectory.c_str());
-        if (res != 0)
+        if (res != 0) {
           return Platform::TranslateError();
+        }
       }
 
       std::vector<char *> args;
@@ -402,8 +403,9 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
             (new std::string(env.first + '=' + env.second))->c_str()));
       environment.push_back(nullptr);
 
-      if (!preExecAction())
+      if (!preExecAction()) {
         return kErrorUnknown;
+      }
 
       if (::execve(_executablePath.c_str(), &args[0], &environment[0]) < 0) {
         DS2LOG(Error, "cannot spawn executable %s, error=%s",
