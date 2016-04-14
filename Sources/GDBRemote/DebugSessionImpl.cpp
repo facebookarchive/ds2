@@ -175,7 +175,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
     // TODO: This needs to go away.
     if (_process && !_process->isAlive()) {
       stop.event = StopInfo::kEventKill;
-      stop.signal = 9;
+      stop.setSignal(9);
       return kSuccess;
     }
 #endif

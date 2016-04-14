@@ -321,7 +321,7 @@ std::string StopInfo::encode(CompatibilityMode mode, bool listThreads) const {
   case kEventStop:
     ss << ((mode != kCompatibilityModeGDB) ? 'T' : 'S') << HEX(2);
 #if !defined(OS_WIN32)
-    ss << ((reason != StopInfo::kReasonNone) ? (signal & 0xff) : 0);
+    ss << ((reason != StopInfo::kReasonNone) ? (getSignal() & 0xff) : 0);
 #else
     // Windows doesn't have a notion of signals but the GDB protocol still
     // needs some sort of emulation for these.
@@ -353,11 +353,11 @@ std::string StopInfo::encode(CompatibilityMode mode, bool listThreads) const {
     break;
 
   case kEventExit:
-    ss << 'W' << HEX(2) << (status & 0xff) << DEC;
+    ss << 'W' << HEX(2) << (getStatus() & 0xff) << DEC;
     break;
 
   case kEventKill:
-    ss << 'X' << HEX(2) << (signal & 0xff) << DEC;
+    ss << 'X' << HEX(2) << (getSignal() & 0xff) << DEC;
     break;
 
   default:

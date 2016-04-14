@@ -14,6 +14,7 @@
 #include "DebugServer2/Base.h"
 #include "DebugServer2/CPUTypes.h"
 #include "DebugServer2/Constants.h"
+#include "DebugServer2/Utils/Log.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -91,6 +92,7 @@ typedef std::map<std::string, std::string> EnvironmentBlock;
 //
 
 struct StopInfo {
+public:
   enum Event {
     kEventNone,
     kEventStop,
@@ -119,18 +121,46 @@ struct StopInfo {
 
   Event event;
   Reason reason;
-  // TODO: status and signal should be an union.
-  int status;
-  int signal;
   int core;
 
+private:
+  union {
+    int status;
+    int signal;
+  };
+
+private:
+  enum {
+    kAccessNone,
+    kAccessStatus,
+    kAccessSignal,
+  } lastAccessed;
+
+public:
+  inline int getStatus() const {
+    DS2ASSERT(lastAccessed == kAccessStatus);
+    return status;
+  }
+  inline void setStatus(int val) {
+    lastAccessed = kAccessStatus;
+    status = val;
+  }
+  inline int getSignal() const {
+    DS2ASSERT(lastAccessed == kAccessSignal);
+    return status;
+  }
+  inline void setSignal(int val) {
+    lastAccessed = kAccessSignal;
+    status = val;
+  }
+
+public:
   StopInfo() { clear(); }
 
   inline void clear() {
     event = kEventNone;
     reason = kReasonNone;
-    status = 0;
-    signal = 0;
+    lastAccessed = kAccessNone;
     core = -1;
   }
 };

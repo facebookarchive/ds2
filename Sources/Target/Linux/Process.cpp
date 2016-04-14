@@ -213,7 +213,7 @@ ErrorCode Process::wait() {
       goto continue_waiting;
 
     case StopInfo::kEventStop:
-      signal = _currentThread->_stopInfo.signal;
+      signal = _currentThread->_stopInfo.getSignal();
 
       DS2LOG(Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
              Stringify::Signal(signal));
