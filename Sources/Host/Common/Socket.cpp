@@ -55,6 +55,9 @@ bool Socket::create(int af) {
     _lastError = SOCK_ERRNO;
     return false;
   }
+#if defined(OS_POSIX)
+  fcntl(F_SETFD, _handle, FD_CLOEXEC);
+#endif
 
   // On most Linux systems, IPV6_V6ONLY is off by default, but on some systems
   // it's on, so turn it off to be able to receive both IPv6 and IPv4
