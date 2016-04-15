@@ -255,18 +255,15 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
 
 ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                        int signal, Address const &address) {
+#if defined(ARCH_ARM)
+  DS2BUG("single stepping for ARM must be implemented in software");
+#endif
+
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
   if (error != kSuccess)
     return error;
-
-#if defined(__arm__)
-  //
-  // Single stepping for this architecture is not implemented.
-  //
-  return kErrorUnsupported;
-#endif
 
   //
   // Continuation from address?
