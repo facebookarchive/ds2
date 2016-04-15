@@ -125,8 +125,9 @@ ErrorCode ProcessBase::resume(int signal, std::set<Thread *> const &excluded) {
         thread->state() == Thread::kStepped) {
       Architecture::CPUState state;
       thread->readCPUState(state);
-      DS2LOG(Debug, "resuming tid %" PRI_PID " from pc %#" PRIx64,
-             thread->tid(), (uint64_t)state.pc());
+      DS2LOG(Debug,
+             "resuming tid %" PRI_PID " from pc %#" PRIx64 " with signal %d",
+             thread->tid(), (uint64_t)state.pc(), signal);
       ErrorCode error = thread->resume(signal);
       if (error != kSuccess) {
         DS2LOG(Warning, "failed resuming tid %" PRI_PID ", error=%d",
