@@ -218,46 +218,7 @@ ErrorCode Process::wait() {
       DS2LOG(Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
              Stringify::Signal(signal));
 
-      if (signal == SIGSTOP || signal == SIGCHLD || signal == SIGRTMIN) {
-        //
-        // Silently ignore SIGSTOP, SIGCHLD and SIGRTMIN (this
-        // last one used for thread cancellation) and continue.
-        //
-        // Note(oba): The SIGRTMIN defines expands to a glibc
-        // call, this due to the fact the POSIX standard does
-        // not mandate that SIGRT* defines to be user-land
-        // constants.
-        //
-        // Note(sas): This is probably partially dead code as
-        // ptrace().step() doesn't work on ARM.
-        //
-        // Note(sas): Single-step detection should be higher up, not
-        // only for SIGSTOP, SIGCHLD and SIGRTMIN, but for every
-        // signal that we choose to ignore.
-        //
-        bool stepping = (_currentThread->state() == Thread::kStepped);
-
-        if (signal == SIGSTOP) {
-          signal = 0;
-        } else {
-          DS2LOG(Debug, "%s due to special signal, tid=%d status=%#x signal=%s",
-                 stepping ? "stepping" : "resuming", tid, status,
-                 Stringify::Signal(signal));
-        }
-
-        ErrorCode error;
-        if (stepping) {
-          error = _currentThread->step(signal);
-        } else {
-          error = _currentThread->resume(signal);
-        }
-
-        if (error != kSuccess) {
-          DS2LOG(Warning, "cannot resume thread %d, error=%d", tid, error);
-        }
-
-        goto continue_waiting;
-      } else if (_passthruSignals.find(signal) != _passthruSignals.end()) {
+      if (_passthruSignals.find(signal) != _passthruSignals.end()) {
         _currentThread->resume(signal);
         goto continue_waiting;
       } else {

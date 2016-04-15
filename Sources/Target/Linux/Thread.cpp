@@ -129,19 +129,6 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   ErrorCode error = kSuccess;
 
   if (_state == kStopped || _state == kStepped) {
-    if (signal == 0) {
-      switch (_stopInfo.signal) {
-      case SIGCHLD:
-      case SIGSTOP:
-      case SIGTRAP:
-        signal = 0;
-        break;
-      default:
-        signal = _stopInfo.signal;
-        break;
-      }
-    }
-
     ProcessInfo info;
 
     error = process()->getInfo(info);
