@@ -206,14 +206,18 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     //     WSTOPSIG(status) == SIGTRAP. We mark the thread stopped for no
     //     reason so it just gets restarted immediately (see
     //     Linux::Process::wait);
-    // (2) we sent the thread a SIGSTOP (with tkill) to interrupt it e.g.:
-    //     a thread hits a breakpoint, we have to stop every other thread.
-    //     These other treads will be mark as no reason so the debugger can
+    // (2) we sent the thread a SIGSTOP (with tkill(2)) to suspend it e.g.:
+    //     when a thread hits a breakpoint, we have to stop every other thread,
+    //     so we send each one of them a SIGSTOP with tkill(2). These other
+    //     treads will be marked as stopped for no reason so the debugger can
     //     adapt its output (e.g.: lldb will simply hide these threads and only
     //     display the one that stopped for a breakpoint);
-    // (3) the inferior received a SIGSTOP because of ptrace attach. We have to
+    // (3) we sent the process a SIGSTOP (with kill(2)) to interrupt it
+    //     entirely. This happens when the user hits Ctrl-C and the debugger
+    //     sends us a "\x03" for instance;
+    // (4) the inferior received a SIGSTOP because of ptrace attach. We have to
     //     mark the thread as stopped for a trap;
-    // (4) the inferior received a SIGTRAP. This is usually because of a
+    // (5) the inferior received a SIGTRAP. This is usually because of a
     //     breakpoint, single step or such;
 
     siginfo_t si;
@@ -228,14 +232,16 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     if (waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) { // (1)
       _stopInfo.event = StopInfo::kEventNone;
     } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) { // (2)
-      // The only signal we are supposed to send to the inferior is a
-      // SIGSTOP anyway.
+      // The only signal we are supposed to send to the inferior is a SIGSTOP.
       DS2ASSERT(_stopInfo.signal == SIGSTOP);
       _stopInfo.event = StopInfo::kEventNone;
+    } else if (si.si_code == SI_USER && si.si_pid == getpid()) { // (3)
+      DS2ASSERT(_stopInfo.signal == SIGSTOP);
+      _stopInfo.reason = StopInfo::kReasonSignalStop;
     } else if (si.si_code == SI_USER && si.si_pid == 0 &&
-               _stopInfo.signal == SIGSTOP) { // (3)
+               _stopInfo.signal == SIGSTOP) { // (4)
       _stopInfo.reason = StopInfo::kReasonTrap;
-    } else if (_stopInfo.signal == SIGTRAP) { // (4)
+    } else if (_stopInfo.signal == SIGTRAP) { // (5)
       _stopInfo.reason = StopInfo::kReasonBreakpoint;
     } else {
       // This is not a signal that we originated. We can output a

@@ -41,17 +41,7 @@ ErrorCode Process::detach() {
   return error;
 }
 
-ErrorCode Process::interrupt() {
-  //
-  // Depending on the passthru state of signal SIGINT, deliver either
-  // SIGINT or SIGTRAP.
-  //
-  int signal = SIGTRAP;
-  if (_passthruSignals.find(SIGINT) != _passthruSignals.end()) {
-    signal = SIGINT;
-  }
-  return ptrace().kill(_pid, signal);
-}
+ErrorCode Process::interrupt() { return ptrace().kill(_pid, SIGSTOP); }
 
 ErrorCode Process::terminate() {
   // We have to use SIGKILL here, for two (related) reasons:
