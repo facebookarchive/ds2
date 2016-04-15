@@ -2,14 +2,6 @@ diff --git a/test/functionalities/register/TestRegisters.py b/test/functionaliti
 index b78a254..6088dbe 100644
 --- a/test/functionalities/register/TestRegisters.py
 +++ b/test/functionalities/register/TestRegisters.py
-@@ -21,6 +21,7 @@ class RegisterCommandsTestCase(TestBase):
-         self.dbg.GetSelectedTarget().GetProcess().Destroy()
-         TestBase.tearDown(self)
- 
-+    @unittest2.expectedFailure
-     def test_register_commands(self):
-         """Test commands related to registers, in particular vector registers."""
-         if not self.getArchitecture() in ['amd64', 'i386', 'x86_64']:
 @@ -28,6 +29,7 @@ class RegisterCommandsTestCase(TestBase):
          self.buildDefault()
          self.register_commands()
