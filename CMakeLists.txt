@@ -322,8 +322,6 @@ endif ()
 if (COVERAGE)
   if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     target_link_libraries(ds2 gcov)
-  elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_link_libraries(ds2 profiler_rt)
   endif ()
 endif ()
 
