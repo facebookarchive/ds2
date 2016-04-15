@@ -69,6 +69,9 @@ if os.getenv('LLDB_TESTS') != None:
 if os.getenv('COVERAGE') == '1':
     packages.append('python-pip')
     packages.append('python-yaml')
+    if os.getenv('CLANG') == '1' and target == 'Linux-X86':
+        packages.append('libclang-common-3.7-dev:i386')
+        packages.append('libllvm3.7:i386')
 
 if "Ubuntu" in platform.linux_distribution():
     packages.append('realpath')
