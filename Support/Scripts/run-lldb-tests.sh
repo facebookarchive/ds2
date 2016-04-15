@@ -33,7 +33,7 @@ if [ -s "/etc/centos-release" ]; then
   llvm_build="$llvm_path/build"
   mkdir -p "$llvm_build"
   cd "$llvm_build"
-  if [ ! -f "$llvm_build/Makefile" ]; then
+  if [ ! -f "$llvm_build/build.ninja" ]; then
     cmake .. -G Ninja
   fi
   ninja
