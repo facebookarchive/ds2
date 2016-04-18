@@ -74,6 +74,54 @@ ErrorCode PTrace::detach(ProcessId pid) {
   return kSuccess;
 }
 
+ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
+                       int signal, Address const &address) {
+  pid_t pid;
+
+  ErrorCode error = ptidToPid(ptid, pid);
+  if (error != kSuccess)
+    return error;
+
+#if defined(OS_LINUX)
+  // Handling of continuation address is performed in Linux::PTrace.
+  DS2ASSERT(!address.valid());
+  auto res = wrapPtrace(PTRACE_SINGLESTEP, pid, nullptr, signal);
+#elif defined(OS_FREEBSD) || defined(OS_DARWIN)
+  // (caddr_t)1 indicates that execution is to pick up where it left off.
+  auto res =
+      wrapPtrace(PT_STEP, pid, address.valid() ? address.value() : 1, signal);
+#endif
+  if (res < 0) {
+    return Platform::TranslateError();
+  }
+
+  return kSuccess;
+}
+
+ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
+                         int signal, Address const &address) {
+  pid_t pid;
+
+  ErrorCode error = ptidToPid(ptid, pid);
+  if (error != kSuccess)
+    return error;
+
+#if defined(OS_LINUX)
+  // Handling of continuation address is performed in Linux::PTrace.
+  DS2ASSERT(!address.valid());
+  auto res = wrapPtrace(PTRACE_CONT, pid, nullptr, signal);
+#elif defined(OS_FREEBSD) || defined(OS_DARWIN)
+  // (caddr_t)1 indicates that execution is to pick up where it left off.
+  auto res = wrapPtrace(PT_CONTINUE, pid, address.valid() ? address.value() : 1,
+                        signal);
+#endif
+  if (res < 0) {
+    return Platform::TranslateError();
+  }
+
+  return kSuccess;
+}
+
 //
 // Execute will execute the code in the target process/thread,
 // the techinique for PTRACE is to read CPU state, rewrite the

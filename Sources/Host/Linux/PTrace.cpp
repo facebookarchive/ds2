@@ -259,15 +259,7 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   DS2BUG("single stepping for ARM must be implemented in software");
 #endif
 
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  //
   // Continuation from address?
-  //
   if (address.valid()) {
     Architecture::CPUState state;
     ErrorCode error = readCPUState(ptid, pinfo, state);
@@ -281,23 +273,12 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
       return error;
   }
 
-  if (wrapPtrace(PTRACE_SINGLESTEP, pid, nullptr, signal) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
+  return super::step(ptid, pinfo, signal);
 }
 
 ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                          int signal, Address const &address) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  //
   // Continuation from address?
-  //
   if (address.valid()) {
     Architecture::CPUState state;
     ErrorCode error = readCPUState(ptid, pinfo, state);
@@ -311,10 +292,7 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
       return error;
   }
 
-  if (wrapPtrace(PTRACE_CONT, pid, nullptr, signal) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
+  return super::resume(ptid, pinfo, signal);
 }
 
 ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {

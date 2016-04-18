@@ -69,11 +69,10 @@ public:
 
 public:
   virtual ErrorCode step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
-                         int signal = 0,
-                         Address const &address = Address()) = 0;
+                         int signal = 0, Address const &address = Address());
   virtual ErrorCode resume(ProcessThreadId const &ptid,
                            ProcessInfo const &pinfo, int signal = 0,
-                           Address const &address = Address()) = 0;
+                           Address const &address = Address());
 
 public:
   virtual ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) = 0;

@@ -158,58 +158,6 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   return kSuccess;
 }
 
-ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
-                       int signal, Address const &address) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  //
-  // Continuation from address?
-  //
-  if (address.valid()) {
-    Architecture::CPUState state;
-    ErrorCode error = readCPUState(ptid, pinfo, state);
-    if (error != kSuccess)
-      return error;
-
-    state.setPC(address);
-
-    error = writeCPUState(ptid, pinfo, state);
-    if (error != kSuccess)
-      return error;
-  }
-
-  if (wrapPtrace(PT_STEP, pid, nullptr, signal) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
-ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
-                         int signal, Address const &address) {
-  pid_t pid;
-  caddr_t addr = (caddr_t)1;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  //
-  // Continuation from address?
-  //
-  if (address.valid()) {
-    addr = (caddr_t)address.value();
-  }
-
-  if (wrapPtrace(PT_SYSCALL, pid, addr, signal) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
 ErrorCode PTrace::getLwpInfo(ProcessThreadId const &ptid,
                              struct ptrace_lwpinfo *lwpinfo) {
   pid_t pid;

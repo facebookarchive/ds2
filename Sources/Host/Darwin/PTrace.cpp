@@ -103,62 +103,6 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   return kSuccess;
 }
 
-ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
-                       int signal, Address const &address) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  //
-  // Continuation from address?
-  //
-  if (address.valid()) {
-    Architecture::CPUState state;
-    ErrorCode error = readCPUState(ptid, pinfo, state);
-    if (error != kSuccess)
-      return error;
-
-    state.setPC(address);
-
-    error = writeCPUState(ptid, pinfo, state);
-    if (error != kSuccess)
-      return error;
-  }
-
-  // (caddr_t)1 indicate that execution is to pick up where it left off.
-  if (wrapPtrace(PT_STEP, pid, (caddr_t)1, signal) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
-ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
-                         int signal, Address const &address) {
-  pid_t pid;
-  caddr_t addr;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  //
-  // Continuation from address?
-  //
-  if (address.valid()) {
-    addr = (caddr_t)address.value();
-  } else {
-    // (caddr_t)1 indicate that execution is to pick up where it left off.
-    addr = (caddr_t)1;
-  }
-
-  if (wrapPtrace(PT_CONTINUE, pid, addr, signal) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
 ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   return kErrorUnsupported;
 }
