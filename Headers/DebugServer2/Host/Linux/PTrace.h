@@ -61,6 +61,11 @@ public:
 public:
   ErrorCode suspend(ProcessThreadId const &ptid) override;
 
+private:
+  ErrorCode prepareAddressForResume(ProcessThreadId const &ptid,
+                                    ProcessInfo const &pinfo,
+                                    Address const &address);
+
 public:
   ErrorCode step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                  int signal = 0, Address const &address = Address()) override;

@@ -253,24 +253,36 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
   return kSuccess;
 }
 
+ErrorCode PTrace::prepareAddressForResume(ProcessThreadId const &ptid,
+                                          ProcessInfo const &pinfo,
+                                          Address const &address) {
+  if (address.valid()) {
+    Architecture::CPUState state;
+    ErrorCode error = readCPUState(ptid, pinfo, state);
+    if (error != kSuccess) {
+      return error;
+    }
+
+    state.setPC(address);
+
+    error = writeCPUState(ptid, pinfo, state);
+    if (error != kSuccess) {
+      return error;
+    }
+  }
+
+  return kSuccess;
+}
+
 ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                        int signal, Address const &address) {
 #if defined(ARCH_ARM)
   DS2BUG("single stepping for ARM must be implemented in software");
 #endif
 
-  // Continuation from address?
-  if (address.valid()) {
-    Architecture::CPUState state;
-    ErrorCode error = readCPUState(ptid, pinfo, state);
-    if (error != kSuccess)
-      return error;
-
-    state.setPC(address);
-
-    error = writeCPUState(ptid, pinfo, state);
-    if (error != kSuccess)
-      return error;
+  ErrorCode error = prepareAddressForResume(ptid, pinfo, address);
+  if (error != kSuccess) {
+    return error;
   }
 
   return super::step(ptid, pinfo, signal);
@@ -278,18 +290,9 @@ ErrorCode PTrace::step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
 
 ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                          int signal, Address const &address) {
-  // Continuation from address?
-  if (address.valid()) {
-    Architecture::CPUState state;
-    ErrorCode error = readCPUState(ptid, pinfo, state);
-    if (error != kSuccess)
-      return error;
-
-    state.setPC(address);
-
-    error = writeCPUState(ptid, pinfo, state);
-    if (error != kSuccess)
-      return error;
+  ErrorCode error = prepareAddressForResume(ptid, pinfo, address);
+  if (error != kSuccess) {
+    return error;
   }
 
   return super::resume(ptid, pinfo, signal);

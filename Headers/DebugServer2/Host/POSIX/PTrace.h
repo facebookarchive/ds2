@@ -67,6 +67,10 @@ public:
 public:
   virtual ErrorCode suspend(ProcessThreadId const &ptid) = 0;
 
+private:
+  ErrorCode doStepResume(bool stepping, ProcessThreadId const &ptid, int signal,
+                         Address const &address);
+
 public:
   virtual ErrorCode step(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                          int signal = 0, Address const &address = Address());
