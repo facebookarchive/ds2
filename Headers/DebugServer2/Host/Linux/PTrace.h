@@ -68,9 +68,6 @@ public:
                    int signal = 0, Address const &address = Address()) override;
 
 public:
-  ErrorCode getEventPid(ProcessThreadId const &ptid, ProcessId &epid) override;
-
-public:
   ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) override;
 
 protected:

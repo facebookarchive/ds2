@@ -317,21 +317,6 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   return kSuccess;
 }
 
-ErrorCode PTrace::getEventPid(ProcessThreadId const &ptid, ProcessId &epid) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  unsigned long value;
-  if (wrapPtrace(PTRACE_GETEVENTMSG, pid, nullptr, &value) < 0)
-    return Platform::TranslateError();
-
-  epid = value;
-  return kSuccess;
-}
-
 ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   pid_t pid;
 
