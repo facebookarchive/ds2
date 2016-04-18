@@ -82,6 +82,13 @@ public:
                             ProcessInfo const &pinfo, void const *code,
                             size_t length, uint64_t &result);
 
+#if defined(OS_LINUX) && defined(ARCH_ARM)
+public:
+  virtual int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) = 0;
+  virtual int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) = 0;
+  virtual int getMaxWatchpointSize(ProcessThreadId const &ptid) = 0;
+#endif
+
 protected:
   template <typename CommandType, typename AddrType, typename DataType>
   long wrapPtrace(CommandType request, pid_t pid, AddrType addr,
@@ -123,13 +130,6 @@ protected:
 
     return ret;
   }
-
-#if defined(OS_LINUX) && defined(ARCH_ARM)
-public:
-  virtual int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) = 0;
-  virtual int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) = 0;
-  virtual int getMaxWatchpointSize(ProcessThreadId const &ptid) = 0;
-#endif
 
   virtual ErrorCode ptidToPid(ProcessThreadId const &ptid, pid_t &pid);
 };
