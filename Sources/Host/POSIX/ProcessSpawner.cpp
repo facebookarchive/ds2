@@ -15,6 +15,7 @@
 #endif
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/ProcessSpawner.h"
+#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
@@ -26,6 +27,8 @@
 #include <poll.h>
 #include <sys/wait.h>
 #include <unistd.h>
+
+using ds2::Support::Stringify;
 
 namespace ds2 {
 namespace Host {
@@ -330,6 +333,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       startRedirectThread = true;
       if (term[0] == -1) {
         if (!open_terminal(term)) {
+          DS2LOG(Error, "failed to open terminal: %s", Stringify::Errno(errno));
           return Platform::TranslateError();
         }
       }
@@ -342,6 +346,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
   _pid = ::fork();
   if (_pid < 0) {
     close_terminal(term);
+    DS2LOG(Error, "failed to fork: %s", Stringify::Errno(errno));
     return Platform::TranslateError();
   }
 
@@ -404,6 +409,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       environment.push_back(nullptr);
 
       if (!preExecAction()) {
+        DS2LOG(Error, "pre exec action failed");
         return kErrorUnknown;
       }
 
