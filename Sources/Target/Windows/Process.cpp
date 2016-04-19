@@ -160,8 +160,8 @@ ErrorCode Process::wait() {
       return kSuccess;
 
     case CREATE_THREAD_DEBUG_EVENT: {
-      _currentThread = new Thread(this, GetThreadId(de.u.CreateThread.hThread),
-                                  de.u.CreateThread.hThread);
+      _currentThread =
+          new Thread(this, de.dwThreadId, de.u.CreateThread.hThread);
       _currentThread->updateState(de);
       ErrorCode error = _currentThread->resume();
       if (error != kSuccess) {
