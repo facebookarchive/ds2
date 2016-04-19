@@ -114,6 +114,7 @@ struct StopInfo {
     kReasonMathError,
     kReasonInstructionError,
     kReasonLibraryEvent,
+    kReasonDebugOutput,
 #endif
   };
 

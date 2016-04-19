@@ -230,6 +230,7 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
   case StopInfo::kReasonMemoryAlignment:
   case StopInfo::kReasonMathError:
   case StopInfo::kReasonInstructionError:
+  case StopInfo::kReasonDebugOutput:
 #endif
     break;
   }

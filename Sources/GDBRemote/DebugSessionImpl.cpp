@@ -942,28 +942,56 @@ DebugSessionImpl::onResume(Session &session,
     }
   }
 
-  //
   // If kErrorAlreadyExist is set, then a signal is already pending.
-  //
   if (error != kErrorAlreadyExist) {
-    //
-    // Wait for the next signal
-    //
-    error = _process->wait();
-    if (error != kSuccess)
-      goto ret;
+    bool keepGoing = true;
+    while (keepGoing) {
+      error = _process->wait();
+      if (error != kSuccess) {
+        goto ret;
+      }
+
+      auto thread = _process->currentThread();
+      if (thread == nullptr) {
+        break;
+      }
+
+      if (thread->stopInfo().event != StopInfo::kEventStop) {
+        break;
+      }
+
+      switch (thread->stopInfo().reason) {
+#if defined(OS_WIN32)
+      case StopInfo::kReasonDebugOutput: {
+        std::string data = "O";
+        // TODO(sas): Actually fetch the data from the inferior.
+        data += StringToHex("inferior said stuff");
+        _resumeSession->send(data);
+        error = thread->resume();
+        if (error != kSuccess) {
+          return error;
+        }
+      } break;
+#endif
+      default:
+        keepGoing = false;
+      }
+    }
   }
 
   error = _process->afterResume();
-  if (error != kSuccess)
+  if (error != kSuccess) {
     goto ret;
+  }
 
   error = queryStopCode(
       session,
       ProcessThreadId(_process->pid(), _process->currentThread()->tid()), stop);
 
-  if (stop.event == StopInfo::kEventExit || stop.event == StopInfo::kEventKill)
+  if (stop.event == StopInfo::kEventExit ||
+      stop.event == StopInfo::kEventKill) {
     _spawner.flushAndExit();
+  }
 
 ret:
   _resumeSessionLock.lock();
