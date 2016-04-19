@@ -425,16 +425,16 @@ ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
     }
   }
 
+  info.containerRegisters.clear();
   if (reginfo.Def->ContainerRegisters != nullptr) {
-    info.containerRegisters.clear();
     for (size_t n = 0; reginfo.Def->ContainerRegisters[n] != nullptr; n++) {
       info.containerRegisters.push_back(
           reginfo.Def->ContainerRegisters[n]->LLDBRegisterNumber);
     }
   }
 
+  info.invalidateRegisters.clear();
   if (reginfo.Def->InvalidatedRegisters != nullptr) {
-    info.invalidateRegisters.clear();
     for (size_t n = 0; reginfo.Def->InvalidatedRegisters[n] != nullptr; n++) {
       info.invalidateRegisters.push_back(
           reginfo.Def->InvalidatedRegisters[n]->LLDBRegisterNumber);
