@@ -967,7 +967,7 @@ DebugSessionImpl::onResume(Session &session,
         // TODO(sas): Actually fetch the data from the inferior.
         data += StringToHex("inferior said stuff");
         _resumeSession->send(data);
-        error = thread->resume();
+        error = _process->resume();
         if (error != kSuccess) {
           return error;
         }
