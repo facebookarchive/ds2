@@ -19,7 +19,8 @@
 namespace ds2 {
 namespace Utils {
 
-#if defined(OS_DARWIN) || defined(OS_WIN32) || defined(__GLIBC__)
+#if defined(OS_DARWIN) || defined(OS_WIN32) ||                                 \
+    (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
 static void PrintBacktraceEntrySimple(void *address) {
   static const int kPointerWidth = sizeof(void *) * 2;
   DS2LOG(Error, "%0#*" PRIxPTR, kPointerWidth,
@@ -27,7 +28,7 @@ static void PrintBacktraceEntrySimple(void *address) {
 }
 #endif
 
-#if defined(OS_DARWIN) || defined(__GLIBC__)
+#if defined(OS_DARWIN) || (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
 void PrintBacktrace() {
   static const int kStackSize = 100;
   static void *stack[kStackSize];
