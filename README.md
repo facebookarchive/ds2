@@ -53,6 +53,7 @@ usage: ds2 [RUN_MODE] [OPTIONS] [[HOST]:PORT] [-- PROGRAM [ARGUMENTS...]]
   -n, --no-colors            disable colored output
   -R, --reverse-connect      connect back to the debugger at [HOST]:PORT
   -e, --set-env              add an element to the environment before launch
+  -S, --setsid               make ds2 run in its own session
   -E, --unset-env            remove an element from the environment before lauch
 ```
 

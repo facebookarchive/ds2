@@ -166,16 +166,8 @@ static int SlaveMain() {
   }
 
   if (pid == 0) {
-    //
-    // Let the slave have its own session
-    // TODO maybe should be a command line switch?
-    //
-    setsid();
-
-    //
     // When in slave mode, output is suppressed but
     // for standard error.
-    //
     close(0);
     close(1);
 
@@ -185,10 +177,8 @@ static int SlaveMain() {
     auto client = std::unique_ptr<Socket>(server->accept());
     return RunDebugServer(client.get(), new SlaveSessionImpl);
   } else {
-    //
     // Write to the standard output to let know our parent
     // where we're listening.
-    //
     fprintf(stdout, "%s %d\n", port.c_str(), pid);
   }
 
@@ -313,7 +303,7 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
                  "use native registers (no-op)", true);
   opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
-                 "make ds2 run in its own session (no-op)", true);
+                 "make ds2 run in its own session");
 
   if (argc < 2)
     opts.usageDie("first argument must be g[dbserver] or p[latform]");
@@ -434,6 +424,14 @@ int main(int argc, char **argv) {
   // write it back to the FIFO passed as argument for the test harness to use
   // it.
   namedPipePath = opts.getString("named-pipe");
+
+  if (opts.getBool("setsid")) {
+#if defined(OS_WIN32)
+    opts.usageDie("--setsid not supported on Windows");
+#else
+    ::setsid();
+#endif
+  }
 
   // Default host and port options.
   if (port.empty()) {

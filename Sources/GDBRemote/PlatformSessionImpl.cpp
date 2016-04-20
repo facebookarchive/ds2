@@ -148,6 +148,7 @@ ErrorCode PlatformSessionImpl::onLaunchDebugServer(Session &session,
   } else if (GetLogLevel() == kLogLevelPacket) {
     args.push_back("--debug-remote");
   }
+  args.push_back("--setsid");
   ps.setArguments(args);
   ps.redirectInputToNull();
   ps.redirectOutputToBuffer();
