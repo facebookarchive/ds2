@@ -186,9 +186,8 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
   if (error != ds2::kSuccess)
     return error;
 
-// Use __ANDROID__ and not PLATFORM_ANDROID. The Android toolchain doesn't
-// have a definition for LAV_CURRENT, so we skip this check.
-#if !defined(__ANDROID__) && !defined(OS_FREEBSD)
+// Android doesn't have a definition for LAV_CURRENT, so we skip this check.
+#if !defined(PLATFORM_ANDROID) && !defined(OS_FREEBSD)
   if (debug.version != LAV_CURRENT)
     return ds2::kErrorUnsupported;
 #endif

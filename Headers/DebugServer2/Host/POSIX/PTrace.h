@@ -98,9 +98,8 @@ protected:
   long wrapPtrace(CommandType request, pid_t pid, AddrType addr,
                   DataType data) {
 #if defined(OS_LINUX)
-// Use __ANDROID__ and not PLATFORM_ANDROID. The android toolchain is the
-// one that declares ptrace() with an int command.
-#if defined(__ANDROID__)
+// The android toolchain declares ptrace() with an int command.
+#if defined(PLATFORM_ANDROID)
     typedef int PTraceRequestType;
 #else
     typedef enum __ptrace_request PTraceRequestType;

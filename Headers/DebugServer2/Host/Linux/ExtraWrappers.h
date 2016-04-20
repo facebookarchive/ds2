@@ -11,12 +11,14 @@
 #ifndef __DebugServer2_Host_Linux_ExtraWrappers_h
 #define __DebugServer2_Host_Linux_ExtraWrappers_h
 
+#include "DebugServer2/Base.h"
+
 #include <asm/unistd.h>
 #include <fcntl.h>
 #include <sys/syscall.h>
 #include <unistd.h>
 
-#if !defined(__ANDROID__)
+#if !defined(PLATFORM_ANDROID)
 // Android headers do have a wrapper for `gettid`, unlike glibc.
 static inline pid_t gettid() { return ::syscall(SYS_gettid); }
 #endif
