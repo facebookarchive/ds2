@@ -17,6 +17,9 @@
 // clang-format off
 #include <sys/types.h>
 #include <sys/ptrace.h>
+#if defined(OS_LINUX)
+#include <asm/ptrace.h>
+#endif
 // clang-format on
 
 namespace ds2 {
