@@ -25,7 +25,7 @@ elif os.getenv('CLANG') == '1' or os.getenv('LLDB_TESTS') != None:
     repositories.append('ppa:ubuntu-toolchain-r/test')
     keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
     repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main')
-elif target in [ 'Linux-X86', 'Linux-X86_64' ]:
+elif target in [ 'Linux-X86', 'Linux-X86_64', 'Tizen-X86' ]:
     repositories.append('ppa:ubuntu-toolchain-r/test')
 
 for r in repositories:

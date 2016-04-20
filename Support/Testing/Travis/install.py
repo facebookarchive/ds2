@@ -23,8 +23,8 @@ android_toolchains = { 'Android-ARM':       'arm',
                        'Android-X86':       'x86',
                        'Android-X86_64':    'x86' }
 
-tizen_toolchains = { 'Tizen-ARM':   'arm',
-                     'Tizen-X86':   'x86' }
+tizen_packages = { 'Tizen-ARM': linux_packages['Linux-ARM'],
+                   'Tizen-X86': linux_packages['Linux-X86'] }
 
 target = os.getenv('TARGET')
 
@@ -48,9 +48,8 @@ elif target == 'MinGW-X86':
 elif target in android_toolchains:
     # Android builds get the toolchain from AOSP.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
-elif target in tizen_toolchains:
-    # Tizen builds use the android toolchain and link statically.
-    check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % tizen_toolchains[target], shell=True)
+elif target in tizen_packages:
+    packages.append(tizen_packages[target])
 
 # Running LLDB tests requires an install of lldb (for the tests to be able to
 # use the lldb python library without us building it).
