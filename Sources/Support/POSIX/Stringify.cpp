@@ -73,6 +73,19 @@ char const *Stringify::Signal(int signal) {
 }
 
 char const *Stringify::SignalCode(int signal, int code) {
+  switch (code) {
+    DO_STRINGIFY(SI_USER)
+    DO_STRINGIFY(SI_KERNEL)
+    DO_STRINGIFY(SI_QUEUE)
+    DO_STRINGIFY(SI_TIMER)
+    DO_STRINGIFY(SI_MESGQ)
+    DO_STRINGIFY(SI_ASYNCIO)
+    DO_STRINGIFY(SI_SIGIO)
+    DO_STRINGIFY(SI_TKILL)
+  default:
+    break;
+  }
+
   switch (signal) {
   case SIGILL:
     switch (code) {
