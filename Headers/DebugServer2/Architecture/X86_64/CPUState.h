@@ -103,9 +103,9 @@ struct CPUState64 {
           SSEVector _sse[128];
         };
         SSEVector const &operator[](size_t index) const {
-          return _sse[index << 1];
+          return _sse[index << 2];
         }
-        SSEVector &operator[](size_t index) { return _sse[index << 1]; }
+        SSEVector &operator[](size_t index) { return _sse[index << 2]; }
       } regs;
     } sse;
 
