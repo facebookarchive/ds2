@@ -77,8 +77,8 @@ bool RegisterSet::finalize(Context &ctx) {
   for (auto reg : _regs) {
     //
     // 1. Bit-size must be defined, and must be a power of two and
-    //    greater than or equal to 8; for IEEE extended we check
-    //    it is a multiple of 8.
+    //    greater than or equal to 8; for IEEE extended and vector
+    //    types we check it is a multiple of 8.
     //
     if (reg->BitSize < 8) {
       fprintf(stderr, "error: register '%s' does specify a bit size that is "
@@ -88,6 +88,7 @@ bool RegisterSet::finalize(Context &ctx) {
     }
 
     if (reg->Encoding != kEncodingIEEEExtended &&
+        reg->Format != kFormatVector &&
         (reg->BitSize & (reg->BitSize - 1)) != 0) {
       fprintf(stderr, "error: register '%s' does specify a bit size "
                       "that is not a power of two\n",
@@ -95,7 +96,8 @@ bool RegisterSet::finalize(Context &ctx) {
       return false;
     }
 
-    if (reg->Encoding == kEncodingIEEEExtended && (reg->BitSize & 7) != 0) {
+    if ((reg->Encoding == kEncodingIEEEExtended || reg->Format == kFormatVector)
+        && (reg->BitSize & 7) != 0) {
       fprintf(stderr, "error: register '%s' does specify a bit size "
                       "that is not a multiple of eight\n",
               reg->Name.c_str());
