@@ -314,8 +314,8 @@
         "x87-regs" : {
             "*" : {
                 "bit-size"              : 80,
-                "encoding"              : "ieee-extended",
-                "format"                : "float",
+                "encoding"              : "int",
+                "format"                : "vector",
                 "gdb-encoding"          : "x87-extension",
 
                 "base-dwarf-reg-number" : 33,
