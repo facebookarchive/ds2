@@ -15,14 +15,14 @@
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
 
-#define super ds2::Host::POSIX::PTrace
-
 #include <asm/ptrace.h>
 #include <elf.h>
 #include <sys/ptrace.h>
 #include <sys/uio.h>
 
 using ds2::Support::Stringify;
+
+#define super ds2::Host::POSIX::PTrace
 
 namespace ds2 {
 namespace Host {
