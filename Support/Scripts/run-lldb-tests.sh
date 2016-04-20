@@ -24,11 +24,16 @@ source "$top/Support/Scripts/common.sh"
 [ "$(uname)" == "Linux" ] || die "The lldb test suite requires a Linux host environment."
 [ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
 
-if [ $# -ge 1 ] && [ "$1" = "--fast" ]; then
-  test_only=true
-else
-  test_only=false
-fi
+opt_fast=false
+opt_strace=false
+
+for o in "$@"; do
+  case "$o" in
+    --fast) opt_fast=true;;
+    --strace) opt_strace=true;;
+    *) die "Unknown option \`$o'."
+  esac
+done
 
 if [ -s "/etc/centos-release" ]; then
   llvm_path="$build_dir/llvm"
@@ -38,7 +43,7 @@ if [ -s "/etc/centos-release" ]; then
   cc_exe="$(which gcc)"
   export PYTHONPATH="$llvm_build/lib64/python2.7/site-packages"
 
-  if ! $test_only; then
+  if ! $opt_fast; then
     git_clone "$REPO_BASE/llvm.git"  "$llvm_path"             "$UPSTREAM_BRANCH"
     git_clone "$REPO_BASE/lldb.git"  "$llvm_path/tools/lldb"  "$UPSTREAM_BRANCH"
     git_clone "$REPO_BASE/clang.git" "$llvm_path/tools/clang" "$UPSTREAM_BRANCH"
@@ -58,7 +63,7 @@ elif grep -q "Ubuntu" "/etc/issue"; then
   export LD_LIBRARY_PATH=$python_base
   export PYTHONPATH="$python_base/python2.7/site-packages"
 
-  if ! $test_only; then
+  if ! $opt_fast; then
     git_clone "$REPO_BASE/lldb.git" "$lldb_path" "$UPSTREAM_BRANCH"
 
     # Sync lldb libs to local build dir
@@ -78,7 +83,7 @@ else
   die "Testing is only supported on CentOS and Ubuntu."
 fi
 
-if ! $test_only; then
+if ! $opt_fast; then
   testPath="$top/Support/Testing"
   for p in $testPath/Patches/*.patch ; do
     echo "Applying $p"
@@ -107,8 +112,23 @@ else
   fi
 fi
 
-if [ "$LLDB_TESTS" != "all" ]; then
-  LLDB_DEBUGSERVER_PATH="$build_dir/ds2" python2.7 dotest.py $args -p $LLDB_TESTS
+if $opt_strace; then
+  cat >"$build_dir/ds2-strace.sh" <<EEOOFF
+#!/usr/bin/env bash
+exec strace -o $build_dir/ds2-strace.log $build_dir/ds2 "\$@"
+EEOOFF
+  chmod +x "$build_dir/ds2-strace.sh"
+  export LLDB_DEBUGSERVER_PATH="$build_dir/ds2-strace.sh"
 else
-  LLDB_TEST_TIMEOUT=45m LLDB_DEBUGSERVER_PATH="$build_dir/ds2" python2.7 dosep.py -o "$args"
+  export LLDB_DEBUGSERVER_PATH="$build_dir/ds2"
 fi
+
+export LLDB_TEST_TIMEOUT=45m
+
+if [ "$LLDB_TESTS" != "all" ]; then
+  test_cmd=(dotest.py $args -p $LLDB_TESTS)
+else
+  test_cmd=(dosep.py -o "$args")
+fi
+
+exec python2.7 "${test_cmd[@]}"
