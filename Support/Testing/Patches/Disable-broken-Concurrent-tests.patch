@@ -50,14 +50,6 @@ index f0f2c3f..231b20c 100644
      def test_delay_signal_break_dwarf(self):
          """Test (1-second delay) signal and a breakpoint in multiple threads."""
          self.buildDwarf(dictionary=self.getBuildFlags())
-@@ -72,6 +78,7 @@ class ConcurrentEventsTestCase(TestBase):
- 
-     @dwarf_test
-     @skipIfFreeBSD # timing out on buildbot
-+    @skipIfLinux
-     def test_signal_delay_break_dwarf(self):
-         """Test signal and a (1 second delay) breakpoint in multiple threads."""
-         self.buildDwarf(dictionary=self.getBuildFlags())
 @@ -84,6 +91,7 @@ class ConcurrentEventsTestCase(TestBase):
      @dwarf_test
      @skipIfFreeBSD # timing out on buildbot
@@ -235,14 +227,6 @@ index f0f2c3f..231b20c 100644
      def test_signal_watch_break_dwarf(self):
          """Test with 5 watchpoint and breakpoint threads."""
          self.buildDwarf(dictionary=self.getBuildFlags())
-@@ -285,6 +313,7 @@ class ConcurrentEventsTestCase(TestBase):
-     #
-     @dwarf_test
-     @skipIfFreeBSD # timing out on buildbot
-+    @skipIfLinux
-     def test_crash_with_break_dwarf(self):
-         """ Test a thread that crashes while another thread hits a breakpoint."""
-         self.buildDwarf(dictionary=self.getBuildFlags())
 @@ -293,6 +322,7 @@ class ConcurrentEventsTestCase(TestBase):
      @dwarf_test
      @skipIfFreeBSD # timing out on buildbot
@@ -250,14 +234,6 @@ index f0f2c3f..231b20c 100644
 +    @skipIfLinux
      def test_crash_with_watchpoint_dwarf(self):
          """ Test a thread that crashes while another thread hits a watchpoint."""
-         self.buildDwarf(dictionary=self.getBuildFlags())
-@@ -300,6 +330,7 @@ class ConcurrentEventsTestCase(TestBase):
- 
-     @dwarf_test
-     @skipIfFreeBSD # timing out on buildbot
-+    @skipIfLinux
-     def test_crash_with_signal_dwarf(self):
-         """ Test a thread that crashes while another thread generates a signal."""
          self.buildDwarf(dictionary=self.getBuildFlags())
 @@ -308,6 +339,7 @@ class ConcurrentEventsTestCase(TestBase):
      @dwarf_test
@@ -274,12 +250,4 @@ index f0f2c3f..231b20c 100644
 +    @skipIfLinux
      def test_delayed_crash_with_breakpoint_watchpoint_dwarf(self):
          """ Test a thread with a delayed crash while other threads hit a watchpoint and a breakpoint. """
-         self.buildDwarf(dictionary=self.getBuildFlags())
-@@ -328,6 +361,7 @@ class ConcurrentEventsTestCase(TestBase):
- 
-     @dwarf_test
-     @skipIfFreeBSD # timing out on buildbot
-+    @skipIfLinux
-     def test_delayed_crash_with_breakpoint_signal_dwarf(self):
-         """ Test a thread with a delayed crash while other threads generate a signal and hit a breakpoint. """
          self.buildDwarf(dictionary=self.getBuildFlags())
