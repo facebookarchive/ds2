@@ -166,19 +166,19 @@ ErrorCode Process::wait() {
     auto threadIt = _threads.find(tid);
 
     if (threadIt == _threads.end()) {
-      //
-      // A new thread has appeared that we didn't know about. Create the
-      // Thread object (this call has side effects that save the Thread in
-      // the Process therefore we don't need to retain the pointer),
-      // resume the thread and just continue waiting.
-      //
-      // There's no need to call traceThat() on the newly created thread
-      // here because the ptrace flags are inherited when new threads
-      // are created.
-      //
-      DS2LOG(Debug, "creating new thread tid=%d", tid);
-      auto thread = new Thread(this, tid);
-      thread->resume();
+      // If we don't know about this thread yet, but it has a WIFEXITED() or a
+      // WIFSIGNALED() status (i.e.: it terminated), it means we already
+      // cleaned up the thread object (e.g.: in Process::suspend), but we
+      // hadn't waitpid()'d it yet. Avoid re-creating a Thread object here.
+      if (!(WIFEXITED(status) || WIFSIGNALED(status))) {
+        // A new thread has appeared that we didn't know about. Create the
+        // Thread object (this call has side effects that save the Thread in
+        // the Process therefore we don't need to retain the pointer), resume
+        // the thread and just continue waiting.
+        DS2LOG(Debug, "creating new thread tid=%d", tid);
+        auto thread = new Thread(this, tid);
+        thread->resume();
+      }
       goto continue_waiting;
     } else {
       _currentThread = threadIt->second;
