@@ -217,14 +217,20 @@ ErrorCode Process::readString(Address const &address, std::string &str,
 
 ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
                               size_t *nread) {
+  SIZE_T bytesRead;
   BOOL result =
       ReadProcessMemory(_handle, reinterpret_cast<LPCVOID>(address.value()),
-                        data, length, reinterpret_cast<SIZE_T *>(nread));
+                        data, length, &bytesRead);
+
+  if (nread != nullptr) {
+    *nread = static_cast<size_t>(bytesRead);
+  }
 
   if (!result) {
     auto error = GetLastError();
-    if (error != ERROR_PARTIAL_COPY)
+    if (error != ERROR_PARTIAL_COPY || bytesRead == 0) {
       return Host::Platform::TranslateError(error);
+    }
   }
 
   return kSuccess;
@@ -232,14 +238,20 @@ ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
 
 ErrorCode Process::writeMemory(Address const &address, void const *data,
                                size_t length, size_t *nwritten) {
+  SIZE_T bytesWritten;
   BOOL result =
       WriteProcessMemory(_handle, reinterpret_cast<LPVOID>(address.value()),
-                         data, length, reinterpret_cast<SIZE_T *>(nwritten));
+                         data, length, &bytesWritten);
+
+  if (nwritten != nullptr) {
+    *nwritten = static_cast<size_t>(bytesWritten);
+  }
 
   if (!result) {
     auto error = GetLastError();
-    if (error != ERROR_PARTIAL_COPY)
+    if (error != ERROR_PARTIAL_COPY || bytesWritten == 0) {
       return Host::Platform::TranslateError(error);
+    }
   }
 
   return kSuccess;
