@@ -120,6 +120,11 @@ protected:
                ds2::Support::Stringify::Ptrace(request), pid);
       }
 
+      // Clear errno so we can check it afterwards. Just checking the return
+      // value of ptrace won't work because PTRACE_PEEK* commands return the
+      // value read instead of 0 or -1.
+      errno = 0;
+
       ret = ::ptrace(static_cast<PTraceRequestType>(request), pid,
                      (PTraceAddrType)(uintptr_t)addr,
                      (PTraceDataType)(uintptr_t)data);
