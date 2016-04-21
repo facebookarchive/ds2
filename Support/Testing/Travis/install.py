@@ -31,8 +31,6 @@ target = os.getenv('TARGET')
 if target == 'Style':
     packages.append('clang-format-3.8')
 elif target == 'Registers':
-    packages.append('flex')
-    packages.append('bison')
     packages.append('g++-5')
     packages.append('clang-format-3.8')
 elif target in linux_packages:
@@ -50,6 +48,10 @@ elif target in android_toolchains:
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
 elif target in tizen_packages:
     packages.append(tizen_packages[target])
+
+if target != 'Style':
+    packages.append('flex')
+    packages.append('bison')
 
 # Running LLDB tests requires an install of lldb (for the tests to be able to
 # use the lldb python library without us building it).
