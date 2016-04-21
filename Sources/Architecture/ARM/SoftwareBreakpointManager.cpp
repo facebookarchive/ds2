@@ -180,14 +180,14 @@ ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
   old.resize(opcode.size());
   error = _process->readMemory(site.address, &old[0], old.size());
   if (error != kSuccess) {
-    DS2LOG(Error, "cannot enable breakpoint at %#lx",
+    DS2LOG(Error, "cannot enable breakpoint at %#lx, readMemory failed",
            (unsigned long)site.address.value());
     return error;
   }
 
   error = _process->writeMemory(site.address, &opcode[0], opcode.size());
   if (error != kSuccess) {
-    DS2LOG(Error, "cannot enable breakpoint at %#lx",
+    DS2LOG(Error, "cannot enable breakpoint at %#lx, writeMemory failed",
            (unsigned long)site.address.value());
     return error;
   }
