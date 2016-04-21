@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Support/Stringify.h"
+#include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #include "DebugServer2/Support/StringifyPrivate.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -53,6 +54,8 @@ char const *Stringify::ExceptionCode(DWORD code) {
     DO_STRINGIFY(EXCEPTION_PRIV_INSTRUCTION)
     DO_STRINGIFY(EXCEPTION_SINGLE_STEP)
     DO_STRINGIFY(EXCEPTION_STACK_OVERFLOW)
+  case DS2_EXCEPTION_UNCAUGHT_USER:
+    return "0xE06D7363 (uncaught user exception)";
     DO_DEFAULT("unknown exception code", code)
   }
 }

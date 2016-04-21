@@ -17,6 +17,8 @@
 #include <cstdio>
 #include <windows.h>
 
+#define DS2_EXCEPTION_UNCAUGHT_USER 0xE06D7363
+
 // Some APIs are not exposed when building for UAP.
 #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
