@@ -23,8 +23,6 @@ Thread::Thread(ds2::Target::Process *process, ThreadId tid)
     : super(process, tid) {}
 
 ErrorCode Thread::updateStopInfo(int waitStatus) {
-  ErrorCode error = kSuccess;
-
   _stopInfo.clear();
 
   if (WIFEXITED(waitStatus)) {
@@ -36,9 +34,16 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
   } else if (WIFSTOPPED(waitStatus)) {
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.signal = WSTOPSIG(waitStatus);
+  } else {
+    // On POSIX systems, the status returned by `waitpid()` references either a
+    // process that exited (WIFEXITED), was killed with a signal (WIFSIGNALED),
+    // or was stopped (WIFSTOPPED). On Linux since 2.6.10, we can also check
+    // for processes being continued (WIFCONTINUED), but we don't use that (no
+    // mention of WCONTINUED in wait flags).
+    DS2BUG("impossible waitStatus");
   }
 
-  return error;
+  return kSuccess;
 }
 }
 }
