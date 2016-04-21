@@ -17,6 +17,7 @@
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
 #include "DebugServer2/SoftwareBreakpointManager.h"
+#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -25,6 +26,7 @@
 #include <cstring>
 
 using ds2::Host::Linux::ProcFS;
+using ds2::Support::Stringify;
 
 #define super ds2::Target::POSIX::Thread
 
@@ -176,25 +178,16 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
 ErrorCode Thread::updateStopInfo(int waitStatus) {
   super::updateStopInfo(waitStatus);
 
-  // First check to make sure the thread has not exited yet.
-  // If exited, return success early rather than updating the thread state.
-  if (_stopInfo.event == StopInfo::kEventExit) {
-    DS2ASSERT(_stopInfo.reason == StopInfo::kReasonNone);
-    return kSuccess;
-  }
-
-  updateState();
-
   switch (_stopInfo.event) {
-  case StopInfo::kEventNone:
-    DS2BUG("thread stopped for unknown reason, status=%#x", waitStatus);
-
   case StopInfo::kEventExit:
   case StopInfo::kEventKill:
     DS2ASSERT(_stopInfo.reason == StopInfo::kReasonNone);
+    _state = kTerminated;
     return kSuccess;
 
   case StopInfo::kEventStop: {
+    _state = kStopped;
+
     // These are the reasons why we might want to alter the stop info of a
     // thread:
     // (1) a thread traced with PTRACE_O_TRACECLONE calls clone(2), it (the
@@ -254,6 +247,10 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
                tid(), strsignal(_stopInfo.signal), si.si_pid);
     }
   } break;
+
+  default:
+    DS2BUG("impossible StopInfo event: %s",
+           Stringify::StopEvent(_stopInfo.event));
   }
 
   return kSuccess;
