@@ -12,11 +12,39 @@
 #define __DebugServer2_Host_Linux_ExtraWrappers_h
 
 #include "DebugServer2/Base.h"
+#include "DebugServer2/Utils/CompilerSupport.h"
 
 #include <asm/unistd.h>
 #include <fcntl.h>
 #include <sys/syscall.h>
+#include <sys/user.h>
 #include <unistd.h>
+
+// Required structs for PTrace GETREGSET with NT_X86_STATE
+// These structs are not made available by the system headers
+struct YMMHighVector {
+  uint8_t value[16];
+};
+
+struct xstate_hdr {
+  uint64_t mask;
+  uint64_t reserved1[2];
+  uint64_t reserved2[5];
+} DS2_ATTRIBUTE_PACKED;
+
+#if defined(ARCH_X86)
+struct xfpregs_struct {
+  user_fpxregs_struct fpregs;
+  xstate_hdr header;
+  YMMHighVector ymmh[8];
+} DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
+#elif defined(ARCH_X86_64)
+struct xfpregs_struct {
+  user_fpregs_struct fpregs;
+  xstate_hdr header;
+  YMMHighVector ymmh[16];
+} DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
+#endif
 
 #if !defined(PLATFORM_ANDROID)
 // Android headers do have a wrapper for `gettid`, unlike glibc.

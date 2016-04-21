@@ -132,6 +132,8 @@ struct CPUState64 {
     } eavx;
   };
 
+  // TODO - add information about xstate_hdr here
+
   struct {
     uint32_t dr[8];
   } dr;
