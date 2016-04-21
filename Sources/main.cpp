@@ -340,7 +340,7 @@ int main(int argc, char **argv) {
       // default, the permissions will be 0600 (rw-------) which makes us
       // unable to get the log files. chmod() them to be able to access them.
       fchmod(fileno(stream), 0644);
-      fcntl(F_SETFD, fileno(stream), FD_CLOEXEC);
+      fcntl(fileno(stream), F_SETFD, FD_CLOEXEC);
 #endif
       ds2::SetLogColorsEnabled(false);
       ds2::SetLogOutputStream(stream);
