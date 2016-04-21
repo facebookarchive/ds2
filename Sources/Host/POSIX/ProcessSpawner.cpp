@@ -315,10 +315,16 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       break;
 
     case kRedirectFile:
+      // Don't forget to set O_NOCTTY on these. If we run without a controlling
+      // terminal (i.e.: we called `setsid()` during initialization), and if
+      // the remote sends us the path to a virtual terminal (e.g.:
+      // `/dev/pts/2`) to use as stdin/stdout/stderr, opening that terminal
+      // makes it become our controlling terminal. We then die when closing it
+      // later on.
       if (n == 0) {
-        fds[n][RD] = ::open(_descriptors[n].path.c_str(), O_RDONLY);
+        fds[n][RD] = ::open(_descriptors[n].path.c_str(), O_RDONLY | O_NOCTTY);
       } else {
-        fds[n][WR] = ::open(_descriptors[n].path.c_str(), O_RDWR);
+        fds[n][WR] = ::open(_descriptors[n].path.c_str(), O_RDWR | O_NOCTTY);
         if (fds[n][WR] < 0) {
           fds[n][WR] =
               ::open(_descriptors[n].path.c_str(), O_CREAT | O_RDWR, 0600);
