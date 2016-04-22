@@ -60,6 +60,22 @@
 #endif
 
 #if defined(COMPILER_MSVC)
+#define DS2_ATTRIBUTE_PACKED "DS2_ATTRIBUTE_PACKED not implemented on MSVC"
+#elif __has_attribute(__packed__)
+#define DS2_ATTRIBUTE_PACKED __attribute__((__packed__))
+#else
+#error "Compiler attribute __packed__ is required."
+#endif
+
+#if defined(COMPILER_MSVC)
+#define DS2_ATTRIBUTE_ALIGNED "DS2_ATTRIBUTE_ALIGNED not implemented on MSVC"
+#elif __has_attribute(__aligned__)
+#define DS2_ATTRIBUTE_ALIGNED(SIZE) __attribute__((__aligned__(SIZE)))
+#else
+#error "Compiler attribute __aligned__ is required."
+#endif
+
+#if defined(COMPILER_MSVC)
 #define DS2_UNREACHABLE() __assume(0)
 #elif __has_builtin(__builtin_unreachable)
 #define DS2_UNREACHABLE() __builtin_unreachable()
