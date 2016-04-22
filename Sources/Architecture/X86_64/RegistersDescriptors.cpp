@@ -233,9 +233,13 @@ RegisterDef const *const lldb_reg_defs_1[] = {
     &reg_def_fioff, &reg_def_foseg,     &reg_def_fooff, &reg_def_fop,
     &reg_def_mxcsr, &reg_def_mxcsrmask, &reg_def_st0,   &reg_def_st1,
     &reg_def_st2,   &reg_def_st3,       &reg_def_st4,   &reg_def_st5,
-    &reg_def_st6,   &reg_def_st7,       nullptr};
+    &reg_def_st6,   &reg_def_st7,       &reg_def_xmm0,  &reg_def_xmm1,
+    &reg_def_xmm2,  &reg_def_xmm3,      &reg_def_xmm4,  &reg_def_xmm5,
+    &reg_def_xmm6,  &reg_def_xmm7,      &reg_def_xmm8,  &reg_def_xmm9,
+    &reg_def_xmm10, &reg_def_xmm11,     &reg_def_xmm12, &reg_def_xmm13,
+    &reg_def_xmm14, &reg_def_xmm15,     nullptr};
 
-LLDBRegisterSet const lldb_reg_set_1 = {"Floating Point Registers", 18,
+LLDBRegisterSet const lldb_reg_set_1 = {"Floating Point Registers", 34,
                                         lldb_reg_defs_1};
 
 // LLDB Register Set (Advanced Vector Extensions)
@@ -245,13 +249,9 @@ RegisterDef const *const lldb_reg_defs_2[] = {
     &reg_def_ymm4,  &reg_def_ymm5,  &reg_def_ymm6,  &reg_def_ymm7,
     &reg_def_ymm8,  &reg_def_ymm9,  &reg_def_ymm10, &reg_def_ymm11,
     &reg_def_ymm12, &reg_def_ymm13, &reg_def_ymm14, &reg_def_ymm15,
-    &reg_def_xmm0,  &reg_def_xmm1,  &reg_def_xmm2,  &reg_def_xmm3,
-    &reg_def_xmm4,  &reg_def_xmm5,  &reg_def_xmm6,  &reg_def_xmm7,
-    &reg_def_xmm8,  &reg_def_xmm9,  &reg_def_xmm10, &reg_def_xmm11,
-    &reg_def_xmm12, &reg_def_xmm13, &reg_def_xmm14, &reg_def_xmm15,
     nullptr};
 
-LLDBRegisterSet const lldb_reg_set_2 = {"Advanced Vector Extensions", 32,
+LLDBRegisterSet const lldb_reg_set_2 = {"Advanced Vector Extensions", 16,
                                         lldb_reg_defs_2};
 
 LLDBRegisterSet const *const lldb_reg_sets[] = {
