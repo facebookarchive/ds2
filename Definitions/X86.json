@@ -347,14 +347,14 @@
                 "no-gdb-reg-number"     : true
             },
 
-            "fctrl" : { },
-            "fstat" : { },
-            "ftag"  : { },
+            "fctrl" : { "bit-size" : 16 },
+            "fstat" : { "bit-size" : 16 },
+            "ftag"  : { "bit-size" : 8 },
             "fiseg" : { },
             "fioff" : { },
             "foseg" : { },
             "fooff" : { },
-            "fop"   : { }
+            "fop"   : { "bit-size" : 16 }
         },
 
         "sse-flags" : {

@@ -58,14 +58,14 @@ struct CPUState {
 
   struct {
     X87Register regs[8];
-    uint32_t fstw;
-    uint32_t fctw;
-    uint32_t ftag;
+    uint16_t fstw;
+    uint16_t fctw;
+    uint8_t ftag;
     uint32_t fiseg;
     uint32_t fioff;
     uint32_t foseg;
     uint32_t fooff;
-    uint32_t fop;
+    uint16_t fop;
   } x87;
 
   union {
