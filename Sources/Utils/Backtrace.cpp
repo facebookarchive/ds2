@@ -8,6 +8,7 @@
 // PATENTS file in the same directory.
 //
 
+#include "DebugServer2/Utils/Backtrace.h"
 #include "DebugServer2/Utils/Log.h"
 
 #if defined(OS_DARWIN) || defined(__GLIBC__)
