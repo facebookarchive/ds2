@@ -18,6 +18,7 @@
 #include <android/log.h>
 #endif
 #include <sstream>
+#include <vector>
 
 namespace {
 
