@@ -30,7 +30,7 @@
 using ds2::Host::Darwin::PTrace;
 using ds2::Host::Darwin::LibProc;
 
-#define super MachOProcess
+#define super ds2::Target::Darwin::MachOProcess
 
 namespace ds2 {
 namespace Target {
