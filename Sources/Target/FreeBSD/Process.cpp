@@ -14,7 +14,6 @@
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Host/FreeBSD/PTrace.h"
 #include "DebugServer2/Host/FreeBSD/ProcStat.h"
-#include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/Target/FreeBSD/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 

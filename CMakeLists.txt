@@ -104,7 +104,6 @@ set(HOST_COMMON_SOURCES
 set(HOST_POSIX_SOURCES
     Sources/Host/POSIX/Platform.cpp
     Sources/Host/POSIX/PTrace.cpp
-    Sources/Host/POSIX/AsyncProcessWaiter.cpp
     Sources/Host/POSIX/ProcessSpawner.cpp
     )
 

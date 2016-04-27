@@ -15,7 +15,6 @@
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
-#include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Thread.h"

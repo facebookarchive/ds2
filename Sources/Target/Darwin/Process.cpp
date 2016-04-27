@@ -14,7 +14,6 @@
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Host/Darwin/LibProc.h"
 #include "DebugServer2/Host/Darwin/PTrace.h"
-#include "DebugServer2/Host/POSIX/AsyncProcessWaiter.h"
 #include "DebugServer2/Target/Darwin/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
