@@ -552,7 +552,7 @@ ErrorCode DebugSessionImpl::onXferRead(Session &session,
           mainMapAddress = library.svr4.mapAddress;
         } else {
           sslibs << "<library "
-                 << "name=\"" << ds2::Utils::Basename(library.path) << "\" "
+                 << "name=\"" << library.path << "\" "
                  << "lm=\""
                  << "0x" << std::hex << library.svr4.mapAddress << "\" "
                  << "l_addr=\""
