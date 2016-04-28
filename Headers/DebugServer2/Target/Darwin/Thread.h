@@ -26,9 +26,11 @@ namespace Darwin {
 
 class Thread : public ds2::Target::POSIX::Thread {
 protected:
+  int _lastSyscallNumber;
+
+protected:
   friend class Process;
   Thread(Process *process, ThreadId tid);
-  int _lastSyscallNumber;
 
 public:
   virtual ErrorCode terminate();
