@@ -19,7 +19,7 @@ namespace ARM {
 
 class HardwareBreakpointManager : public BreakpointManager {
 public:
-  HardwareBreakpointManager(Target::Process *process);
+  HardwareBreakpointManager(Target::ProcessBase *process);
   ~HardwareBreakpointManager() override;
 
 public:

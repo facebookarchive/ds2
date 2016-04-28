@@ -19,7 +19,8 @@ namespace ds2 {
 namespace Architecture {
 namespace ARM {
 
-HardwareBreakpointManager::HardwareBreakpointManager(Target::Process *process)
+HardwareBreakpointManager::HardwareBreakpointManager(
+    Target::ProcessBase *process)
     : super(process), _maxBreakpoints(_process->getMaxBreakpoints()),
       _maxWatchpoints(_process->getMaxBreakpoints()),
       _maxWatchpointSize(_process->getMaxWatchpointSize()) {}

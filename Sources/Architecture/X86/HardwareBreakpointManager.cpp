@@ -17,7 +17,8 @@ namespace ds2 {
 namespace Architecture {
 namespace X86 {
 
-HardwareBreakpointManager::HardwareBreakpointManager(Target::Process *process)
+HardwareBreakpointManager::HardwareBreakpointManager(
+    Target::ProcessBase *process)
     : super(process) {}
 
 HardwareBreakpointManager::~HardwareBreakpointManager() {}

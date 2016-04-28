@@ -13,7 +13,7 @@
 
 namespace ds2 {
 
-BreakpointManager::BreakpointManager(Target::Process *process)
+BreakpointManager::BreakpointManager(Target::ProcessBase *process)
     : _enabled(false), _process(process) {}
 
 BreakpointManager::~BreakpointManager() {

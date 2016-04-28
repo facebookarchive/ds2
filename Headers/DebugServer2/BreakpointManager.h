@@ -49,15 +49,13 @@ public:
 
 protected:
   SiteMap _sites;
-
-protected:
   bool _enabled;
 
 protected:
-  Target::Process *_process;
+  Target::ProcessBase *_process;
 
 protected:
-  BreakpointManager(Target::Process *process);
+  BreakpointManager(Target::ProcessBase *process);
 
 public:
   virtual ~BreakpointManager();

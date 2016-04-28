@@ -22,7 +22,7 @@ private:
   std::map<uint64_t, uint8_t> _insns;
 
 public:
-  SoftwareBreakpointManager(Target::Process *process);
+  SoftwareBreakpointManager(Target::ProcessBase *process);
   ~SoftwareBreakpointManager() override;
 
 protected:

@@ -24,7 +24,8 @@ namespace ds2 {
 namespace Architecture {
 namespace ARM {
 
-SoftwareBreakpointManager::SoftwareBreakpointManager(Target::Process *process)
+SoftwareBreakpointManager::SoftwareBreakpointManager(
+    Target::ProcessBase *process)
     : super(process) {}
 
 SoftwareBreakpointManager::~SoftwareBreakpointManager() { clear(); }
