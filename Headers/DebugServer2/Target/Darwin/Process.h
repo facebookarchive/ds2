@@ -73,14 +73,6 @@ protected:
                           uint32_t flags = 0);
 
 public:
-  ErrorCode readString(Address const &address, std::string &str, size_t length,
-                       size_t *nread = nullptr) override;
-  ErrorCode readMemory(Address const &address, void *data, size_t length,
-                       size_t *count = nullptr) override;
-  ErrorCode writeMemory(Address const &address, void const *data, size_t length,
-                        size_t *count = nullptr) override;
-
-public:
   Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
   Architecture::LLDBDescriptor const *
   getLLDBRegistersDescriptor() const override;

@@ -13,7 +13,7 @@
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Host/POSIX/PTrace.h"
-#include "DebugServer2/Target/POSIX/Process.h"
+#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cerrno>
@@ -56,17 +56,29 @@ bool Process::isAlive() const { return (_pid > 0 && ::kill(_pid, 0) == 0); }
 
 ErrorCode Process::readString(Address const &address, std::string &str,
                               size_t length, size_t *count) {
-  return ptrace().readString(_pid, address, str, length, count);
+  if (_currentThread == nullptr)
+    return ptrace().readString(_pid, address, str, length, count);
+
+  return ptrace().readString(_currentThread->tid(), address, str, length,
+                             count);
 }
 
 ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
                               size_t *count) {
-  return ptrace().readMemory(_pid, address, data, length, count);
+  if (_currentThread == nullptr)
+    return ptrace().readMemory(_pid, address, data, length, count);
+
+  return ptrace().readMemory(_currentThread->tid(), address, data, length,
+                             count);
 }
 
 ErrorCode Process::writeMemory(Address const &address, void const *data,
                                size_t length, size_t *count) {
-  return ptrace().writeMemory(_pid, address, data, length, count);
+  if (_currentThread == nullptr)
+    return ptrace().writeMemory(_pid, address, data, length, count);
+
+  return ptrace().writeMemory(_currentThread->tid(), address, data, length,
+                              count);
 }
 
 ErrorCode Process::wait() { return ptrace().wait(_pid, nullptr); }

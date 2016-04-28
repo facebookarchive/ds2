@@ -73,14 +73,6 @@ protected:
   ErrorCode writeCPUState(ThreadId tid, Architecture::CPUState const &state,
                           uint32_t flags = 0);
 
-public:
-  ErrorCode readString(Address const &address, std::string &str, size_t length,
-                       size_t *count = nullptr) override;
-  ErrorCode readMemory(Address const &address, void *data, size_t length,
-                       size_t *count = nullptr) override;
-  ErrorCode writeMemory(Address const &address, void const *data, size_t length,
-                        size_t *count = nullptr) override;
-
 #if defined(ARCH_ARM) || defined(ARCH_ARM64)
 public:
   int getMaxBreakpoints() const;

@@ -420,33 +420,6 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
 
   return kSuccess;
 }
-
-ErrorCode Process::readString(Address const &address, std::string &str,
-                              size_t length, size_t *count) {
-  if (_currentThread == nullptr)
-    return super::readString(address, str, length, count);
-
-  return ptrace().readString(_currentThread->tid(), address, str, length,
-                             count);
-}
-
-ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
-                              size_t *count) {
-  if (_currentThread == nullptr)
-    return super::readMemory(address, data, length, count);
-
-  return ptrace().readMemory(_currentThread->tid(), address, data, length,
-                             count);
-}
-
-ErrorCode Process::writeMemory(Address const &address, void const *data,
-                               size_t length, size_t *count) {
-  if (_currentThread == nullptr)
-    return super::writeMemory(address, data, length, count);
-
-  return ptrace().writeMemory(_currentThread->tid(), address, data, length,
-                              count);
-}
 }
 }
 }
