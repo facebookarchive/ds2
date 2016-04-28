@@ -118,8 +118,6 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
 
   return kSuccess;
 }
-
-bool Process::isSingleStepSupported() const { return true; }
 }
 }
 }

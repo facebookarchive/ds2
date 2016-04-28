@@ -54,9 +54,6 @@ protected:
       std::function<
           void(Support::ELFSupport::AuxiliaryVectorEntry const &)> const &cb);
 
-public:
-  bool isSingleStepSupported() const override;
-
 protected:
   friend class Thread;
   ErrorCode readCPUState(ThreadId tid, Architecture::CPUState &state,
