@@ -21,9 +21,6 @@ namespace Darwin {
 class Process : public MachOProcess {
 protected:
   Host::Darwin::PTrace _ptrace;
-  SoftwareBreakpointManager *_softwareBreakpointManager;
-  HardwareBreakpointManager *_hardwareBreakpointManager;
-  bool _terminated;
 
 protected:
   friend class POSIX::Process;

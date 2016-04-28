@@ -21,8 +21,6 @@ namespace Windows {
 class Process : public Target::ProcessBase {
 protected:
   HANDLE _handle;
-  SoftwareBreakpointManager *_softwareBreakpointManager;
-  bool _terminated;
 
 protected:
   Process();

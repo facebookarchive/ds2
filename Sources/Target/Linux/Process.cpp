@@ -41,9 +41,7 @@ namespace ds2 {
 namespace Target {
 namespace Linux {
 
-Process::Process()
-    : super(), _softwareBreakpointManager(nullptr),
-      _hardwareBreakpointManager(nullptr), _terminated(false) {}
+Process::Process() = default;
 
 Process::~Process() = default;
 

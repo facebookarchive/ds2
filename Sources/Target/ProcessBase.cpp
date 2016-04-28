@@ -22,8 +22,10 @@ namespace ds2 {
 namespace Target {
 
 ProcessBase::ProcessBase()
-    : _flags(0), _pid(kAnyProcessId), _loadBase(), _entryPoint(),
-      _currentThread(nullptr) {}
+    : _terminated(false), _flags(0), _pid(kAnyProcessId), _loadBase(),
+      _entryPoint(), _currentThread(nullptr),
+      _softwareBreakpointManager(nullptr), _hardwareBreakpointManager(nullptr) {
+}
 
 ProcessBase::~ProcessBase() {
   for (auto thread : _threads) {

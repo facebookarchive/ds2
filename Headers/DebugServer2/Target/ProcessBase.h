@@ -28,6 +28,7 @@ public:
   typedef std::map<ThreadId, Thread *> IdentityMap;
 
 protected:
+  bool _terminated;
   uint32_t _flags;
   ProcessId _pid;
   ProcessInfo _info;
@@ -35,6 +36,8 @@ protected:
   Address _entryPoint;
   IdentityMap _threads;
   Thread *_currentThread;
+  SoftwareBreakpointManager *_softwareBreakpointManager;
+  HardwareBreakpointManager *_hardwareBreakpointManager;
 
 protected:
   ProcessBase();

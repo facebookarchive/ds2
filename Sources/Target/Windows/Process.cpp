@@ -30,9 +30,7 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
-Process::Process()
-    : Target::ProcessBase(), _handle(nullptr),
-      _softwareBreakpointManager(nullptr), _terminated(false) {}
+Process::Process() : super(), _handle(nullptr) {}
 
 Process::~Process() { CloseHandle(_handle); }
 

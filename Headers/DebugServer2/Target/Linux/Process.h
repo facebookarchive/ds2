@@ -21,9 +21,6 @@ namespace Linux {
 class Process : public ds2::Target::POSIX::ELFProcess {
 protected:
   Host::Linux::PTrace _ptrace;
-  SoftwareBreakpointManager *_softwareBreakpointManager;
-  HardwareBreakpointManager *_hardwareBreakpointManager;
-  bool _terminated;
 
 protected:
   friend class POSIX::Process;

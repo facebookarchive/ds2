@@ -27,7 +27,7 @@ namespace ds2 {
 namespace Target {
 namespace POSIX {
 
-Process::Process() : Target::ProcessBase() {}
+Process::Process() = default;
 
 Process::~Process() = default;
 
