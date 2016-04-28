@@ -63,11 +63,11 @@ protected:
   ErrorCode writeCPUState(ThreadId tid, Architecture::CPUState const &state,
                           uint32_t flags = 0);
 
-#if defined(ARCH_ARM) || defined(ARCH_ARM64)
+#if defined(ARCH_ARM)
 public:
-  int getMaxBreakpoints() const;
-  int getMaxWatchpoints() const;
-  int getMaxWatchpointSize() const;
+  int getMaxBreakpoints() const override;
+  int getMaxWatchpoints() const override;
+  int getMaxWatchpointSize() const override;
 #endif
 
 public:

@@ -95,13 +95,6 @@ public:
   Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
   Architecture::LLDBDescriptor const *
   getLLDBRegistersDescriptor() const override;
-
-#if defined(ARCH_ARM)
-public:
-  int getMaxBreakpoints() const;
-  int getMaxWatchpoints() const;
-  int getMaxWatchpointSize() const;
-#endif
 };
 }
 }

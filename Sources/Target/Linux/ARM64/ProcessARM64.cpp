@@ -52,12 +52,6 @@ HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
   return _hardwareBreakpointManager;
 }
 
-int Process::getMaxBreakpoints() const { return 0; }
-
-int Process::getMaxWatchpoints() const { return 0; }
-
-int Process::getMaxWatchpointSize() const { return 0; }
-
 GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
   return &Architecture::ARM64::GDB;
 }

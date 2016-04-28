@@ -137,6 +137,11 @@ public:
   virtual ErrorCode afterResume();
 
 public:
+  virtual int getMaxBreakpoints() const { return 0; }
+  virtual int getMaxWatchpoints() const { return 0; }
+  virtual int getMaxWatchpointSize() const { return 0; }
+
+public:
   virtual Architecture::GDBDescriptor const *
   getGDBRegistersDescriptor() const = 0;
   virtual Architecture::LLDBDescriptor const *
