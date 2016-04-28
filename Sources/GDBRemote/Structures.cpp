@@ -223,7 +223,8 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
       ss << ';' << "reason:" << reasonToString();
     break;
 
-  case StopInfo::kReasonThreadCreate:
+  case StopInfo::kReasonThreadSpawn:
+  case StopInfo::kReasonThreadEntry:
   case StopInfo::kReasonThreadExit:
 #if defined(OS_WIN32)
   case StopInfo::kReasonMemoryError:
