@@ -30,13 +30,6 @@ PTrace::PTrace() : _privateData(nullptr) {}
 
 PTrace::~PTrace() { doneCPUState(); }
 
-ErrorCode PTrace::traceMe(bool disableASLR) {
-  if (wrapPtrace(PT_TRACE_ME, 0, nullptr, nullptr) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
 ErrorCode PTrace::traceThat(ProcessId pid) {
   if (pid <= 0)
     return kErrorInvalidArgument;

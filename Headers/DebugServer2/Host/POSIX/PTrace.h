@@ -34,7 +34,7 @@ public:
   virtual ErrorCode wait(ProcessThreadId const &ptid, int *status = nullptr);
 
 public:
-  virtual ErrorCode traceMe(bool disableASLR) = 0;
+  virtual ErrorCode traceMe(bool disableASLR);
   virtual ErrorCode traceThat(ProcessId pid) = 0;
 
 public:

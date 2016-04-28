@@ -26,7 +26,6 @@ public:
   virtual ~PTrace();
 
 public:
-  virtual ErrorCode traceMe(bool disableASLR);
   virtual ErrorCode traceThat(ProcessId pid);
 
 public:

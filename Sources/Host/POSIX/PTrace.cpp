@@ -41,6 +41,23 @@ ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   return kSuccess;
 }
 
+ErrorCode PTrace::traceMe(bool disableASLR) {
+  if (disableASLR) {
+    DS2LOG(Warning, "disabling ASLR not implemented on current plaform");
+  }
+
+#if defined(OS_LINUX)
+  auto cmd = PTRACE_TRACEME;
+#elif defined(OS_FREEBSD) || defined(OS_DARWIN)
+  auto cmd = PT_TRACE_ME;
+#endif
+
+  if (wrapPtrace(cmd, 0, nullptr, nullptr) < 0)
+    return Platform::TranslateError();
+
+  return kSuccess;
+}
+
 ErrorCode PTrace::attach(ProcessId pid) {
   if (pid <= kAnyProcessId)
     return kErrorProcessNotFound;

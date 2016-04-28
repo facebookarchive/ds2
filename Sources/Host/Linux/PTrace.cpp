@@ -61,10 +61,7 @@ ErrorCode PTrace::traceMe(bool disableASLR) {
     }
   }
 
-  if (wrapPtrace(PTRACE_TRACEME, 0, nullptr, nullptr) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
+  return super::traceMe(false);
 }
 
 ErrorCode PTrace::traceThat(ProcessId pid) {
