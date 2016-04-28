@@ -18,7 +18,7 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
-class Process : public Target::ProcessBase {
+class Process : public ds2::Target::ProcessBase {
 protected:
   HANDLE _handle;
 

@@ -23,13 +23,6 @@ protected:
   Host::Linux::PTrace _ptrace;
 
 protected:
-  friend class POSIX::Process;
-  Process();
-
-public:
-  ~Process() override;
-
-protected:
   ErrorCode initialize(ProcessId pid, uint32_t flags) override;
   ErrorCode attach(int waitStatus);
 
@@ -81,6 +74,9 @@ public:
   Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
   Architecture::LLDBDescriptor const *
   getLLDBRegistersDescriptor() const override;
+
+protected:
+  friend class POSIX::Process;
 };
 }
 }

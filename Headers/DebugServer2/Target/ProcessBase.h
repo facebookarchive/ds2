@@ -41,8 +41,6 @@ protected:
 
 protected:
   ProcessBase();
-
-public:
   virtual ~ProcessBase();
 
 public:

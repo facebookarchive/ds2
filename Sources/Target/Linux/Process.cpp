@@ -41,10 +41,6 @@ namespace ds2 {
 namespace Target {
 namespace Linux {
 
-Process::Process() = default;
-
-Process::~Process() = default;
-
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   //
   // Wait the main thread.

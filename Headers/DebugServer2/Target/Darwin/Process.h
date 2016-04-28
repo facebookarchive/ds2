@@ -18,16 +18,9 @@ namespace ds2 {
 namespace Target {
 namespace Darwin {
 
-class Process : public MachOProcess {
+class Process : public ds2::Target::Darwin::MachOProcess {
 protected:
   Host::Darwin::PTrace _ptrace;
-
-protected:
-  friend class POSIX::Process;
-  Process();
-
-public:
-  ~Process() override;
 
 protected:
   ErrorCode initialize(ProcessId pid, uint32_t flags) override;
@@ -73,6 +66,9 @@ public:
   Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
   Architecture::LLDBDescriptor const *
   getLLDBRegistersDescriptor() const override;
+
+protected:
+  friend class POSIX::Process;
 };
 }
 }

@@ -18,15 +18,10 @@
 namespace ds2 {
 namespace Target {
 namespace POSIX {
+
 class Process : public ds2::Target::ProcessBase {
 protected:
   std::set<int> _passthruSignals;
-
-protected:
-  Process();
-
-public:
-  ~Process() override;
 
 public:
   ErrorCode detach() override;

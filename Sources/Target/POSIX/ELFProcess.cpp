@@ -24,6 +24,8 @@ typedef Elf64_Auxinfo Elf64_auxv_t;
 
 using ds2::Support::ELFSupport;
 
+#define super ds2::Target::POSIX::Process
+
 namespace ds2 {
 namespace Target {
 namespace POSIX {

@@ -23,13 +23,11 @@
 
 using ds2::Host::ProcessSpawner;
 
+#define super ds2::Target::ProcessBase
+
 namespace ds2 {
 namespace Target {
 namespace POSIX {
-
-Process::Process() = default;
-
-Process::~Process() = default;
 
 ErrorCode Process::detach() {
   prepareForDetach();
@@ -87,14 +85,10 @@ ds2::Target::Process *Process::Attach(ProcessId pid) {
   if (pid <= 0)
     return nullptr;
 
-  //
   // Create the process.
-  //
   auto process = new Target::Process;
 
-  //
   // And try to attach.
-  //
   ErrorCode error = process->ptrace().attach(pid);
   if (error != kSuccess) {
     DS2LOG(Error, "ptrace attach failed: %s", strerror(errno));
@@ -118,9 +112,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   ErrorCode error;
   pid_t pid;
 
-  //
   // Create the process.
-  //
   auto process = new Target::Process;
 
   error = spawner.run(
@@ -131,16 +123,12 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   pid = spawner.pid();
   DS2LOG(Debug, "created process %d", pid);
 
-  //
   // Wait the process.
-  //
   error = process->initialize(pid, 0);
   if (error != kSuccess)
     goto fail;
 
-  //
   // Give a chance to the ptracer to set any specific options.
-  //
   error = process->ptrace().traceThat(pid);
   if (error != kSuccess)
     goto fail;
