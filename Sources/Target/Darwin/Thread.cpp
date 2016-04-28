@@ -36,8 +36,6 @@ using Host::Darwin::LibProc;
 Thread::Thread(Process *process, ThreadId tid)
     : super(process, tid), _lastSyscallNumber(-1) {}
 
-Thread::~Thread() {}
-
 ErrorCode Thread::terminate() {
   return process()->ptrace().kill(ProcessThreadId(process()->pid(), tid()),
                                   SIGKILL);

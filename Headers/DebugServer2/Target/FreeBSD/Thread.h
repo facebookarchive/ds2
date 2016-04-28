@@ -26,9 +26,6 @@ protected:
   int _lastSyscallNumber;
 
 public:
-  virtual ~Thread();
-
-public:
   virtual ErrorCode terminate();
 
 public:

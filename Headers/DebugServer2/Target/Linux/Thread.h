@@ -25,9 +25,6 @@ protected:
   Thread(Process *process, ThreadId tid);
 
 public:
-  ~Thread() override;
-
-public:
   ErrorCode terminate() override;
 
 public:

@@ -36,8 +36,6 @@ namespace Linux {
 
 Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {}
 
-Thread::~Thread() = default;
-
 ErrorCode Thread::terminate() {
   return process()->ptrace().kill(ProcessThreadId(process()->pid(), tid()),
                                   SIGKILL);
