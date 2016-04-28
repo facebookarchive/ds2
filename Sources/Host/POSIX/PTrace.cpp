@@ -24,10 +24,6 @@ namespace POSIX {
 #define PTCMD(CMD) PT_##CMD
 #endif
 
-PTrace::PTrace() = default;
-
-PTrace::~PTrace() = default;
-
 ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   if (ptid.pid <= kAnyProcessId || !(ptid.tid <= kAnyThreadId))
     return kErrorInvalidArgument;

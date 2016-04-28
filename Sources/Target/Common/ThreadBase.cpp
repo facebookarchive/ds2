@@ -18,7 +18,5 @@ ThreadBase::ThreadBase(Process *process, ThreadId tid)
     : _process(process), _tid(tid), _state(kInvalid) {
   _process->insert(this);
 }
-
-ThreadBase::~ThreadBase() = default;
 }
 }

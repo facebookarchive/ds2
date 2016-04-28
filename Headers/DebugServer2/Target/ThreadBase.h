@@ -31,7 +31,7 @@ protected:
   ThreadBase(Process *process, ThreadId tid);
 
 public:
-  virtual ~ThreadBase();
+  virtual ~ThreadBase() = default;
 
 public:
   inline Process *process() const { return _process; }

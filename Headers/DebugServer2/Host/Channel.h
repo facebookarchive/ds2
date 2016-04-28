@@ -18,7 +18,7 @@ namespace Host {
 
 class Channel {
 public:
-  virtual ~Channel();
+  virtual ~Channel() = default;
 
 public:
   virtual void close() = 0;

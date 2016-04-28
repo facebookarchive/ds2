@@ -28,8 +28,7 @@ namespace POSIX {
 
 class PTrace {
 public:
-  PTrace();
-  virtual ~PTrace();
+  virtual ~PTrace() = default;
 
 public:
   virtual ErrorCode wait(ProcessThreadId const &ptid, int *status = nullptr);
