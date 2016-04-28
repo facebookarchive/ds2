@@ -52,10 +52,6 @@ protected:
   ErrorCode updateInfo() override;
   ErrorCode updateAuxiliaryVector() override;
 
-public:
-  SoftwareBreakpointManager *softwareBreakpointManager() const override;
-  HardwareBreakpointManager *hardwareBreakpointManager() const override;
-
 protected:
   friend class Thread;
   ErrorCode readCPUState(ThreadId tid, Architecture::CPUState &state,

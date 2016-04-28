@@ -9,9 +9,7 @@
 //
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/HardwareBreakpointManager.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
@@ -349,26 +347,6 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   }
 
   return kSuccess;
-}
-
-SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
-  if (_softwareBreakpointManager == nullptr) {
-    const_cast<Process *>(this)->_softwareBreakpointManager =
-        new Architecture::ARM::SoftwareBreakpointManager(
-            reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
-  }
-
-  return _softwareBreakpointManager;
-}
-
-HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
-  if (_hardwareBreakpointManager == nullptr) {
-    const_cast<Process *>(this)->_hardwareBreakpointManager =
-        new Architecture::ARM::HardwareBreakpointManager(
-            reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
-  }
-
-  return _hardwareBreakpointManager;
 }
 
 int Process::getMaxBreakpoints() const {

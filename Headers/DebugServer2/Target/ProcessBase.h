@@ -36,8 +36,8 @@ protected:
   Address _entryPoint;
   IdentityMap _threads;
   Thread *_currentThread;
-  SoftwareBreakpointManager *_softwareBreakpointManager;
-  HardwareBreakpointManager *_hardwareBreakpointManager;
+  mutable SoftwareBreakpointManager *_softwareBreakpointManager;
+  mutable HardwareBreakpointManager *_hardwareBreakpointManager;
 
 protected:
   ProcessBase();
@@ -125,8 +125,8 @@ protected:
   virtual ErrorCode updateInfo() = 0;
 
 public:
-  virtual SoftwareBreakpointManager *softwareBreakpointManager() const = 0;
-  virtual HardwareBreakpointManager *hardwareBreakpointManager() const = 0;
+  virtual SoftwareBreakpointManager *softwareBreakpointManager() const;
+  virtual HardwareBreakpointManager *hardwareBreakpointManager() const;
 
 public:
   virtual bool isELFProcess() const = 0;

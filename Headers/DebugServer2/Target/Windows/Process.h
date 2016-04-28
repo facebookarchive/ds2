@@ -58,12 +58,6 @@ public:
   ErrorCode updateInfo() override;
 
 public:
-  SoftwareBreakpointManager *softwareBreakpointManager() const override;
-  HardwareBreakpointManager *hardwareBreakpointManager() const override {
-    return nullptr;
-  }
-
-public:
   bool isELFProcess() const override { return false; }
 
 public:

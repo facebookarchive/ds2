@@ -44,9 +44,7 @@ ErrorCode ProcessBase::getInfo(ProcessInfo &info) {
   return error;
 }
 
-//
 // This is a utility function for detach.
-//
 void ProcessBase::cleanup() {
   std::set<Thread *> threads;
   for (auto thread : _threads) {
@@ -286,6 +284,41 @@ ErrorCode ProcessBase::afterResume() {
   }
 
   return kSuccess;
+}
+
+SoftwareBreakpointManager *ProcessBase::softwareBreakpointManager() const {
+  if (_softwareBreakpointManager == nullptr) {
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
+    typedef Architecture::ARM::SoftwareBreakpointManager SWBPMType;
+#elif defined(ARCH_X86) || defined(ARCH_X86_64)
+    typedef Architecture::X86::SoftwareBreakpointManager SWBPMType;
+#endif
+
+    auto mutableThis = const_cast<ProcessBase *>(this);
+    mutableThis->_softwareBreakpointManager = new SWBPMType(mutableThis);
+  }
+
+  return _softwareBreakpointManager;
+}
+
+HardwareBreakpointManager *ProcessBase::hardwareBreakpointManager() const {
+#if defined(OS_WIN32)
+  // Not implemented yet.
+  return nullptr;
+#endif
+
+  if (_hardwareBreakpointManager == nullptr) {
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
+    typedef Architecture::ARM::HardwareBreakpointManager HWBPMType;
+#elif defined(ARCH_X86) || defined(ARCH_X86_64)
+    typedef Architecture::X86::HardwareBreakpointManager HWBPMType;
+#endif
+
+    auto mutableThis = const_cast<ProcessBase *>(this);
+    mutableThis->_hardwareBreakpointManager = new HWBPMType(mutableThis);
+  }
+
+  return _hardwareBreakpointManager;
 }
 
 void ProcessBase::prepareForDetach() {

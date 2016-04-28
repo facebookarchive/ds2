@@ -9,8 +9,6 @@
 //
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/HardwareBreakpointManager.h"
-#include "DebugServer2/SoftwareBreakpointManager.h"
 
 #include <cstdlib>
 #include <sys/mman.h>
@@ -30,26 +28,6 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
 
 ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   return kErrorUnsupported;
-}
-
-SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
-  if (_softwareBreakpointManager == nullptr) {
-    const_cast<Process *>(this)->_softwareBreakpointManager =
-        new Architecture::ARM::SoftwareBreakpointManager(
-            reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
-  }
-
-  return _softwareBreakpointManager;
-}
-
-HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
-  if (_hardwareBreakpointManager == nullptr) {
-    const_cast<Process *>(this)->_hardwareBreakpointManager =
-        new Architecture::ARM::HardwareBreakpointManager(
-            reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
-  }
-
-  return _hardwareBreakpointManager;
 }
 
 GDBDescriptor const *Process::getGDBRegistersDescriptor() const {

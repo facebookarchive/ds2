@@ -137,8 +137,8 @@ set(HOST_Windows_SOURCES
     )
 
 set(TARGET_COMMON_SOURCES
-    Sources/Target/ProcessBase.cpp
-    Sources/Target/ThreadBase.cpp
+    Sources/Target/Common/ProcessBase.cpp
+    Sources/Target/Common/ThreadBase.cpp
     )
 
 set(TARGET_POSIX_ELF_SOURCES

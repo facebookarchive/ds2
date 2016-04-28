@@ -57,10 +57,6 @@ protected:
 public:
   bool isSingleStepSupported() const override;
 
-public:
-  SoftwareBreakpointManager *softwareBreakpointManager() const override;
-  HardwareBreakpointManager *hardwareBreakpointManager() const override;
-
 protected:
   friend class Thread;
   ErrorCode readCPUState(ThreadId tid, Architecture::CPUState &state,

@@ -9,7 +9,6 @@
 //
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
 
 // Include system header files for constants.
 #include <cstdlib>
@@ -115,20 +114,6 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
     return kErrorInvalidArgument;
 
   return kSuccess;
-}
-
-SoftwareBreakpointManager *Process::softwareBreakpointManager() const {
-  if (_softwareBreakpointManager == nullptr) {
-    const_cast<Process *>(this)->_softwareBreakpointManager =
-        new Architecture::X86::SoftwareBreakpointManager(
-            reinterpret_cast<Target::Process *>(const_cast<Process *>(this)));
-  }
-
-  return _softwareBreakpointManager;
-}
-
-HardwareBreakpointManager *Process::hardwareBreakpointManager() const {
-  return nullptr;
 }
 
 GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
