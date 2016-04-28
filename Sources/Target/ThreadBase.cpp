@@ -20,9 +20,5 @@ ThreadBase::ThreadBase(Process *process, ThreadId tid)
 }
 
 ThreadBase::~ThreadBase() = default;
-
-ErrorCode ThreadBase::prepareSoftwareSingleStep(Address const &) {
-  return kErrorUnsupported;
-}
 }
 }

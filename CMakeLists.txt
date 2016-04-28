@@ -170,7 +170,6 @@ set(TARGET_FreeBSD_SOURCES
     ${TARGET_POSIX_ELF_SOURCES}
     ${TARGET_POSIX_SOURCES}
     Sources/Target/FreeBSD/Process.cpp
-    Sources/Target/FreeBSD/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/FreeBSD/${ARCH_NAME}/Process${ARCH_NAME}.cpp
     Sources/Target/FreeBSD/Thread.cpp
     )
