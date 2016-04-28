@@ -142,9 +142,11 @@ public:
   virtual int getMaxWatchpointSize() const { return 0; }
 
 public:
-  virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const;
+  // There shouldn't be any reason for these to be overridden.
+  virtual Architecture::GDBDescriptor const *
+  getGDBRegistersDescriptor() const final;
   virtual Architecture::LLDBDescriptor const *
-  getLLDBRegistersDescriptor() const;
+  getLLDBRegistersDescriptor() const final;
 
 protected:
   friend class ThreadBase;
