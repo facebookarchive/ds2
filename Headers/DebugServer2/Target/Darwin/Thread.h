@@ -33,8 +33,8 @@ protected:
   Thread(Process *process, ThreadId tid);
 
 protected:
-  virtual ErrorCode updateStopInfo(int waitStatus);
-  virtual void updateState();
+  ErrorCode updateStopInfo(int waitStatus) override;
+  void updateState() override;
 
 private:
   void updateState(bool force);
