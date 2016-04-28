@@ -11,9 +11,6 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
 #include "DebugServer2/Target/Linux/Thread.h"
-#if defined(ARCH_ARM)
-#include "DebugServer2/Architecture/ARM/SoftwareSingleStep.h"
-#endif
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
 #include "DebugServer2/SoftwareBreakpointManager.h"
@@ -62,81 +59,6 @@ ErrorCode Thread::suspend() {
   }
 
   if (_state == kTerminated) {
-    error = kErrorProcessNotFound;
-  }
-
-  return error;
-}
-
-#if defined(ARCH_ARM)
-ErrorCode Thread::step(int signal, Address const &address) {
-  if (_state == kInvalid || _state == kRunning) {
-    return kErrorInvalidArgument;
-  } else if (_state == kTerminated) {
-    return kErrorProcessNotFound;
-  }
-
-  DS2LOG(Debug, "stepping tid %d", tid());
-
-  // Prepare a software (arch-dependent) single step and resume execution.
-  Architecture::CPUState state;
-  ErrorCode error = readCPUState(state);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  error = PrepareSoftwareSingleStep(
-      process(), process()->softwareBreakpointManager(), state, address);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  return resume(signal, address);
-}
-#else
-ErrorCode Thread::step(int signal, Address const &address) {
-  if (_state == kInvalid || _state == kRunning) {
-    return kErrorInvalidArgument;
-  } else if (_state == kTerminated) {
-    return kErrorProcessNotFound;
-  }
-
-  DS2LOG(Debug, "stepping tid %d", tid());
-
-  ProcessInfo info;
-  ErrorCode error = process()->getInfo(info);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  error = process()->ptrace().step(ProcessThreadId(process()->pid(), tid()),
-                                   info, signal, address);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  _state = kStepped;
-  return kSuccess;
-}
-#endif
-
-ErrorCode Thread::resume(int signal, Address const &address) {
-  ErrorCode error = kSuccess;
-
-  if (_state == kStopped || _state == kStepped) {
-    ProcessInfo info;
-
-    error = process()->getInfo(info);
-    if (error != kSuccess)
-      return error;
-
-    error = process()->ptrace().resume(ProcessThreadId(process()->pid(), tid()),
-                                       info, signal, address);
-    if (error == kSuccess) {
-      _state = kRunning;
-      _stopInfo.signal = 0;
-    }
-  } else if (_state == kTerminated) {
     error = kErrorProcessNotFound;
   }
 

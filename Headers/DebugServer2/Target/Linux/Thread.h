@@ -31,10 +31,6 @@ public:
   ErrorCode suspend() override;
 
 public:
-  ErrorCode step(int signal = 0, Address const &address = Address()) override;
-  ErrorCode resume(int signal = 0, Address const &address = Address()) override;
-
-public:
   ErrorCode readCPUState(Architecture::CPUState &state) override;
   ErrorCode writeCPUState(Architecture::CPUState const &state) override;
 

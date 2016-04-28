@@ -67,65 +67,6 @@ ErrorCode Thread::suspend() {
   return error;
 }
 
-ErrorCode Thread::step(int signal, Address const &address) {
-  if (_state == kInvalid || _state == kRunning) {
-    return kErrorInvalidArgument;
-  } else if (_state == kTerminated) {
-    return kErrorProcessNotFound;
-  }
-
-  DS2LOG(Debug, "stepping tid %d", tid());
-
-  ProcessInfo info;
-  ErrorCode error = process()->getInfo(info);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  error = process()->ptrace().step(ProcessThreadId(process()->pid(), tid()),
-                                   info, signal, address);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  _state = kStepped;
-  return kSuccess;
-}
-
-ErrorCode Thread::resume(int signal, Address const &address) {
-  ErrorCode error = kSuccess;
-  if (_state == kStopped || _state == kStepped) {
-    if (signal == 0) {
-      switch (_stopInfo.signal) {
-      case SIGCHLD:
-      case SIGSTOP:
-      case SIGTRAP:
-        signal = 0;
-        break;
-      default:
-        signal = _stopInfo.signal;
-        break;
-      }
-    }
-
-    ProcessInfo info;
-
-    error = process()->getInfo(info);
-    if (error != kSuccess)
-      return error;
-
-    error = process()->ptrace().resume(ProcessThreadId(process()->pid(), tid()),
-                                       info, signal, address);
-    if (error == kSuccess) {
-      _state = kRunning;
-      _stopInfo.signal = 0;
-    }
-  } else if (_state == kTerminated) {
-    error = kErrorProcessNotFound;
-  }
-  return error;
-}
-
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   // TODO cache CPU state
   ProcessInfo info;

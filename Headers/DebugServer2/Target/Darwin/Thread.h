@@ -39,10 +39,6 @@ public:
   virtual ErrorCode suspend();
 
 public:
-  virtual ErrorCode step(int signal = 0, Address const &address = Address());
-  virtual ErrorCode resume(int signal = 0, Address const &address = Address());
-
-public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state);
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state);
 
