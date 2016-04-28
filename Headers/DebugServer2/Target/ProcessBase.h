@@ -125,8 +125,8 @@ protected:
   virtual ErrorCode updateInfo() = 0;
 
 public:
-  virtual SoftwareBreakpointManager *softwareBreakpointManager() const;
-  virtual HardwareBreakpointManager *hardwareBreakpointManager() const;
+  virtual SoftwareBreakpointManager *softwareBreakpointManager() const final;
+  virtual HardwareBreakpointManager *hardwareBreakpointManager() const final;
 
 public:
   virtual bool isELFProcess() const = 0;
