@@ -19,10 +19,10 @@
 
 #include <cinttypes>
 
-#define super ds2::Target::ThreadBase
-
 using ds2::Host::Platform;
 using ds2::Support::Stringify;
+
+#define super ds2::Target::ThreadBase
 
 namespace ds2 {
 namespace Target {

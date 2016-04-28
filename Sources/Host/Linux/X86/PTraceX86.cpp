@@ -12,12 +12,12 @@
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Platform.h"
 
-#define super ds2::Host::POSIX::PTrace
-
 #include <elf.h>
 #include <sys/ptrace.h>
 #include <sys/uio.h>
 #include <sys/user.h>
+
+#define super ds2::Host::POSIX::PTrace
 
 namespace ds2 {
 namespace Host {
