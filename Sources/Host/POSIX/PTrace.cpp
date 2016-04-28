@@ -31,12 +31,7 @@ ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   int stat;
   pid_t wpid = ::waitpid(ptid.pid, &stat, 0);
   if (wpid != ptid.pid) {
-    switch (errno) {
-    case ESRCH:
-      return kErrorProcessNotFound;
-    default:
-      return kErrorInvalidArgument;
-    }
+    return Platform::TranslateError();
   }
 
   if (status != nullptr) {
