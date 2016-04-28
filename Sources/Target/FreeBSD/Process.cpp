@@ -40,7 +40,7 @@ Process::Process()
     : super(), _softwareBreakpointManager(nullptr),
       _hardwareBreakpointManager(nullptr), _terminated(false) {}
 
-Process::~Process() { terminate(); }
+Process::~Process() = default;
 
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   int status;
