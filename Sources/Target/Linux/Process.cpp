@@ -169,16 +169,15 @@ ErrorCode Process::wait() {
       // WIFSIGNALED() status (i.e.: it terminated), it means we already
       // cleaned up the thread object (e.g.: in Process::suspend), but we
       // hadn't waitpid()'d it yet. Avoid re-creating a Thread object here.
-      if (!(WIFEXITED(status) || WIFSIGNALED(status))) {
-        // A new thread has appeared that we didn't know about. Create the
-        // Thread object (this call has side effects that save the Thread in
-        // the Process therefore we don't need to retain the pointer), resume
-        // the thread and just continue waiting.
-        DS2LOG(Debug, "creating new thread tid=%d", tid);
-        auto thread = new Thread(this, tid);
-        thread->resume();
+      if (WIFEXITED(status) || WIFSIGNALED(status)) {
+        goto continue_waiting;
       }
-      goto continue_waiting;
+
+      // A new thread has appeared that we didn't know about. Create the
+      // Thread object and return.
+      DS2LOG(Debug, "creating new thread tid=%d", tid);
+      _currentThread = new Thread(this, tid);
+      return kSuccess;
     } else {
       _currentThread = threadIt->second;
     }

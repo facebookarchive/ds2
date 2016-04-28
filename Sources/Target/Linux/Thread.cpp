@@ -34,12 +34,7 @@ namespace ds2 {
 namespace Target {
 namespace Linux {
 
-Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {
-  //
-  // Initially the thread is stopped.
-  //
-  _state = kStopped;
-}
+Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {}
 
 Thread::~Thread() = default;
 

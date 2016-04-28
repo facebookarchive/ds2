@@ -32,13 +32,8 @@ namespace FreeBSD {
 
 using Host::FreeBSD::ProcStat;
 
-Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {
-  //
-  // Initially the thread is stopped.
-  //
-  _state = kStopped;
-  _lastSyscallNumber = -1;
-}
+Thread::Thread(Process *process, ThreadId tid)
+    : super(process, tid), _lastSyscallNumber(-1) {}
 
 Thread::~Thread() {}
 

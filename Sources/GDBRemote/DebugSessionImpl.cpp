@@ -973,8 +973,17 @@ DebugSessionImpl::onResume(Session &session,
         }
       } break;
 #endif
+
+      case StopInfo::kReasonThreadEntry:
+        error = _process->currentThread()->resume();
+        if (error != kSuccess) {
+          return error;
+        }
+        break;
+
       default:
         keepGoing = false;
+        break;
       }
     }
   }
