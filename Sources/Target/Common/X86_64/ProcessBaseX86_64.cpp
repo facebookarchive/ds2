@@ -8,22 +8,26 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Target/ProcessBase.h"
 
 using ds2::Architecture::GDBDescriptor;
 using ds2::Architecture::LLDBDescriptor;
 
 namespace ds2 {
 namespace Target {
-namespace Windows {
 
-GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
-  return &Architecture::X86::GDB;
+GDBDescriptor const *ProcessBase::getGDBRegistersDescriptor() const {
+  if (_info.pointerSize == sizeof(uint32_t))
+    return &Architecture::X86::GDB;
+  else
+    return &Architecture::X86_64::GDB;
 }
 
-LLDBDescriptor const *Process::getLLDBRegistersDescriptor() const {
-  return &Architecture::X86::LLDB;
-}
+LLDBDescriptor const *ProcessBase::getLLDBRegistersDescriptor() const {
+  if (_info.pointerSize == sizeof(uint32_t))
+    return &Architecture::X86::LLDB;
+  else
+    return &Architecture::X86_64::LLDB;
 }
 }
 }

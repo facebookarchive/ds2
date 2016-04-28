@@ -84,11 +84,6 @@ public:
   }
   ErrorCode enumerateSharedLibraries(
       std::function<void(SharedLibraryInfo const &)> const &cb);
-
-public:
-  Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
-  Architecture::LLDBDescriptor const *
-  getLLDBRegistersDescriptor() const override;
 };
 }
 }

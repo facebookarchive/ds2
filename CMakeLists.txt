@@ -138,6 +138,7 @@ set(HOST_Windows_SOURCES
 
 set(TARGET_COMMON_SOURCES
     Sources/Target/Common/ProcessBase.cpp
+    Sources/Target/Common/${ARCH_NAME}/ProcessBase${ARCH_NAME}.cpp
     Sources/Target/Common/ThreadBase.cpp
     )
 
@@ -153,8 +154,8 @@ set(TARGET_POSIX_SOURCES
 set(TARGET_Linux_SOURCES
     ${TARGET_POSIX_ELF_SOURCES}
     ${TARGET_POSIX_SOURCES}
-    Sources/Target/Linux/${ARCH_NAME}/Process${ARCH_NAME}.cpp
     Sources/Target/Linux/Process.cpp
+    Sources/Target/Linux/${ARCH_NAME}/Process${ARCH_NAME}.cpp
     Sources/Target/Linux/Thread.cpp
     )
 
@@ -175,10 +176,9 @@ set(TARGET_FreeBSD_SOURCES
     )
 
 set(TARGET_Windows_SOURCES
-    Sources/Target/Windows/${ARCH_NAME}/Process${ARCH_NAME}.cpp
-    Sources/Target/Windows/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     Sources/Target/Windows/Process.cpp
     Sources/Target/Windows/Thread.cpp
+    Sources/Target/Windows/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     )
 
 set(GDB_SOURCES

@@ -8,24 +8,20 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Target/ProcessBase.h"
 
-#include <cstdlib>
-#include <sys/mman.h>
-#include <sys/syscall.h>
+using ds2::Architecture::GDBDescriptor;
+using ds2::Architecture::LLDBDescriptor;
 
 namespace ds2 {
 namespace Target {
-namespace Linux {
 
-ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
-                                  uint64_t *address) {
-  return kErrorUnsupported;
+GDBDescriptor const *ProcessBase::getGDBRegistersDescriptor() const {
+  return &Architecture::ARM::GDB;
 }
 
-ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
-  return kErrorUnsupported;
-}
+LLDBDescriptor const *ProcessBase::getLLDBRegistersDescriptor() const {
+  return &Architecture::ARM::LLDB;
 }
 }
 }

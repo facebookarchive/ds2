@@ -115,20 +115,6 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
 
   return kSuccess;
 }
-
-GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
-  if (_info.pointerSize == sizeof(uint32_t))
-    return &Architecture::X86::GDB;
-  else
-    return &Architecture::X86_64::GDB;
-}
-
-LLDBDescriptor const *Process::getLLDBRegistersDescriptor() const {
-  if (_info.pointerSize == sizeof(uint32_t))
-    return &Architecture::X86::LLDB;
-  else
-    return &Architecture::X86_64::LLDB;
-}
 }
 }
 }

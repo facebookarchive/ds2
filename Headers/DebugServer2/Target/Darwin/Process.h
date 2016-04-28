@@ -58,11 +58,6 @@ protected:
   ErrorCode writeCPUState(ThreadId tid, Architecture::CPUState const &state,
                           uint32_t flags = 0);
 
-public:
-  Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
-  Architecture::LLDBDescriptor const *
-  getLLDBRegistersDescriptor() const override;
-
 protected:
   friend class POSIX::Process;
 };

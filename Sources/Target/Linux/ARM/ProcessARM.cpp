@@ -14,9 +14,6 @@
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
-//
-// Include system header files for constants.
-//
 #include <cstdlib>
 #include <sys/mman.h>
 #include <sys/syscall.h>
@@ -25,8 +22,6 @@
 // TODO: Identify ARMv7 at runtime.
 //
 
-using ds2::Architecture::GDBDescriptor;
-using ds2::Architecture::LLDBDescriptor;
 using ds2::Host::Platform;
 using ds2::Support::Stringify;
 
@@ -359,14 +354,6 @@ int Process::getMaxWatchpoints() const {
 
 int Process::getMaxWatchpointSize() const {
   return ptrace().getMaxWatchpointSize(_pid);
-}
-
-GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
-  return &Architecture::ARM::GDB;
-}
-
-LLDBDescriptor const *Process::getLLDBRegistersDescriptor() const {
-  return &Architecture::ARM::LLDB;
 }
 }
 }

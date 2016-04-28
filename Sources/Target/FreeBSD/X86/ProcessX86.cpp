@@ -121,14 +121,6 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
 }
 
 bool Process::isSingleStepSupported() const { return true; }
-
-GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
-  return &Architecture::X86::GDB;
-}
-
-LLDBDescriptor const *Process::getLLDBRegistersDescriptor() const {
-  return &Architecture::X86::LLDB;
-}
 }
 }
 }

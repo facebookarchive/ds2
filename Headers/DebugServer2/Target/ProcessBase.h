@@ -142,10 +142,9 @@ public:
   virtual int getMaxWatchpointSize() const { return 0; }
 
 public:
-  virtual Architecture::GDBDescriptor const *
-  getGDBRegistersDescriptor() const = 0;
+  virtual Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const;
   virtual Architecture::LLDBDescriptor const *
-  getLLDBRegistersDescriptor() const = 0;
+  getLLDBRegistersDescriptor() const;
 
 protected:
   friend class ThreadBase;

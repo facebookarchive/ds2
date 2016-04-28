@@ -66,11 +66,6 @@ public:
   int getMaxWatchpointSize() const override;
 #endif
 
-public:
-  Architecture::GDBDescriptor const *getGDBRegistersDescriptor() const override;
-  Architecture::LLDBDescriptor const *
-  getLLDBRegistersDescriptor() const override;
-
 protected:
   friend class POSIX::Process;
 };

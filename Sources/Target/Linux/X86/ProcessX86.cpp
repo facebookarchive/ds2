@@ -11,15 +11,9 @@
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
 
-//
-// Include system header files for constants.
-//
 #include <cstdlib>
 #include <sys/mman.h>
 #include <sys/syscall.h>
-
-using ds2::Architecture::GDBDescriptor;
-using ds2::Architecture::LLDBDescriptor;
 
 namespace ds2 {
 namespace Target {
@@ -118,14 +112,6 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
     return kErrorInvalidArgument;
 
   return kSuccess;
-}
-
-GDBDescriptor const *Process::getGDBRegistersDescriptor() const {
-  return &Architecture::X86::GDB;
-}
-
-LLDBDescriptor const *Process::getLLDBRegistersDescriptor() const {
-  return &Architecture::X86::LLDB;
 }
 }
 }
