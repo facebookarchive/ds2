@@ -58,9 +58,6 @@ public:
   ErrorCode writeCPUState(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
                           Architecture::CPUState const &state) override;
 
-public:
-  ErrorCode suspend(ProcessThreadId const &ptid) override;
-
 private:
   ErrorCode prepareAddressForResume(ProcessThreadId const &ptid,
                                     ProcessInfo const &pinfo,

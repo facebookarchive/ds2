@@ -240,19 +240,6 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
   return kSuccess;
 }
 
-ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  if (tkill(pid, SIGSTOP) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
 ErrorCode PTrace::prepareAddressForResume(ProcessThreadId const &ptid,
                                           ProcessInfo const &pinfo,
                                           Address const &address) {

@@ -64,7 +64,7 @@ public:
                                   Architecture::CPUState const &state) = 0;
 
 public:
-  virtual ErrorCode suspend(ProcessThreadId const &ptid) = 0;
+  virtual ErrorCode suspend(ProcessThreadId const &ptid);
 
 private:
   ErrorCode doStepResume(bool stepping, ProcessThreadId const &ptid, int signal,

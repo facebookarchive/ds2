@@ -70,6 +70,11 @@ ErrorCode PTrace::detach(ProcessId pid) {
   return kSuccess;
 }
 
+ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
+  // This will call PTrace::kill, not the kill(2) system call.
+  return kill(ptid, SIGSTOP);
+}
+
 ErrorCode PTrace::doStepResume(bool stepping, ProcessThreadId const &ptid,
                                int signal, Address const &address) {
   pid_t pid;

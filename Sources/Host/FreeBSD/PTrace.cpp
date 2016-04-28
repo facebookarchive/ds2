@@ -145,19 +145,6 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
   return kSuccess;
 }
 
-ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  if (kill(pid, SIGSTOP) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
 ErrorCode PTrace::getLwpInfo(ProcessThreadId const &ptid,
                              struct ptrace_lwpinfo *lwpinfo) {
   pid_t pid;

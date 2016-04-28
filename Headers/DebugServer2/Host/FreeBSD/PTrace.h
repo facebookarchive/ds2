@@ -52,9 +52,6 @@ public:
                                   Architecture::CPUState const &state);
 
 public:
-  virtual ErrorCode suspend(ProcessThreadId const &ptid);
-
-public:
   virtual ErrorCode getLwpInfo(ProcessThreadId const &ptid,
                                struct ptrace_lwpinfo *lwpinfo);
 

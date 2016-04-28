@@ -91,16 +91,9 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
 }
 
 ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  if (kill(pid, SIGSTOP) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
+  // TODO(sas): I don't think this will work. Not sure we can send signal to
+  // individual threads on Darwin.
+  return PTrace::kill(ptid, SIGSTOP);
 }
 
 ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
