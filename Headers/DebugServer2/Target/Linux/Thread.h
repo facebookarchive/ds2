@@ -24,10 +24,6 @@ protected:
   friend class Process;
   Thread(Process *process, ThreadId tid);
 
-public:
-  ErrorCode readCPUState(Architecture::CPUState &state) override;
-  ErrorCode writeCPUState(Architecture::CPUState const &state) override;
-
 protected:
   ErrorCode updateStopInfo(int waitStatus) override;
   void updateState() override;

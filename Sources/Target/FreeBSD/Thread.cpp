@@ -35,31 +35,6 @@ using Host::FreeBSD::ProcStat;
 Thread::Thread(Process *process, ThreadId tid)
     : super(process, tid), _lastSyscallNumber(-1) {}
 
-ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
-  // TODO cache CPU state
-  ProcessInfo info;
-  ErrorCode error;
-
-  error = _process->getInfo(info);
-  if (error != kSuccess)
-    return error;
-
-  return process()->ptrace().readCPUState(
-      ProcessThreadId(process()->pid(), tid()), info, state);
-}
-
-ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
-  ProcessInfo info;
-  ErrorCode error;
-
-  error = _process->getInfo(info);
-  if (error != kSuccess)
-    return error;
-
-  return process()->ptrace().writeCPUState(
-      ProcessThreadId(process()->pid(), tid()), info, state);
-}
-
 ErrorCode Thread::updateStopInfo(int waitStatus) {
   super::updateStopInfo(waitStatus);
   struct ptrace_lwpinfo lwpinfo;

@@ -31,6 +31,31 @@ Thread::Thread(ds2::Target::Process *process, ThreadId tid)
   _stopInfo.reason = StopInfo::kReasonThreadEntry;
 }
 
+ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
+  // TODO cache CPU state
+  ProcessInfo info;
+  ErrorCode error;
+
+  error = _process->getInfo(info);
+  if (error != kSuccess)
+    return error;
+
+  return process()->ptrace().readCPUState(
+      ProcessThreadId(process()->pid(), tid()), info, state);
+}
+
+ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
+  ProcessInfo info;
+  ErrorCode error;
+
+  error = _process->getInfo(info);
+  if (error != kSuccess)
+    return error;
+
+  return process()->ptrace().writeCPUState(
+      ProcessThreadId(process()->pid(), tid()), info, state);
+}
+
 ErrorCode Thread::terminate() {
   return process()->ptrace().kill(ProcessThreadId(process()->pid(), tid()),
                                   SIGKILL);

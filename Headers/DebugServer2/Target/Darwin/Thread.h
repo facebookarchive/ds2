@@ -32,10 +32,6 @@ protected:
   friend class Process;
   Thread(Process *process, ThreadId tid);
 
-public:
-  virtual ErrorCode readCPUState(Architecture::CPUState &state);
-  virtual ErrorCode writeCPUState(Architecture::CPUState const &state);
-
 protected:
   virtual ErrorCode updateStopInfo(int waitStatus);
   virtual void updateState();
