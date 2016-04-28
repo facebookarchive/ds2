@@ -28,12 +28,6 @@ protected:
   Thread(Process *process, ThreadId tid);
 
 public:
-  virtual ErrorCode terminate();
-
-public:
-  virtual ErrorCode suspend();
-
-public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state);
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state);
 

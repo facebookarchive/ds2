@@ -22,6 +22,10 @@ protected:
   Thread(ds2::Target::Process *process, ThreadId tid);
 
 public:
+  ErrorCode terminate() override;
+  ErrorCode suspend() override;
+
+public:
   ErrorCode step(int signal = 0, Address const &address = Address()) override;
   ErrorCode resume(int signal = 0, Address const &address = Address()) override;
 

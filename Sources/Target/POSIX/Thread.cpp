@@ -31,6 +31,38 @@ Thread::Thread(ds2::Target::Process *process, ThreadId tid)
   _stopInfo.reason = StopInfo::kReasonThreadEntry;
 }
 
+ErrorCode Thread::terminate() {
+  return process()->ptrace().kill(ProcessThreadId(process()->pid(), tid()),
+                                  SIGKILL);
+}
+
+ErrorCode Thread::suspend() {
+  ErrorCode error = kSuccess;
+  if (_state == kRunning) {
+    error =
+        process()->ptrace().suspend(ProcessThreadId(process()->pid(), tid()));
+    if (error != kSuccess)
+      return error;
+
+    int status;
+    error = process()->ptrace().wait(ProcessThreadId(process()->pid(), tid()),
+                                     &status);
+    if (error != kSuccess) {
+      DS2LOG(Error, "failed to wait for tid %d, error=%s\n", tid(),
+             strerror(errno));
+      return error;
+    }
+
+    updateStopInfo(status);
+  }
+
+  if (_state == kTerminated) {
+    error = kErrorProcessNotFound;
+  }
+
+  return error;
+}
+
 #if defined(ARCH_ARM)
 ErrorCode Thread::step(int signal, Address const &address) {
   if (_state == kInvalid || _state == kRunning) {

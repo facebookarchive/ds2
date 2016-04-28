@@ -25,12 +25,6 @@ protected:
   Thread(Process *process, ThreadId tid);
 
 public:
-  ErrorCode terminate() override;
-
-public:
-  ErrorCode suspend() override;
-
-public:
   ErrorCode readCPUState(Architecture::CPUState &state) override;
   ErrorCode writeCPUState(Architecture::CPUState const &state) override;
 
