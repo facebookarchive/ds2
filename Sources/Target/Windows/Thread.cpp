@@ -151,6 +151,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
 
     case EXCEPTION_INVALID_DISPOSITION:
     case EXCEPTION_NONCONTINUABLE_EXCEPTION:
+    case DS2_EXCEPTION_UNCAUGHT_COM:
     case DS2_EXCEPTION_UNCAUGHT_USER:
       _stopInfo.event = StopInfo::kEventStop;
       _stopInfo.reason = StopInfo::kReasonInstructionError;

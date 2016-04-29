@@ -54,6 +54,8 @@ char const *Stringify::ExceptionCode(DWORD code) {
     DO_STRINGIFY(EXCEPTION_PRIV_INSTRUCTION)
     DO_STRINGIFY(EXCEPTION_SINGLE_STEP)
     DO_STRINGIFY(EXCEPTION_STACK_OVERFLOW)
+  case DS2_EXCEPTION_UNCAUGHT_COM:
+    return "0x800706BA (uncaught COM exception)";
   case DS2_EXCEPTION_UNCAUGHT_USER:
     return "0xE06D7363 (uncaught user exception)";
     DO_DEFAULT("unknown exception code", code)
