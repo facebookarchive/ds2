@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Architecture/ARM/SoftwareSingleStep.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
+#include "DebugServer2/Utils/Bits.h"
 #include "DebugServer2/Utils/Log.h"
 
 using ds2::Architecture::CPUState;
@@ -156,7 +157,7 @@ ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
   //
   case ds2::Architecture::ARM::kBranchTypeBLX_i:
     branchPC = pc + info.disp;
-    branchPC = (branchPC + info.align - 1) & ~info.align;
+    ds2::Utils::Align(branchPC, info.align);
     branchPCSize = 4;
     break;
 
