@@ -99,6 +99,12 @@ template <typename T> static inline void EnableBit(T &number, int idx) {
 template <typename T> static inline void DisableBit(T &number, int idx) {
   number &= ~(static_cast<typename std::make_unsigned<T>::type>(1) << idx);
 }
+
+template <typename T>
+static inline void Align(T &number, unsigned int alignment) {
+  unsigned int clear = alignment - 1;
+  number = (number + clear) & ~clear;
+}
 }
 }
 
