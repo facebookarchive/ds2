@@ -10,6 +10,7 @@
 //
 
 #include "DebugServer2/Host/FreeBSD/PTrace.h"
+#include "DebugServer2/Architecture/X86/RegisterCopy.h"
 #include "DebugServer2/Host/Platform.h"
 
 #include <elf.h>
@@ -46,47 +47,6 @@ void PTrace::doneCPUState() { delete _privateData; }
 //
 // 32-bits helpers
 //
-
-static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
-                                   struct reg const &user) {
-  state.gp.eax = user.r_rax;
-  state.gp.ecx = user.r_rcx;
-  state.gp.edx = user.r_rdx;
-  state.gp.ebx = user.r_rbx;
-  state.gp.esi = user.r_rsi;
-  state.gp.edi = user.r_rdi;
-  state.gp.ebp = user.r_rbp;
-  state.gp.esp = user.r_rsp;
-  state.gp.eip = user.r_rip;
-  state.gp.cs = user.r_cs & 0xffff;
-  state.gp.ss = user.r_ss & 0xffff;
-  state.gp.ds = user.r_ds & 0xffff;
-  state.gp.es = user.r_es & 0xffff;
-  state.gp.fs = user.r_fs & 0xffff;
-  state.gp.gs = user.r_gs & 0xffff;
-  state.gp.eflags = user.r_rflags;
-}
-
-static inline void
-state32_to_user(struct reg &user,
-                ds2::Architecture::X86_64::CPUState32 const &state) {
-  user.r_rax = state.gp.eax;
-  user.r_rcx = state.gp.ecx;
-  user.r_rdx = state.gp.edx;
-  user.r_rbx = state.gp.ebx;
-  user.r_rsi = state.gp.esi;
-  user.r_rdi = state.gp.edi;
-  user.r_rbp = state.gp.ebp;
-  user.r_rsp = state.gp.esp;
-  user.r_rip = state.gp.eip;
-  user.r_cs = state.gp.cs;
-  user.r_ss = state.gp.ss;
-  user.r_ds = state.gp.ds;
-  user.r_es = state.gp.es;
-  user.r_fs = state.gp.fs;
-  user.r_gs = state.gp.gs;
-  user.r_rflags = state.gp.eflags;
-}
 
 static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
                                    struct fpreg const &user) {
@@ -160,63 +120,6 @@ state32_to_user(struct fpreg &user,
 //
 // 64-bit helpers
 //
-
-static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
-                                   struct reg const &user) {
-  state.gp.rax = user.r_rax;
-  state.gp.rcx = user.r_rcx;
-  state.gp.rdx = user.r_rdx;
-  state.gp.rbx = user.r_rbx;
-  state.gp.rsi = user.r_rsi;
-  state.gp.rdi = user.r_rdi;
-  state.gp.rbp = user.r_rbp;
-  state.gp.rsp = user.r_rsp;
-  state.gp.r8 = user.r_r8;
-  state.gp.r9 = user.r_r9;
-  state.gp.r10 = user.r_r10;
-  state.gp.r11 = user.r_r11;
-  state.gp.r12 = user.r_r12;
-  state.gp.r13 = user.r_r13;
-  state.gp.r14 = user.r_r14;
-  state.gp.r15 = user.r_r15;
-  state.gp.rip = user.r_rip;
-  state.gp.cs = user.r_cs & 0xffff;
-  state.gp.ss = user.r_ss & 0xffff;
-  state.gp.ds = user.r_ds & 0xffff;
-  state.gp.es = user.r_es & 0xffff;
-  state.gp.fs = user.r_fs & 0xffff;
-  state.gp.gs = user.r_gs & 0xffff;
-  state.gp.eflags = user.r_rflags;
-}
-
-static inline void
-state64_to_user(struct reg &user,
-                ds2::Architecture::X86_64::CPUState64 const &state) {
-  user.r_rax = state.gp.rax;
-  user.r_rcx = state.gp.rcx;
-  user.r_rdx = state.gp.rdx;
-  user.r_rbx = state.gp.rbx;
-  user.r_rsi = state.gp.rsi;
-  user.r_rdi = state.gp.rdi;
-  user.r_rbp = state.gp.rbp;
-  user.r_rsp = state.gp.rsp;
-  user.r_r8 = state.gp.r8;
-  user.r_r9 = state.gp.r9;
-  user.r_r10 = state.gp.r10;
-  user.r_r11 = state.gp.r11;
-  user.r_r12 = state.gp.r12;
-  user.r_r13 = state.gp.r13;
-  user.r_r14 = state.gp.r14;
-  user.r_r15 = state.gp.r15;
-  user.r_rip = state.gp.rip;
-  user.r_cs = state.gp.cs;
-  user.r_ss = state.gp.ss;
-  user.r_ds = state.gp.ds;
-  user.r_es = state.gp.es;
-  user.r_fs = state.gp.fs;
-  user.r_gs = state.gp.gs;
-  user.r_rflags = state.gp.eflags;
-}
 
 static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
                                    struct fpreg const &user) {
@@ -306,10 +209,10 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
 
   if (pinfo.pointerSize == sizeof(uint32_t)) {
     state.is32 = true;
-    user_to_state32(state.state32, gprs);
+    Architecture::X86::user_to_state32(state.state32, gprs);
   } else {
     state.is32 = false;
-    user_to_state64(state.state64, gprs);
+    Architecture::X86::user_to_state64(state.state64, gprs);
   }
 
   //
@@ -351,9 +254,9 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   //
   struct reg gprs;
   if (state.is32) {
-    state32_to_user(gprs, state.state32);
+    Architecture::X86::state32_to_user(gprs, state.state32);
   } else {
-    state64_to_user(gprs, state.state64);
+    Architecture::X86::state64_to_user(gprs, state.state64);
   }
 
   if (wrapPtrace(PT_SETREGS, pid, &gprs, nullptr) < 0)

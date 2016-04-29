@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Host/Linux/PTrace.h"
+#include "DebugServer2/Architecture/X86/RegisterCopy.h"
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Platform.h"
 
@@ -61,23 +62,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
   if (wrapPtrace(PTRACE_GETREGS, pid, nullptr, &gprs) < 0)
     return Platform::TranslateError();
 
-  state.gp.eax = gprs.eax;
-  state.gp.ecx = gprs.ecx;
-  state.gp.edx = gprs.edx;
-  state.gp.ebx = gprs.ebx;
-  state.gp.esi = gprs.esi;
-  state.gp.edi = gprs.edi;
-  state.gp.ebp = gprs.ebp;
-  state.gp.esp = gprs.esp;
-  state.gp.eip = gprs.eip;
-  state.gp.cs = gprs.xcs & 0xffff;
-  state.gp.ss = gprs.xss & 0xffff;
-  state.gp.ds = gprs.xds & 0xffff;
-  state.gp.es = gprs.xes & 0xffff;
-  state.gp.fs = gprs.xfs & 0xffff;
-  state.gp.gs = gprs.xgs & 0xffff;
-  state.gp.eflags = gprs.eflags;
-  state.linux_gp.orig_eax = gprs.orig_eax;
+  Architecture::X86::user_to_state32(state, gprs);
 
   //
   // Read X87 and SSE state
@@ -152,24 +137,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   // Read GPRs
   //
   user_regs_struct gprs;
-  std::memset(&gprs, 0, sizeof(gprs));
-  gprs.eax = state.gp.eax;
-  gprs.ecx = state.gp.ecx;
-  gprs.edx = state.gp.edx;
-  gprs.ebx = state.gp.ebx;
-  gprs.esi = state.gp.esi;
-  gprs.edi = state.gp.edi;
-  gprs.ebp = state.gp.ebp;
-  gprs.esp = state.gp.esp;
-  gprs.eip = state.gp.eip;
-  gprs.xcs = state.gp.cs & 0xffff;
-  gprs.xss = state.gp.ss & 0xffff;
-  gprs.xds = state.gp.ds & 0xffff;
-  gprs.xes = state.gp.es & 0xffff;
-  gprs.xfs = state.gp.fs & 0xffff;
-  gprs.xgs = state.gp.gs & 0xffff;
-  gprs.eflags = state.gp.eflags;
-  gprs.orig_eax = state.linux_gp.orig_eax;
+  Architecture::X86::state32_to_user(gprs, state);
 
   if (wrapPtrace(PTRACE_SETREGS, pid, nullptr, &gprs) < 0)
     return Platform::TranslateError();
