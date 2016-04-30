@@ -132,7 +132,6 @@ static inline void user_to_state32(StateType &state,
 template <typename UserStructType, typename StateType>
 static inline void state32_to_user(UserStructType &user,
                                    StateType const &state) {
-  std::memset(&user, 0, sizeof(user));
   DO_COPY_GPR_32();
   DO_COPY_SS();
   DO_COPY_EXTRA_32();
@@ -155,7 +154,6 @@ static inline void user_to_state64(StateType &state,
 template <typename UserStructType, typename StateType>
 static inline void state64_to_user(UserStructType &user,
                                    StateType const &state) {
-  std::memset(&user, 0, sizeof(user));
   DO_COPY_GPR_64();
   DO_COPY_SS();
   DO_COPY_EXTRA_64();

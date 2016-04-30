@@ -47,7 +47,7 @@ ErrorCode Thread::step(int signal, Address const &address) {
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   CONTEXT context;
 
-  memset(&context, 0, sizeof(context));
+  std::memset(&context, 0, sizeof(context));
   // TODO(sas): Handle AVX.
   context.ContextFlags = CONTEXT_INTEGER |            // GP registers.
                          CONTEXT_CONTROL |            // Some more GP + cs/ss.
@@ -102,7 +102,7 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
 ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
   CONTEXT context;
 
-  memset(&context, 0, sizeof(context));
+  std::memset(&context, 0, sizeof(context));
   // TODO(sas): Handle floats, SSE, AVX and debug registers.
   context.ContextFlags = CONTEXT_INTEGER | // GP registers.
                          CONTEXT_CONTROL | // Some more GP + cs/ss.
