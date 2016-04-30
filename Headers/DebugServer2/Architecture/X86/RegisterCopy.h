@@ -23,6 +23,10 @@ namespace X86 {
 #define _PASTE(A, B) A##B
 #define PASTE(A, B) _PASTE(A, B)
 
+#define DO_EMPTY()                                                             \
+  do {                                                                         \
+  } while (0)
+
 #define DO_COPY_GPR_32()                                                       \
   do {                                                                         \
     DO_COPY_GP_REG(ax);                                                        \
@@ -85,8 +89,8 @@ namespace X86 {
     DO_COPY_REG(state.linux_gp.gs_base, user.gs_base, 0);                      \
   } while (0)
 #else
-#define DO_COPY_EXTRA_32()
-#define DO_COPY_EXTRA_64()
+#define DO_COPY_EXTRA_32() DO_EMPTY()
+#define DO_COPY_EXTRA_64() DO_EMPTY()
 #endif
 
 #if defined(OS_LINUX) && defined(ARCH_X86)
