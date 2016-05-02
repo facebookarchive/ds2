@@ -325,6 +325,7 @@ if (COVERAGE)
 endif ()
 
 include(FindThreads)
+set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 if (STATIC AND DEFINED CMAKE_THREAD_LIBS_INIT AND
     (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
   target_link_libraries(ds2 -Wl,--whole-archive ${CMAKE_THREAD_LIBS_INIT} -Wl,--no-whole-archive)
