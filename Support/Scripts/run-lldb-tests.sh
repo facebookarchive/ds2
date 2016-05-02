@@ -31,7 +31,7 @@ for o in "$@"; do
   case "$o" in
     --fast) opt_fast=true;;
     --strace) opt_strace=true;;
-    *) die "Unknown option \`$o'."
+    *) die "Unknown option \`$o'.";;
   esac
 done
 
