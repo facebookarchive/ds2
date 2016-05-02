@@ -314,6 +314,16 @@ char const *Stringify::Ptrace(int code) {
     DO_STRINGIFY(PTRACE_SINGLESTEP)
     DO_STRINGIFY(PTRACE_SYSCALL)
     DO_STRINGIFY(PTRACE_TRACEME)
+#elif defined(OS_DARWIN) || defined(OS_FREEBSD)
+    DO_STRINGIFY(PT_TRACE_ME)
+#if defined(OS_DARWIN)
+    DO_STRINGIFY(PT_SIGEXC)
+#endif
+    DO_STRINGIFY(PT_CONTINUE)
+    DO_STRINGIFY(PT_STEP)
+    DO_STRINGIFY(PT_KILL)
+    DO_STRINGIFY(PT_ATTACH)
+    DO_STRINGIFY(PT_DETACH)
 #endif
     DO_DEFAULT("unknown ptrace command", code)
   }
