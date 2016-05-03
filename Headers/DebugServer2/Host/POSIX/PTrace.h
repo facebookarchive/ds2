@@ -116,8 +116,9 @@ protected:
     do {
       if (ret < 0) {
         retries--;
-        DS2LOG(Warning, "ptrace command %s on pid %d returned EAGAIN, retrying",
-               ds2::Support::Stringify::Ptrace(request), pid);
+        DS2LOG(Warning, "ptrace command %s on pid %d returned %s, retrying",
+               ds2::Support::Stringify::Ptrace(request), pid,
+               ds2::Support::Stringify::Errno(errno));
       }
 
       // Clear errno so we can check it afterwards. Just checking the return
