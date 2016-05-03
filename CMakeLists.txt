@@ -186,18 +186,16 @@ set(GDB_SOURCES
     )
 
 set(GDBREMOTE_SOURCES
-    Sources/GDBRemote/Structures.cpp
-    Sources/GDBRemote/PacketProcessor.cpp
-    Sources/GDBRemote/ProtocolInterpreter.cpp
-    Sources/GDBRemote/ProtocolHelpers.cpp
-
-    Sources/GDBRemote/SessionBase.cpp
-    Sources/GDBRemote/Session.cpp
-
-    Sources/GDBRemote/DummySessionDelegateImpl.cpp
-    Sources/GDBRemote/PlatformSessionImpl.cpp
     Sources/GDBRemote/DebugSessionImpl.cpp
+    Sources/GDBRemote/DummySessionDelegateImpl.cpp
+    Sources/GDBRemote/PacketProcessor.cpp
+    Sources/GDBRemote/PlatformSessionImpl.cpp
+    Sources/GDBRemote/ProtocolHelpers.cpp
+    Sources/GDBRemote/ProtocolInterpreter.cpp
+    Sources/GDBRemote/Session.cpp
+    Sources/GDBRemote/SessionBase.cpp
     Sources/GDBRemote/SlaveSessionImpl.cpp
+    Sources/GDBRemote/Structures.cpp
     )
 
 set(SUPPORT_COMMON_SOURCES
