@@ -94,8 +94,8 @@ public:
 
 protected:
   template <typename CommandType, typename AddrType, typename DataType>
-  long wrapPtrace(CommandType request, pid_t pid, AddrType addr,
-                  DataType data) {
+  long wrapPtrace(CommandType request, pid_t pid, AddrType addr, DataType data,
+                  int retries = 3) {
 #if defined(OS_LINUX)
 // The android toolchain declares ptrace() with an int command.
 #if defined(PLATFORM_ANDROID)
@@ -115,6 +115,7 @@ protected:
 
     do {
       if (ret < 0) {
+        retries--;
         DS2LOG(Warning, "ptrace command %s on pid %d returned EAGAIN, retrying",
                ds2::Support::Stringify::Ptrace(request), pid);
       }
@@ -127,7 +128,7 @@ protected:
       ret = ::ptrace(static_cast<PTraceRequestType>(request), pid,
                      (PTraceAddrType)(uintptr_t)addr,
                      (PTraceDataType)(uintptr_t)data);
-    } while (ret < 0 && (errno == EAGAIN || errno == EBUSY));
+    } while (ret < 0 && (errno == EAGAIN || errno == EBUSY) && retries > 0);
 
     if (errno != 0) {
       DS2LOG(Debug, "ran ptrace command %s on pid %d, returned %s",
