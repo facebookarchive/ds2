@@ -167,7 +167,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
 
   case LOAD_DLL_DEBUG_EVENT: {
     ErrorCode error;
-    std::wstring name = L"<NONAME>";
+    std::wstring name = L"<unknown>";
 
     ProcessInfo pi;
     error = process()->getInfo(pi);

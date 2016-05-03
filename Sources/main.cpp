@@ -200,7 +200,7 @@ DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
 #if !defined(OS_WIN32)
           user = ds2::Utils::ToString(info.realUid);
 #else
-          user = "<NONE>";
+          user = "<unknown>";
 #endif
         }
 

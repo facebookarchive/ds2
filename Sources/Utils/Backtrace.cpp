@@ -56,7 +56,7 @@ void PrintBacktrace() {
         name = info.dli_sname;
       }
     } else {
-      name = "<NOT FOUND>";
+      name = "<unknown>";
     }
 
     DS2LOG(Error, "%0#*" PRIxPTR " %s+%#" PRIxPTR " (%s)", kPointerWidth,
