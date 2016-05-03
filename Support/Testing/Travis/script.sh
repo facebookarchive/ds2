@@ -71,6 +71,8 @@ check_dirty() {
     for f in "${dirty[@]}"; do
       echo "dirty: $f"
     done
+    echo "Here is the diff:"
+    git --no-pager diff
     exit 1
   fi
 }
