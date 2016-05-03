@@ -167,7 +167,7 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
 #endif
   default:
     DS2LOG(Error, "invalid breakpoint type %d", type);
-    DS2ASSERT(0 && "invalid breakpoint type");
+    DS2BUG("invalid breakpoint type");
     break;
   }
 }

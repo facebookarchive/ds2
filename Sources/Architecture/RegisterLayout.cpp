@@ -207,7 +207,7 @@ std::string GDBXMLGenerator::GetType(GDBEncoding const &enc,
       return "int" + ds2::Utils::ToString(bitsize);
     break;
   default:
-    DS2ASSERT(0 && "invalid GDB encoding");
+    DS2BUG("invalid GDB encoding");
   }
 
   return std::string();
@@ -226,7 +226,7 @@ std::string GDBXMLGenerator::GetVectorType(GDBEncoding const &enc,
       return "int" + ds2::Utils::ToString(elsize);
     break;
   default:
-    DS2ASSERT(0 && "invalid encoding for GDB vector");
+    DS2BUG("invalid encoding for GDB vector");
   }
 
   return std::string();
@@ -245,7 +245,7 @@ size_t GDBXMLGenerator::GetVectorCount(GDBEncoding const &enc, size_t vecsize,
   case ds2::Architecture::kGDBEncodingSizedInteger:
     break;
   default:
-    DS2ASSERT(0 && "invalid encoding for GDB vector");
+    DS2BUG("invalid encoding for GDB vector");
   }
 
   return vecsize / elsize;
@@ -327,7 +327,7 @@ void GDBXMLGenerator::generateEntry(std::ostringstream &s,
   } else if (entry.Type == ds2::Architecture::kGDBFeatureTypeFlags) {
     generateFlags(s, reinterpret_cast<FlagSet const *>(entry.Data));
   } else {
-    DS2ASSERT(0 && "unknown GDB feature entry type");
+    DS2BUG("unknown GDB feature entry type");
   }
 }
 
