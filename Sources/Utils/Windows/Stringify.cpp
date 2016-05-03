@@ -8,14 +8,12 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Support/Stringify.h"
+#define __DebugServer2_Utils_Stringify_h_Private
+#include "DebugServer2/Utils/Stringify.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
-#include "DebugServer2/Support/StringifyPrivate.h"
-#include "DebugServer2/Utils/Log.h"
 
 namespace ds2 {
-namespace Support {
-namespace Windows {
+namespace Utils {
 
 char const *Stringify::DebugEvent(DWORD event) {
   switch (event) {
@@ -60,7 +58,6 @@ char const *Stringify::ExceptionCode(DWORD code) {
     return "0xE06D7363 (uncaught user exception)";
     DO_DEFAULT("unknown exception code", code)
   }
-}
 }
 }
 }

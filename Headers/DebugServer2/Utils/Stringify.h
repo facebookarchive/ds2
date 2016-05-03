@@ -8,14 +8,43 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Support_StringifyPrivate_h
-#define __DebugServer2_Support_StringifyPrivate_h
+#ifndef __DebugServer2_Utils_Stringify_h
+#define __DebugServer2_Utils_Stringify_h
 
+#include "DebugServer2/Base.h"
+#include "DebugServer2/Constants.h"
+#include "DebugServer2/Types.h"
+
+namespace ds2 {
+namespace Utils {
+
+class Stringify {
+public:
+  static char const *Error(ErrorCode error);
+  static char const *StopEvent(StopInfo::Event event);
+  static char const *StopReason(StopInfo::Reason reason);
+
+#if defined(OS_POSIX)
+  static char const *Signal(int signal);
+  static char const *SignalCode(int signal, int code);
+  static char const *Errno(int error);
+  static char const *Ptrace(int code);
+#elif defined(OS_WIN32)
+  static char const *DebugEvent(DWORD event);
+  static char const *ExceptionCode(DWORD code);
+#endif
+};
+}
+}
+
+// Private stuff used by implementation functions.
+#if defined(__DebugServer2_Utils_Stringify_h_Private)
+#include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
 
 #if defined(OS_DARWIN)
 #define ATT_TLS __thread
-#elif defined(OS_LINUX) || defined(OS_WIN32) || defined(OS_FREEBSD)
+#elif defined(OS_LINUX) || defined(OS_FREEBSD) || defined(OS_WIN32)
 #define ATT_TLS thread_local
 #else
 #error "Target not supported."
@@ -33,5 +62,6 @@
       ds2::Utils::SNPrintf(tmp, sizeof(tmp), "%#lx", (unsigned long)VALUE);    \
       return tmp;                                                              \
     } while (0);
+#endif
 
-#endif // !__DebugServer2_Support_StringifyPrivate_h
+#endif // !__DebugServer2_Utils_Stringify_h

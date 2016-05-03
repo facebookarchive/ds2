@@ -15,16 +15,16 @@
 #include "DebugServer2/HardwareBreakpointManager.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/SoftwareBreakpointManager.h"
-#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/Paths.h"
+#include "DebugServer2/Utils/Stringify.h"
 
 #include <iomanip>
 #include <sstream>
 
 using ds2::Host::Platform;
-using ds2::Support::Stringify;
+using ds2::Utils::Stringify;
 using ds2::Target::Thread;
 
 namespace ds2 {

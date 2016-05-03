@@ -8,12 +8,12 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Support/Stringify.h"
-#include "DebugServer2/Support/StringifyPrivate.h"
+#define __DebugServer2_Utils_Stringify_h_Private
+#include "DebugServer2/Utils/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
 
 namespace ds2 {
-namespace Support {
+namespace Utils {
 
 char const *Stringify::Error(ErrorCode error) {
   switch (error) {

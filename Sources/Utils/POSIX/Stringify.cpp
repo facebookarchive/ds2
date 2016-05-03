@@ -8,9 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Support/Stringify.h"
-#include "DebugServer2/Support/StringifyPrivate.h"
-#include "DebugServer2/Utils/Log.h"
+#define __DebugServer2_Utils_Stringify_h_Private
+#include "DebugServer2/Utils/Stringify.h"
 
 #include <cerrno>
 #include <csignal>
@@ -23,8 +22,7 @@
 // clang-format on
 
 namespace ds2 {
-namespace Support {
-namespace POSIX {
+namespace Utils {
 
 char const *Stringify::Signal(int signal) {
 #if !defined(OS_DARWIN)
@@ -319,7 +317,6 @@ char const *Stringify::Ptrace(int code) {
 #endif
     DO_DEFAULT("unknown ptrace command", code)
   }
-}
 }
 }
 }

@@ -8,9 +8,9 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/Backtrace.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/Stringify.h"
 
 #include <cerrno>
 #include <csignal>
@@ -21,7 +21,7 @@
 
 namespace {
 
-using ds2::Support::Stringify;
+using ds2::Utils::Stringify;
 
 class FaultHandler {
 private:

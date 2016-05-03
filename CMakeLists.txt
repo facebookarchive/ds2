@@ -206,11 +206,11 @@ set(SUPPORT_COMMON_SOURCES
     Sources/ErrorCodes.cpp
     Sources/MessageQueue.cpp
     Sources/SessionThread.cpp
-    Sources/Support/Stringify.cpp
     Sources/Utils/Backtrace.cpp
     Sources/Utils/Log.cpp
     Sources/Utils/OptParse.cpp
     Sources/Utils/Paths.cpp
+    Sources/Utils/Stringify.cpp
     Sources/main.cpp
     )
 
@@ -220,7 +220,7 @@ set(SUPPORT_POSIX_ELF_SOURCES
 
 set(SUPPORT_POSIX_SOURCES
     Sources/Support/POSIX/FaultHandler.cpp
-    Sources/Support/POSIX/Stringify.cpp
+    Sources/Utils/POSIX/Stringify.cpp
     )
 
 set(SUPPORT_Linux_SOURCES
@@ -238,7 +238,7 @@ set(SUPPORT_FreeBSD_SOURCES
     )
 
 set(SUPPORT_Windows_SOURCES
-    Sources/Support/Windows/Stringify.cpp
+    Sources/Utils/Windows/Stringify.cpp
     )
 
 set(HOST_SOURCES ${HOST_COMMON_SOURCES} ${HOST_${OS_NAME}_SOURCES})

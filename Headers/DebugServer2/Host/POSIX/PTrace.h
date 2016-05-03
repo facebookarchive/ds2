@@ -12,8 +12,8 @@
 #define __DebugServer2_Host_POSIX_PTrace_h
 
 #include "DebugServer2/Architecture/CPUState.h"
-#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/Stringify.h"
 
 #include <cerrno>
 #include <csignal>
@@ -117,8 +117,8 @@ protected:
       if (ret < 0) {
         retries--;
         DS2LOG(Warning, "ptrace command %s on pid %d returned %s, retrying",
-               ds2::Support::Stringify::Ptrace(request), pid,
-               ds2::Support::Stringify::Errno(errno));
+               ds2::Utils::Stringify::Ptrace(request), pid,
+               ds2::Utils::Stringify::Errno(errno));
       }
 
       // Clear errno so we can check it afterwards. Just checking the return
@@ -133,8 +133,8 @@ protected:
 
     if (errno != 0) {
       DS2LOG(Debug, "ran ptrace command %s on pid %d, returned %s",
-             ds2::Support::Stringify::Ptrace(request), pid,
-             ds2::Support::Stringify::Errno(errno));
+             ds2::Utils::Stringify::Ptrace(request), pid,
+             ds2::Utils::Stringify::Errno(errno));
     }
 
     return ret;

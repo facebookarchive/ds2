@@ -15,8 +15,8 @@
 #endif
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/ProcessSpawner.h"
-#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/Stringify.h"
 
 #include <cerrno>
 #include <climits>
@@ -28,7 +28,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-using ds2::Support::Stringify;
+using ds2::Utils::Stringify;
 
 namespace ds2 {
 namespace Host {

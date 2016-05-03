@@ -10,10 +10,10 @@
 
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
 #include "DebugServer2/GDBRemote/Types.h"
-#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
+#include "DebugServer2/Utils/Stringify.h"
 #include "DebugServer2/Utils/SwapEndian.h"
 #include "JSObjects/JSObjects.h"
 
@@ -30,7 +30,7 @@
 #error "Target not supported."
 #endif
 
-using ds2::Support::Stringify;
+using ds2::Utils::Stringify;
 
 namespace ds2 {
 namespace GDBRemote {

@@ -14,16 +14,16 @@
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
 #include "DebugServer2/SoftwareBreakpointManager.h"
-#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/Stringify.h"
 
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
 
 using ds2::Host::Linux::ProcFS;
-using ds2::Support::Stringify;
+using ds2::Utils::Stringify;
 
 #define super ds2::Target::POSIX::Thread
 

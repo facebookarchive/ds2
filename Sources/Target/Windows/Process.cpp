@@ -13,16 +13,16 @@
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
-#include "DebugServer2/Support/Stringify.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/Stringify.h"
 
 #include <psapi.h>
 #include <vector>
 
 using ds2::Host::ProcessSpawner;
 using ds2::Host::Platform;
-using ds2::Support::Stringify;
+using ds2::Utils::Stringify;
 
 #define super ds2::Target::ProcessBase
 
