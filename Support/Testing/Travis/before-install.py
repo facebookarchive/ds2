@@ -10,12 +10,17 @@
 ##
 
 import os
+import sys
 from subprocess import check_call
 
 repositories = []
 keys = []
 
 target = os.getenv('TARGET')
+
+if 'Darwin' in target:
+   check_call('brew update', shell=True)
+   sys.exit(0)
 
 if target in [ 'Style', 'Registers' ]:
     repositories.append('ppa:ubuntu-toolchain-r/test')

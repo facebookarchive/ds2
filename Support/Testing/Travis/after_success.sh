@@ -11,6 +11,10 @@
 
 set -eu
 
+if [[ "${TARGET-}" == Darwin-* ]]; then
+  exit 0
+fi
+
 if [[ "${COVERAGE-}" = "1" ]]; then
   PATH=$PATH:"~/.local/bin" coveralls --exclude lib --exclude usr --exclude sys --exclude lldb --gcov-options '\-lp'
 fi

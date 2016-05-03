@@ -49,6 +49,9 @@ elif target in android_toolchains:
 elif target in tizen_packages:
     packages.append(tizen_packages[target])
 
+if 'Darwin' in target:
+    packages.append('cmake')
+
 if target != 'Style':
     packages.append('flex')
     packages.append('bison')
@@ -75,7 +78,11 @@ if "Ubuntu" in platform.linux_distribution():
     packages.append('realpath')
 
 if len(packages) > 0:
-    if "CentOS Linux" in platform.linux_distribution():
+    if 'Darwin' in target:
+        # brew upgrade/install might die if one pkg is already install
+        check_call('brew install "%s" || true' % '" "'.join(packages), shell=True)
+        check_call('brew upgrade "%s" || true' % '" "'.join(packages), shell=True)
+    elif "CentOS Linux" in platform.linux_distribution():
         check_call('sudo yum install -y "%s"' % '" "'.join(packages), shell=True)
     else:
         check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
