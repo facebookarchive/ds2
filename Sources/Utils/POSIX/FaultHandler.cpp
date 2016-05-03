@@ -12,11 +12,7 @@
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/Stringify.h"
 
-#include <cerrno>
 #include <csignal>
-#include <cstdio>
-#include <cstdlib>
-#include <map>
 #include <unistd.h>
 
 namespace {
