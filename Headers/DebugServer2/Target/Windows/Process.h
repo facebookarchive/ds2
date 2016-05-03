@@ -58,9 +58,6 @@ public:
   ErrorCode updateInfo() override;
 
 public:
-  bool isELFProcess() const override { return false; }
-
-public:
   ErrorCode allocateMemory(size_t size, uint32_t protection,
                            uint64_t *address) override;
   ErrorCode deallocateMemory(uint64_t address, size_t size) override;

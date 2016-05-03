@@ -18,13 +18,6 @@ namespace ds2 {
 namespace Target {
 namespace Darwin {
 
-//
-// This is a not SVR4 ELF process, we want this method because GDB
-// distinguishes between SVR4 and non-SVR4 processes to read
-// libraries information.
-//
-bool MachOProcess::isELFProcess() const { return false; }
-
 ErrorCode MachOProcess::getAuxiliaryVector(std::string &auxv) {
   ErrorCode error = updateAuxiliaryVector();
   if (error == kSuccess || error == kErrorAlreadyExist) {

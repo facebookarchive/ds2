@@ -129,9 +129,6 @@ public:
   virtual HardwareBreakpointManager *hardwareBreakpointManager() const final;
 
 public:
-  virtual bool isELFProcess() const = 0;
-
-public:
   virtual void prepareForDetach();
   virtual ErrorCode beforeResume();
   virtual ErrorCode afterResume();

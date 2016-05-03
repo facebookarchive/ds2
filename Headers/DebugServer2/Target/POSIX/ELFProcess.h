@@ -37,9 +37,6 @@ public:
       std::function<
           void(Support::ELFSupport::AuxiliaryVectorEntry const &)> const &cb);
 
-public:
-  bool isELFProcess() const override;
-
 protected:
   ErrorCode updateInfo() override;
   virtual ErrorCode updateAuxiliaryVector();

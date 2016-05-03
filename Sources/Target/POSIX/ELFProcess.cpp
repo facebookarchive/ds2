@@ -238,13 +238,6 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
 }
 }
 
-//
-// This is a SVR4 ELF process, we want this method because GDB
-// distinguishes between SVR4 and non-SVR4 processes to read
-// libraries information.
-//
-bool ELFProcess::isELFProcess() const { return true; }
-
 ErrorCode ELFProcess::getAuxiliaryVector(std::string &auxv) {
   ErrorCode error = updateAuxiliaryVector();
   if (error == kSuccess || error == kErrorAlreadyExist) {

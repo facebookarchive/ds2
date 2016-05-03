@@ -546,33 +546,31 @@ ErrorCode DebugSessionImpl::onXferRead(Session &session,
     std::ostringstream sslibs;
     Address mainMapAddress;
 
-    if (_process->isELFProcess()) {
-      _process->enumerateSharedLibraries([&](SharedLibraryInfo const &library) {
-        if (library.main) {
-          mainMapAddress = library.svr4.mapAddress;
-        } else {
-          sslibs << "<library "
-                 << "name=\"" << library.path << "\" "
-                 << "lm=\""
-                 << "0x" << std::hex << library.svr4.mapAddress << "\" "
-                 << "l_addr=\""
-                 << "0x" << std::hex << library.svr4.baseAddress << "\" "
-                 << "l_ld=\""
-                 << "0x" << std::hex << library.svr4.ldAddress << "\" "
-                 << "/>" << std::endl;
-        }
-      });
-
-      ss << "<library-list-svr4 version=\"1.0\"";
-      if (mainMapAddress.valid()) {
-        ss << " main-lm=\""
-           << "0x" << std::hex << mainMapAddress.value() << "\"";
+    _process->enumerateSharedLibraries([&](SharedLibraryInfo const &library) {
+      if (library.main) {
+        mainMapAddress = library.svr4.mapAddress;
+      } else {
+        sslibs << "<library "
+               << "name=\"" << library.path << "\" "
+               << "lm=\""
+               << "0x" << std::hex << library.svr4.mapAddress << "\" "
+               << "l_addr=\""
+               << "0x" << std::hex << library.svr4.baseAddress << "\" "
+               << "l_ld=\""
+               << "0x" << std::hex << library.svr4.ldAddress << "\" "
+               << "/>" << std::endl;
       }
-      ss << ">" << std::endl;
-      ss << sslibs.str();
-      ss << "</library-list-svr4>";
-      buffer = ss.str().substr(offset);
+    });
+
+    ss << "<library-list-svr4 version=\"1.0\"";
+    if (mainMapAddress.valid()) {
+      ss << " main-lm=\""
+         << "0x" << std::hex << mainMapAddress.value() << "\"";
     }
+    ss << ">" << std::endl;
+    ss << sslibs.str();
+    ss << "</library-list-svr4>";
+    buffer = ss.str().substr(offset);
   } else {
     return kErrorUnsupported;
   }

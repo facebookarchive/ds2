@@ -31,9 +31,6 @@ public:
   virtual ErrorCode enumerateSharedLibraries(
       std::function<void(SharedLibraryInfo const &)> const &cb);
 
-public:
-  bool isELFProcess() const override;
-
 protected:
   ErrorCode updateInfo() override;
   virtual ErrorCode updateAuxiliaryVector();
