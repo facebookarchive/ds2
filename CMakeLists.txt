@@ -236,6 +236,7 @@ set(SUPPORT_FreeBSD_SOURCES
     )
 
 set(SUPPORT_Windows_SOURCES
+    Sources/Utils/Windows/FaultHandler.cpp
     Sources/Utils/Windows/Stringify.cpp
     )
 
