@@ -22,9 +22,10 @@ using ds2::Utils::Stringify;
 class FaultHandler {
 private:
   static void signalHandler(int sig, siginfo_t *si, void *uc) {
-    DS2LOG(Error, "received %s with code %s at address %p, crashing",
+    DS2LOG(Error, "received %s with code %s at address %" PRI_PTR ", crashing",
            Stringify::Signal(si->si_signo),
-           Stringify::SignalCode(si->si_signo, si->si_code), si->si_addr);
+           Stringify::SignalCode(si->si_signo, si->si_code),
+           PRI_PTR_CAST(si->si_addr));
     ds2::Utils::PrintBacktrace();
     _exit(si->si_signo);
   }

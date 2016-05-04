@@ -22,9 +22,7 @@
 
 namespace ds2 {
 
-//
 // Log Level
-//
 enum {
   kLogLevelPacket,
   kLogLevelDebug,
@@ -41,6 +39,16 @@ void SetLogOutputStream(FILE *stream);
 
 void Log(int level, char const *classname, char const *funcname,
          char const *format, ...) DS2_ATTRIBUTE_PRINTF(4, 5);
+
+// Field width is 2 * sizeof(void *) + 2. We need to add 2 because of the `0x`
+// prefix.
+#if defined(BITSIZE_32)
+#define PRI_PTR "#010" PRIxPTR
+#elif defined(BITSIZE_64)
+#define PRI_PTR "#018" PRIxPTR
+#endif
+
+#define PRI_PTR_CAST(VAL) (reinterpret_cast<uintptr_t>(VAL))
 
 #if defined(__DS2_LOG_CLASS_NAME__)
 #define DS2LOG(LVL, ...)                                                       \

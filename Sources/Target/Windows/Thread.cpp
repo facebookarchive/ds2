@@ -106,9 +106,10 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     _state = kStopped;
 
     DS2LOG(
-        Debug, "exception from inferior, tid=%lu, code=%s, address=%p", tid(),
+        Debug, "exception from inferior, tid=%lu, code=%s, address=%" PRI_PTR,
+        tid(),
         Stringify::ExceptionCode(de.u.Exception.ExceptionRecord.ExceptionCode),
-        de.u.Exception.ExceptionRecord.ExceptionAddress);
+        PRI_PTR_CAST(de.u.Exception.ExceptionRecord.ExceptionAddress));
 
     switch (de.u.Exception.ExceptionRecord.ExceptionCode) {
     case EXCEPTION_BREAKPOINT:
@@ -206,9 +207,9 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     } while (c != '\0');
 
   skip_name:
-    DS2LOG(Debug, "new DLL loaded: %s, base=%p",
+    DS2LOG(Debug, "new DLL loaded: %s, base=%" PRI_PTR,
            Host::Platform::WideToNarrowString(name).c_str(),
-           de.u.LoadDll.lpBaseOfDll);
+           PRI_PTR_CAST(de.u.LoadDll.lpBaseOfDll));
 
     if (de.u.LoadDll.hFile != NULL)
       CloseHandle(de.u.LoadDll.hFile);
@@ -219,7 +220,8 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   } break;
 
   case UNLOAD_DLL_DEBUG_EVENT:
-    DS2LOG(Debug, "DLL unloaded, base=%p", de.u.UnloadDll.lpBaseOfDll);
+    DS2LOG(Debug, "DLL unloaded, base=%" PRI_PTR,
+           PRI_PTR_CAST(de.u.UnloadDll.lpBaseOfDll));
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonLibraryEvent;

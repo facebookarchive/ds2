@@ -23,9 +23,7 @@ namespace Utils {
 #if defined(OS_DARWIN) || defined(OS_WIN32) ||                                 \
     (defined(__GLIBC__) && !defined(PLATFORM_TIZEN))
 static void PrintBacktraceEntrySimple(void *address) {
-  static const int kPointerWidth = sizeof(void *) * 2;
-  DS2LOG(Error, "%0#*" PRIxPTR, kPointerWidth,
-         reinterpret_cast<uintptr_t>(address));
+  DS2LOG(Error, "%" PRI_PTR, PRI_PTR_CAST(address));
 }
 #endif
 
@@ -36,7 +34,6 @@ void PrintBacktrace() {
   int stackEntries = ::backtrace(stack, kStackSize);
 
   for (int i = 0; i < stackEntries; ++i) {
-    static const int kPointerWidth = sizeof(void *) * 2;
     Dl_info info;
     int res;
 
@@ -59,8 +56,8 @@ void PrintBacktrace() {
       name = "<unknown>";
     }
 
-    DS2LOG(Error, "%0#*" PRIxPTR " %s+%#" PRIxPTR " (%s)", kPointerWidth,
-           reinterpret_cast<uintptr_t>(stack[i]), name,
+    DS2LOG(Error, "%" PRI_PTR " %s+%#" PRIxPTR " (%s)", PRI_PTR_CAST(stack[i]),
+           name,
            static_cast<char *>(stack[i]) - static_cast<char *>(info.dli_saddr),
            info.dli_fname);
 

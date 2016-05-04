@@ -20,12 +20,10 @@ using ds2::Utils::Stringify;
 class FaultHandler {
 private:
   static LONG WINAPI exceptionHandler(EXCEPTION_POINTERS *exceptionInfo) {
-    static const int kPointerWidth = sizeof(uintptr_t) * 2;
     DS2LOG(
-        Error, "received exception %s at address %#0*" PRIxPTR ", crashing",
+        Error, "received exception %s at address %" PRI_PTR ", crashing",
         Stringify::ExceptionCode(exceptionInfo->ExceptionRecord->ExceptionCode),
-        kPointerWidth, reinterpret_cast<uintptr_t>(
-                           exceptionInfo->ExceptionRecord->ExceptionAddress));
+        PRI_PTR_CAST(exceptionInfo->ExceptionRecord->ExceptionAddress));
     ds2::Utils::PrintBacktrace();
     _exit(1);
   }

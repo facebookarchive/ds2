@@ -223,8 +223,8 @@ void ProcessBase::insert(ThreadBase *thread) {
            .second)
     return;
 
-  DS2LOG(Debug, "[New Thread %p (LWP %" PRIu64 ")]", thread,
-         (uint64_t)thread->tid());
+  DS2LOG(Debug, "[new Thread %" PRI_PTR " (LWP %" PRIu64 ")]",
+         PRI_PTR_CAST(thread), (uint64_t)thread->tid());
 }
 
 void ProcessBase::removeThread(ThreadId tid) {
@@ -235,8 +235,8 @@ void ProcessBase::removeThread(ThreadId tid) {
   Thread *thread = it->second;
   _threads.erase(it);
 
-  DS2LOG(Debug, "[Thread %p (LWP %" PRIu64 ") exited]", thread,
-         (uint64_t)thread->tid());
+  DS2LOG(Debug, "[delete Thread %" PRI_PTR " (LWP %" PRIu64 ") exited]",
+         PRI_PTR_CAST(thread), (uint64_t)thread->tid());
 
   delete thread;
 }
