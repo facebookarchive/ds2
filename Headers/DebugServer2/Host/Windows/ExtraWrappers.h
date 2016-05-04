@@ -394,6 +394,15 @@ WINBASEAPI BOOL WINAPI Thread32Next(
   _Out_  LPTHREADENTRY32 lpte
 );
 
+typedef LONG (WINAPI *PTOP_LEVEL_EXCEPTION_FILTER)(
+    _In_ struct _EXCEPTION_POINTERS *ExceptionInfo
+    );
+
+typedef PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER;
+
+WINBASEAPI LPTOP_LEVEL_EXCEPTION_FILTER WINAPI SetUnhandledExceptionFilter(
+  _In_ LPTOP_LEVEL_EXCEPTION_FILTER lpTopLevelExceptionFilter
+);
 } // extern "C"
 // clang-format on
 
