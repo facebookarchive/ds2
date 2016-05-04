@@ -359,7 +359,13 @@ std::string StopInfo::encode(CompatibilityMode mode, bool listThreads) const {
     break;
 
   case kEventKill:
-    ss << 'X' << HEX(2) << (signal & 0xff) << DEC;
+    ss << 'X' << HEX(2);
+#if !defined(OS_WIN32)
+    ss << (signal & 0xff);
+#else
+    ss << 9; // SIGKILL
+#endif
+    ss << DEC;
     break;
 
   default:

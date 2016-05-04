@@ -166,17 +166,7 @@ Thread *DebugSessionImpl::findThread(ProcessThreadId const &ptid) const {
 
 ErrorCode DebugSessionImpl::queryStopInfo(Session &session, Thread *thread,
                                           StopInfo &stop) const {
-  if (thread == nullptr) {
-#if defined(OS_WIN32)
-    // TODO: This needs to go away.
-    if (_process && !_process->isAlive()) {
-      stop.event = StopInfo::kEventKill;
-      stop.signal = 9;
-      return kSuccess;
-    }
-#endif
-    return kErrorInvalidArgument;
-  }
+  DS2ASSERT(thread != nullptr);
 
   // Directly copy the fields that are common between ds2::StopInfo and
   // ds2::GDBRemote::StopInfo.
@@ -207,11 +197,7 @@ ErrorCode DebugSessionImpl::queryStopInfo(Session &session, Thread *thread,
   } break;
 
   case StopInfo::kEventExit:
-#if !defined(OS_WIN32)
-  // We can't get kEventKill in StopInfo::event on Windows unless we emulate it
-  // (see top of this function).
   case StopInfo::kEventKill:
-#endif
     DS2ASSERT(stop.reason == StopInfo::kReasonNone);
     break;
 
@@ -1045,7 +1031,7 @@ ErrorCode DebugSessionImpl::onTerminate(Session &session,
     return error;
   }
 
-  return queryStopInfo(session, _process->pid(), stop);
+  return queryStopInfo(session, _process->currentThread(), stop);
 }
 
 // For LLDB we need to support breakpoints through the breakpoint manager

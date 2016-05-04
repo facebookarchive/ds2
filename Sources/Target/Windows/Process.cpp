@@ -117,14 +117,18 @@ ErrorCode Process::terminate() {
     return Platform::TranslateError();
 
   _terminated = true;
-  return detach();
+  return kSuccess;
 }
 
 bool Process::isAlive() const { return !_terminated; }
 
 ErrorCode Process::wait() {
-  if (_terminated)
+  // If _terminated is true, we just called Process::Terminate.
+  if (_terminated) {
+    DS2ASSERT(_currentThread != nullptr);
+    _currentThread->_stopInfo.event = StopInfo::kEventKill;
     return kSuccess;
+  }
 
   for (;;) {
     _currentThread = nullptr;
@@ -153,9 +157,28 @@ ErrorCode Process::wait() {
       _currentThread->updateState(de);
       return kSuccess;
 
-    case EXIT_PROCESS_DEBUG_EVENT:
+    case EXIT_PROCESS_DEBUG_EVENT: {
+      auto threadIt = _threads.find(de.dwThreadId);
+      DS2ASSERT(threadIt != _threads.end());
+      _currentThread = threadIt->second;
+
+      // We should have received a few EXIT_THREAD_DEBUG_EVENT events and there
+      // should only be one thread left at this point.
+      DS2ASSERT(_threads.size() == 1);
+
       _terminated = true;
+      _currentThread->_state = Thread::kTerminated;
+
+      DWORD exitCode;
+      BOOL result = GetExitCodeProcess(_handle, &exitCode);
+      if (!result) {
+        return Platform::TranslateError();
+      }
+
+      _currentThread->_stopInfo.event = StopInfo::kEventExit;
+      _currentThread->_stopInfo.status = exitCode;
       return kSuccess;
+    }
 
     case CREATE_THREAD_DEBUG_EVENT: {
       _currentThread =
