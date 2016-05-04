@@ -23,8 +23,7 @@ protected:
 
 protected:
   friend class Process;
-  Thread(Process *process, ThreadId tid, HANDLE handle)
-      : ThreadBase(process, tid), _handle(handle) {}
+  Thread(Process *process, ThreadId tid, HANDLE handle);
 
 public:
   virtual ~Thread();

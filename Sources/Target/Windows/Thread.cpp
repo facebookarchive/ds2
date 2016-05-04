@@ -28,6 +28,9 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
+Thread::Thread(Process *process, ThreadId tid, HANDLE handle)
+    : super(process, tid), _handle(handle) {}
+
 Thread::~Thread() { CloseHandle(_handle); }
 
 ErrorCode Thread::terminate() {
@@ -225,13 +228,6 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonLibraryEvent;
-    break;
-
-  case CREATE_PROCESS_DEBUG_EVENT:
-  case CREATE_THREAD_DEBUG_EVENT:
-    _state = kStopped;
-    _stopInfo.event = StopInfo::kEventStop;
-    _stopInfo.reason = StopInfo::kReasonThreadEntry;
     break;
 
   case EXIT_THREAD_DEBUG_EVENT:

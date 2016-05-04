@@ -15,7 +15,11 @@ namespace ds2 {
 namespace Target {
 
 ThreadBase::ThreadBase(Process *process, ThreadId tid)
-    : _process(process), _tid(tid), _state(kInvalid) {
+    : _process(process), _tid(tid), _state(kStopped) {
+  // When threads are created, they're stopped at the entry point waiting for
+  // the debugger to continue them.
+  _stopInfo.event = StopInfo::kEventStop;
+  _stopInfo.reason = StopInfo::kReasonThreadEntry;
   _process->insert(this);
 }
 }

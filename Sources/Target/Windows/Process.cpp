@@ -154,7 +154,6 @@ ErrorCode Process::wait() {
       _currentThread =
           new Thread(this, GetThreadId(de.u.CreateProcessInfo.hThread),
                      de.u.CreateProcessInfo.hThread);
-      _currentThread->updateState(de);
       return kSuccess;
 
     case EXIT_PROCESS_DEBUG_EVENT: {
@@ -183,7 +182,6 @@ ErrorCode Process::wait() {
     case CREATE_THREAD_DEBUG_EVENT: {
       _currentThread =
           new Thread(this, de.dwThreadId, de.u.CreateThread.hThread);
-      _currentThread->updateState(de);
       ErrorCode error = _currentThread->resume();
       if (error != kSuccess) {
         return error;

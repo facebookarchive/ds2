@@ -23,13 +23,7 @@ namespace Target {
 namespace POSIX {
 
 Thread::Thread(ds2::Target::Process *process, ThreadId tid)
-    : super(process, tid) {
-  // When POSIX threads are created, they're stopped at the entry point
-  // waiting for the debugger to continue them.
-  _state = kStopped;
-  _stopInfo.event = StopInfo::kEventStop;
-  _stopInfo.reason = StopInfo::kReasonThreadEntry;
-}
+    : super(process, tid) {}
 
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   // TODO cache CPU state
