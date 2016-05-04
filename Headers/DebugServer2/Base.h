@@ -63,12 +63,16 @@ typedef SSIZE_T ssize_t;
 
 #if defined(__arm__) || defined(_M_ARM)
 #define ARCH_ARM
+#define BITSIZE_32
 #elif defined(__aarch64__) || defined(_M_ARM64)
 #define ARCH_ARM64
+#define BITSIZE_64
 #elif defined(__i386__) || defined(_M_IX86)
 #define ARCH_X86
+#define BITSIZE_32
 #elif defined(__x86_64__) || defined(_M_AMD64)
 #define ARCH_X86_64
+#define BITSIZE_64
 #else
 #error "Architecture not supported."
 #endif
