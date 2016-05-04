@@ -28,8 +28,6 @@ ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
   ErrorCode error;
   uint32_t insns[2];
 
-  DS2LOG(Debug, "process=%p", process);
-
   error = process->readMemory(pc, insns, sizeof(insns));
   if (error != ds2::kSuccess)
     return error;

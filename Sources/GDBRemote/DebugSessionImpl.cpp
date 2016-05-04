@@ -168,7 +168,6 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
                                           ProcessThreadId const &ptid,
                                           StopInfo &stop) const {
   Thread *thread = findThread(ptid);
-  DS2LOG(Debug, "thread %p", thread);
 
   if (thread == nullptr) {
 #if defined(OS_WIN32)
@@ -829,9 +828,9 @@ ErrorCode DebugSessionImpl::onAttach(Session &session, ProcessId pid,
 
   DS2LOG(Info, "attaching to pid %" PRIu64, (uint64_t)pid);
   _process = Target::Process::Attach(pid);
-  DS2LOG(Debug, "_process=%p", _process);
-  if (_process == nullptr)
+  if (_process == nullptr) {
     return kErrorProcessNotFound;
+  }
 
   return queryStopCode(session, pid, stop);
 }
