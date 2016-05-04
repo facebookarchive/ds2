@@ -201,8 +201,7 @@ continue_waiting:
 
   switch (_currentThread->_stopInfo.event) {
   case StopInfo::kEventNone:
-    switch (_currentThread->_stopInfo.reason) {
-    case StopInfo::kReasonNone:
+    if (_currentThread->_stopInfo.reason == StopInfo::kReasonNone) {
       ptrace().resume(ProcessThreadId(_pid, tid), info);
       goto continue_waiting;
     }
