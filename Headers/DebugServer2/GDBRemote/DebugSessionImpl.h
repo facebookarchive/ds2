@@ -158,7 +158,9 @@ protected:
 
 protected:
   Target::Thread *findThread(ProcessThreadId const &ptid) const;
-  ErrorCode queryStopCode(Session &session, ProcessThreadId const &ptid,
+  ErrorCode queryStopInfo(Session &session, Target::Thread *thread,
+                          StopInfo &stop) const;
+  ErrorCode queryStopInfo(Session &session, ProcessThreadId const &ptid,
                           StopInfo &stop) const;
 
 protected:

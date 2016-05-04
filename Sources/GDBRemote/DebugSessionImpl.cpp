@@ -164,11 +164,8 @@ Thread *DebugSessionImpl::findThread(ProcessThreadId const &ptid) const {
   return thread;
 }
 
-ErrorCode DebugSessionImpl::queryStopCode(Session &session,
-                                          ProcessThreadId const &ptid,
+ErrorCode DebugSessionImpl::queryStopInfo(Session &session, Thread *thread,
                                           StopInfo &stop) const {
-  Thread *thread = findThread(ptid);
-
   if (thread == nullptr) {
 #if defined(OS_WIN32)
     // TODO: This needs to go away.
@@ -178,7 +175,7 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
       return kSuccess;
     }
 #endif
-    return kErrorProcessNotFound;
+    return kErrorInvalidArgument;
   }
 
   // Directly copy the fields that are common between ds2::StopInfo and
@@ -228,6 +225,17 @@ ErrorCode DebugSessionImpl::queryStopCode(Session &session,
   return kSuccess;
 }
 
+ErrorCode DebugSessionImpl::queryStopInfo(Session &session,
+                                          ProcessThreadId const &ptid,
+                                          StopInfo &stop) const {
+  Thread *thread = findThread(ptid);
+  if (thread == nullptr) {
+    return kErrorInvalidArgument;
+  }
+
+  return queryStopInfo(session, thread, stop);
+}
+
 ErrorCode DebugSessionImpl::onQueryThreadStopInfo(Session &session,
                                                   ProcessThreadId const &ptid,
                                                   StopInfo &stop) const {
@@ -235,7 +243,7 @@ ErrorCode DebugSessionImpl::onQueryThreadStopInfo(Session &session,
   if (thread == nullptr)
     return kErrorProcessNotFound;
 
-  return queryStopCode(session, ptid, stop);
+  return queryStopInfo(session, ptid, stop);
 }
 
 ErrorCode DebugSessionImpl::onQueryThreadList(Session &, ProcessId pid,
@@ -832,7 +840,7 @@ ErrorCode DebugSessionImpl::onAttach(Session &session, ProcessId pid,
     return kErrorProcessNotFound;
   }
 
-  return queryStopCode(session, pid, stop);
+  return queryStopInfo(session, pid, stop);
 }
 
 ErrorCode
@@ -990,9 +998,7 @@ DebugSessionImpl::onResume(Session &session,
     goto ret;
   }
 
-  error = queryStopCode(
-      session,
-      ProcessThreadId(_process->pid(), _process->currentThread()->tid()), stop);
+  error = queryStopInfo(session, _process->currentThread(), stop);
 
   if (stop.event == StopInfo::kEventExit ||
       stop.event == StopInfo::kEventKill) {
@@ -1039,7 +1045,7 @@ ErrorCode DebugSessionImpl::onTerminate(Session &session,
     return error;
   }
 
-  return queryStopCode(session, _process->pid(), stop);
+  return queryStopInfo(session, _process->pid(), stop);
 }
 
 // For LLDB we need to support breakpoints through the breakpoint manager
