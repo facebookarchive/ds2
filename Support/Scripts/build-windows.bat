@@ -15,5 +15,4 @@
 @echo off
 
 call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\tools\vsvars32.bat"
-msbuild /nologo /verbosity:minimal ds2.vcxproj
 msbuild /nologo /verbosity:minimal /p:Configuration=Release ds2.vcxproj
