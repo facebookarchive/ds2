@@ -48,7 +48,7 @@ void Log(int level, char const *classname, char const *funcname,
 #define PRI_PTR "#018" PRIxPTR
 #endif
 
-#define PRI_PTR_CAST(VAL) (reinterpret_cast<uintptr_t>(VAL))
+#define PRI_PTR_CAST(VAL) ((uintptr_t)(VAL))
 
 #if defined(__DS2_LOG_CLASS_NAME__)
 #define DS2LOG(LVL, ...)                                                       \
