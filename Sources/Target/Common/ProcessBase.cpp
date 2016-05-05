@@ -15,8 +15,11 @@
 #include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/Stringify.h"
 
 #include <list>
+
+using ds2::Utils::Stringify;
 
 namespace ds2 {
 namespace Target {
@@ -122,18 +125,31 @@ ErrorCode ProcessBase::resume(int signal, std::set<Thread *> const &excluded) {
     if (excluded.find(thread) != excluded.end())
       return;
 
-    if (thread->state() == Thread::kStopped ||
-        thread->state() == Thread::kStepped) {
+    switch (thread->state()) {
+    case Thread::kInvalid:
+    case Thread::kTerminated:
+      DS2BUG("trying to resume tid %" PRI_PID " in state %s", thread->tid(),
+             Stringify::ThreadState(thread->state()));
+      break;
+
+    case Thread::kRunning:
+      DS2LOG(Debug, "not resuming tid %" PRI_PID ", already in state %s",
+             thread->tid(), Stringify::ThreadState(thread->state()));
+      break;
+
+    case Thread::kStopped:
+    case Thread::kStepped: {
       Architecture::CPUState state;
       thread->readCPUState(state);
       DS2LOG(Debug,
-             "resuming tid %" PRI_PID " from pc %#" PRIx64 " with signal %d",
-             thread->tid(), (uint64_t)state.pc(), signal);
+             "resuming tid %" PRI_PID " from pc %" PRI_PTR " with signal %d",
+             thread->tid(), PRI_PTR_CAST(state.pc()), signal);
       ErrorCode error = thread->resume(signal);
       if (error != kSuccess) {
-        DS2LOG(Warning, "failed resuming tid %" PRI_PID ", error=%d",
-               thread->tid(), error);
+        DS2LOG(Warning, "failed resuming tid %" PRI_PID ", error=%s",
+               thread->tid(), Stringify::Error(error));
       }
+    } break;
     }
   });
 
