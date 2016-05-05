@@ -13,6 +13,7 @@
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Constants.h"
+#include "DebugServer2/Target/ThreadBase.h"
 #include "DebugServer2/Types.h"
 
 namespace ds2 {
@@ -21,6 +22,7 @@ namespace Utils {
 class Stringify {
 public:
   static char const *Error(ErrorCode error);
+  static char const *ThreadState(Target::ThreadBase::State state);
   static char const *StopEvent(StopInfo::Event event);
   static char const *StopReason(StopInfo::Reason reason);
 
@@ -53,6 +55,10 @@ public:
 #define DO_STRINGIFY(VALUE)                                                    \
   case VALUE:                                                                  \
     return #VALUE;
+
+#define DO_STRINGIFY_ALIAS(VALUE, NAME)                                        \
+  case VALUE:                                                                  \
+    return #NAME;
 
 #define DO_DEFAULT(MESSAGE, VALUE)                                             \
   default:                                                                     \

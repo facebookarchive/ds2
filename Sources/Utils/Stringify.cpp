@@ -45,6 +45,17 @@ char const *Stringify::Error(ErrorCode error) {
   }
 }
 
+char const *Stringify::ThreadState(Target::ThreadBase::State state) {
+  switch (state) {
+    DO_STRINGIFY_ALIAS(Target::ThreadBase::kInvalid, kInvalid)
+    DO_STRINGIFY_ALIAS(Target::ThreadBase::kRunning, kRunning)
+    DO_STRINGIFY_ALIAS(Target::ThreadBase::kStepped, kStepped)
+    DO_STRINGIFY_ALIAS(Target::ThreadBase::kStopped, kStopped)
+    DO_STRINGIFY_ALIAS(Target::ThreadBase::kTerminated, kTerminated)
+    DO_DEFAULT("unknown thread state", state)
+  }
+}
+
 char const *Stringify::StopEvent(StopInfo::Event event) {
   switch (event) {
     DO_STRINGIFY(StopInfo::kEventNone)
