@@ -32,17 +32,17 @@ env:
 ############################
 # LLDB Unit tests - x86    #
 ############################
-  - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="0" COVERAGE="1"
-  - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="0" RELEASE="1"
-  - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="1"
-  - TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="1" RELEASE="1"
+  - TARGET="Linux-X86"      LLDB_TESTS="Concurrent"  CLANG="0" COVERAGE="1"
+  - TARGET="Linux-X86"      LLDB_TESTS="Concurrent"  CLANG="0" RELEASE="1"
+  - TARGET="Linux-X86"      LLDB_TESTS="Concurrent"  CLANG="1"
+  - TARGET="Linux-X86"      LLDB_TESTS="Concurrent"  CLANG="1" RELEASE="1"
 ############################
 # LLDB Unit tests - x86_64 #
 ############################
-  - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="0" COVERAGE="1"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="0" RELEASE="1"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="1" COVERAGE="1"
-  - TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="1" RELEASE="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="Concurrent"  CLANG="0" COVERAGE="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="Concurrent"  CLANG="0" RELEASE="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="Concurrent"  CLANG="1" COVERAGE="1"
+  - TARGET="Linux-X86_64"   LLDB_TESTS="Concurrent"  CLANG="1" RELEASE="1"
 
 before_install: ./Support/Testing/Travis/before-install.py
 install:        ./Support/Testing/Travis/install.py
