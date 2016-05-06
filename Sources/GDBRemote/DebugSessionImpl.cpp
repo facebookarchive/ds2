@@ -440,10 +440,15 @@ ErrorCode DebugSessionImpl::onQueryRegisterInfo(Session &, uint32_t regno,
 ErrorCode
 DebugSessionImpl::onQuerySharedLibrariesInfoAddress(Session &,
                                                     Address &address) const {
-  if (_process == nullptr)
+  if (_process == nullptr) {
     return kErrorProcessNotFound;
+  }
 
+#if defined(OS_POSIX)
   return _process->getSharedLibraryInfoAddress(address);
+#else
+  return kErrorUnsupported;
+#endif
 }
 
 ErrorCode DebugSessionImpl::onXferRead(Session &session,

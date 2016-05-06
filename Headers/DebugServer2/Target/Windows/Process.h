@@ -76,9 +76,6 @@ public:
   static Target::Process *Attach(ProcessId pid);
 
 public:
-  ErrorCode getSharedLibraryInfoAddress(Address &address) {
-    return kErrorUnsupported;
-  }
   ErrorCode enumerateSharedLibraries(
       std::function<void(SharedLibraryInfo const &)> const &cb);
 };
