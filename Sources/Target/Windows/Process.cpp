@@ -123,6 +123,14 @@ ErrorCode Process::terminate() {
 
 bool Process::isAlive() const { return !_terminated; }
 
+template <typename ThreadCollectionType, typename ThreadIdType>
+static Thread *findThread(ThreadCollectionType const &threads,
+                          ThreadIdType tid) {
+  auto threadIt = threads.find(tid);
+  DS2ASSERT(threadIt != threads.end());
+  return threadIt->second;
+}
+
 ErrorCode Process::wait() {
   // If _terminated is true, we just called Process::Terminate.
   if (_terminated) {
@@ -158,13 +166,10 @@ ErrorCode Process::wait() {
       return kSuccess;
 
     case EXIT_PROCESS_DEBUG_EVENT: {
-      auto threadIt = _threads.find(de.dwThreadId);
-      DS2ASSERT(threadIt != _threads.end());
-      _currentThread = threadIt->second;
-
       // We should have received a few EXIT_THREAD_DEBUG_EVENT events and there
       // should only be one thread left at this point.
       DS2ASSERT(_threads.size() == 1);
+      _currentThread = findThread(_threads, de.dwThreadId);
 
       _terminated = true;
       _currentThread->_state = Thread::kTerminated;
@@ -191,10 +196,7 @@ ErrorCode Process::wait() {
     }
 
     case EXIT_THREAD_DEBUG_EVENT: {
-      auto threadIt = _threads.find(de.dwThreadId);
-      DS2ASSERT(threadIt != _threads.end());
-
-      _currentThread = threadIt->second;
+      _currentThread = findThread(_threads, de.dwThreadId);
       _currentThread->updateState(de);
       ErrorCode error = _currentThread->resume();
       if (error != kSuccess) {
@@ -211,9 +213,7 @@ ErrorCode Process::wait() {
     case LOAD_DLL_DEBUG_EVENT:
     case UNLOAD_DLL_DEBUG_EVENT:
     case OUTPUT_DEBUG_STRING_EVENT: {
-      auto threadIt = _threads.find(de.dwThreadId);
-      DS2ASSERT(threadIt != _threads.end());
-      _currentThread = threadIt->second;
+      _currentThread = findThread(_threads, de.dwThreadId);
       _currentThread->updateState(de);
 
       ErrorCode error = suspend();
