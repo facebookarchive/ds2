@@ -25,22 +25,13 @@ namespace Target {
 namespace Windows {
 
 ErrorCode Thread::step(int signal, Address const &address) {
-  // Windows doesn't have a dedicated single-step call. We have to set
-  // the single step flag in eflags and resume the thread.
-  Architecture::CPUState state;
-  ErrorCode error;
-
-  error = readCPUState(state);
-  if (error != kSuccess)
+  // Windows doesn't have a dedicated single-step call. We have to set the
+  // single step flag (TF, 8th bit) in eflags and resume the thread.
+  ErrorCode error = modifyRegisters(
+      [](Architecture::CPUState &state) { state.gp.eflags |= (1 << 8); });
+  if (error != kSuccess) {
     return error;
-
-  // TF (trap flag) is the 8th bit of eflags.
-  state.gp.eflags |= (1 << 8);
-
-  error = writeCPUState(state);
-  if (error != kSuccess)
-    return error;
-
+  }
   return resume(signal, address);
 }
 
