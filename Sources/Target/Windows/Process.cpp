@@ -230,7 +230,19 @@ ErrorCode Process::wait() {
 
 ErrorCode Process::readString(Address const &address, std::string &str,
                               size_t length, size_t *nread) {
-  return kErrorUnsupported;
+  for (size_t i = 0; i < length; ++i) {
+    char c;
+    ErrorCode error = readMemory(address + i, &c, sizeof(c), nullptr);
+    if (error != kSuccess) {
+      return error;
+    }
+    if (c == '\0') {
+      return kSuccess;
+    }
+    str.push_back(c);
+  }
+
+  return kSuccess;
 }
 
 ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
