@@ -206,9 +206,6 @@ ErrorCode Process::wait() {
       continue;
     }
 
-    case RIP_EVENT:
-      DS2LOG(Fatal, "debug event RIP");
-
     case EXCEPTION_DEBUG_EVENT:
     case LOAD_DLL_DEBUG_EVENT:
     case UNLOAD_DLL_DEBUG_EVENT:
@@ -225,7 +222,8 @@ ErrorCode Process::wait() {
     }
 
     default:
-      DS2BUG("unknown debug event code: %lu", de.dwDebugEventCode);
+      DS2BUG("unknown debug event code: %s",
+             Stringify::DebugEvent(de.dwDebugEventCode));
     }
   }
 }
