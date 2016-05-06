@@ -14,6 +14,8 @@
 #include "DebugServer2/Architecture/CPUState.h"
 #include "DebugServer2/Target/ProcessDecl.h"
 
+#include <functional>
+
 namespace ds2 {
 namespace Target {
 
@@ -56,6 +58,8 @@ public:
 public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state) = 0;
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state) = 0;
+  virtual ErrorCode modifyRegisters(
+      std::function<void(Architecture::CPUState &state)> action) final;
 
 public:
   inline uint32_t core() const { return _stopInfo.core; }

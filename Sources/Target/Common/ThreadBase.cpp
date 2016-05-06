@@ -22,5 +22,16 @@ ThreadBase::ThreadBase(Process *process, ThreadId tid)
   _stopInfo.reason = StopInfo::kReasonThreadEntry;
   _process->insert(this);
 }
+
+ErrorCode ThreadBase::modifyRegisters(
+    std::function<void(Architecture::CPUState &state)> action) {
+  Architecture::CPUState state;
+  ErrorCode error = readCPUState(state);
+  if (error != kSuccess) {
+    return error;
+  }
+  action(state);
+  return writeCPUState(state);
+}
 }
 }
