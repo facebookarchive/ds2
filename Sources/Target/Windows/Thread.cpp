@@ -59,8 +59,14 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   // TODO(sas): Not sure how to translate the signal concept to Windows yet.
   // We'll probably have to get rid of these at some point.
   DS2ASSERT(signal == 0);
-  // TODO(sas): Continuing a thread from a given address is not implemented yet.
-  DS2ASSERT(!address.valid());
+
+  if (address.valid()) {
+    ErrorCode error = modifyRegisters(
+        [&address](Architecture::CPUState &state) { state.setPC(address); });
+    if (error != kSuccess) {
+      return error;
+    }
+  }
 
   switch (_state) {
   case kInvalid:
