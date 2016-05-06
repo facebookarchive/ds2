@@ -62,12 +62,21 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   // TODO(sas): Continuing a thread from a given address is not implemented yet.
   DS2ASSERT(!address.valid());
 
-  ErrorCode error = kSuccess;
+  switch (_state) {
+  case kInvalid:
+  case kRunning:
+    DS2BUG("trying to suspend tid %" PRI_PID " in state %s", tid(),
+           Stringify::ThreadState(_state));
+    break;
 
-  if (_state == kStopped || _state == kStepped) {
+  case kTerminated:
+    return kErrorProcessNotFound;
+
+  case kStopped:
+  case kStepped: {
     ProcessInfo info;
 
-    error = process()->getInfo(info);
+    ErrorCode error = process()->getInfo(info);
     if (error != kSuccess) {
       return error;
     }
@@ -86,11 +95,12 @@ ErrorCode Thread::resume(int signal, Address const &address) {
     }
 
     _state = kRunning;
-  } else if (_state == kTerminated) {
-    error = kErrorProcessNotFound;
+    return kSuccess;
+  }
   }
 
-  return error;
+  // Silence warnings without using a `default:` case for the above switch.
+  DS2_UNREACHABLE();
 }
 
 void Thread::updateState() {
