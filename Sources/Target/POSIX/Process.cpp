@@ -81,29 +81,20 @@ bool Process::isAlive() const { return (_pid > 0 && ::kill(_pid, 0) == 0); }
 
 ErrorCode Process::readString(Address const &address, std::string &str,
                               size_t length, size_t *count) {
-  if (_currentThread == nullptr)
-    return ptrace().readString(_pid, address, str, length, count);
-
-  return ptrace().readString(_currentThread->tid(), address, str, length,
-                             count);
+  auto id = _currentThread == nullptr ? _pid : _currentThread->tid();
+  return ptrace().readString(id, address, str, length, count);
 }
 
 ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
                               size_t *count) {
-  if (_currentThread == nullptr)
-    return ptrace().readMemory(_pid, address, data, length, count);
-
-  return ptrace().readMemory(_currentThread->tid(), address, data, length,
-                             count);
+  auto id = _currentThread == nullptr ? _pid : _currentThread->tid();
+  return ptrace().readMemory(id, address, data, length, count);
 }
 
 ErrorCode Process::writeMemory(Address const &address, void const *data,
                                size_t length, size_t *count) {
-  if (_currentThread == nullptr)
-    return ptrace().writeMemory(_pid, address, data, length, count);
-
-  return ptrace().writeMemory(_currentThread->tid(), address, data, length,
-                              count);
+  auto id = _currentThread == nullptr ? _pid : _currentThread->tid();
+  return ptrace().writeMemory(id, address, data, length, count);
 }
 
 ErrorCode Process::wait() { return ptrace().wait(_pid, nullptr); }
