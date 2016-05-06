@@ -1,0 +1,20 @@
+diff --git a/test/python_api/rdar-12481949/Test-rdar-12481949.py b/test/python_api/rdar-12481949/Test-rdar-12481949.py
+index 4905785..61b4c54 100644
+--- a/test/python_api/rdar-12481949/Test-rdar-12481949.py
++++ b/test/python_api/rdar-12481949/Test-rdar-12481949.py
+@@ -13,6 +13,7 @@ class Radar12481949DataFormatterTestCase(TestBase):
+     # test for rdar://problem/12481949
+     mydir = TestBase.compute_mydir(__file__)
+ 
++    @expectedFailureDarwin
+     @skipUnlessDarwin
+     @dsym_test
+     def test_with_dsym_and_run_command(self):
+@@ -20,6 +21,7 @@ class Radar12481949DataFormatterTestCase(TestBase):
+         self.buildDsym()
+         self.rdar12481949_commands()
+ 
++    @expectedFailureDarwin
+     @dwarf_test
+     def test_with_dwarf_and_run_command(self):
+         """Check that SBValue.GetValueAsSigned() does the right thing for a 32-bit -1."""

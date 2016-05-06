@@ -1,0 +1,20 @@
+diff --git a/test/expression_command/call-function/TestCallStdStringFunction.py b/test/expression_command/call-function/TestCallStdStringFunction.py
+index c36577a..0fce323 100644
+--- a/test/expression_command/call-function/TestCallStdStringFunction.py
++++ b/test/expression_command/call-function/TestCallStdStringFunction.py
+@@ -18,6 +18,7 @@ class ExprCommandCallFunctionTestCase(TestBase):
+         self.line = line_number('main.cpp',
+                                 '// Please test these expressions while stopped at this line:')
+ 
++    @skipIfDarwin
+     @skipUnlessDarwin
+     @dsym_test
+     @expectedFailureDarwin(16361880) # <rdar://problem/16361880>, we get the result correctly, but fail to invoke the Summary formatter.
+@@ -27,6 +28,7 @@ class ExprCommandCallFunctionTestCase(TestBase):
+         self.call_function()
+ 
+     @dwarf_test
++    @skipIfDarwin
+     @expectedFailureFreeBSD('llvm.org/pr17807') # Fails on FreeBSD buildbot
+     @expectedFailureIcc # llvm.org/pr14437, fails with ICC 13.1
+     @expectedFailureDarwin(16361880) # <rdar://problem/16361880>, we get the result correctly, but fail to invoke the Summary formatter.

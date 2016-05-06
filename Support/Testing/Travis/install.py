@@ -62,6 +62,11 @@ if target != 'Style':
 # use the lldb python library without us building it).
 if os.getenv('LLDB_TESTS') != None:
     packages.append('swig')
+    if 'Darwin' in target:
+        packages.append('gcc')
+        packages.append('libedit')
+        packages.append('ninja')
+        packages.append('libxml2')
     if "CentOS Linux" in platform.linux_distribution():
         packages.append('libedit-devel')
         packages.append('libxml2-devel')
@@ -75,6 +80,11 @@ if os.getenv('LLDB_TESTS') != None:
 if os.getenv('COVERAGE') == '1':
     packages.append('python-pip')
     packages.append('python-yaml')
+
+if "Ubuntu" in platform.linux_distribution():
+    packages.append('realpath')
+
+print('Install: {}'.format(packages))
 
 if len(packages) > 0:
     if 'Darwin' in target:

@@ -1,0 +1,20 @@
+diff --git a/test/lang/c/modules/TestCModules.py b/test/lang/c/modules/TestCModules.py
+index 4c22c19..a12a7c6 100644
+--- a/test/lang/c/modules/TestCModules.py
++++ b/test/lang/c/modules/TestCModules.py
+@@ -14,6 +14,7 @@ class CModulesTestCase(TestBase):
+ 
+     mydir = TestBase.compute_mydir(__file__)
+ 
++    @expectedFailureDarwin
+     @skipUnlessDarwin
+     @dsym_test
+     def test_expr_with_dsym(self):
+@@ -23,6 +24,7 @@ class CModulesTestCase(TestBase):
+     @dwarf_test
+     @skipIfFreeBSD
+     @expectedFailureLinux('http://llvm.org/pr23456') # 'fopen' has unknown return type
++    @expectedFailureDarwin
+     def test_expr_with_dwarf(self):
+         self.buildDwarf()
+         self.expr()
