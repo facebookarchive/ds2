@@ -80,13 +80,6 @@ ErrorCode Thread::resume(int signal, Address const &address) {
 
   case kStopped:
   case kStepped: {
-    ProcessInfo info;
-
-    ErrorCode error = process()->getInfo(info);
-    if (error != kSuccess) {
-      return error;
-    }
-
     if (_stopInfo.event == StopInfo::kEventStop &&
         _stopInfo.reason == StopInfo::kReasonNone) {
       DWORD result = ResumeThread(_handle);
