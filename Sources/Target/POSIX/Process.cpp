@@ -164,17 +164,6 @@ void Process::resetSignalPass() {
 }
 
 void Process::setSignalPass(int signo, bool set) {
-  //
-  // signal 0, SIGSTOP, SIGCHLD and SIGRTMIN are specially
-  // handled, so we never pass them thru.
-  //
-  if (signo == 0 || signo == SIGSTOP || signo == SIGCHLD
-#if defined(OS_LINUX)
-      || signo == SIGRTMIN
-#endif
-      )
-    return;
-
   if (set) {
     _passthruSignals.insert(signo);
   } else {
