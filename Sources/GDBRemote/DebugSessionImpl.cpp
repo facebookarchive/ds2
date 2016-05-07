@@ -123,21 +123,29 @@ DebugSessionImpl::onQuerySupported(Session &session,
 
 ErrorCode DebugSessionImpl::onPassSignals(Session &session,
                                           std::vector<int> const &signals) {
+#if defined(OS_POSIX)
   _process->resetSignalPass();
   for (int signo : signals) {
     DS2LOG(Debug, "passing signal %d", signo);
     _process->setSignalPass(signo, true);
   }
   return kSuccess;
+#else
+  return kErrorUnsupported;
+#endif
 }
 
 ErrorCode DebugSessionImpl::onProgramSignals(Session &session,
                                              std::vector<int> const &signals) {
+#if defined(OS_POSIX)
   for (int signo : signals) {
     DS2LOG(Debug, "programming signal %d", signo);
     _process->setSignalPass(signo, false);
   }
   return kSuccess;
+#else
+  return kErrorUnsupported;
+#endif
 }
 
 ErrorCode DebugSessionImpl::onNonStopMode(Session &session, bool enable) {

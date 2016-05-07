@@ -63,12 +63,6 @@ public:
   ErrorCode deallocateMemory(uint64_t address, size_t size) override;
 
 public:
-  // TODO(sas): These two functions should be removed, and DebugSessionImpl
-  // should be modified to call these only for POSIX targets.
-  void resetSignalPass() {}
-  void setSignalPass(int signo, bool set) {}
-
-public:
   ErrorCode wait() override;
 
 public:
