@@ -8,11 +8,15 @@
 // PATENTS file in the same directory.
 //
 
+// clang-format off
+#include <sys/param.h>
+#include <sys/queue.h>
+#include <sys/socket.h>
 #include <libprocstat.h>
+// clang-format on
 #include <libutil.h>
 #include <string>
 #include <sys/elf.h>
-#include <sys/param.h>
 #include <sys/sysctl.h>
 #include <sys/types.h>
 #include <sys/user.h>
