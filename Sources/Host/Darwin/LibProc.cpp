@@ -56,20 +56,20 @@ void LibProc::EnumerateProcesses(
 }
 
 std::string LibProc::GetThreadName(ProcessThreadId const &ptid) {
-  std::string dft("<unknown>");
+  static const std::string defaultName = "<unknown>";
   thread_identifier_info_data_t threadId;
   struct proc_threadinfo ti;
   Mach mach;
 
   ErrorCode error = mach.getThreadIdentifierInfo(ptid, &threadId);
   if (error != kSuccess) {
-    return dft;
+    return defaultName;
   }
 
   int res = proc_pidinfo(ptid.pid, PROC_PIDTHREADINFO, threadId.thread_handle,
                          &ti, sizeof(ti));
   if (res <= 0) {
-    return dft;
+    return defaultName;
   }
 
   return ti.pth_name;
