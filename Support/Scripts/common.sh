@@ -41,7 +41,11 @@ git_clone() {
 }
 
 num_cpus() {
-  num_cpus=$(grep -c "^processor" /proc/cpuinfo)
+  case "$(uname)" in
+    Darwin) num_cpus=$(sysctl -n hw.ncpu);;
+    Linux) num_cpus=$(grep -c "^processor" /proc/cpuinfo);;
+    *) die "Unknown OS '$(uname)'.";;
+  esac
   echo $(($num_cpus * 5 / 4))
 }
 
