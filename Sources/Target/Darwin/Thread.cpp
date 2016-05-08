@@ -38,9 +38,7 @@ Thread::Thread(ds2::Target::Process *process, ThreadId tid)
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   // TODO cache CPU state
   ProcessInfo info;
-  ErrorCode error;
-
-  error = _process->getInfo(info);
+  ErrorCode error = _process->getInfo(info);
   if (error != kSuccess)
     return error;
 
@@ -50,9 +48,7 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
 
 ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
   ProcessInfo info;
-  ErrorCode error;
-
-  error = _process->getInfo(info);
+  ErrorCode error = _process->getInfo(info);
   if (error != kSuccess)
     return error;
 
@@ -93,10 +89,9 @@ void Thread::updateState(bool force) {
   }
 
   struct thread_basic_info info;
-  ErrorCode err;
-
-  err = process()->mach().getThreadInfo(_process->pid(), tid(), &info);
-  if (err != kSuccess) {
+  ProcessThreadId ptid(process()->pid(), tid());
+  ErrorCode error = process()->mach().getThreadInfo(ptid, &info);
+  if (error != kSuccess) {
     info.run_state = 0;
   }
 

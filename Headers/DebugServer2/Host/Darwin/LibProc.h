@@ -32,7 +32,7 @@ public:
   static void
   EnumerateProcesses(bool allUsers, UserId const &uid,
                      std::function<void(pid_t pid, uid_t uid)> const &cb);
-  static std::string GetThreadName(ProcessId pid, ThreadId tid);
+  static std::string GetThreadName(ProcessThreadId const &ptid);
   static const char *GetExecutablePath(ProcessId pid);
 };
 }

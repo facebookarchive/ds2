@@ -13,6 +13,10 @@
 
 #include <dirent.h>
 #include <limits>
+#include <mach/mach.h>
+#include <mach/mach_vm.h>
+#include <mach/thread_info.h>
+#include <sys/types.h>
 
 namespace ds2 {
 namespace Target {

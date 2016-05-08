@@ -42,7 +42,7 @@ ErrorCode Mach::readCPUState(ProcessThreadId const &ptid,
     tid = ptid.pid;
   }
 
-  thread_t thread = getMachThread(ptid.pid, tid);
+  thread_t thread = getMachThread(ptid);
   if (thread == THREAD_NULL)
     return kErrorProcessNotFound;
 

@@ -56,7 +56,7 @@ void Platform::EnumerateProcesses(
 }
 
 std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
-  return LibProc::GetThreadName(pid, tid);
+  return LibProc::GetThreadName(ProcessThreadId(pid, tid));
 }
 
 const char *Platform::GetSelfExecutablePath() {

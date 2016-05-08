@@ -33,10 +33,8 @@ namespace Host {
 namespace Darwin {
 
 bool LibProc::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
-  int res;
   struct proc_taskallinfo ti;
-
-  res = proc_pidinfo(pid, PROC_PIDTASKALLINFO, 0, &ti, sizeof(ti));
+  int res = proc_pidinfo(pid, PROC_PIDTASKALLINFO, 0, &ti, sizeof(ti));
   if (res <= 0)
     return false;
 
@@ -57,22 +55,22 @@ void LibProc::EnumerateProcesses(
   DS2BUG("not implemented");
 }
 
-std::string LibProc::GetThreadName(ProcessId pid, ThreadId tid) {
+std::string LibProc::GetThreadName(ProcessThreadId const &ptid) {
   std::string dft("<unknown>");
   thread_identifier_info_data_t threadId;
   struct proc_threadinfo ti;
-  ErrorCode err;
   Mach mach;
-  int res;
 
-  err = mach.getThreadIdentifierInfo(pid, tid, &threadId);
-  if (err != kSuccess)
+  ErrorCode error = mach.getThreadIdentifierInfo(ptid, &threadId);
+  if (error != kSuccess) {
     return dft;
+  }
 
-  res = proc_pidinfo(pid, PROC_PIDTHREADINFO, threadId.thread_handle, &ti,
-                     sizeof(ti));
-  if (res <= 0)
+  int res = proc_pidinfo(ptid.pid, PROC_PIDTHREADINFO, threadId.thread_handle,
+                         &ti, sizeof(ti));
+  if (res <= 0) {
     return dft;
+  }
 
   return ti.pth_name;
 }

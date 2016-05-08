@@ -49,13 +49,13 @@ public:
                    int signal = 0, Address const &address = Address());
 
 public:
-  ErrorCode getThreadInfo(pid_t pid, pid_t tid, thread_basic_info_t info);
-  ErrorCode getThreadIdentifierInfo(pid_t pid, pid_t tid,
+  ErrorCode getThreadInfo(ProcessThreadId const &tid, thread_basic_info_t info);
+  ErrorCode getThreadIdentifierInfo(ProcessThreadId const &tid,
                                     thread_identifier_info_data_t *threadID);
 
 private:
-  task_t getMachTask(pid_t pid);
-  thread_t getMachThread(pid_t pid, pid_t tid);
+  task_t getMachTask(ProcessId pid);
+  thread_t getMachThread(ProcessThreadId const &tid);
 };
 }
 }

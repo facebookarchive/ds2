@@ -28,41 +28,33 @@ namespace ds2 {
 namespace Host {
 namespace Darwin {
 
-task_t Mach::getMachTask(pid_t pid) {
-  kern_return_t kret;
+task_t Mach::getMachTask(ProcessId pid) {
   task_t self = mach_task_self();
   task_t task;
 
-  kret = task_for_pid(self, pid, &task);
+  kern_return_t kret = task_for_pid(self, pid, &task);
   if (kret != KERN_SUCCESS) {
-    DS2LOG(Error, "Fail to get the task of the pid: %s",
-           mach_error_string(kret));
     return TASK_NULL;
   }
 
   return task;
 }
 
-thread_t Mach::getMachThread(pid_t pid, pid_t tid) {
-  kern_return_t kret;
-  mach_port_t task;
-  thread_t thread;
+thread_t Mach::getMachThread(ProcessThreadId const &ptid) {
   thread_t *thread_list;
   mach_msg_type_number_t thread_count;
 
-  task = getMachTask(pid);
+  mach_port_t task = getMachTask(ptid.pid);
   if (task == TASK_NULL)
     return THREAD_NULL;
 
-  kret = task_threads(task, &thread_list, &thread_count);
+  kern_return_t kret = task_threads(task, &thread_list, &thread_count);
   if (kret != KERN_SUCCESS) {
-    DS2LOG(Error, "Unable to retrieve the threads: %s",
-           mach_error_string(kret));
     return THREAD_NULL;
   }
 
   // need to have a real way to get the correct thread
-  thread = thread_list[0];
+  thread_t thread = thread_list[0];
 
   vm_deallocate(mach_task_self(), (vm_address_t)thread_list,
                 thread_count * sizeof(thread_t));
@@ -73,15 +65,14 @@ thread_t Mach::getMachThread(pid_t pid, pid_t tid) {
 ErrorCode Mach::readMemory(ProcessThreadId const &ptid, Address const &address,
                            void *buffer, size_t length, size_t *count) {
   mach_vm_size_t curr_bytes_read = 0;
-  kern_return_t kret;
-  mach_port_t task;
 
-  task = getMachTask(ptid.pid);
+  mach_port_t task = getMachTask(ptid.pid);
   if (task == TASK_NULL)
     return kErrorProcessNotFound;
 
-  kret = mach_vm_read_overwrite((vm_map_t)task, address, length,
-                                (mach_vm_address_t)buffer, &curr_bytes_read);
+  kern_return_t kret =
+      mach_vm_read_overwrite((vm_map_t)task, address, length,
+                             (mach_vm_address_t)buffer, &curr_bytes_read);
   if (kret != KERN_SUCCESS)
     return kErrorInvalidAddress;
 
@@ -109,21 +100,17 @@ ErrorCode Mach::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   return kErrorUnsupported;
 }
 
-ErrorCode Mach::getThreadInfo(pid_t pid, pid_t tid, thread_basic_info_t info) {
-  thread_t thread;
-
-  thread = getMachThread(pid, tid);
-  if (thread == THREAD_NULL)
+ErrorCode Mach::getThreadInfo(ProcessThreadId const &ptid,
+                              thread_basic_info_t info) {
+  thread_t thread = getMachThread(ptid);
+  if (thread == THREAD_NULL) {
     return kErrorProcessNotFound;
+  }
 
-  kern_return_t kret;
   unsigned int thread_info_count = THREAD_BASIC_INFO_COUNT;
-
-  kret = thread_info(thread, THREAD_BASIC_INFO, (thread_info_t)info,
-                     &thread_info_count);
+  kern_return_t kret = thread_info(thread, THREAD_BASIC_INFO,
+                                   (thread_info_t)info, &thread_info_count);
   if (kret != KERN_SUCCESS) {
-    DS2LOG(Error, "Unable to retrive thread basic info :%s",
-           mach_error_string(kret));
     return kErrorProcessNotFound;
   }
 
@@ -131,22 +118,18 @@ ErrorCode Mach::getThreadInfo(pid_t pid, pid_t tid, thread_basic_info_t info) {
 }
 
 ErrorCode
-Mach::getThreadIdentifierInfo(pid_t pid, pid_t tid,
+Mach::getThreadIdentifierInfo(ProcessThreadId const &ptid,
                               thread_identifier_info_data_t *threadInfo) {
-  thread_t thread;
-
-  thread = getMachThread(pid, tid);
-  if (thread == THREAD_NULL)
+  thread_t thread = getMachThread(ptid);
+  if (thread == THREAD_NULL) {
     return kErrorProcessNotFound;
+  }
 
-  kern_return_t kret;
   unsigned int thread_info_count = THREAD_IDENTIFIER_INFO_COUNT;
-
-  kret = thread_info(thread, THREAD_IDENTIFIER_INFO, (thread_info_t)threadInfo,
-                     &thread_info_count);
+  kern_return_t kret =
+      thread_info(thread, THREAD_IDENTIFIER_INFO, (thread_info_t)threadInfo,
+                  &thread_info_count);
   if (kret != KERN_SUCCESS) {
-    DS2LOG(Error, "Unable to retrive thread basic info :%s",
-           mach_error_string(kret));
     return kErrorProcessNotFound;
   }
 
