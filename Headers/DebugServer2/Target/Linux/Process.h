@@ -23,8 +23,7 @@ protected:
   Host::Linux::PTrace _ptrace;
 
 protected:
-  ErrorCode initialize(ProcessId pid, uint32_t flags) override;
-  ErrorCode attach(int waitStatus);
+  ErrorCode attach(int waitStatus) override;
 
 public:
   ErrorCode terminate() override;

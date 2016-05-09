@@ -29,6 +29,29 @@ namespace ds2 {
 namespace Target {
 namespace POSIX {
 
+ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
+  ErrorCode error;
+
+  // Wait the main thread.
+  int status;
+  error = ptrace().wait(pid, &status);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  error = ptrace().traceThat(pid);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  error = super::initialize(pid, flags);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  return attach(status);
+}
+
 ErrorCode Process::detach() {
   prepareForDetach();
 

@@ -35,26 +35,6 @@ namespace ds2 {
 namespace Target {
 namespace Darwin {
 
-ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
-  //
-  // Wait the main thread.
-  //
-  int status = 0;
-
-  // Wait the main thread.
-  ErrorCode error = ptrace().wait(pid, &status);
-  if (error != kSuccess)
-    return error;
-
-  ptrace().traceThat(pid);
-
-  error = super::initialize(pid, flags);
-  if (error != kSuccess)
-    return error;
-
-  return attach(status);
-}
-
 ErrorCode Process::attach(int waitStatus) {
 
   if (waitStatus <= 0) {

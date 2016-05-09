@@ -23,6 +23,10 @@ class Process : public ds2::Target::ProcessBase {
 protected:
   std::set<int> _passthruSignals;
 
+protected:
+  ErrorCode initialize(ProcessId pid, uint32_t flags) override;
+  virtual ErrorCode attach(int waitStatus) = 0;
+
 public:
   ErrorCode detach() override;
   ErrorCode interrupt() override;
