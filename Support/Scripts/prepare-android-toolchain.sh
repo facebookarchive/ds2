@@ -11,13 +11,20 @@
 
 source "$(dirname "$0")/common.sh"
 
-[ $# -ge 1 ] && [ $# -le 2 ] || die "usage: $0 ARCH [VERSION]"
+[ $# -le 1 ] || die "usage: $0 [ARCH]"
 
 case "$(uname)" in
   "Linux")  host="linux-x86";;
   "Darwin") host="darwin-x86";;
   *)        die "This script works only on Linux and Mac OS X.";;
 esac
+
+if [ $# -eq 0 ]; then
+  for arch in aarch64 arm x86; do
+    "$0" "$arch"
+  done
+  exit 0
+fi
 
 case "${1}" in
   "aarch64")  toolchain_arch="aarch64"; toolchain_triple="aarch64-linux-android";;
