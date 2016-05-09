@@ -94,7 +94,7 @@ cd "$OLDPWD"
 # CentOS uses different compiler names than Ubuntu, so we can only use the
 # toolchain files on Ubuntu In addition, clang-3.7 is also not available for
 # CentOS
-if grep -q "Ubuntu" "/etc/issue"; then
+if [ ! -s "/etc/centos-release" ]; then
   if [[ "${CLANG-}" = "1" ]]; then
     cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}-Clang.cmake")
   else

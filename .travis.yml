@@ -58,10 +58,10 @@ matrix:
     # Darwin-X86_64 targets
     - os: osx
       osx_image: xcode7.3
-      env: TARGET="Darwin-X86_64"
+      env: TARGET="Darwin-X86_64" CLANG="1"
     - os: osx
       osx_image: xcode7
-      env: TARGET="Darwin-X86_64"
+      env: TARGET="Darwin-X86_64" CLANG="1"
 
 before_install: ./Support/Testing/Travis/before-install.py
 install:        ./Support/Testing/Travis/install.py
