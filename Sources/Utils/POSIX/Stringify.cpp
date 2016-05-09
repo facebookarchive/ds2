@@ -25,7 +25,7 @@ namespace ds2 {
 namespace Utils {
 
 char const *Stringify::Signal(int signal) {
-#if !defined(OS_DARWIN)
+#if defined(SIGRTMIN)
   // SIGRTMIN can expand to a glibc call (not usable in a switch statement), so
   // check for it first.
   if (signal == SIGRTMIN)
