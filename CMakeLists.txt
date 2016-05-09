@@ -278,9 +278,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
   target_compile_options(ds2 PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)
   if ("${OS_NAME}" MATCHES "Windows")
     target_compile_options(ds2 PRIVATE -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare)
-  elseif ("${OS_NAME}" MATCHES "Darwin")
-    # We need this because we use PT_ATTACH instead of PT_ATTACHEXEC on Darwin.
-    target_compile_options(ds2 PRIVATE -Wno-deprecated-declarations)
   endif ()
 
   if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "5.1")
