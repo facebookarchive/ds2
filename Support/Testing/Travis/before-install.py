@@ -16,27 +16,38 @@ from subprocess import check_call
 repositories = []
 keys = []
 
-target = os.getenv('TARGET')
+# For android builds we just need to run a script from install.py.
+if os.getenv('ANDROID_BUILDS') == '1':
+    sys.exit(0)
 
-if 'Darwin' in target:
+if os.getenv('TRAVIS_OS_NAME') == 'linux':
+    target_os = 'Linux'
+elif os.getenv('TRAVIS_OS_NAME') == 'osx':
+    target_os = 'Darwin'
+target = target_os + '-' + os.getenv('ARCH')
+compiler = os.getenv('CC')
+
+if target_os == 'Darwin':
    check_call('brew update', shell=True)
    sys.exit(0)
-
-if target in [ 'Style', 'Registers' ]:
+elif target_os == 'Linux':
+    # Required to get newer gcc
     repositories.append('ppa:ubuntu-toolchain-r/test')
-    keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
-    repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.8 main')
-elif os.getenv('CLANG') == '1' or os.getenv('LLDB_TESTS') != None:
-    repositories.append('ppa:ubuntu-toolchain-r/test')
+    # Required to get clang for building, and lldb for testing
     keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
     repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.7 main')
-elif target in [ 'Linux-X86', 'Linux-X86_64', 'Tizen-X86' ]:
-    repositories.append('ppa:ubuntu-toolchain-r/test')
 
-for r in repositories:
-  check_call('sudo add-apt-repository -y "%s"' % r, shell=True)
+    if target in [ 'Style', 'Registers' ]:
+        repositories.append('ppa:ubuntu-toolchain-r/test')
+        keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
+        repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.8 main')
+    elif target in [ 'Linux-X86', 'Linux-X86_64', 'Tizen-X86' ]:
+        repositories.append('ppa:ubuntu-toolchain-r/test')
 
-for k in keys:
-  check_call('wget -O - "%s" | sudo apt-key add -' % k, shell=True)
+    for r in repositories:
+      check_call('sudo add-apt-repository -y "%s"' % r, shell=True)
 
-check_call('sudo apt-get update', shell=True)
+    for k in keys:
+      check_call('wget -O - "%s" | sudo apt-key add -' % k, shell=True)
+
+    check_call('sudo apt-get update', shell=True)
