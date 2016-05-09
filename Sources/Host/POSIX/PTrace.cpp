@@ -64,7 +64,13 @@ ErrorCode PTrace::attach(ProcessId pid) {
 
   DS2LOG(Debug, "attaching to pid %" PRIu64, (uint64_t)pid);
 
-  if (wrapPtrace(PTCMD(ATTACH), pid, nullptr, nullptr) < 0)
+#if defined(OS_LINUX) || defined(OS_FREEBSD)
+  auto cmd = PTCMD(ATTACH);
+#elif defined(OS_DARWIN)
+  auto cmd = PT_ATTACHEXC;
+#endif
+
+  if (wrapPtrace(cmd, pid, nullptr, nullptr) < 0)
     return Platform::TranslateError();
 
   return kSuccess;
