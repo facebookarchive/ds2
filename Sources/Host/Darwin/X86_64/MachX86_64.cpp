@@ -120,7 +120,7 @@ ErrorCode Mach::writeCPUState(ProcessThreadId const &ptid,
 
   mach_msg_type_number_t threadStateCount = x86_THREAD_STATE_COUNT;
   kern_return_t kret = thread_set_state(
-      thread, x86_THREAD_STATE, (thread_state_t)&state, threadStateCount);
+      thread, x86_THREAD_STATE, (thread_state_t)&threadState, threadStateCount);
   if (kret != KERN_SUCCESS) {
     return kErrorInvalidArgument;
   }
