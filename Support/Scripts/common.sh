@@ -49,6 +49,8 @@ num_cpus() {
   echo $(($num_cpus * 5 / 4))
 }
 
+realpath() { python -c "import os,sys; print os.path.realpath(sys.argv[1])" "$1"; }
+
 same_dir() {
   [ "$(realpath "$1")" = "$(realpath "$2")" ]
 }

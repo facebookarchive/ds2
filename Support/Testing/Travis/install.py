@@ -76,9 +76,6 @@ if os.getenv('COVERAGE') == '1':
     packages.append('python-pip')
     packages.append('python-yaml')
 
-if "Ubuntu" in platform.linux_distribution():
-    packages.append('realpath')
-
 if len(packages) > 0:
     if 'Darwin' in target:
         # brew upgrade/install might die if one pkg is already install
