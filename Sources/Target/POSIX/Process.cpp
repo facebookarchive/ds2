@@ -124,7 +124,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   DS2LOG(Debug, "created process %d", pid);
 
   // Wait the process.
-  error = process->initialize(pid, 0);
+  error = process->initialize(pid, kFlagNewProcess);
   if (error != kSuccess)
     goto fail;
 
