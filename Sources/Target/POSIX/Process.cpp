@@ -31,12 +31,16 @@ namespace POSIX {
 
 ErrorCode Process::detach() {
   prepareForDetach();
+
   ErrorCode error = ptrace().detach(_pid);
-  if (error == kSuccess) {
-    cleanup();
-    _flags &= ~kFlagAttachedProcess;
+  if (error != kSuccess) {
+    return error;
   }
-  return error;
+
+  cleanup();
+  _flags &= ~kFlagAttachedProcess;
+
+  return kSuccess;
 }
 
 ErrorCode Process::interrupt() { return ptrace().kill(_pid, SIGSTOP); }
@@ -124,7 +128,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   DS2LOG(Debug, "created process %d", pid);
 
   // Wait the process.
-  error = process->initialize(pid, 0);
+  error = process->initialize(pid, kFlagNewProcess);
   if (error != kSuccess)
     goto fail;
 

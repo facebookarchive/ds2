@@ -58,8 +58,9 @@ void ProcessBase::cleanup() {
 }
 
 ErrorCode ProcessBase::initialize(ProcessId pid, uint32_t flags) {
-  if (_pid != kAnyProcessId)
+  if (_pid != kAnyProcessId) {
     return kErrorAlreadyExist;
+  }
 
   _pid = pid;
   _flags = flags;
@@ -73,7 +74,7 @@ ErrorCode ProcessBase::initialize(ProcessId pid, uint32_t flags) {
     _flags = 0;
   }
 
-  return error;
+  return kSuccess;
 }
 
 ErrorCode ProcessBase::suspend() {

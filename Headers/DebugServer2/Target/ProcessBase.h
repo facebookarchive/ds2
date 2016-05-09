@@ -24,7 +24,7 @@ namespace Target {
 
 class ProcessBase {
 public:
-  enum { kFlagNewProcess = 0, kFlagAttachedProcess = (1 << 0) };
+  enum { kFlagNewProcess = (1 << 0), kFlagAttachedProcess = (1 << 1) };
   typedef std::map<ThreadId, Thread *> IdentityMap;
 
 protected:

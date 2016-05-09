@@ -81,7 +81,7 @@ Target::Process *Process::Attach(ProcessId pid) {
   DS2LOG(Debug, "attached to process %" PRIu64, (uint64_t)pid);
 
   auto process = new Process;
-  ErrorCode error = process->initialize(pid, 0);
+  ErrorCode error = process->initialize(pid, kFlagAttachedProcess);
   if (error != kSuccess) {
     delete process;
     return nullptr;
@@ -94,8 +94,9 @@ ErrorCode Process::detach() {
   prepareForDetach();
 
   BOOL result = DebugActiveProcessStop(_pid);
-  if (!result)
+  if (!result) {
     return Platform::TranslateError();
+  }
 
   cleanup();
   _flags &= ~kFlagAttachedProcess;
@@ -321,7 +322,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   DS2LOG(Debug, "created process %" PRIu64, (uint64_t)spawner.pid());
 
   auto process = new Process;
-  error = process->initialize(spawner.pid(), 0);
+  error = process->initialize(spawner.pid(), kFlagNewProcess);
   if (error != kSuccess) {
     delete process;
     return nullptr;
