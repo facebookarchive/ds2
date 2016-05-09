@@ -51,6 +51,8 @@ elif target in tizen_packages:
 
 if 'Darwin' in target:
     packages.append('cmake')
+    if os.getenv('CLANG') == '0':
+        packages.append('gcc')
 
 if target != 'Style':
     packages.append('flex')
