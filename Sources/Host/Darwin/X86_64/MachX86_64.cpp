@@ -42,8 +42,8 @@ ErrorCode Mach::readCPUState(ProcessThreadId const &ptid,
 
   mach_msg_type_number_t stateCount = x86_THREAD_STATE_COUNT;
   x86_thread_state_t threadState;
-  kern_return_t kret = thread_get_state(thread, x86_THREAD_STATE,
-                                        (thread_state_t)&state, &stateCount);
+  kern_return_t kret = thread_get_state(
+      thread, x86_THREAD_STATE, (thread_state_t)&threadState, &stateCount);
   if (kret != KERN_SUCCESS) {
     return kErrorInvalidArgument;
   }
