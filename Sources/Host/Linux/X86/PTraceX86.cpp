@@ -80,7 +80,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
     state.x87.fooff = fxrs.foo;
 
     auto st_space = reinterpret_cast<uint8_t const *>(fxrs.st_space);
-    for (size_t n = 0; n < 8; n++) {
+    for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
       memcpy(state.x87.regs[n].bytes, st_space + n * 16,
              sizeof(state.x87.regs[n].bytes));
     }
@@ -89,7 +89,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
     state.sse.mxcsr = fxrs.mxcsr;
     state.sse.mxcsrmask = fxrs.reserved;
     auto xmm_space = reinterpret_cast<uint8_t const *>(fxrs.xmm_space);
-    for (size_t n = 0; n < 8; n++) {
+    for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
       memcpy(&state.sse.regs[n], xmm_space + n * 16, sizeof(state.sse.regs[n]));
     }
   } else {
@@ -107,7 +107,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
       state.x87.fooff = fprs.foo;
 
       auto st_space = reinterpret_cast<uint8_t const *>(fprs.st_space);
-      for (size_t n = 0; n < 8; n++) {
+      for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
         memcpy(state.x87.regs[n].bytes, st_space + n * 10,
                sizeof(state.x87.regs[n].bytes));
       }
@@ -156,7 +156,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   fxrs.foo = state.x87.fooff;
 
   auto st_space = reinterpret_cast<uint8_t *>(fxrs.st_space);
-  for (size_t n = 0; n < 8; n++) {
+  for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
     memcpy(st_space + n * 16, state.x87.regs[n].bytes,
            sizeof(state.x87.regs[n].bytes));
   }
@@ -165,7 +165,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   fxrs.mxcsr = state.sse.mxcsr;
   fxrs.reserved = state.sse.mxcsrmask;
   auto xmm_space = reinterpret_cast<uint8_t *>(fxrs.xmm_space);
-  for (size_t n = 0; n < 8; n++) {
+  for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
     memcpy(xmm_space + n * 16, &state.sse.regs[n], sizeof(state.sse.regs[n]));
   }
 
@@ -183,7 +183,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
     fprs.foo = state.x87.fooff;
 
     auto st_space = reinterpret_cast<uint8_t *>(fprs.st_space);
-    for (size_t n = 0; n < 8; n++) {
+    for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
       memcpy(st_space + n * 10, state.x87.regs[n].bytes,
              sizeof(state.x87.regs[n].bytes));
     }
