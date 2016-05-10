@@ -134,7 +134,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   initCPUState(pid);
 
   //
-  // Read GPRs
+  // Write GPRs
   //
   user_regs_struct gprs;
   Architecture::X86::state32_to_user(gprs, state);
