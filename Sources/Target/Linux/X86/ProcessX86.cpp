@@ -12,8 +12,6 @@
 #include "DebugServer2/Host/Linux/X86/Syscalls.h"
 #include "DebugServer2/Target/Thread.h"
 
-#include <cstdlib>
-
 namespace X86Sys = ds2::Host::Linux::X86::Syscalls;
 
 namespace ds2 {
@@ -35,7 +33,8 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
     return error;
   }
 
-  if (result == (uint64_t)MAP_FAILED) {
+  // MAP_FAILED is -1.
+  if (static_cast<int32_t>(result) == -1) {
     return kErrorNoMemory;
   }
 
@@ -57,8 +56,9 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
     return error;
   }
 
-  if ((int)result < 0) {
-    return kErrorInvalidArgument;
+  // Negative values returned by the kernel indicate failure.
+  if (static_cast<int32_t>(result) < 0) {
+    return kErrorUnknown;
   }
 
   return kSuccess;
