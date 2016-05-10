@@ -12,7 +12,6 @@
 #define __DebugServer2_Host_Linux_X86_64_Syscalls_h
 
 #include <sys/mman.h>
-#include <sys/syscall.h>
 
 namespace ds2 {
 namespace Host {
@@ -48,7 +47,7 @@ static inline void PrepareMmapCode(size_t size, uint32_t protection,
   codestr.assign(&gMmapCode[0], &gMmapCode[sizeof(gMmapCode)]);
 
   uint8_t *code = &codestr[0];
-  *reinterpret_cast<uint32_t *>(code + 0x03) = __NR_mmap;
+  *reinterpret_cast<uint32_t *>(code + 0x03) = 9; // __NR_mmap
   *reinterpret_cast<uint32_t *>(code + 0x0d) = size;
   *reinterpret_cast<uint32_t *>(code + 0x14) = protection;
   *reinterpret_cast<uint32_t *>(code + 0x1b) = MAP_ANON | MAP_PRIVATE;
@@ -59,7 +58,7 @@ static inline void PrepareMunmapCode(uint64_t address, size_t size,
   codestr.assign(&gMunmapCode[0], &gMunmapCode[sizeof(gMunmapCode)]);
 
   uint8_t *code = &codestr[0];
-  *reinterpret_cast<uint32_t *>(code + 0x03) = __NR_munmap;
+  *reinterpret_cast<uint32_t *>(code + 0x03) = 11; // __NR_munmap
   *reinterpret_cast<uint64_t *>(code + 0x09) = address;
   *reinterpret_cast<uint32_t *>(code + 0x14) = size;
 }
