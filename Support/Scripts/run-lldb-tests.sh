@@ -25,11 +25,13 @@ source "$top/Support/Scripts/common.sh"
 [ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
 
 opt_fast=false
+opt_log=false
 opt_strace=false
 
 for o in "$@"; do
   case "$o" in
     --fast) opt_fast=true;;
+    --log) opt_log=true;;
     --strace) opt_strace=true;;
     *) die "Unknown option \`$o'.";;
   esac
@@ -110,6 +112,11 @@ else
   elif [[ "$(uname -m)" =~ "i[3-6]86" ]]; then
     args="$args --arch=i386"
   fi
+fi
+
+if $opt_log; then
+  export LLDB_DEBUGSERVER_LOG_FILE="$build_dir/ds2.log"
+  export LLDB_DEBUGSERVER_EXTRA_ARG_1="--debug-remote"
 fi
 
 if $opt_strace; then
