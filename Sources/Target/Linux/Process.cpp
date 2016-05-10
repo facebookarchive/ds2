@@ -396,6 +396,24 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
 
   return kSuccess;
 }
+
+ErrorCode Process::executeCode(U8Vector const &codestr, uint64_t &result) {
+  ErrorCode error;
+
+  ProcessInfo info;
+  error = getInfo(info);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  error = ptrace().execute(_currentThread->tid(), info, &codestr[0],
+                           codestr.size(), result);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  return kSuccess;
+}
 }
 }
 }

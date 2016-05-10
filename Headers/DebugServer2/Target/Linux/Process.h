@@ -33,6 +33,9 @@ public:
   ErrorCode getMemoryRegionInfo(Address const &address,
                                 MemoryRegionInfo &info) override;
 
+protected:
+  ErrorCode executeCode(U8Vector const &codestr, uint64_t &result);
+
 public:
   ErrorCode allocateMemory(size_t size, uint32_t protection,
                            uint64_t *address) override;
