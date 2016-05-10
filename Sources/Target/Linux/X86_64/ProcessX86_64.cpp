@@ -22,54 +22,44 @@ namespace Linux {
 
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
                                   uint64_t *address) {
-  if (address == nullptr)
+  if (address == nullptr) {
     return kErrorInvalidArgument;
-
-  ProcessInfo info;
-  ErrorCode error = getInfo(info);
-  if (error != kSuccess)
-    return error;
+  }
 
   U8Vector codestr;
   X86_64Sys::PrepareMmapCode(size, protection, codestr);
 
-  //
-  // Code inject and execute
-  //
-  error = ptrace().execute(_currentThread->tid(), info, &codestr[0],
-                           codestr.size(), *address);
-  if (error != kSuccess)
+  uint64_t result;
+  ErrorCode error = executeCode(codestr, result);
+  if (error != kSuccess) {
     return error;
+  }
 
-  if (*address == (uint64_t)MAP_FAILED)
+  if (result == (uint64_t)MAP_FAILED) {
     return kErrorNoMemory;
+  }
 
+  *address = result;
   return kSuccess;
 }
 
 ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
-  if (size == 0)
+  if (size == 0) {
     return kErrorInvalidArgument;
-
-  ProcessInfo info;
-  ErrorCode error = getInfo(info);
-  if (error != kSuccess)
-    return error;
+  }
 
   U8Vector codestr;
   X86_64Sys::PrepareMunmapCode(address, size, codestr);
 
-  //
-  // Code inject and execute
-  //
-  uint64_t result = 0;
-  error = ptrace().execute(_currentThread->tid(), info, &codestr[0],
-                           codestr.size(), result);
-  if (error != kSuccess)
+  uint64_t result;
+  ErrorCode error = executeCode(codestr, result);
+  if (error != kSuccess) {
     return error;
+  }
 
-  if ((int)result < 0)
+  if ((int)result < 0) {
     return kErrorInvalidArgument;
+  }
 
   return kSuccess;
 }
