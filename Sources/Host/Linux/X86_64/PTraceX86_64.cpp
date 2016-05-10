@@ -56,7 +56,7 @@ static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
   state.x87.foseg = user.rdp >> 32;
   state.x87.fooff = user.rdp;
 
-  uint8_t const *st_space = reinterpret_cast<uint8_t const *>(user.st_space);
+  auto st_space = reinterpret_cast<uint8_t const *>(user.st_space);
   for (size_t n = 0; n < 8; n++) {
     memcpy(state.x87.regs[n].bytes, st_space + n * 16,
            sizeof(state.x87.regs[n].bytes));
@@ -67,7 +67,7 @@ static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
   //
   state.sse.mxcsr = user.mxcsr;
   state.sse.mxcsrmask = user.mxcr_mask;
-  uint8_t const *xmm_space = reinterpret_cast<uint8_t const *>(user.xmm_space);
+  auto xmm_space = reinterpret_cast<uint8_t const *>(user.xmm_space);
   for (size_t n = 0; n < 8; n++) {
     memcpy(&state.sse.regs[n], xmm_space + n * 16, sizeof(state.sse.regs[n]));
   }
@@ -86,7 +86,7 @@ state32_to_user(user_fpregs_struct &user,
   user.rip = (static_cast<uint64_t>(state.x87.fiseg) << 32) | state.x87.fioff;
   user.rdp = (static_cast<uint64_t>(state.x87.foseg) << 32) | state.x87.fooff;
 
-  uint8_t *st_space = reinterpret_cast<uint8_t *>(user.st_space);
+  auto st_space = reinterpret_cast<uint8_t *>(user.st_space);
   for (size_t n = 0; n < 8; n++) {
     memcpy(st_space + n * 16, state.x87.regs[n].bytes,
            sizeof(state.x87.regs[n].bytes));
@@ -97,7 +97,7 @@ state32_to_user(user_fpregs_struct &user,
   //
   user.mxcsr = state.sse.mxcsr;
   user.mxcr_mask = state.sse.mxcsrmask;
-  uint8_t *xmm_space = reinterpret_cast<uint8_t *>(user.xmm_space);
+  auto xmm_space = reinterpret_cast<uint8_t *>(user.xmm_space);
   for (size_t n = 0; n < 8; n++) {
     memcpy(xmm_space + n * 16, &state.sse.regs[n], sizeof(state.sse.regs[n]));
   }
@@ -119,7 +119,7 @@ static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
   state.x87.firip = user.rip;
   state.x87.forip = user.rdp;
 
-  uint8_t const *st_space = reinterpret_cast<uint8_t const *>(user.st_space);
+  auto st_space = reinterpret_cast<uint8_t const *>(user.st_space);
   for (size_t n = 0; n < 8; n++) {
     memcpy(state.x87.regs[n].bytes, st_space + n * 16,
            sizeof(state.x87.regs[n].bytes));
@@ -130,7 +130,7 @@ static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
   //
   state.sse.mxcsr = user.mxcsr;
   state.sse.mxcsrmask = user.mxcr_mask;
-  uint8_t const *xmm_space = reinterpret_cast<uint8_t const *>(user.xmm_space);
+  auto xmm_space = reinterpret_cast<uint8_t const *>(user.xmm_space);
   for (size_t n = 0; n < 16; n++) {
     memcpy(&state.sse.regs[n], xmm_space + n * 16, sizeof(state.sse.regs[n]));
   }
@@ -149,7 +149,7 @@ state64_to_user(user_fpregs_struct &user,
   user.rip = state.x87.firip;
   user.rdp = state.x87.forip;
 
-  uint8_t *st_space = reinterpret_cast<uint8_t *>(user.st_space);
+  auto st_space = reinterpret_cast<uint8_t *>(user.st_space);
   for (size_t n = 0; n < 8; n++) {
     memcpy(st_space + n * 16, state.x87.regs[n].bytes,
            sizeof(state.x87.regs[n].bytes));
@@ -160,7 +160,7 @@ state64_to_user(user_fpregs_struct &user,
   //
   user.mxcsr = state.sse.mxcsr;
   user.mxcr_mask = state.sse.mxcsrmask;
-  uint8_t *xmm_space = reinterpret_cast<uint8_t *>(user.xmm_space);
+  auto xmm_space = reinterpret_cast<uint8_t *>(user.xmm_space);
   for (size_t n = 0; n < 16; n++) {
     memcpy(xmm_space + n * 16, &state.sse.regs[n], sizeof(state.sse.regs[n]));
   }
