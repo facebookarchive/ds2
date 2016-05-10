@@ -9,14 +9,29 @@
 //
 
 #include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Host/Linux/X86/Syscalls.h"
 #include "DebugServer2/Host/Linux/X86_64/Syscalls.h"
 #include "DebugServer2/Target/Thread.h"
 
+namespace X86Sys = ds2::Host::Linux::X86::Syscalls;
 namespace X86_64Sys = ds2::Host::Linux::X86_64::Syscalls;
 
 namespace ds2 {
 namespace Target {
 namespace Linux {
+
+static bool is32BitProcess(Process *process) {
+  DS2ASSERT(process != nullptr);
+  DS2ASSERT(process->currentThread() != nullptr);
+
+  Architecture::CPUState state;
+  ErrorCode error = process->currentThread()->readCPUState(state);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  return state.is32;
+}
 
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
                                   uint64_t *address) {
@@ -24,8 +39,14 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
     return kErrorInvalidArgument;
   }
 
+  bool is32 = is32BitProcess(this);
+
   U8Vector codestr;
-  X86_64Sys::PrepareMmapCode(size, protection, codestr);
+  if (is32) {
+    X86Sys::PrepareMmapCode(size, protection, codestr);
+  } else {
+    X86_64Sys::PrepareMmapCode(size, protection, codestr);
+  }
 
   uint64_t result;
   ErrorCode error = executeCode(codestr, result);
@@ -34,7 +55,8 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   }
 
   // MAP_FAILED is -1.
-  if (static_cast<int64_t>(result) == -1LL) {
+  if ((is32 && static_cast<int64_t>(result) == -1LL) ||
+      (!is32 && static_cast<int32_t>(result) == -1)) {
     return kErrorNoMemory;
   }
 
@@ -48,7 +70,11 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   }
 
   U8Vector codestr;
-  X86_64Sys::PrepareMunmapCode(address, size, codestr);
+  if (is32BitProcess(this)) {
+    X86Sys::PrepareMunmapCode(address, size, codestr);
+  } else {
+    X86_64Sys::PrepareMunmapCode(address, size, codestr);
+  }
 
   uint64_t result;
   ErrorCode error = executeCode(codestr, result);
