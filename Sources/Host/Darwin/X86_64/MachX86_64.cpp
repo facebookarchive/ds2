@@ -22,8 +22,6 @@
 #include <sys/uio.h>
 #include <sys/user.h>
 
-#define super ds2::Host::POSIX::Mach
-
 namespace ds2 {
 namespace Host {
 namespace Darwin {
