@@ -269,7 +269,8 @@ set_property(TARGET ds2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
 if ("${OS_NAME}" MATCHES "Windows")
   target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)
-  target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6 _WIN32_WINNT=_WIN32_WINNT_WIN6)
+  target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6
+                                         _WIN32_WINNT=_WIN32_WINNT_WIN6)
 endif ()
 
 if (TIZEN)
@@ -279,13 +280,17 @@ endif ()
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(ds2 PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)
   if ("${OS_NAME}" MATCHES "Windows")
-    target_compile_options(ds2 PRIVATE -Wno-missing-braces -Wno-missing-field-initializers -Wno-tautological-compare)
+    target_compile_options(ds2 PRIVATE -Wno-missing-braces
+                                       -Wno-missing-field-initializers
+                                       -Wno-tautological-compare)
   endif ()
 
-  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "5.1")
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" AND
+      NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "5.1")
     target_compile_options(ds2 PRIVATE -Wsuggest-override)
   endif ()
-  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "3.5")
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND
+      NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "3.5")
     target_compile_options(ds2 PRIVATE -Winconsistent-missing-override)
   endif ()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -326,7 +331,8 @@ endif ()
 include(FindThreads)
 if (STATIC AND DEFINED CMAKE_THREAD_LIBS_INIT AND
     (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
-  target_link_libraries(ds2 -Wl,--whole-archive ${CMAKE_THREAD_LIBS_INIT} -Wl,--no-whole-archive)
+  target_link_libraries(ds2 -Wl,--whole-archive ${CMAKE_THREAD_LIBS_INIT}
+                            -Wl,--no-whole-archive)
 else ()
   target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
 endif ()

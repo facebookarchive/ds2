@@ -18,7 +18,8 @@ find_package(FLEX)
 FLEX_TARGET(JSON_SCANNER
             ${JSObjects_SOURCE_DIR}/Sources/libjson/tokenizer.l
             ${JSObjects_BINARY_DIR}/tokenizer.c
-            COMPILE_FLAGS "--header-file=${JSObjects_BINARY_DIR}/tokenizer.h --nounistd --batch --never-interactive")
+            COMPILE_FLAGS "--header-file=${JSObjects_BINARY_DIR}/tokenizer.h \
+                           --nounistd --batch --never-interactive")
 BISON_TARGET(JSON_PARSER
              ${JSObjects_SOURCE_DIR}/Sources/libjson/parser.y
              ${JSObjects_BINARY_DIR}/parser.c
@@ -44,7 +45,9 @@ set_property(TARGET jsobjects PROPERTY CXX_STANDARD 11)
 set_property(TARGET jsobjects PROPERTY CXX_EXTENSIONS OFF)
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(jsobjects PRIVATE -Wall -Wextra -Werror)
-  target_compile_options(jsobjects PRIVATE -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare)
+  target_compile_options(jsobjects PRIVATE -Wno-unused-parameter
+                                           -Wno-unused-function
+                                           -Wno-sign-compare)
   target_compile_definitions(jsobjects PRIVATE _POSIX_C_SOURCE=200809L)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(jsobjects PRIVATE /W3 /DSTRICT /wd4996)
