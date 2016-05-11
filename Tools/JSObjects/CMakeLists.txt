@@ -39,10 +39,13 @@ target_include_directories(jsobjects
                            PRIVATE ${JSObjects_SOURCE_DIR}/Sources/libjson
                            PRIVATE ${JSObjects_BINARY_DIR})
 set_property(TARGET jsobjects PROPERTY C_STANDARD 99)
+set_property(TARGET jsobjects PROPERTY C_EXTENSIONS OFF)
 set_property(TARGET jsobjects PROPERTY CXX_STANDARD 11)
+set_property(TARGET jsobjects PROPERTY CXX_EXTENSIONS OFF)
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(jsobjects PRIVATE -Wall -Wextra -Werror)
   target_compile_options(jsobjects PRIVATE -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare)
+  target_compile_definitions(jsobjects PRIVATE _POSIX_C_SOURCE=200809L)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(jsobjects PRIVATE /W3 /DSTRICT /wd4996)
   target_compile_options(jsobjects PRIVATE /MP)
