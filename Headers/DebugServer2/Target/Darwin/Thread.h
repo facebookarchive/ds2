@@ -41,6 +41,9 @@ public:
                          Address const &address = Address()) override;
 
 public:
+  virtual ErrorCode afterResume();
+
+public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state) override;
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state) override;
 

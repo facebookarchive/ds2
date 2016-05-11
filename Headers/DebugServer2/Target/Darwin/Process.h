@@ -65,6 +65,9 @@ protected:
   ErrorCode writeCPUState(ThreadId tid, Architecture::CPUState const &state,
                           uint32_t flags = 0);
 
+public:
+  ErrorCode afterResume() override;
+
 protected:
   friend class POSIX::Process;
 };

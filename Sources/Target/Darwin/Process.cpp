@@ -330,6 +330,17 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
   return mach().writeMemory(_currentThread->tid(), address, data, length,
                             count);
 }
+
+ErrorCode Process::afterResume() {
+  // We are calling the Thread's afterResume from here, but it might make sense
+  // to have this known by ThreadBase and call it from ProcessBase::resume.
+  ErrorCode error = _currentThread->afterResume();
+  if (error != kSuccess) {
+    return error;
+  }
+
+  return super::afterResume();
+}
 }
 }
 }
