@@ -289,8 +289,6 @@ ErrorCode ProcessBase::afterResume() {
     return kSuccess;
   }
 
-  DS2LOG(Debug, "process still alive, _pid=%" PRIu64, (uint64_t)_pid);
-
   // Disable breakpoints and try to hit the breakpoint.
   for (auto bpm : std::list<BreakpointManager *>{softwareBreakpointManager(),
                                                  hardwareBreakpointManager()}) {
@@ -301,8 +299,7 @@ ErrorCode ProcessBase::afterResume() {
     bpm->disable();
     for (auto it : _threads) {
       if (bpm->hit(it.second)) {
-        DS2LOG(Debug, "hit breakpoint for tid %" PRIu64,
-               (uint64_t)it.second->tid());
+        DS2LOG(Debug, "hit breakpoint for tid %" PRI_PID, it.second->tid());
       }
     }
   }
