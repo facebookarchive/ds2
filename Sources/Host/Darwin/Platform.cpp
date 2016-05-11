@@ -12,15 +12,15 @@
 #include "DebugServer2/Host/Darwin/LibProc.h"
 #include "DebugServer2/Utils/Log.h"
 
-#include <sys/utsname.h>
-
 #include <algorithm>
 #include <cctype>
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <mach/mach.h>
 #include <string>
+#include <sys/utsname.h>
 
 namespace ds2 {
 namespace Host {
@@ -117,6 +117,25 @@ std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
 
 const char *Platform::GetSelfExecutablePath() {
   return LibProc::GetExecutablePath(getpid());
+}
+
+ErrorCode Platform::TranslateKernError(kern_return_t kret) {
+  switch (kret) {
+  case KERN_SUCCESS:
+    return ds2::kSuccess;
+  case KERN_FAILURE:
+    return ds2::kErrorUnknown;
+  case KERN_MEMORY_FAILURE:
+  case KERN_INVALID_ADDRESS:
+  case KERN_PROTECTION_FAILURE:
+    return ds2::kErrorInvalidAddress;
+  case KERN_NO_ACCESS:
+    return ds2::kErrorNoPermission;
+  case KERN_RESOURCE_SHORTAGE:
+    return ds2::kErrorNoMemory;
+  default:
+    DS2BUG("unknown error code: %d [%s]", kret, mach_error_string(kret));
+  }
 }
 }
 }

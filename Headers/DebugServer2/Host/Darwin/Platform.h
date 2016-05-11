@@ -14,6 +14,7 @@
 #include "DebugServer2/Host/POSIX/Platform.h"
 
 #include <functional>
+#include <mach/kern_return.h>
 
 namespace ds2 {
 namespace Host {
@@ -37,6 +38,9 @@ public:
 
 public:
   static const char *GetSelfExecutablePath();
+
+public:
+  static ErrorCode TranslateKernError(kern_return_t kret);
 };
 }
 }
