@@ -85,7 +85,6 @@ state32_to_user(user_fpregs_struct &user,
   user.fop = state.x87.fop;
   user.rip = (static_cast<uint64_t>(state.x87.fiseg) << 32) | state.x87.fioff;
   user.rdp = (static_cast<uint64_t>(state.x87.foseg) << 32) | state.x87.fooff;
-  user.rdp = state.x87.fooff;
 
   uint8_t *st_space = reinterpret_cast<uint8_t *>(user.st_space);
   for (size_t n = 0; n < 8; n++) {
