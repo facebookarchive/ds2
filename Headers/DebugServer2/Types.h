@@ -124,6 +124,10 @@ struct StopInfo {
   // TODO: status and signal should be an union.
   int status;
   int signal;
+#if defined(OS_WIN32)
+  std::string debugString;
+#endif
+
   int core;
 
   StopInfo() { clear(); }
@@ -133,6 +137,9 @@ struct StopInfo {
     reason = kReasonNone;
     status = 0;
     signal = 0;
+#if defined(OS_WIN32)
+    debugString.clear();
+#endif
     core = -1;
   }
 };

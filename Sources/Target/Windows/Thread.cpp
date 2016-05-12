@@ -245,11 +245,26 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     _stopInfo.reason = StopInfo::kReasonThreadExit;
     break;
 
-  case OUTPUT_DEBUG_STRING_EVENT:
+  case OUTPUT_DEBUG_STRING_EVENT: {
+    auto const &dsInfo = de.u.DebugString;
+    DS2LOG(Debug, "inferior output a debug string: %" PRI_PTR "[%d]",
+           PRI_PTR_CAST(dsInfo.lpDebugStringData), dsInfo.nDebugStringLength);
+    // TODO: We need to use WaitForDebugEventEx to get unicode strings.
+    DS2ASSERT(dsInfo.fUnicode == 0);
+
+    _stopInfo.debugString.resize(dsInfo.nDebugStringLength - 1);
+    ErrorCode error = process()->readMemory(
+        reinterpret_cast<uint64_t>(dsInfo.lpDebugStringData),
+        const_cast<char *>(_stopInfo.debugString.c_str()),
+        dsInfo.nDebugStringLength - 1);
+    if (error != kSuccess) {
+      return;
+    }
+
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
     _stopInfo.reason = StopInfo::kReasonDebugOutput;
-    break;
+  } break;
 
   default:
     DS2BUG("unknown debug event code: %lu", de.dwDebugEventCode);

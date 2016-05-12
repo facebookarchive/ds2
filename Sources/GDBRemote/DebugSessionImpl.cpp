@@ -967,10 +967,8 @@ DebugSessionImpl::onResume(Session &session,
       switch (thread->stopInfo().reason) {
 #if defined(OS_WIN32)
       case StopInfo::kReasonDebugOutput: {
-        std::string data = "O";
-        // TODO(sas): Actually fetch the data from the inferior.
-        data += StringToHex("inferior said stuff");
-        _resumeSession->send(data);
+        appendOutput(thread->stopInfo().debugString.c_str(),
+                     thread->stopInfo().debugString.size());
         error = _process->resume();
         if (error != kSuccess) {
           return error;
@@ -1144,19 +1142,7 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
   }
 
   auto outputDelegate = [this](void *buf, size_t size) {
-    const char *cbuf = static_cast<char *>(buf);
-    for (size_t i = 0; i < size; ++i) {
-      this->_consoleBuffer += cbuf[i];
-      if (cbuf[i] == '\n') {
-        _resumeSessionLock.lock();
-        DS2ASSERT(_resumeSession != nullptr);
-        std::string data = "O";
-        data += StringToHex(this->_consoleBuffer);
-        _consoleBuffer.clear();
-        this->_resumeSession->send(data);
-        _resumeSessionLock.unlock();
-      }
-    }
+    appendOutput(static_cast<char *>(buf), size);
   };
 
   _spawner.redirectOutputToDelegate(outputDelegate);
@@ -1169,6 +1155,21 @@ ErrorCode DebugSessionImpl::spawnProcess(StringCollection const &args,
   }
 
   return kSuccess;
+}
+
+void DebugSessionImpl::appendOutput(char const *buf, size_t size) {
+  for (size_t i = 0; i < size; ++i) {
+    this->_consoleBuffer += buf[i];
+    if (buf[i] == '\n') {
+      _resumeSessionLock.lock();
+      DS2ASSERT(_resumeSession != nullptr);
+      std::string data = "O";
+      data += StringToHex(this->_consoleBuffer);
+      _consoleBuffer.clear();
+      this->_resumeSession->send(data);
+      _resumeSessionLock.unlock();
+    }
+  }
 }
 
 ErrorCode DebugSessionImpl::fetchStopInfoForAllThreads(

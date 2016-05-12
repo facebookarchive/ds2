@@ -173,6 +173,7 @@ protected:
 private:
   ErrorCode spawnProcess(StringCollection const &args,
                          EnvironmentBlock const &env);
+  void appendOutput(char const *buf, size_t size);
 };
 }
 }
