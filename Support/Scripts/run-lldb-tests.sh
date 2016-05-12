@@ -130,7 +130,7 @@ else
   export LLDB_DEBUGSERVER_PATH="$build_dir/ds2"
 fi
 
-export LLDB_TEST_TIMEOUT=45m
+export LLDB_TEST_TIMEOUT=8m
 
 if [ "$LLDB_TESTS" != "all" ]; then
   test_cmd=(dotest.py $args -p $LLDB_TESTS)
