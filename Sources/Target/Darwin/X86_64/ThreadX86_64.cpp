@@ -29,6 +29,12 @@ ErrorCode Thread::step(int signal, Address const &address) {
   }
   return resume(signal, address);
 }
+
+ErrorCode Thread::afterResume() {
+  return modifyRegisters([](Architecture::CPUState &state) {
+    state.state64.gp.eflags &= ~(1 << 8);
+  });
+}
 }
 }
 }
