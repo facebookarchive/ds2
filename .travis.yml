@@ -69,7 +69,8 @@ matrix:
       osx_image: xcode7.3
       env: TARGET="Darwin-X86_64" CLANG="1"
 
-before_install: ./Support/Testing/Travis/before-install.py
-install:        ./Support/Testing/Travis/install.py
+# Use travis_retry during install to reduce the impact of network failures.
+before_install: travis_retry ./Support/Testing/Travis/before-install.py
+install:        travis_retry ./Support/Testing/Travis/install.py
 script:         ./Support/Testing/Travis/script.sh
 after_success:  ./Support/Testing/Travis/after_success.sh
