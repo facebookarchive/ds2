@@ -2,7 +2,7 @@ diff --git a/test/lldbtest.py b/test/lldbtest.py
 index 672f445..55ec945 100644
 --- a/test/lldbtest.py
 +++ b/test/lldbtest.py
-@@ -865,10 +865,8 @@ def skipUnlessDarwin(func):
+@@ -865,10 +865,10 @@ def skipUnlessDarwin(func):
  
  def getPlatform():
      """Returns the target platform which the tests are running on."""
@@ -11,7 +11,9 @@ index 672f445..55ec945 100644
 -        platform = 'freebsd'
 -    return platform
 +    # For some reason this likes to crash, so let's hack it
-+    return "linux"
++    if sys.platform == 'darwin':
++        return 'darwin'
++    return 'linux'
  
  def getHostPlatform():
      """Returns the host platform running the test suite."""
