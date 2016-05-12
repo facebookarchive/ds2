@@ -48,7 +48,8 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
   target_compile_options(jsobjects PRIVATE -Wno-unused-parameter
                                            -Wno-unused-function
                                            -Wno-sign-compare)
-  target_compile_definitions(jsobjects PRIVATE _POSIX_C_SOURCE=200809L)
+  target_compile_options(
+      jsobjects PRIVATE $<$<COMPILE_LANGUAGE:C>:-D_POSIX_C_SOURCE=200809L>)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(jsobjects PRIVATE /W3 /DSTRICT /wd4996)
   target_compile_options(jsobjects PRIVATE /MP)
