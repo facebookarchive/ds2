@@ -17,13 +17,6 @@ top="$(git rev-parse --show-toplevel)"
 
 source "$top/Support/Scripts/common.sh"
 
-# If we're at the root of the repository, create a build directory and go
-# there; otherwise, assume that we're already in the build directory the user
-# wants to use.
-if same_dir "$PWD" "$top"; then
-  mkdir -p build && cd build
-fi
-
 # Get a recent cmake from cmake.org; packages for Ubuntu are too old.
 if grep -q "Ubuntu" "/etc/issue" && [ ! -d "/tmp/$cmake_package/bin" ]; then
   cd /tmp
@@ -39,27 +32,55 @@ fi
 
 export PATH="/tmp/$cmake_package/bin:$PATH"
 
-ninja_version="v1.6.0"
-ninja_dir="ninja-$ninja_version"
+do_build() {
+  local target="$1"
+  local compiler="$2"
+  local do_test="$3"
+  local cmake_options=()
 
-if [ -s "/etc/centos-release" ] && [ ! -d "/tmp/$ninja_dir" ]; then
-  cd /tmp
-
-  mkdir -p "$ninja_dir"
-
-  if [ ! -e "ninja-linux.zip" ]; then
-    wget https://github.com/ninja-build/ninja/releases/download/$ninja_version/ninja-linux.zip
+  if [[ "${compiler}" = "clang" ]]; then
+    cmake_options+=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${target}-Clang.cmake")
+  else
+    cmake_options+=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${target}.cmake")
   fi
 
-  unzip ninja-linux.zip -d "$ninja_dir"
+  cmake_options+=(-DCMAKE_BUILD_TYPE="Debug")
+
+  # If we're at the root of the repository, create a build directory and go
+  # there; otherwise, assume that we're already in the build directory the user
+  # wants to use.
+  cd .
+  if same_dir "$PWD" "$top"; then
+    mkdir -p "build-${target}"
+    cd "build-${target}"
+  fi
+
+  cmake "${cmake_options[@]}" "$top"
+  make -j$(num_cpus)
+  if $do_test; then
+    TARGET="${target}" LLDB_TESTS="all" "$top/Support/Scripts/run-lldb-tests.sh"
+  fi
 
   cd "$OLDPWD"
+}
+
+compiler="${CC-}"
+
+if [[ "${ANDROID_BUILDS-}" = "1" ]]; then
+  failed=false
+  for a in ARM ARM64 X86 X86_64; do
+    if ! do_build "Android-${a}" "$compiler" false; then
+      failed=true
+    fi
+  done
+  $failed && exit 1
+else
+  case "$TRAVIS_OS_NAME" in
+    linux) target_os="Linux"; do_test=true;;
+    osx) target_os="Darwin"; do_test=false;;
+  esac
+  do_build "${target_os}-${ARCH}" "$compiler" "$do_test"
 fi
-
-export PATH="/tmp/$ninja_dir:$PATH"
-
-# Go to the root of the repo to check style and register files.
-cd "$top"
 
 check_dirty() {
   dirty=($(git status -s | awk '{ print $2 }'))
@@ -76,45 +97,20 @@ check_dirty() {
   fi
 }
 
-if [[ "$TARGET" = "Style" ]]; then
-  for d in Sources Headers; do
-    find "$d" -type f -exec "$cformat" -i -sort-includes -style=LLVM {} \;
-  done
-  check_dirty "Coding style correct." "Coding style errors."
-fi
-
-if [[ "$TARGET" = "Registers" ]]; then
-  CLANG_FORMAT="$cformat" CC="gcc-5" CXX="g++-5" "./Support/Scripts/generate-reg-descriptors.sh"
-  check_dirty "Generated sources up to date." "Generated sources out of date."
-fi
-
-# Go back to the build tree where we started.
-cd "$OLDPWD"
-
-# CentOS uses different compiler names than Ubuntu, so we can only use the
-# toolchain files on Ubuntu In addition, clang-3.7 is also not available for
-# CentOS
-if [ ! -s "/etc/centos-release" ]; then
-  if [[ "${CLANG-}" = "1" ]]; then
-    cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}-Clang.cmake")
-  else
-    cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}.cmake")
-  fi
-fi
-
-if [[ "${RELEASE-}" = "1" ]]; then
-  cmake_options+=(-DCMAKE_BUILD_TYPE="Release")
-else
-  cmake_options+=(-DCMAKE_BUILD_TYPE="Debug")
-fi
-
-if [[ "${COVERAGE-}" = "1" ]]; then
-  cmake_options+=(-DCOVERAGE="1")
-fi
-
-cmake "${cmake_options[@]}" "$top"
-make -j$(num_cpus)
-
-if [[ -n "${LLDB_TESTS-}" ]]; then
-  "$top/Support/Scripts/run-lldb-tests.sh"
-fi
+# # Go to the root of the repo to check style and register files.
+# cd "$top"
+#
+# if [[ "$TARGET" = "Style" ]]; then
+#   for d in Sources Headers; do
+#     find "$d" -type f -exec "$cformat" -i -sort-includes -style=LLVM {} \;
+#   done
+#   check_dirty "Coding style correct." "Coding style errors."
+# fi
+#
+# if [[ "$TARGET" = "Registers" ]]; then
+#   CLANG_FORMAT="$cformat" CC="gcc-5" CXX="g++-5" "./Support/Scripts/generate-reg-descriptors.sh"
+#   check_dirty "Generated sources up to date." "Generated sources out of date."
+# fi
+#
+# # Go back to the build tree where we started.
+# cd "$OLDPWD"
