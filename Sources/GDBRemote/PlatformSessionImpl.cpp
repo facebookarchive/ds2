@@ -146,7 +146,7 @@ ErrorCode PlatformSessionImpl::onLaunchDebugServer(Session &session,
   if (GetLogLevel() == kLogLevelDebug) {
     args.push_back("--debug");
   } else if (GetLogLevel() == kLogLevelPacket) {
-    args.push_back("--debug-remote");
+    args.push_back("--remote-debug");
   }
   args.push_back("--setsid");
   ps.setArguments(args);

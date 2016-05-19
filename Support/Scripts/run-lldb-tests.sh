@@ -116,7 +116,7 @@ fi
 
 if $opt_log; then
   export LLDB_DEBUGSERVER_LOG_FILE="$build_dir/ds2.log"
-  export LLDB_DEBUGSERVER_EXTRA_ARG_1="--debug-remote"
+  export LLDB_DEBUGSERVER_EXTRA_ARG_1="--remote-debug"
 fi
 
 if $opt_strace; then

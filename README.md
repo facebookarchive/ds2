@@ -44,7 +44,7 @@ ds2 accepts the following options:
 usage: ds2 [RUN_MODE] [OPTIONS] [[HOST]:PORT] [-- PROGRAM [ARGUMENTS...]]
   -a, --attach ARG           attach to the name or PID specified
   -d, --debug                enable debug log output
-  -D, --debug-remote         enable log for remote protocol packets
+  -D, --remote-debug         enable log for remote protocol packets
   -g, --gdb-compat           force ds2 to run in gdb compat mode
   -k, --keep-alive           keep the server alive after the client disconnects
   -L, --list-processes       list processes debuggable by the current user
