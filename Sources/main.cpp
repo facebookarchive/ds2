@@ -68,6 +68,11 @@ Socket *CreateSocket(std::string const &host, std::string const &port,
       DS2LOG(Fatal, "cannot listen on [%s:%s]: %s", host.c_str(), port.c_str(),
              socket->error().c_str());
     } else {
+      // This print to stderr is required when gdb launches ds2
+      if (gGDBCompat) {
+        fprintf(stderr, "Listening on port %s\n", socket->port().c_str());
+      }
+
       DS2LOG(Info, "listening on [%s:%s]", socket->address().c_str(),
              socket->port().c_str());
     }
