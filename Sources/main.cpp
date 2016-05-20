@@ -177,7 +177,7 @@ static int SlaveMain() {
     auto client = std::unique_ptr<Socket>(server->accept());
     return RunDebugServer(client.get(), new SlaveSessionImpl);
   } else {
-    // Write to the standard output to let know our parent
+    // Write to the standard output to let our parent know
     // where we're listening.
     fprintf(stdout, "%s %d\n", port.c_str(), pid);
   }
