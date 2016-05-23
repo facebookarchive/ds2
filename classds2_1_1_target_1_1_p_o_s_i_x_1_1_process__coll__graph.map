@@ -1,0 +1,5 @@
+<map id="ds2::Target::POSIX::Process" name="ds2::Target::POSIX::Process">
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="74,105,247,131"/>
+<area shape="rect" id="node3" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,104,31"/>
+<area shape="rect" id="node5" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="225,5,346,31"/>
+</map>

@@ -1,0 +1,10 @@
+<map id="ds2::Target::Linux::Process" name="ds2::Target::Linux::Process">
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="973,51,1108,89"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="674,51,809,89"/>
+<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="269,71,442,96"/>
+<area shape="rect" id="node5" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="16,5,115,31"/>
+<area shape="rect" id="node7" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="5,124,126,149"/>
+<area shape="rect" id="node8" href="$classds2_1_1_host_1_1_linux_1_1_p_trace.html" title="ds2::Host::Linux::PTrace" alt="" coords="957,113,1124,139"/>
+<area shape="rect" id="node9" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title="ds2::Host::POSIX::PTrace" alt="" coords="654,113,830,139"/>
+<area shape="rect" id="node10" href="$structds2_1_1_host_1_1_linux_1_1_p_trace_private_data.html" title="ds2::Host::Linux::PTrace\lPrivateData" alt="" coords="658,163,825,201"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="ds2::GDBRemote::SlaveSessionImpl" name="ds2::GDBRemote::SlaveSessionImpl">
+<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_debug_session_impl.html" title="ds2::GDBRemote::DebugSessionImpl" alt="" coords="5,165,250,191"/>
+<area shape="rect" id="node3" href="$classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html" title="ds2::GDBRemote::DummySession\lDelegateImpl" alt="" coords="15,79,241,117"/>
+<area shape="rect" id="node4" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title="ds2::GDBRemote::SessionDelegate" alt="" coords="11,5,245,31"/>
+</map>
