@@ -26,6 +26,11 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 disclosure of security bugs. In those cases, please go through the process
 outlined on that page and do not file a public issue.
 
+## Documentation
+
+We generate documentation for the project using doxygen. See
+http://facebook.github.io/ds2/ to learn about the project's internals.
+
 ## Coding Style
 
 We follow LLVM's [coding style](http://llvm.org/docs/CodingStandards.html). In
