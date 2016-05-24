@@ -2062,6 +2062,14 @@ void Session::Handle_qRcmd(ProtocolInterpreter::Handler const &,
                            std::string const &args) {
   std::string cmd = HexToString(args);
 
+  // Special-case the exit command, since the handler will not
+  // return from an exit, and we need to send an OK packet.
+  if (cmd == "exit") {
+    sendOK();
+    _delegate->onExitServer(*this);
+    DS2_UNREACHABLE();
+  }
+
   sendError(_delegate->onExecuteCommand(*this, cmd));
 }
 
