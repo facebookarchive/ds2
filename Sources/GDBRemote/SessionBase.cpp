@@ -171,12 +171,11 @@ bool SessionBase::sendError(ErrorCode code) {
     break;
   }
 
-  char message[4];
-  message[0] = 'E';
-  message[1] = NibbleToHex(code >> 4);
-  message[2] = NibbleToHex(code & 15);
-  message[3] = '\0';
-  return send(message);
+  std::ostringstream ss;
+  ss << "E" << getPacketSeparator();
+  ss << NibbleToHex(code >> 4) << NibbleToHex(code & 15);
+
+  return send(ss.str());
 }
 }
 }
