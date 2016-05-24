@@ -65,11 +65,8 @@ DummySessionDelegateImpl::onExecuteCommand(Session &session,
   if (!_secure)
     return kErrorUnsupported;
 
-  //
-  // Need to inject back to the interpreter the command.
-  //
-  session.interpreter().onPacketData(command, true);
-  return kSuccess;
+  DS2LOG(Error, "monitor command: %s not supported", command.c_str());
+  return kErrorUnsupported;
 }
 
 ErrorCode
