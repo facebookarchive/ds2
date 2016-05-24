@@ -85,10 +85,14 @@ public:
                             ProcessInfo const &pinfo, void const *code,
                             size_t length, uint64_t &result);
 
-#if defined(OS_LINUX) && defined(ARCH_ARM)
+#if defined(OS_LINUX) && (defined(ARCH_ARM) || defined(ARCH_ARM64))
 public:
   virtual int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) = 0;
   virtual int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) = 0;
+#endif
+
+#if defined(OS_LINUX) && defined(ARCH_ARM)
+public:
   virtual int getMaxWatchpointSize(ProcessThreadId const &ptid) = 0;
 
 public:

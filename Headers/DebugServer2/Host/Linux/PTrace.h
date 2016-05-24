@@ -84,13 +84,17 @@ protected:
   void doneCPUState();
 
 // Debug register ptrace APIs only exist for Linux ARM
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
+public:
+  int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) override;
+  int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) override;
+#endif
+
 #if defined(ARCH_ARM)
 protected:
   uint32_t getStoppointData(ProcessThreadId const &ptid);
 
 public:
-  int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) override;
-  int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) override;
   int getMaxWatchpointSize(ProcessThreadId const &ptid) override;
 
 protected:
@@ -102,6 +106,11 @@ public:
                                     uint32_t ctrl, size_t idx) override;
   ErrorCode writeHardwareWatchpoint(ProcessThreadId const &ptid, uint32_t addr,
                                     uint32_t ctrl, size_t idx) override;
+#endif
+
+#if defined(ARCH_ARM64)
+protected:
+  int getMaxStoppoints(ProcessThreadId const &ptid, int regSet);
 #endif
 
 public:

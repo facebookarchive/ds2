@@ -35,6 +35,17 @@ void PTrace::initCPUState(ProcessId pid) {
     return;
 
   _privateData = new PTracePrivateData;
+}
+
+void PTrace::doneCPUState() { delete _privateData; }
+
+int PTrace::getMaxStoppoints(ProcessThreadId const &ptid, int regSet) {
+  pid_t pid;
+
+  ErrorCode error = ptidToPid(ptid, pid);
+
+  if (error != kSuccess)
+    return 0;
 
   // Retrieve the information about Hardware Breakpoint, if supported.
   // user_hwdebug_state.dbg_info is formatted as follows:
@@ -45,31 +56,22 @@ void PTrace::initCPUState(ProcessId pid) {
   // +---------------+--------------+---------------+---------------+
   //
   // DEBUG_ARCH should be 0x06 for aarch64-armv8a.
-
   struct user_hwdebug_state drs;
-
-  if (readRegisterSet(pid, NT_ARM_HW_BREAK, &drs, sizeof(drs)) != kSuccess ||
-      ((drs.dbg_info >> 8) & 0xff) != 0x06)
-    return;
-  _privateData->breakpointCount = drs.dbg_info & 0xff;
-
-  if (readRegisterSet(pid, NT_ARM_HW_WATCH, &drs, sizeof(drs)) != kSuccess ||
-      ((drs.dbg_info >> 8) & 0xff) != 0x06)
-    return;
-  _privateData->watchpointCount = drs.dbg_info & 0xff;
-
-  //
-  // Set our hard limits.
-  //
-  if (_privateData->breakpointCount > 32) {
-    _privateData->breakpointCount = 32;
+  if (readRegisterSet(pid, regSet, &drs, sizeof(drs)) != kSuccess ||
+      ((drs.dbg_info >> 8) & 0xff) != 0x06) {
+    return 0;
   }
-  if (_privateData->watchpointCount > 32) {
-    _privateData->watchpointCount = 32;
-  }
+
+  return drs.dbg_info & 0xff;
 }
 
-void PTrace::doneCPUState() { delete _privateData; }
+int PTrace::getMaxHardwareBreakpoints(ProcessThreadId const &ptid) {
+  return getMaxStoppoints(ptid, NT_ARM_HW_BREAK);
+}
+
+int PTrace::getMaxHardwareWatchpoints(ProcessThreadId const &ptid) {
+  return getMaxStoppoints(ptid, NT_ARM_HW_WATCH);
+}
 
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
                                ProcessInfo const &pinfo,
