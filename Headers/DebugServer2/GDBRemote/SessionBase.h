@@ -39,6 +39,9 @@ public:
 public:
   CompatibilityMode mode() const { return _compatMode; };
 
+protected:
+  const char *getPacketSeparator();
+
 public:
   inline void setDelegate(SessionDelegate *delegate) { _delegate = delegate; }
   inline SessionDelegate *delegate() const {

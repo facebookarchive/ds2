@@ -139,6 +139,25 @@ bool SessionBase::sendACK() { return _channel->send("+", 1) == 1; }
 
 bool SessionBase::sendNAK() { return _channel->send("-", 1) == 1; }
 
+// The GDB protocol specifies whitespace in some packets. However,
+// lldb-server does not use this whitespace, and older versions of
+// lldb will fail if it is used. Don't use a separator in lldb mode.
+const char *SessionBase::getPacketSeparator() {
+  switch (_compatMode) {
+  case kCompatibilityModeGDB:
+  case kCompatibilityModeGDBMultiprocess:
+    return " ";
+
+  case kCompatibilityModeLLDB:
+    return "";
+
+  case kCompatibilityModeLLDBThread:
+    DS2BUG("LLDBThreads is an invalid compatibility mode for SessionBase");
+  }
+
+  DS2_UNREACHABLE();
+}
+
 bool SessionBase::sendError(ErrorCode code) {
   switch (code) {
   case kSuccess:
