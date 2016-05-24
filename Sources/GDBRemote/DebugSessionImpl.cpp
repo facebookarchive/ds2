@@ -1045,6 +1045,20 @@ ErrorCode DebugSessionImpl::onTerminate(Session &session,
   return queryStopInfo(session, _process->currentThread(), stop);
 }
 
+[[noreturn]] void DebugSessionImpl::onExitServer(Session &session) {
+  ErrorCode error = kSuccess;
+  ProcessId pid = kAnyProcessId;
+  StopInfo stop;
+
+  if (_process != nullptr) {
+    error = _process->attached() ? onDetach(session, pid, false)
+                                 : onTerminate(session, pid, stop);
+  }
+
+  DS2LOG(Debug, "exiting ds2");
+  exit((error == kSuccess) ? EXIT_SUCCESS : EXIT_FAILURE);
+}
+
 // For LLDB we need to support breakpoints through the breakpoint manager
 // because LLDB is unable to handle software breakpoints. In GDB mode we let
 // GDB handle the breakpoints.
