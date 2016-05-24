@@ -43,30 +43,41 @@ void PTrace::initCPUState(ProcessId pid) {
 void PTrace::doneCPUState() { delete _privateData; }
 
 static inline void user_to_state32(ds2::Architecture::X86::CPUState &state,
-                                   user_fpxregs_struct const &user) {
+                                   struct xfpregs_struct const &xfpregs) {
   // X87 State
-  state.x87.fstw = user.swd;
-  state.x87.fctw = user.cwd;
-  state.x87.ftag = user.twd;
-  state.x87.fop = user.fop;
-  state.x87.fiseg = user.fcs;
-  state.x87.fioff = user.fip;
-  state.x87.foseg = user.fos;
-  state.x87.fooff = user.foo;
+  state.x87.fstw = xfpregs.fpregs.swd;
+  state.x87.fctw = xfpregs.fpregs.cwd;
+  state.x87.ftag = xfpregs.fpregs.twd;
+  state.x87.fop = xfpregs.fpregs.fop;
+  state.x87.fiseg = xfpregs.fpregs.fcs;
+  state.x87.fioff = xfpregs.fpregs.fip;
+  state.x87.foseg = xfpregs.fpregs.fos;
+  state.x87.fooff = xfpregs.fpregs.foo;
 
-  auto st_space = reinterpret_cast<uint8_t const *>(user.st_space);
+  auto st_space = reinterpret_cast<uint8_t const *>(xfpregs.fpregs.st_space);
   static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
   for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
     memcpy(state.x87.regs[n].bytes, st_space + n * x87Size, x87Size);
   }
 
   // SSE state
-  state.sse.mxcsr = user.mxcsr;
-  state.sse.mxcsrmask = user.reserved;
-  auto xmm_space = reinterpret_cast<uint8_t const *>(user.xmm_space);
+  state.sse.mxcsr = xfpregs.fpregs.mxcsr;
+  state.sse.mxcsrmask = xfpregs.fpregs.reserved;
+  auto xmm_space = reinterpret_cast<uint8_t const *>(xfpregs.fpregs.xmm_space);
   static const size_t sseSize = sizeof(state.sse.regs[0]);
   for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
     memcpy(&state.sse.regs[n], xmm_space + n * sseSize, sseSize);
+  }
+
+  //
+  //  EAVX State
+  //
+  auto ymmh = reinterpret_cast<uint8_t const *>(xfpregs.ymmh);
+  static const size_t avxSize = sizeof(state.avx.regs[0]);
+  static const size_t ymmhSize = avxSize - sseSize;
+  for (size_t n = 0; n < array_sizeof(state.avx.regs); n++) {
+    auto avxHigh = reinterpret_cast<uint8_t *>(&state.avx.regs[n]) + sseSize;
+    memcpy(avxHigh, ymmh + n * ymmhSize, ymmhSize);
   }
 }
 
@@ -122,31 +133,17 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
   Architecture::X86::user_to_state32(state, gprs);
 
   //
-  // Read X87 and SSE state
+  // Read SSE and AVX
   //
-  user_fpxregs_struct fxrs;
-  if (wrapPtrace(PTRACE_GETFPXREGS, pid, nullptr, &fxrs) == 0) {
-    user_to_state32(state, fxrs);
-  } else {
-    //
-    // Try reading only X87
-    //
-    user_fpregs_struct fprs;
-    if (wrapPtrace(PTRACE_GETFPREGS, pid, nullptr, &fprs) == 0) {
-      state.x87.fstw = fprs.swd;
-      state.x87.fctw = fprs.cwd;
-      state.x87.ftag = fprs.twd;
-      state.x87.fiseg = fprs.fcs;
-      state.x87.fioff = fprs.fip;
-      state.x87.foseg = fprs.fos;
-      state.x87.fooff = fprs.foo;
+  struct xfpregs_struct xfpregs;
+  struct iovec fpregs_iovec;
+  fpregs_iovec.iov_base = &xfpregs;
+  fpregs_iovec.iov_len = sizeof(xfpregs);
 
-      auto st_space = reinterpret_cast<uint8_t const *>(fprs.st_space);
-      for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-        memcpy(state.x87.regs[n].bytes, st_space + n * 10,
-               sizeof(state.x87.regs[n].bytes));
-      }
-    }
+  // If this call fails, don't return failure, since AVX may not be available
+  // on this CPU
+  if (wrapPtrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &fpregs_iovec) == 0) {
+    user_to_state32(state, xfpregs);
   }
 
   return kSuccess;
