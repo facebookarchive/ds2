@@ -80,17 +80,18 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
     state.x87.fooff = fxrs.foo;
 
     auto st_space = reinterpret_cast<uint8_t const *>(fxrs.st_space);
+    static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
     for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-      memcpy(state.x87.regs[n].bytes, st_space + n * 16,
-             sizeof(state.x87.regs[n].bytes));
+      memcpy(state.x87.regs[n].bytes, st_space + n * x87Size, x87Size);
     }
 
     // SSE state
     state.sse.mxcsr = fxrs.mxcsr;
     state.sse.mxcsrmask = fxrs.reserved;
     auto xmm_space = reinterpret_cast<uint8_t const *>(fxrs.xmm_space);
+    static const size_t sseSize = sizeof(state.sse.regs[0]);
     for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
-      memcpy(&state.sse.regs[n], xmm_space + n * 16, sizeof(state.sse.regs[n]));
+      memcpy(&state.sse.regs[n], xmm_space + n * sseSize, sseSize);
     }
   } else {
     //
@@ -156,17 +157,18 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   fxrs.foo = state.x87.fooff;
 
   auto st_space = reinterpret_cast<uint8_t *>(fxrs.st_space);
+  static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
   for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-    memcpy(st_space + n * 16, state.x87.regs[n].bytes,
-           sizeof(state.x87.regs[n].bytes));
+    memcpy(st_space + n * x87Size, state.x87.regs[n].bytes, x87Size);
   }
 
   // SSE state
   fxrs.mxcsr = state.sse.mxcsr;
   fxrs.reserved = state.sse.mxcsrmask;
   auto xmm_space = reinterpret_cast<uint8_t *>(fxrs.xmm_space);
+  static const size_t sseSize = sizeof(state.sse.regs[0]);
   for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
-    memcpy(xmm_space + n * 16, &state.sse.regs[n], sizeof(state.sse.regs[n]));
+    memcpy(xmm_space + n * sseSize, &state.sse.regs[n], sseSize);
   }
 
   if (wrapPtrace(PTRACE_SETFPXREGS, pid, nullptr, &fxrs) < 0) {
