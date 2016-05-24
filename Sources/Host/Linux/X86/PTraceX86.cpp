@@ -70,6 +70,35 @@ static inline void user_to_state32(ds2::Architecture::X86::CPUState &state,
   }
 }
 
+static inline void
+state32_to_user(user_fpxregs_struct &user,
+                ds2::Architecture::X86::CPUState const &state) {
+  // X87 State
+  user.swd = state.x87.fstw;
+  user.cwd = state.x87.fctw;
+  user.twd = state.x87.ftag;
+  user.fop = state.x87.fop;
+  user.fcs = state.x87.fiseg;
+  user.fip = state.x87.fioff;
+  user.fos = state.x87.foseg;
+  user.foo = state.x87.fooff;
+
+  auto st_space = reinterpret_cast<uint8_t *>(user.st_space);
+  static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
+  for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
+    memcpy(st_space + n * x87Size, state.x87.regs[n].bytes, x87Size);
+  }
+
+  // SSE state
+  user.mxcsr = state.sse.mxcsr;
+  user.reserved = state.sse.mxcsrmask;
+  auto xmm_space = reinterpret_cast<uint8_t *>(user.xmm_space);
+  static const size_t sseSize = sizeof(state.sse.regs[0]);
+  for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
+    memcpy(xmm_space + n * sseSize, &state.sse.regs[n], sseSize);
+  }
+}
+
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
                                Architecture::CPUState &state) {
   pid_t pid;
@@ -150,31 +179,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   // Write X87 and SSE state
   //
   user_fpxregs_struct fxrs;
-
-  // X87 State
-  fxrs.swd = state.x87.fstw;
-  fxrs.cwd = state.x87.fctw;
-  fxrs.twd = state.x87.ftag;
-  fxrs.fop = state.x87.fop;
-  fxrs.fcs = state.x87.fiseg;
-  fxrs.fip = state.x87.fioff;
-  fxrs.fos = state.x87.foseg;
-  fxrs.foo = state.x87.fooff;
-
-  auto st_space = reinterpret_cast<uint8_t *>(fxrs.st_space);
-  static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
-  for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-    memcpy(st_space + n * x87Size, state.x87.regs[n].bytes, x87Size);
-  }
-
-  // SSE state
-  fxrs.mxcsr = state.sse.mxcsr;
-  fxrs.reserved = state.sse.mxcsrmask;
-  auto xmm_space = reinterpret_cast<uint8_t *>(fxrs.xmm_space);
-  static const size_t sseSize = sizeof(state.sse.regs[0]);
-  for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
-    memcpy(xmm_space + n * sseSize, &state.sse.regs[n], sseSize);
-  }
+  state32_to_user(fxrs, state);
 
   if (wrapPtrace(PTRACE_SETFPXREGS, pid, nullptr, &fxrs) < 0) {
     //
