@@ -30,13 +30,14 @@ private:
 protected:
   SessionDelegate *_delegate;
   bool _ackmode;
+  CompatibilityMode _compatMode;
 
 public:
-  SessionBase();
+  SessionBase(CompatibilityMode mode);
   virtual ~SessionBase();
 
 public:
-  virtual CompatibilityMode mode() const = 0;
+  CompatibilityMode mode() const { return _compatMode; };
 
 public:
   inline void setDelegate(SessionDelegate *delegate) { _delegate = delegate; }

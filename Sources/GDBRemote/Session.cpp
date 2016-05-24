@@ -34,7 +34,7 @@ namespace ds2 {
 namespace GDBRemote {
 
 Session::Session(CompatibilityMode mode)
-    : _compatMode(mode), _threadsInStopReply(false) {
+    : SessionBase(mode), _threadsInStopReply(false) {
 #define REGISTER_HANDLER_EQUALS_2(MESSAGE, HANDLER)                            \
   interpreter().registerHandler(ProtocolInterpreter::Handler::kModeEquals,     \
                                 MESSAGE, this, &Session::Handle_##HANDLER);

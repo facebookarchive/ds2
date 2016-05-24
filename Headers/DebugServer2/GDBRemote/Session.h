@@ -23,14 +23,10 @@ namespace GDBRemote {
 class Session : public SessionBase {
 protected:
   std::map<char, ProcessThreadId> _ptids;
-  CompatibilityMode _compatMode;
   bool _threadsInStopReply;
 
 public:
   Session(CompatibilityMode mode);
-
-public:
-  CompatibilityMode mode() const override { return _compatMode; }
 
 private:
   void Handle_ControlC(ProtocolInterpreter::Handler const &,

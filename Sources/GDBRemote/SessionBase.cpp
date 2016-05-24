@@ -24,8 +24,8 @@ using ds2::Host::Platform;
 namespace ds2 {
 namespace GDBRemote {
 
-SessionBase::SessionBase()
-    : _channel(nullptr), _delegate(nullptr), _ackmode(true) {
+SessionBase::SessionBase(CompatibilityMode mode)
+    : _channel(nullptr), _delegate(nullptr), _ackmode(true), _compatMode(mode) {
   _processor.setDelegate(&_interpreter);
   _interpreter.setSession(this);
 }
