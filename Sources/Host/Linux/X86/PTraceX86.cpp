@@ -81,47 +81,6 @@ static inline void user_to_state32(ds2::Architecture::X86::CPUState &state,
   }
 }
 
-static inline void
-state32_to_user(struct xfpregs_struct &xfpregs,
-                ds2::Architecture::X86::CPUState const &state) {
-  // X87 State
-  xfpregs.fpregs.swd = state.x87.fstw;
-  xfpregs.fpregs.cwd = state.x87.fctw;
-  xfpregs.fpregs.twd = state.x87.ftag;
-  xfpregs.fpregs.fop = state.x87.fop;
-  xfpregs.fpregs.fcs = state.x87.fiseg;
-  xfpregs.fpregs.fip = state.x87.fioff;
-  xfpregs.fpregs.fos = state.x87.foseg;
-  xfpregs.fpregs.foo = state.x87.fooff;
-
-  auto st_space = reinterpret_cast<uint8_t *>(xfpregs.fpregs.st_space);
-  static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
-  for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-    memcpy(st_space + n * x87Size, state.x87.regs[n].bytes, x87Size);
-  }
-
-  // SSE state
-  xfpregs.fpregs.mxcsr = state.sse.mxcsr;
-  xfpregs.fpregs.reserved = state.sse.mxcsrmask;
-  auto xmm_space = reinterpret_cast<uint8_t *>(xfpregs.fpregs.xmm_space);
-  static const size_t sseSize = sizeof(state.sse.regs[0]);
-  for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
-    memcpy(xmm_space + n * sseSize, &state.sse.regs[n], sseSize);
-  }
-
-  //
-  //  EAVX State
-  //
-  auto ymmh = reinterpret_cast<uint8_t *>(xfpregs.ymmh);
-  static const size_t avxSize = sizeof(state.avx.regs[n]);
-  static const size_t ymmhSize = avxSize - sseSize;
-  for (size_t n = 0; n < array_sizeof(state.avx.regs); n++) {
-    auto avxHigh =
-        reinterpret_cast<const uint8_t *>(&state.avx.regs[n]) + sseSize;
-    memcpy(ymmh + n * ymmhSize, avxHigh, ymmhSize);
-  }
-}
-
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
                                Architecture::CPUState &state) {
   pid_t pid;
@@ -198,7 +157,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
     // If we fail to read the AVX register info, still write the SSE regs
     fpregs_iovec.iov_len = sizeof(xfpregs.fpregs);
   }
-  state32_to_xfpregs(xfpregs, state);
+  Architecture::X86::state32_to_user(xfpregs, state);
 
   wrapPtrace(PTRACE_SETREGSET, pid, NT_X86_XSTATE, &fpregs_iovec);
 

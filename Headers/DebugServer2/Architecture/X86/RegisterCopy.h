@@ -14,6 +14,9 @@
 #define __DebugServer2_Architecture_X86_RegisterCopy_h
 
 #include "DebugServer2/Architecture/CPUState.h"
+#if defined(OS_LINUX)
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
+#endif
 
 namespace ds2 {
 namespace Architecture {
@@ -160,6 +163,88 @@ static inline void state64_to_user(UserStructType &user,
 }
 #undef DO_COPY_REG
 #undef STATE_GP_REG
+
+#if defined(OS_LINUX)
+template <typename StateType>
+static inline void state_to_user(struct xfpregs_struct &xfpregs,
+                                 StateType const &state) {
+  size_t numX87 = array_sizeof(state.x87.regs);
+
+  // This hack is necessary because we don't handle EAVX registers
+  size_t numSSEState = array_sizeof(state.sse.regs);
+  size_t numSSEUser =
+      sizeof(xfpregs.fpregs.xmm_space) / sizeof(state.sse.regs[0]);
+  size_t numSSE = std::min(numSSEState, numSSEUser);
+
+  // X87 State
+  xfpregs.fpregs.swd = state.x87.fstw;
+  xfpregs.fpregs.cwd = state.x87.fctw;
+  xfpregs.fpregs.fop = state.x87.fop;
+
+  auto st_space = reinterpret_cast<uint8_t *>(xfpregs.fpregs.st_space);
+  static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
+  for (size_t n = 0; n < numX87; n++) {
+    memcpy(st_space + n * x87Size, state.x87.regs[n].bytes, x87Size);
+  }
+
+  // SSE state
+  xfpregs.fpregs.mxcsr = state.sse.mxcsr;
+#if defined(ARCH_X86)
+  xfpregs.fpregs.reserved = state.sse.mxcsrmask;
+#elif defined(ARCH_X86_64)
+  xfpregs.fpregs.mxcr_mask = state.sse.mxcsrmask;
+#endif
+  auto xmm_space = reinterpret_cast<uint8_t *>(xfpregs.fpregs.xmm_space);
+  static const size_t sseSize = sizeof(state.sse.regs[0]);
+  for (size_t n = 0; n < numSSE; n++) {
+    memcpy(xmm_space + n * sseSize, &state.sse.regs[n], sseSize);
+  }
+
+  //  EAVX State
+  auto ymmh = reinterpret_cast<uint8_t *>(xfpregs.ymmh);
+  static const size_t avxSize = sizeof(state.avx.regs[0]);
+  static const size_t ymmhSize = avxSize - sseSize;
+  for (size_t n = 0; n < numSSE; n++) {
+    auto avxHigh =
+        reinterpret_cast<const uint8_t *>(&state.avx.regs[n]) + sseSize;
+    memcpy(ymmh + n * ymmhSize, avxHigh, ymmhSize);
+  }
+}
+
+template <typename StateType>
+static inline void state32_to_user(struct xfpregs_struct &xfpregs,
+                                   StateType const &state) {
+#if defined(ARCH_X86)
+  xfpregs.fpregs.twd = state.x87.ftag;
+  xfpregs.fpregs.fcs = state.x87.fiseg;
+  xfpregs.fpregs.fip = state.x87.fioff;
+  xfpregs.fpregs.fos = state.x87.foseg;
+  xfpregs.fpregs.foo = state.x87.fooff;
+#elif defined(ARCH_X86_64)
+  xfpregs.fpregs.ftw = state.x87.ftag;
+  xfpregs.fpregs.rip =
+      (static_cast<uint64_t>(state.x87.fiseg) << 32) | state.x87.fioff;
+  xfpregs.fpregs.rdp =
+      (static_cast<uint64_t>(state.x87.foseg) << 32) | state.x87.fooff;
+#else
+#error "Architecture not supported."
+#endif
+
+  state_to_user(xfpregs, state);
+}
+
+#if defined(ARCH_X86_64)
+template <typename StateType>
+static inline void state64_to_user(struct xfpregs_struct &xfpregs,
+                                   StateType const &state) {
+  xfpregs.fpregs.ftw = state.x87.ftag;
+  xfpregs.fpregs.rip = state.x87.firip;
+  xfpregs.fpregs.rdp = state.x87.forip;
+
+  state_to_user(xfpregs, state);
+}
+#endif // ARCH_X86_64
+#endif // OS_LINUX
 }
 }
 }
