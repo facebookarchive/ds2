@@ -113,7 +113,7 @@ state32_to_user(struct xfpregs_struct &xfpregs,
   //  EAVX State
   //
   auto ymmh = reinterpret_cast<uint8_t *>(xfpregs.ymmh);
-  static const size_t avxSize = sizeof(state.avx.regs[n]);
+  static const size_t avxSize = sizeof(state.avx.regs[0]);
   static const size_t ymmhSize = avxSize - sseSize;
   for (size_t n = 0; n < array_sizeof(state.avx.regs); n++) {
     auto avxHigh =
@@ -198,7 +198,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
     // If we fail to read the AVX register info, still write the SSE regs
     fpregs_iovec.iov_len = sizeof(xfpregs.fpregs);
   }
-  state32_to_xfpregs(xfpregs, state);
+  state32_to_user(xfpregs, state);
 
   wrapPtrace(PTRACE_SETREGSET, pid, NT_X86_XSTATE, &fpregs_iovec);
 
