@@ -92,6 +92,16 @@ public:
   int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) override;
   int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) override;
   int getMaxWatchpointSize(ProcessThreadId const &ptid) override;
+
+protected:
+  ErrorCode writeStoppoint(ProcessThreadId const &ptid, size_t idx,
+                           uint32_t *val);
+
+public:
+  ErrorCode writeHardwareBreakpoint(ProcessThreadId const &ptid, uint32_t addr,
+                                    uint32_t ctrl, size_t idx) override;
+  ErrorCode writeHardwareWatchpoint(ProcessThreadId const &ptid, uint32_t addr,
+                                    uint32_t ctrl, size_t idx) override;
 #endif
 
 public:
