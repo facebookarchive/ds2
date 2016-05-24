@@ -2060,16 +2060,9 @@ void Session::Handle_qProcessInfoPID(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_qRcmd(ProtocolInterpreter::Handler const &,
                            std::string const &args) {
-  ErrorCode error = _delegate->onExecuteCommand(*this, args);
-  if (error != kSuccess) {
-    sendError(error);
-    return;
-  }
+  std::string cmd = HexToString(args);
 
-  //
-  // No message is sent as a reply since it is sent by the
-  // handled message.
-  //
+  sendError(_delegate->onExecuteCommand(*this, cmd));
 }
 
 //
