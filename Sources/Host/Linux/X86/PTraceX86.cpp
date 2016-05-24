@@ -42,45 +42,6 @@ void PTrace::initCPUState(ProcessId pid) {
 
 void PTrace::doneCPUState() { delete _privateData; }
 
-static inline void user_to_state32(ds2::Architecture::X86::CPUState &state,
-                                   struct xfpregs_struct const &xfpregs) {
-  // X87 State
-  state.x87.fstw = xfpregs.fpregs.swd;
-  state.x87.fctw = xfpregs.fpregs.cwd;
-  state.x87.ftag = xfpregs.fpregs.twd;
-  state.x87.fop = xfpregs.fpregs.fop;
-  state.x87.fiseg = xfpregs.fpregs.fcs;
-  state.x87.fioff = xfpregs.fpregs.fip;
-  state.x87.foseg = xfpregs.fpregs.fos;
-  state.x87.fooff = xfpregs.fpregs.foo;
-
-  auto st_space = reinterpret_cast<uint8_t const *>(xfpregs.fpregs.st_space);
-  static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
-  for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-    memcpy(state.x87.regs[n].bytes, st_space + n * x87Size, x87Size);
-  }
-
-  // SSE state
-  state.sse.mxcsr = xfpregs.fpregs.mxcsr;
-  state.sse.mxcsrmask = xfpregs.fpregs.reserved;
-  auto xmm_space = reinterpret_cast<uint8_t const *>(xfpregs.fpregs.xmm_space);
-  static const size_t sseSize = sizeof(state.sse.regs[0]);
-  for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
-    memcpy(&state.sse.regs[n], xmm_space + n * sseSize, sseSize);
-  }
-
-  //
-  //  EAVX State
-  //
-  auto ymmh = reinterpret_cast<uint8_t const *>(xfpregs.ymmh);
-  static const size_t avxSize = sizeof(state.avx.regs[0]);
-  static const size_t ymmhSize = avxSize - sseSize;
-  for (size_t n = 0; n < array_sizeof(state.avx.regs); n++) {
-    auto avxHigh = reinterpret_cast<uint8_t *>(&state.avx.regs[n]) + sseSize;
-    memcpy(avxHigh, ymmh + n * ymmhSize, ymmhSize);
-  }
-}
-
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
                                Architecture::CPUState &state) {
   pid_t pid;
@@ -114,7 +75,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
   // If this call fails, don't return failure, since AVX may not be available
   // on this CPU
   if (wrapPtrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &fpregs_iovec) == 0) {
-    user_to_state32(state, xfpregs);
+    Architecture::X86::user_to_state32(state, xfpregs);
   }
 
   return kSuccess;

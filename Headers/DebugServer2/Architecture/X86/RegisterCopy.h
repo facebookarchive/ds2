@@ -244,6 +244,85 @@ static inline void state64_to_user(struct xfpregs_struct &xfpregs,
   state_to_user(xfpregs, state);
 }
 #endif // ARCH_X86_64
+
+template <typename StateType>
+static inline void user_to_state(StateType &state,
+                                 struct xfpregs_struct const &xfpregs) {
+  size_t numX87 = array_sizeof(state.x87.regs);
+
+  // This hack is necessary because we don't handle EAVX registers
+  size_t numSSEState = array_sizeof(state.sse.regs);
+  size_t numSSEUser =
+      sizeof(xfpregs.fpregs.xmm_space) / sizeof(state.sse.regs[0]);
+  size_t numSSE = std::min(numSSEState, numSSEUser);
+
+  // X87 State
+  state.x87.fstw = xfpregs.fpregs.swd;
+  state.x87.fctw = xfpregs.fpregs.cwd;
+  state.x87.fop = xfpregs.fpregs.fop;
+
+  auto st_space = reinterpret_cast<uint8_t const *>(xfpregs.fpregs.st_space);
+  static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
+  for (size_t n = 0; n < numX87; n++) {
+    memcpy(state.x87.regs[n].bytes, st_space + n * x87Size, x87Size);
+  }
+
+  // SSE state
+  state.sse.mxcsr = xfpregs.fpregs.mxcsr;
+#if defined(ARCH_X86)
+  state.sse.mxcsrmask = xfpregs.fpregs.reserved;
+#elif defined(ARCH_X86_64)
+  state.sse.mxcsrmask = xfpregs.fpregs.mxcr_mask;
+#endif
+  auto xmm_space = reinterpret_cast<uint8_t const *>(xfpregs.fpregs.xmm_space);
+  static const size_t sseSize = sizeof(state.sse.regs[0]);
+  for (size_t n = 0; n < numSSE; n++) {
+    memcpy(&state.sse.regs[n], xmm_space + n * sseSize, sseSize);
+  }
+
+  //  EAVX State
+  auto ymmh = reinterpret_cast<uint8_t const *>(xfpregs.ymmh);
+  static const size_t avxSize = sizeof(state.avx.regs[0]);
+  static const size_t ymmhSize = avxSize - sseSize;
+  for (size_t n = 0; n < numSSE; n++) {
+    auto avxHigh = reinterpret_cast<uint8_t *>(&state.avx.regs[n]) + sseSize;
+    memcpy(avxHigh, ymmh + n * ymmhSize, ymmhSize);
+  }
+}
+
+template <typename StateType>
+static inline void user_to_state32(StateType &state,
+                                   struct xfpregs_struct const &xfpregs) {
+#if defined(ARCH_X86)
+  state.x87.ftag = xfpregs.fpregs.twd;
+  state.x87.fiseg = xfpregs.fpregs.fcs;
+  state.x87.fioff = xfpregs.fpregs.fip;
+  state.x87.foseg = xfpregs.fpregs.fos;
+  state.x87.fooff = xfpregs.fpregs.foo;
+#elif defined(ARCH_X86_64)
+  state.x87.ftag = xfpregs.fpregs.ftw;
+  state.x87.fiseg = xfpregs.fpregs.rip >> 32;
+  state.x87.fioff = xfpregs.fpregs.rip;
+  state.x87.foseg = xfpregs.fpregs.rdp >> 32;
+  state.x87.fooff = xfpregs.fpregs.rdp;
+#else
+#error "Architecture not supported."
+#endif
+
+  user_to_state(state, xfpregs);
+}
+
+#if defined(ARCH_X86_64)
+template <typename StateType>
+static inline void user_to_state64(StateType &state,
+                                   struct xfpregs_struct const &xfpregs) {
+  state.x87.ftag = xfpregs.fpregs.ftw;
+  state.x87.firip = xfpregs.fpregs.rip;
+  state.x87.forip = xfpregs.fpregs.rdp;
+
+  user_to_state(state, xfpregs);
+}
+#endif // ARCH_X86_64
 #endif // OS_LINUX
 }
 }
