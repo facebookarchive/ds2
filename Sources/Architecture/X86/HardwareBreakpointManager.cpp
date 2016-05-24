@@ -17,16 +17,16 @@ namespace ds2 {
 namespace Architecture {
 namespace X86 {
 
+static const int kMaxHWStoppoints = 4; // dr0, dr1, dr2, dr3
+
 HardwareBreakpointManager::HardwareBreakpointManager(
     Target::ProcessBase *process)
     : super(process) {}
 
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
 
-int HardwareBreakpointManager::maxWatchpoints() {
-  // dr0, dr1, dr2, dr3
-  return 4;
-}
+int HardwareBreakpointManager::maxWatchpoints() { return kMaxHWStoppoints; }
+
 }
 }
 }
