@@ -53,12 +53,6 @@
 #define DS2_ATTRIBUTE_WEAK
 #endif
 
-#if __has_attribute(noreturn)
-#define DS2_ATTRIBUTE_NORETURN __attribute__((__noreturn__))
-#else
-#define DS2_ATTRIBUTE_NORETURN
-#endif
-
 #if defined(COMPILER_MSVC)
 #define DS2_ATTRIBUTE_PACKED "DS2_ATTRIBUTE_PACKED not implemented on MSVC"
 #elif __has_attribute(__packed__)
