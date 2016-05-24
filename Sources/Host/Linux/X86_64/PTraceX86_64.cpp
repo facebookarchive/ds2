@@ -24,24 +24,6 @@ namespace ds2 {
 namespace Host {
 namespace Linux {
 
-struct PTracePrivateData {
-  uint8_t breakpointCount;
-  uint8_t watchpointCount;
-  uint8_t maxWatchpointSize;
-
-  PTracePrivateData()
-      : breakpointCount(0), watchpointCount(0), maxWatchpointSize(0) {}
-};
-
-void PTrace::initCPUState(ProcessId pid) {
-  if (_privateData != nullptr)
-    return;
-
-  _privateData = new PTracePrivateData;
-}
-
-void PTrace::doneCPUState() { delete _privateData; }
-
 static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
                                    struct xfpregs_struct const &xfpregs) {
   //
@@ -242,11 +224,6 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
     return error;
 
   //
-  // Initialize the CPU state, just in case.
-  //
-  initCPUState(pid);
-
-  //
   // Read GPRs
   //
   user_regs_struct gprs;
@@ -290,11 +267,6 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   ErrorCode error = ptidToPid(ptid, pid);
   if (error != kSuccess)
     return error;
-
-  //
-  // Initialize the CPU state, just in case.
-  //
-  initCPUState(pid);
 
   if (pinfo.pointerSize == sizeof(uint32_t) && !state.is32)
     return kErrorInvalidArgument;

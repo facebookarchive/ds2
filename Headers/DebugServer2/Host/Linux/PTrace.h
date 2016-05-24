@@ -23,10 +23,6 @@ struct PTracePrivateData;
 
 class PTrace : public POSIX::PTrace {
 public:
-  PTrace();
-  ~PTrace() override;
-
-public:
   ErrorCode wait(ProcessThreadId const &ptid, int *status = nullptr) override;
 
 public:
@@ -79,10 +75,6 @@ protected:
                                      int regSetCode, void const *buffer,
                                      size_t length);
 
-protected:
-  void initCPUState(ProcessId pid);
-  void doneCPUState();
-
 // Debug register ptrace APIs only exist for Linux ARM
 #if defined(ARCH_ARM) || defined(ARCH_ARM64)
 public:
@@ -112,9 +104,6 @@ public:
 protected:
   int getMaxStoppoints(ProcessThreadId const &ptid, int regSet);
 #endif
-
-public:
-  PTracePrivateData *_privateData;
 };
 }
 }

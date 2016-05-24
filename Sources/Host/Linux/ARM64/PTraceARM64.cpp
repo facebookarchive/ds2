@@ -23,22 +23,6 @@ namespace ds2 {
 namespace Host {
 namespace Linux {
 
-struct PTracePrivateData {
-  uint8_t breakpointCount;
-  uint8_t watchpointCount;
-
-  PTracePrivateData() : breakpointCount(0), watchpointCount(0) {}
-};
-
-void PTrace::initCPUState(ProcessId pid) {
-  if (_privateData != nullptr)
-    return;
-
-  _privateData = new PTracePrivateData;
-}
-
-void PTrace::doneCPUState() { delete _privateData; }
-
 int PTrace::getMaxStoppoints(ProcessThreadId const &ptid, int regSet) {
   pid_t pid;
 
@@ -82,9 +66,6 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
   if (error != kSuccess)
     return error;
 
-  // Initialize the CPU state, just in case.
-  initCPUState(pid);
-
   state.isA32 = pinfo.pointerSize == sizeof(uint32_t);
 
   // Read GPRs.
@@ -107,9 +88,6 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   ErrorCode error = ptidToPid(ptid, pid);
   if (error != kSuccess)
     return error;
-
-  // Initialize the CPU state, just in case.
-  initCPUState(pid);
 
   // Write GPRs.
   struct user_pt_regs gprs;

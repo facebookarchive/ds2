@@ -27,10 +27,6 @@ namespace ds2 {
 namespace Host {
 namespace FreeBSD {
 
-PTrace::PTrace() : _privateData(nullptr) {}
-
-PTrace::~PTrace() { doneCPUState(); }
-
 ErrorCode PTrace::traceThat(ProcessId pid) {
   if (pid <= 0)
     return kErrorInvalidArgument;

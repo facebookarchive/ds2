@@ -26,24 +26,6 @@ namespace ds2 {
 namespace Host {
 namespace FreeBSD {
 
-struct PTracePrivateData {
-  uint8_t breakpointCount;
-  uint8_t watchpointCount;
-  uint8_t maxWatchpointSize;
-
-  PTracePrivateData()
-      : breakpointCount(0), watchpointCount(0), maxWatchpointSize(0) {}
-};
-
-void PTrace::initCPUState(ProcessId pid) {
-  if (_privateData != nullptr)
-    return;
-
-  _privateData = new PTracePrivateData;
-}
-
-void PTrace::doneCPUState() { delete _privateData; }
-
 //
 // 32-bits helpers
 //
@@ -196,11 +178,6 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
     return error;
 
   //
-  // Initialize the CPU state, just in case.
-  //
-  initCPUState(pid);
-
-  //
   // Read GPRs
   //
   struct reg gprs;
@@ -238,11 +215,6 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   ErrorCode error = ptidToPid(ptid, pid);
   if (error != kSuccess)
     return error;
-
-  //
-  // Initialize the CPU state, just in case.
-  //
-  initCPUState(pid);
 
   if (pinfo.pointerSize == sizeof(uint32_t) && !state.is32)
     return kErrorInvalidArgument;

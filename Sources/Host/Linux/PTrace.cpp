@@ -28,10 +28,6 @@ namespace ds2 {
 namespace Host {
 namespace Linux {
 
-PTrace::PTrace() : _privateData(nullptr) {}
-
-PTrace::~PTrace() { doneCPUState(); }
-
 ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   pid_t pid;
 

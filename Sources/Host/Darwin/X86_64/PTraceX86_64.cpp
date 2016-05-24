@@ -23,24 +23,6 @@ namespace ds2 {
 namespace Host {
 namespace Darwin {
 
-struct PTracePrivateData {
-  uint8_t breakpointCount;
-  uint8_t watchpointCount;
-  uint8_t maxWatchpointSize;
-
-  PTracePrivateData()
-      : breakpointCount(0), watchpointCount(0), maxWatchpointSize(0) {}
-};
-
-void PTrace::initCPUState(ProcessId pid) {
-  if (_privateData != nullptr)
-    return;
-
-  _privateData = new PTracePrivateData;
-}
-
-void PTrace::doneCPUState() { delete _privateData; }
-
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
                                ProcessInfo const &pinfo,
                                Architecture::CPUState &state) {

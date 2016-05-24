@@ -22,10 +22,6 @@ struct PTracePrivateData;
 
 class PTrace : public POSIX::PTrace {
 public:
-  PTrace();
-  virtual ~PTrace();
-
-public:
   ErrorCode traceThat(ProcessId pid) override;
 
 public:
@@ -53,13 +49,6 @@ public:
 
 public:
   ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) override;
-
-protected:
-  void initCPUState(ProcessId pid);
-  void doneCPUState();
-
-public:
-  PTracePrivateData *_privateData;
 };
 }
 }

@@ -28,10 +28,6 @@ namespace ds2 {
 namespace Host {
 namespace Linux {
 
-void PTrace::initCPUState(ProcessId pid) {}
-
-void PTrace::doneCPUState() {}
-
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
                                Architecture::CPUState &state) {
   pid_t pid;
@@ -39,11 +35,6 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
   ErrorCode error = ptidToPid(ptid, pid);
   if (error != kSuccess)
     return error;
-
-  //
-  // Initialize the CPU state, just in case.
-  //
-  initCPUState(pid);
 
   //
   // Read GPRs
