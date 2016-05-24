@@ -42,142 +42,6 @@ void PTrace::initCPUState(ProcessId pid) {
 
 void PTrace::doneCPUState() { delete _privateData; }
 
-static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
-                                   user_fpregs_struct const &user) {
-  //
-  // X87 State
-  //
-  state.x87.fstw = user.swd;
-  state.x87.fctw = user.cwd;
-  state.x87.ftag = user.ftw;
-  state.x87.fop = user.fop;
-  state.x87.fiseg = user.rip >> 32;
-  state.x87.fioff = user.rip;
-  state.x87.foseg = user.rdp >> 32;
-  state.x87.fooff = user.rdp;
-
-  auto st_space = reinterpret_cast<uint8_t const *>(user.st_space);
-  for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-    memcpy(state.x87.regs[n].bytes, st_space + n * 16,
-           sizeof(state.x87.regs[n].bytes));
-  }
-
-  //
-  // SSE State
-  //
-  state.sse.mxcsr = user.mxcsr;
-  state.sse.mxcsrmask = user.mxcr_mask;
-  auto xmm_space = reinterpret_cast<uint8_t const *>(user.xmm_space);
-  for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
-    memcpy(&state.sse.regs[n], xmm_space + n * 16, sizeof(state.sse.regs[n]));
-  }
-}
-
-static inline void
-state32_to_user(user_fpregs_struct &user,
-                ds2::Architecture::X86_64::CPUState32 const &state) {
-  //
-  // X87 State
-  //
-  user.swd = state.x87.fstw;
-  user.cwd = state.x87.fctw;
-  user.ftw = state.x87.ftag;
-  user.fop = state.x87.fop;
-  user.rip = (static_cast<uint64_t>(state.x87.fiseg) << 32) | state.x87.fioff;
-  user.rdp = (static_cast<uint64_t>(state.x87.foseg) << 32) | state.x87.fooff;
-
-  auto st_space = reinterpret_cast<uint8_t *>(user.st_space);
-  for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-    memcpy(st_space + n * 16, state.x87.regs[n].bytes,
-           sizeof(state.x87.regs[n].bytes));
-  }
-
-  //
-  // SSE State
-  //
-  user.mxcsr = state.sse.mxcsr;
-  user.mxcr_mask = state.sse.mxcsrmask;
-  auto xmm_space = reinterpret_cast<uint8_t *>(user.xmm_space);
-  for (size_t n = 0; n < array_sizeof(state.sse.regs); n++) {
-    memcpy(xmm_space + n * 16, &state.sse.regs[n], sizeof(state.sse.regs[n]));
-  }
-}
-
-//
-// 64-bit helpers
-//
-
-static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
-                                   user_fpregs_struct const &user) {
-  //
-  // X87 State
-  //
-  state.x87.fstw = user.swd;
-  state.x87.fctw = user.cwd;
-  state.x87.ftag = user.ftw;
-  state.x87.fop = user.fop;
-  state.x87.firip = user.rip;
-  state.x87.forip = user.rdp;
-
-  auto st_space = reinterpret_cast<uint8_t const *>(user.st_space);
-  for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-    memcpy(state.x87.regs[n].bytes, st_space + n * 16,
-           sizeof(state.x87.regs[n].bytes));
-  }
-
-  //
-  // SSE State
-  //
-
-  // This hack is necessary because we don't handle EAVX registers
-  size_t numSSEState = array_sizeof(state.sse.regs);
-  size_t numSSEUser = sizeof(user.xmm_space) / sizeof(state.sse.regs[0]);
-  size_t numSSE = std::min(numSSEState, numSSEUser);
-
-  state.sse.mxcsr = user.mxcsr;
-  state.sse.mxcsrmask = user.mxcr_mask;
-  auto xmm_space = reinterpret_cast<uint8_t const *>(user.xmm_space);
-  for (size_t n = 0; n < numSSE; n++) {
-    memcpy(&state.sse.regs[n], xmm_space + n * 16, sizeof(state.sse.regs[n]));
-  }
-}
-
-static inline void
-state64_to_user(user_fpregs_struct &user,
-                ds2::Architecture::X86_64::CPUState64 const &state) {
-  //
-  // X87 State
-  //
-  user.swd = state.x87.fstw;
-  user.cwd = state.x87.fctw;
-  user.ftw = state.x87.ftag;
-  user.fop = state.x87.fop;
-  user.rip = state.x87.firip;
-  user.rdp = state.x87.forip;
-
-  auto st_space = reinterpret_cast<uint8_t *>(user.st_space);
-  for (size_t n = 0; n < array_sizeof(state.x87.regs); n++) {
-    memcpy(st_space + n * 16, state.x87.regs[n].bytes,
-           sizeof(state.x87.regs[n].bytes));
-  }
-
-  //
-  // SSE State
-  //
-
-  // This hack is necessary because we don't handle EAVX registers
-  size_t numSSEState = array_sizeof(state.sse.regs);
-  size_t numSSEUser = sizeof(user.xmm_space) / sizeof(state.sse.regs[0]);
-  size_t numSSE = std::min(numSSEState, numSSEUser);
-
-  user.mxcsr = state.sse.mxcsr;
-  user.mxcr_mask = state.sse.mxcsrmask;
-  auto xmm_space = reinterpret_cast<uint8_t *>(user.xmm_space);
-  for (size_t n = 0; n < numSSE; n++) {
-    memcpy(xmm_space + n * 16, &state.sse.regs[n], sizeof(state.sse.regs[n]));
-  }
-}
-
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
                                ProcessInfo const &pinfo,
                                Architecture::CPUState &state) {
@@ -208,14 +72,20 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
   }
 
   //
-  // Read X87 and SSE state
+  // Read SSE and AVX
   //
-  user_fpregs_struct fprs;
-  if (wrapPtrace(PTRACE_GETFPREGS, pid, nullptr, &fprs) == 0) {
+  struct xfpregs_struct xfpregs;
+  struct iovec fpregs_iovec;
+  fpregs_iovec.iov_base = &xfpregs;
+  fpregs_iovec.iov_len = sizeof(xfpregs);
+
+  // If this call fails, don't return failure, since AVX may not be available
+  // on this CPU
+  if (wrapPtrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &fpregs_iovec) == 0) {
     if (pinfo.pointerSize == sizeof(uint32_t)) {
-      user_to_state32(state.state32, fprs);
+      Architecture::X86::user_to_state32(state.state32, xfpregs);
     } else {
-      user_to_state64(state.state64, fprs);
+      Architecture::X86::user_to_state64(state.state64, xfpregs);
     }
   }
 
@@ -255,16 +125,27 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
     return Platform::TranslateError();
 
   //
-  // Write X87 and SSE state
+  // Write SSE and AVX
   //
-  user_fpregs_struct fprs;
-  if (state.is32) {
-    state32_to_user(fprs, state.state32);
-  } else {
-    state64_to_user(fprs, state.state64);
+  struct xfpregs_struct xfpregs;
+  struct iovec fpregs_iovec;
+  fpregs_iovec.iov_base = &xfpregs;
+  fpregs_iovec.iov_len = sizeof(xfpregs);
+
+  // We need this read to fill the kernel header (xfpregs_struct.xstate_hdr)
+  // TODO - add this header to CPUState so we don't need this read
+  if (wrapPtrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &fpregs_iovec) < 0) {
+    // If we fail to read the AVX register info, still write the SSE regs
+    fpregs_iovec.iov_len = sizeof(xfpregs.fpregs);
   }
 
-  wrapPtrace(PTRACE_SETFPREGS, pid, nullptr, &fprs);
+  if (state.is32) {
+    Architecture::X86::state32_to_user(xfpregs, state.state32);
+  } else {
+    Architecture::X86::state64_to_user(xfpregs, state.state64);
+  }
+
+  wrapPtrace(PTRACE_SETREGSET, pid, NT_X86_XSTATE, &fpregs_iovec);
 
   return kSuccess;
 }
