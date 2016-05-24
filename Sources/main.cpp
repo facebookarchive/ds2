@@ -191,7 +191,7 @@ static int SlaveMain() {
 }
 #endif
 
-DS2_ATTRIBUTE_NORETURN static void ListProcesses() {
+[[noreturn]] static void ListProcesses() {
   printf("Processes running on %s:\n\n", Platform::GetHostName());
   printf("%s\n%s\n", "PID    USER       ARCH    NAME",
          "====== ========== ======= ============================");
