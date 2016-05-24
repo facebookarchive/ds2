@@ -220,6 +220,8 @@ ErrorCode DummySessionDelegateImpl::onTerminate(Session &session,
   return onTerminate(session, pid, stop);
 }
 
+void DummySessionDelegateImpl::onExitServer(Session &session) { return; }
+
 ErrorCode DummySessionDelegateImpl::onSynchronizeThreadState(Session &,
                                                              ProcessId) {
   return kErrorUnsupported;

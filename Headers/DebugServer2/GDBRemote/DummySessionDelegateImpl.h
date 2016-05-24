@@ -99,6 +99,7 @@ protected: // Debugging Session
   ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
                         StopInfo &stop) override;
   ErrorCode onTerminate(Session &session, ProcessId pid) override;
+  void onExitServer(Session &session) override;
 
   ErrorCode onSynchronizeThreadState(Session &session, ProcessId pid) override;
 
