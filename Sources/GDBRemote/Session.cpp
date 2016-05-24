@@ -2606,8 +2606,8 @@ void Session::Handle_qfThreadInfo(ProtocolInterpreter::Handler const &,
     send("l");
   } else {
     std::ostringstream ss;
-    ss << std::hex << tid;
-    send("m" + ss.str());
+    ss << "m" << getPacketSeparator() << std::hex << tid;
+    send(ss.str());
   }
 }
 
@@ -2630,8 +2630,8 @@ void Session::Handle_qsThreadInfo(ProtocolInterpreter::Handler const &,
     send("l");
   } else {
     std::ostringstream ss;
-    ss << std::hex << tid;
-    send("m" + ss.str());
+    ss << "m" << getPacketSeparator() << std::hex << tid;
+    send(ss.str());
   }
 }
 
