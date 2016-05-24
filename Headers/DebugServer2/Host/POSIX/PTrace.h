@@ -85,13 +85,14 @@ public:
                             ProcessInfo const &pinfo, void const *code,
                             size_t length, uint64_t &result);
 
-#if defined(OS_LINUX) && (defined(ARCH_ARM) || defined(ARCH_ARM64))
+#if defined(OS_LINUX)
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
 public:
   virtual int getMaxHardwareBreakpoints(ProcessThreadId const &ptid) = 0;
   virtual int getMaxHardwareWatchpoints(ProcessThreadId const &ptid) = 0;
 #endif
 
-#if defined(OS_LINUX) && defined(ARCH_ARM)
+#if defined(ARCH_ARM)
 public:
   virtual int getMaxWatchpointSize(ProcessThreadId const &ptid) = 0;
 
@@ -102,7 +103,12 @@ public:
   virtual ErrorCode writeHardwareWatchpoint(ProcessThreadId const &ptid,
                                             uint32_t addr, uint32_t ctrl,
                                             size_t idx) = 0;
-#endif
+#elif defined(ARCH_X86) || defined(ARCH_X86_64)
+public:
+  virtual ErrorCode writeDebugReg(ProcessThreadId const &ptid, size_t idx,
+                                  uintptr_t val) = 0;
+#endif // ARCH
+#endif // OS_LINUX
 
 protected:
   template <typename CommandType, typename AddrType, typename DataType>
