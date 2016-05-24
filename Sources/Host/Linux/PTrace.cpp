@@ -17,9 +17,11 @@
 
 #include <cerrno>
 #include <csignal>
+#include <cstddef>
 #include <cstdio>
 #include <limits>
 #include <sys/personality.h>
+#include <sys/user.h>
 #include <sys/wait.h>
 
 #define super ds2::Host::POSIX::PTrace
@@ -316,6 +318,15 @@ ErrorCode PTrace::writeRegisterSet(ProcessThreadId const &ptid, int regSetCode,
 
   return kSuccess;
 }
+
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
+static size_t computeDebugRegOffset(int idx) {
+  size_t debugOffset = offsetof(struct user, u_debugreg);
+  size_t regSize = sizeof(((struct user *)0)->u_debugreg[idx]);
+
+  return debugOffset + (regSize * idx);
+}
+#endif
 }
 }
 }
