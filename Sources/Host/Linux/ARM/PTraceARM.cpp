@@ -28,50 +28,9 @@ namespace ds2 {
 namespace Host {
 namespace Linux {
 
-struct PTracePrivateData {
-  uint8_t breakpointCount;
-  uint8_t watchpointCount;
-  uint8_t maxWatchpointSize;
+void PTrace::initCPUState(ProcessId pid) {}
 
-  PTracePrivateData()
-      : breakpointCount(0), watchpointCount(0), maxWatchpointSize(0) {}
-};
-
-void PTrace::initCPUState(ProcessId pid) {
-  if (_privateData != nullptr)
-    return;
-
-  _privateData = new PTracePrivateData;
-
-  //
-  // Retrieve the information about Hardware Breakpoint, if supported.
-  //
-  unsigned int value = 0;
-  if (wrapPtrace(PTRACE_GETHBPREGS, pid, 0, &value) < 0) {
-    DS2LOG(Debug, "hardware breakpoint support disabled, error=%s",
-           Stringify::Errno(errno));
-    return;
-  }
-
-  if ((value >> 24) == 0)
-    return;
-
-  _privateData->breakpointCount = value & 0xff;
-  _privateData->watchpointCount = (value >> 8) & 0xff;
-  _privateData->maxWatchpointSize = (value >> 16) & 0xff;
-
-  //
-  // Set our hard limits.
-  //
-  if (_privateData->breakpointCount > 32) {
-    _privateData->breakpointCount = 32;
-  }
-  if (_privateData->watchpointCount > 32) {
-    _privateData->watchpointCount = 32;
-  }
-}
-
-void PTrace::doneCPUState() { delete _privateData; }
+void PTrace::doneCPUState() {}
 
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
                                Architecture::CPUState &state) {
@@ -151,11 +110,6 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   ErrorCode error = ptidToPid(ptid, pid);
   if (error != kSuccess)
     return error;
-
-  //
-  // Initialize the CPU state, just in case.
-  //
-  initCPUState(pid);
 
   //
   // Read GPRs
