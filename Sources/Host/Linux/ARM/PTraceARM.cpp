@@ -111,7 +111,6 @@ uint32_t PTrace::getStoppointData(ProcessThreadId const &ptid) {
   pid_t pid;
 
   ErrorCode error = ptidToPid(ptid, pid);
-
   if (error != kSuccess)
     return 0;
 
