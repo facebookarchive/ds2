@@ -2283,6 +2283,12 @@ void Session::Handle_qSymbol(ProtocolInterpreter::Handler const &,
     name = HexToString(args.substr(name_begin));
   }
 
+  // This is a query packet.
+  if (value.empty() && name.empty()) {
+    sendOK();
+    return;
+  }
+
   std::string next;
   ErrorCode error = _delegate->onQuerySymbol(*this, name, value, next);
   if (error != kSuccess) {
