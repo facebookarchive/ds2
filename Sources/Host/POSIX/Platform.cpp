@@ -193,6 +193,8 @@ ErrorCode Platform::TranslateError(int error) {
     return ds2::kErrorAlreadyExist;
   case EINVAL:
     return ds2::kErrorInvalidArgument;
+  case ENOENT:
+    return ds2::kErrorNotFound;
   default:
     DS2BUG("unknown error code: %d", error);
   }
