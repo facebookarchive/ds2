@@ -106,6 +106,8 @@ char const *Platform::GetHostName(bool fqdn) {
         goto end;
 
       sHostName = info->ai_canonname;
+
+      ::freeaddrinfo(info);
     }
   }
 
