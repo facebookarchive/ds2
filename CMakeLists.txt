@@ -40,8 +40,16 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
   endif ()
 
-  if (ASAN)
+  if (SANITIZER)
+    set(COMMON_FLAGS "${COMMON_FLAGS} -g -fno-omit-frame-pointer")
+  endif ()
+
+  if (SANITIZER STREQUAL "asan")
     set(COMMON_FLAGS "${COMMON_FLAGS} -fsanitize=address")
+  elseif (SANITIZER STREQUAL "ubsan")
+    set(COMMON_FLAGS "${COMMON_FLAGS} -fsanitize=integer -fsanitize=undefined")
+  elseif (SANITIZER STREQUAL "tsan")
+    set(COMMON_FLAGS "${COMMON_FLAGS} -fsanitize=thread")
   endif ()
 
   if (PIE)
