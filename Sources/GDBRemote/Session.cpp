@@ -3068,7 +3068,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
-      ss << 'F' << 0 << ';' << std::hex << fd;
+      ss << 'F' << std::hex << fd;
     }
   } else if (op == "close") {
     int fd = std::strtol(&args[op_end], nullptr, 16);
