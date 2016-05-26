@@ -101,7 +101,7 @@ char const *Platform::GetHostName(bool fqdn) {
       hints.ai_socktype = SOCK_STREAM;
       hints.ai_flags = AI_CANONNAME;
 
-      rc = getaddrinfo(hostName, "http", &hints, &info);
+      rc = ::getaddrinfo(hostName, "http", &hints, &info);
       if (rc != 0)
         goto end;
 
