@@ -45,7 +45,7 @@ static uint8_t const gMunmapCode[] = {
 };
 
 static void PrepareMmapCode(size_t size, uint32_t protection,
-                            U8Vector &codestr) {
+                            ByteVector &codestr) {
   codestr.assign(&gMmapCode[0], &gMmapCode[sizeof(gMmapCode)]);
 
   uint8_t *code = &codestr[0];
@@ -56,7 +56,7 @@ static void PrepareMmapCode(size_t size, uint32_t protection,
 }
 
 static void PrepareMunmapCode(uint64_t address, size_t size,
-                              U8Vector &codestr) {
+                              ByteVector &codestr) {
   codestr.assign(&gMunmapCode[0], &gMunmapCode[sizeof(gMunmapCode)]);
 
   uint8_t *code = &codestr[0];
@@ -75,7 +75,7 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   if (error != kSuccess)
     return error;
 
-  U8Vector codestr;
+  ByteVector codestr;
   PrepareMmapCode(size, protection, codestr);
 
   //
@@ -101,7 +101,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   if (error != kSuccess)
     return error;
 
-  U8Vector codestr;
+  ByteVector codestr;
   PrepareMunmapCode(address, size, codestr);
 
   //

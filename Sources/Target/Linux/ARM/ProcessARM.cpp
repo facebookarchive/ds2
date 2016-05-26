@@ -32,7 +32,7 @@ namespace Linux {
 namespace {
 
 template <typename T>
-static inline void InitCodeVector(U8Vector &codestr, T const &init) {
+static inline void InitCodeVector(ByteVector &codestr, T const &init) {
   uint8_t const *bptr = reinterpret_cast<uint8_t const *>(&init);
   uint8_t const *eptr = bptr + sizeof init;
 
@@ -115,7 +115,7 @@ static uint16_t const gT2MunmapCode[] = {
 };
 
 static void T2PrepareMmapCode(size_t size, uint32_t protection,
-                              U8Vector &codestr) {
+                              ByteVector &codestr) {
   InitCodeVector(codestr, gT2MmapCode);
 
   uint16_t *code = reinterpret_cast<uint16_t *>(&codestr[0]);
@@ -127,7 +127,7 @@ static void T2PrepareMmapCode(size_t size, uint32_t protection,
 }
 
 static void T2PrepareMunmapCode(uint32_t address, size_t size,
-                                U8Vector &codestr) {
+                                ByteVector &codestr) {
   InitCodeVector(codestr, gT2MunmapCode);
 
   uint16_t *code = reinterpret_cast<uint16_t *>(&codestr[0]);
@@ -167,7 +167,7 @@ static uint16_t const gT1MunmapCode[] = {
 };
 
 static void T1PrepareMmapCode(size_t size, uint32_t protection,
-                              U8Vector &codestr) {
+                              ByteVector &codestr) {
   InitCodeVector(codestr, gT1MmapCode);
 
   uint16_t *code = reinterpret_cast<uint16_t *>(&codestr[0]);
@@ -178,7 +178,7 @@ static void T1PrepareMmapCode(size_t size, uint32_t protection,
 }
 
 static void T1PrepareMunmapCode(uint32_t address, size_t size,
-                                U8Vector &codestr) {
+                                ByteVector &codestr) {
   InitCodeVector(codestr, gT1MunmapCode);
 
   uint16_t *code = reinterpret_cast<uint16_t *>(&codestr[0]);
@@ -189,7 +189,7 @@ static void T1PrepareMunmapCode(uint32_t address, size_t size,
 #endif
 
 static void ThumbPrepareMmapCode(size_t size, uint32_t protection,
-                                 U8Vector &codestr) {
+                                 ByteVector &codestr) {
 #if (__ARM_ARCH >= 7)
   T2PrepareMmapCode(size, protection, codestr);
 #else
@@ -198,7 +198,7 @@ static void ThumbPrepareMmapCode(size_t size, uint32_t protection,
 }
 
 static void ThumbPrepareMunmapCode(uint32_t address, size_t size,
-                                   U8Vector &codestr) {
+                                   ByteVector &codestr) {
 #if (__ARM_ARCH >= 7)
   T2PrepareMunmapCode(address, size, codestr);
 #else
@@ -235,7 +235,7 @@ static uint32_t const gARMMunmapCode[] = {
 };
 
 static void ARMPrepareMmapCode(size_t size, uint32_t protection,
-                               U8Vector &codestr) {
+                               ByteVector &codestr) {
   InitCodeVector(codestr, gARMMmapCode);
 
   uint32_t *code = reinterpret_cast<uint32_t *>(&codestr[0]);
@@ -246,7 +246,7 @@ static void ARMPrepareMmapCode(size_t size, uint32_t protection,
 }
 
 static void ARMPrepareMunmapCode(uint32_t address, size_t size,
-                                 U8Vector &codestr) {
+                                 ByteVector &codestr) {
   InitCodeVector(codestr, gARMMunmapCode);
 
   uint32_t *code = reinterpret_cast<uint32_t *>(&codestr[0]);
@@ -274,7 +274,7 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   if (error != kSuccess)
     return error;
 
-  U8Vector codestr;
+  ByteVector codestr;
   if (state.isThumb()) {
     ThumbPrepareMmapCode(size, protection, codestr);
     // If the current PC is not aligned (thumb has 16bit instructions), add a
@@ -314,7 +314,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   if (error != kSuccess)
     return error;
 
-  U8Vector codestr;
+  ByteVector codestr;
   if (state.isThumb()) {
     ThumbPrepareMunmapCode(address, size, codestr);
     // If the current PC is not aligned (thumb has 16bit instructions), add a

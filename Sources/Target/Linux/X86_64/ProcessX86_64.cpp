@@ -41,7 +41,7 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
 
   bool is32 = is32BitProcess(this);
 
-  U8Vector codestr;
+  ByteVector codestr;
   if (is32) {
     X86Sys::PrepareMmapCode(size, protection, codestr);
   } else {
@@ -69,7 +69,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
     return kErrorInvalidArgument;
   }
 
-  U8Vector codestr;
+  ByteVector codestr;
   if (is32BitProcess(this)) {
     X86Sys::PrepareMunmapCode(address, size, codestr);
   } else {

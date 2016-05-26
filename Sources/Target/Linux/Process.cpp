@@ -397,7 +397,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
   return kSuccess;
 }
 
-ErrorCode Process::executeCode(U8Vector const &codestr, uint64_t &result) {
+ErrorCode Process::executeCode(ByteVector const &codestr, uint64_t &result) {
   ErrorCode error;
 
   ProcessInfo info;

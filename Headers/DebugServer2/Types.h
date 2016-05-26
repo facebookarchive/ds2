@@ -49,7 +49,7 @@ static const ProcessId kAnyProcessId = static_cast<ProcessId>(0);
 static const ThreadId kAllThreadId = static_cast<ThreadId>(-1);
 static const ThreadId kAnyThreadId = static_cast<ThreadId>(0);
 
-typedef std::vector<uint8_t> U8Vector;
+typedef std::vector<uint8_t> ByteVector;
 
 //
 // Process/Thread Id Tuple

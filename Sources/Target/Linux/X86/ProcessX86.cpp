@@ -24,7 +24,7 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
     return kErrorInvalidArgument;
   }
 
-  U8Vector codestr;
+  ByteVector codestr;
   X86Sys::PrepareMmapCode(size, protection, codestr);
 
   uint64_t result;
@@ -47,7 +47,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
     return kErrorInvalidArgument;
   }
 
-  U8Vector codestr;
+  ByteVector codestr;
   X86Sys::PrepareMunmapCode(address, size, codestr);
 
   uint64_t result;

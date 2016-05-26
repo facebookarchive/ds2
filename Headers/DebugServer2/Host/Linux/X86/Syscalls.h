@@ -42,7 +42,7 @@ static uint8_t const gMunmapCode[] = {
 }
 
 static inline void PrepareMmapCode(size_t size, uint32_t protection,
-                                   U8Vector &codestr) {
+                                   ByteVector &codestr) {
   codestr.assign(&gMmapCode[0], &gMmapCode[sizeof(gMmapCode)]);
 
   uint8_t *code = &codestr[0];
@@ -53,7 +53,7 @@ static inline void PrepareMmapCode(size_t size, uint32_t protection,
 }
 
 static inline void PrepareMunmapCode(uint32_t address, size_t size,
-                                     U8Vector &codestr) {
+                                     ByteVector &codestr) {
   codestr.assign(&gMunmapCode[0], &gMunmapCode[sizeof(gMunmapCode)]);
 
   uint8_t *code = &codestr[0];
