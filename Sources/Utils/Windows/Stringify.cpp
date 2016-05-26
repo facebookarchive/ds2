@@ -56,6 +56,8 @@ char const *Stringify::ExceptionCode(DWORD code) {
     return "0x800706BA (uncaught COM exception)";
   case DS2_EXCEPTION_UNCAUGHT_USER:
     return "0xE06D7363 (uncaught user exception)";
+  case DS2_EXCEPTION_UNCAUGHT_WINRT:
+    return "0x40080201 (uncaught WinRT exception)";
     DO_DEFAULT("unknown exception code", code)
   }
 }
