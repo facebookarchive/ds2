@@ -113,6 +113,16 @@ bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
 
 void SoftwareBreakpointManager::getOpcode(uint32_t type,
                                           std::string &opcode) const {
+#if defined(OS_WIN32) && defined(ARCH_ARM)
+  if (type == 4) {
+    static const uint32_t WinARMBPType = 2;
+    DS2LOG(Warning, "requesting a breakpoint of size %u on Windows ARM, "
+                    "adjusting to type %u",
+           type, WinARMBPType);
+    type = WinARMBPType;
+  }
+#endif
+
   switch (type) {
 #if defined(ARCH_ARM)
   case 2: // udf #1
