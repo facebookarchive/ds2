@@ -123,56 +123,32 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
   }
 #endif
 
+  // TODO: We shouldn't have preprocessor checks for ARCH_ARM vs ARCH_ARM64
+  // because we might be an ARM64 binary debugging an ARM inferior.
   switch (type) {
 #if defined(ARCH_ARM)
   case 2: // udf #1
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     opcode += '\xde';
     opcode += '\x01';
-#else
-    opcode += '\x01';
-    opcode += '\xde';
-#endif
     break;
   case 3: // udf.w #0
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     opcode += '\xa0';
     opcode += '\x00';
     opcode += '\xf7';
     opcode += '\xf0';
-#else
-    opcode += '\xf0';
-    opcode += '\xf7';
-    opcode += '\x00';
-    opcode += '\xa0';
-#endif
     break;
   case 4: // udf #16
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     opcode += '\xe7';
     opcode += '\xf0';
     opcode += '\x01';
     opcode += '\xf0';
-#else
-    opcode += '\xf0';
-    opcode += '\x01';
-    opcode += '\xf0';
-    opcode += '\xe7';
-#endif
     break;
 #elif defined(ARCH_ARM64)
   case 4:
-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
     opcode += '\xd4';
     opcode += '\x20';
     opcode += '\x20';
     opcode += '\x00';
-#else
-    opcode += '\x00';
-    opcode += '\x20';
-    opcode += '\x20';
-    opcode += '\xd4';
-#endif
     break;
 #endif
   default:
@@ -180,6 +156,14 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
     DS2BUG("invalid breakpoint type");
     break;
   }
+
+#if !(defined(ENDIAN_BIG) || defined(ENDIAN_LITTLE))
+#error "Target not supported."
+#endif
+
+#if defined(ENDIAN_LITTLE)
+  std::reverse(opcode.begin(), opcode.end());
+#endif
 }
 
 ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
