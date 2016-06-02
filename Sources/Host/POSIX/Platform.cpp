@@ -188,6 +188,7 @@ ErrorCode Platform::TranslateError(int error) {
   case EIO:
     return ds2::kErrorInvalidAddress;
   case EPERM:
+  case ENOEXEC:
     return ds2::kErrorNoPermission;
   case EEXIST:
     return ds2::kErrorAlreadyExist;
