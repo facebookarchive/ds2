@@ -337,14 +337,13 @@ ErrorCode PrepareSoftwareSingleStep(Process *process,
                                     Address const &address) {
   ErrorCode error;
   bool link = false;
-  bool isThumb = !!(state.gp.cpsr & (1 << 5));
   uint32_t pc = address.valid() ? address.value() : state.pc();
   uint32_t nextPC = static_cast<uint32_t>(-1);
   uint32_t nextPCSize = 0;
   uint32_t branchPC = static_cast<uint32_t>(-1);
   uint32_t branchPCSize = 0;
 
-  if (isThumb) {
+  if (state.isThumb()) {
     error = PrepareThumbSoftwareSingleStep(process, pc, state, link, nextPC,
                                            nextPCSize, branchPC, branchPCSize);
   } else {
