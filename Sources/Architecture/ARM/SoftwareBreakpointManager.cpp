@@ -129,7 +129,11 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
 #if defined(ARCH_ARM)
   case 2: // udf #1
     opcode += '\xde';
+#if defined(OS_POSIX)
     opcode += '\x01';
+#elif defined(OS_WIN32)
+    opcode += '\xfe';
+#endif
     break;
   case 3: // udf.w #0
     opcode += '\xa0';
