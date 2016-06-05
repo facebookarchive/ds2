@@ -13,6 +13,7 @@
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/BreakpointManager.h"
 #include "DebugServer2/Host/Darwin/LibProc.h"
+#include "DebugServer2/Host/Darwin/Mach.h"
 #include "DebugServer2/Host/Darwin/PTrace.h"
 #include "DebugServer2/Target/Darwin/Thread.h"
 #include "DebugServer2/Utils/Log.h"
@@ -34,6 +35,49 @@ using ds2::Host::Darwin::LibProc;
 namespace ds2 {
 namespace Target {
 namespace Darwin {
+
+ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
+  //
+  // Wait the main thread.
+  //
+  ErrorCode error;
+  Host::Darwin::MachExcStatus status;
+
+  mach(pid);
+
+  error = mach().setupExceptionChannel();
+  if (error != kSuccess) {
+    DS2LOG(Error, "Unable to setup the exception port");
+    return error;
+  }
+
+  error = mach().readException(status, false);
+  if (error != kSuccess) {
+    DS2LOG(Error, "Unable to read the exception");
+    return error;
+  }
+
+  error = ptrace().traceThat(pid);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  ProcessInfo pinfo; // Unused arg
+  error = ptrace().resume(ProcessThreadId(pid, pid), pinfo);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  error = ds2::Target::ProcessBase::initialize(pid, flags);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  _currentThread = new Thread(this, pid);
+  _currentThread->updateStopInfo(status);
+
+  return kSuccess;
+}
 
 ErrorCode Process::attach(int waitStatus) {
 
@@ -80,132 +124,98 @@ ErrorCode Process::attach(int waitStatus) {
 }
 
 ErrorCode Process::wait() {
-  int status, signal;
+  int signal;
   ProcessInfo info;
-  ErrorCode err;
   pid_t tid;
 
   // We have at least one thread when we start waiting on a process.
   DS2ASSERT(!_threads.empty());
 
-continue_waiting:
-  err = ptrace().wait(_pid, &status);
-  if (err != kSuccess)
-    return err;
+  while (!_threads.empty()) {
+    Host::Darwin::MachExcStatus status;
 
-  DS2LOG(Debug, "stopped: status=%d", status);
-
-  if (WIFEXITED(status)) {
-    err = ptrace().wait(_pid, &status);
-    DS2LOG(Debug, "exited: status=%d", status);
-    _currentThread->updateStopInfo(status);
-    _terminated = true;
-
-    return kSuccess;
-  }
-
-  DS2BUG("not implemented");
-  switch (_currentThread->_stopInfo.event) {
-  case StopInfo::kEventNone:
-    switch (_currentThread->_stopInfo.reason) {
-    case StopInfo::kReasonNone:
-      ptrace().resume(ProcessThreadId(_pid, tid), info);
-      goto continue_waiting;
-    default:
-      DS2ASSERT(false);
-      goto continue_waiting;
+    ErrorCode error = mach().readException(status, false);
+    if (error != kSuccess) {
+      DS2LOG(Error, "Failed to get the breakpoint");
+      return error;
     }
 
-  case StopInfo::kEventExit:
-  case StopInfo::kEventKill:
-    DS2LOG(Debug, "thread %d is exiting", tid);
+    tid = 0;
+    enumerateThreads([&](Thread *thread) {
+      if (mach().exceptionIsFromThread(ProcessThreadId(pid(), thread->tid())))
+        tid = thread->tid();
+    });
 
-    //
-    // Killing the main thread?
-    //
-    // Note(sas): This might be buggy; the main thread exiting
-    // doesn't mean that the process is dying.
-    //
-    if (tid == _pid && _threads.size() == 1) {
-      DS2LOG(Debug, "last thread is exiting");
-      break;
-    }
+    auto threadIt = _threads.find(tid);
 
-    //
-    // Remove and release the thread associated with this pid.
-    //
-    removeThread(tid);
-    goto continue_waiting;
-
-  case StopInfo::kEventStop:
-    if (getInfo(info) != kSuccess) {
-      DS2LOG(Error, "couldn't get process info for pid %d", _pid);
-      goto continue_waiting;
-    }
-
-    signal = _currentThread->_stopInfo.signal;
-
-    if (signal == SIGSTOP || signal == SIGCHLD) {
+    if (threadIt == _threads.end()) {
       //
-      // Silently ignore SIGSTOP, SIGCHLD and SIGRTMIN (this
-      // last one used for thread cancellation) and continue.
+      // A new thread has appeared that we didn't know about. Create the
+      // Thread object (this call has side effects that save the Thread in
+      // the Process therefore we don't need to retain the pointer),
+      // resume the thread and just continue waiting.
       //
-      // Note(oba): The SIGRTMIN defines expands to a glibc
-      // call, this due to the fact the POSIX standard does
-      // not mandate that SIGRT* defines to be user-land
-      // constants.
+      // There's no need to call traceThat() on the newly created thread
+      // here because the ptrace flags are inherited when new threads
+      // are created.
       //
-      // Note(sas): This is probably partially dead code as
-      // ptrace().step() doesn't work on ARM.
-      //
-      // Note(sas): Single-step detection should be higher up, not
-      // only for SIGSTOP, SIGCHLD and SIGRTMIN, but for every
-      // signal that we choose to ignore.
-      //
-      bool stepping = (_currentThread->state() == Thread::kStepped);
-
-      if (signal == SIGSTOP) {
-        signal = 0;
-      } else {
-        DS2LOG(Debug, "%s due to special signal, tid=%d status=%#x signal=%s",
-               stepping ? "stepping" : "resuming", tid, status,
-               strsignal(signal));
-      }
-
-      ErrorCode error;
-      if (stepping) {
-        error = ptrace().step(ProcessThreadId(_pid, tid), info, signal);
-      } else {
-        error = ptrace().resume(ProcessThreadId(_pid, tid), info, signal);
-      }
-
-      if (error != kSuccess) {
-        DS2LOG(Warning, "cannot resume thread %d error=%d", tid, error);
-      }
-
-      goto continue_waiting;
-    } else if (_passthruSignals.find(signal) != _passthruSignals.end()) {
-      ptrace().resume(ProcessThreadId(_pid, tid), info, signal);
+      DS2LOG(Debug, "creating new thread tid=%d", tid);
+      auto thread = new Thread(this, tid);
+      thread->resume();
       goto continue_waiting;
     } else {
-      //
-      // This is a signal that we want to transmit back to the
-      // debugger.
-      //
-      break;
+      _currentThread = threadIt->second;
     }
-  }
 
-  if (!(WIFEXITED(status) || WIFSIGNALED(status))) {
-    //
-    // Suspend the process, this must be done after updating
-    // the thread trap info.
-    //
-    suspend();
-  }
+    _currentThread->updateStopInfo(status);
 
-  if ((WIFEXITED(status) || WIFSIGNALED(status))) {
-    _terminated = true;
+    switch (_currentThread->_stopInfo.event) {
+    case StopInfo::kEventNone:
+      _currentThread->resume();
+      goto continue_waiting;
+    case StopInfo::kEventExit:
+    case StopInfo::kEventKill:
+      DS2LOG(Debug, "thread %d is exiting", tid);
+
+      //
+      // Killing the main thread?
+      //
+      // Note(sas): This might be buggy; the main thread exiting
+      // doesn't mean that the process is dying.
+      //
+      if (tid == _pid && _threads.size() == 1) {
+        DS2LOG(Debug, "last thread is exiting");
+        _terminated = true;
+        break;
+      }
+
+      //
+      // Remove and release the thread associated with this pid.
+      //
+      removeThread(tid);
+      goto continue_waiting;
+
+    case StopInfo::kEventStop:
+      signal = _currentThread->_stopInfo.signal;
+
+      if (_passthruSignals.find(signal) != _passthruSignals.end()) {
+        ptrace().resume(ProcessThreadId(_pid, tid), info, signal);
+        goto continue_waiting;
+      } else {
+        //
+        // This is a signal that we want to transmit back to the
+        // debugger.
+        //
+        suspend();
+        break;
+      }
+    }
+
+    // This thread need to be reported
+    break;
+
+  continue_waiting:
+    _currentThread = nullptr;
   }
 
   return kSuccess;
@@ -222,7 +232,6 @@ ErrorCode Process::terminate() {
 ErrorCode Process::suspend() {
   std::set<Thread *> threads;
   enumerateThreads([&](Thread *thread) { threads.insert(thread); });
-  DS2BUG("not implemented");
 
   for (auto thread : threads) {
     Architecture::CPUState state;
@@ -292,7 +301,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
 
   info.clear();
 
-  return mach().getProcessMemoryRegion(_info.pid, address, info);
+  return mach().getProcessMemoryRegion(address, info);
 }
 
 ErrorCode Process::readString(Address const &address, std::string &str,

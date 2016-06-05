@@ -59,7 +59,7 @@ std::string LibProc::GetThreadName(ProcessThreadId const &ptid) {
   static const std::string defaultName = "<unknown>";
   thread_identifier_info_data_t threadId;
   struct proc_threadinfo ti;
-  Mach mach;
+  Mach mach(ptid.pid);
 
   ErrorCode error = mach.getThreadIdentifierInfo(ptid, &threadId);
   if (error != kSuccess) {

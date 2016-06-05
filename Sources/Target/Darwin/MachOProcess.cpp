@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Target/Darwin/MachOProcess.h"
+#include "DebugServer2/Target/Darwin/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <dirent.h>
@@ -22,7 +23,25 @@ namespace ds2 {
 namespace Target {
 namespace Darwin {
 
-Host::Darwin::Mach &MachOProcess::mach() { return _mach; }
+Host::Darwin::Mach &MachOProcess::mach(ProcessId pid) {
+  if (pid != -1) {
+    _mach = Host::Darwin::Mach(pid);
+  }
+  return _mach;
+}
+
+ErrorCode
+MachOProcess::resume(int signal,
+                     std::set<ds2::Target::Thread *> const &excluded) {
+  enumerateThreads([&](Thread *thread) {
+
+    ErrorCode err = thread->resume(signal);
+    if (err != kSuccess) {
+      DS2LOG(Error, "Unable to resume the thread: %d", thread->tid());
+    }
+  });
+  return kSuccess;
+}
 
 ErrorCode MachOProcess::getAuxiliaryVector(std::string &auxv) {
   ErrorCode error = updateAuxiliaryVector();
@@ -116,7 +135,7 @@ ErrorCode MachOProcess::updateAuxiliaryVector() { return kSuccess; }
 // Retrieves the shared library info address pointer.
 //
 ErrorCode MachOProcess::getSharedLibraryInfoAddress(Address &address) {
-  return mach().getProcessDylbInfo(_info.pid, address);
+  return mach().getProcessDylbInfo(address);
 }
 
 //

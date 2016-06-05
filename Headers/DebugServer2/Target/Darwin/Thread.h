@@ -11,11 +11,11 @@
 #ifndef __DebugServer2_Target_Darwin_Thread_h
 #define __DebugServer2_Target_Darwin_Thread_h
 
+#include "DebugServer2/Host/Darwin/Mach.h"
 #include "DebugServer2/Target/POSIX/Thread.h"
 
 #include <csignal>
 #include <libproc.h>
-
 #include <mach/mach.h>
 #include <mach/mach_vm.h>
 #include <sys/types.h>
@@ -33,15 +33,19 @@ protected:
   Thread(Process *process, ThreadId tid);
 
 protected:
-  ErrorCode updateStopInfo(int waitStatus) override;
+  ErrorCode updateStopInfo(Host::Darwin::MachExcStatus &status);
+  ErrorCode updateStopInfo(int waitStatus) override {
+    return kErrorUnsupported;
+  };
   void updateState() override;
 
 public:
-  virtual ErrorCode step(int signal,
+  virtual ErrorCode suspend() override;
+  virtual ErrorCode step(int signal = 0,
                          Address const &address = Address()) override;
-
-public:
   virtual ErrorCode afterResume();
+  virtual ErrorCode resume(int signal = 0,
+                           Address const &address = Address()) override;
 
 public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state) override;

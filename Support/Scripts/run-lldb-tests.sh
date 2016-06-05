@@ -21,7 +21,7 @@ build_dir="$PWD"
 
 source "$top/Support/Scripts/common.sh"
 
-[ "$(uname)" == "Linux" ] || die "The lldb test suite requires a Linux host environment."
+[ "$(uname)" == "Linux" ] || [ "$(uname)" == "Darwin" ] || die "The lldb test suite requires a Linux host environment."
 [ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
 
 opt_fast=false
@@ -81,6 +81,21 @@ elif grep -q "Ubuntu" "/etc/issue"; then
       ln -s "$new_link" "$path"
     done
   fi
+elif [ "$(uname)" == "Darwin" ]; then
+  llvm_path="$build_dir/llvm"
+  llvm_build="$llvm_path/build"
+  lldb_path="$llvm_path/tools/lldb"
+  lldb_exe="$(which lldb)"
+  cc_exe="$(which gcc)"
+  export PYTHONPATH="$llvm_build/lib64/python2.7/site-packages"
+
+  if ! $opt_fast; then
+    git_clone "$REPO_BASE/llvm.git"  "$llvm_path"             "$UPSTREAM_BRANCH"
+    git_clone "$REPO_BASE/lldb.git"  "$llvm_path/tools/lldb"  "$UPSTREAM_BRANCH"
+    git_clone "$REPO_BASE/clang.git" "$llvm_path/tools/clang" "$UPSTREAM_BRANCH"
+
+    patch -d "$llvm_path/tools/lldb" -p1 <"$top/Support/Testing/Pythonpath-hack.patch"
+  fi
 else
   die "Testing is only supported on CentOS and Ubuntu."
 fi
@@ -138,4 +153,9 @@ else
   test_cmd=(dosep.py -o "$args")
 fi
 
-exec python2.7 "${test_cmd[@]}"
+if [ "$(uname)" == "Darwin" ]; then
+   # The codesign sound to not working, so let sudo for the moment
+   sudo python2.7 "${test_cmd[@]}"
+else
+   exec python2.7 "${test_cmd[@]}"
+fi

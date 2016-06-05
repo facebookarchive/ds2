@@ -65,6 +65,16 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(ARCH_NAME "X86")
   endif ()
 endif ()
+if ("${CMAKE_SYSTEM_NAME}" MATCHES "Darwin")
+  set(GENERATED_MACH_SOURCES
+      ${CMAKE_CURRENT_BINARY_DIR}/mach_excServer.c
+      ${CMAKE_CURRENT_BINARY_DIR}/mach_excUser.c
+  )
+  add_custom_command(OUTPUT ${GENERATED_MACH_SOURCES}
+    COMMAND mig ${CMAKE_SOURCE_DIR}/Sources/Host/Darwin/machGen.defs
+    DEPENDS ${CMAKE_SOURCE_DIR}/Sources/Host/Darwin/machGen.defs
+  )
+endif ()
 
 set(ARCHITECTURE_COMMON_SOURCES
     Sources/Architecture/RegisterLayout.cpp
@@ -116,6 +126,7 @@ set(HOST_Linux_SOURCES
     )
 
 set(HOST_Darwin_SOURCES
+    ${GENERATED_MACH_SOURCES}
     ${HOST_POSIX_SOURCES}
     Sources/Host/Darwin/LibProc.cpp
     Sources/Host/Darwin/Platform.cpp

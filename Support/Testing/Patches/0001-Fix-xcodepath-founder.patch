@@ -1,0 +1,24 @@
+From 80a0c4cd666aafe022c9645abe89a143ad8b97ac Mon Sep 17 00:00:00 2001
+From: Corentin Derbois <cderbois@gmail.com>
+Date: Fri, 6 May 2016 03:39:06 -0700
+Subject: [PATCH] Fix xcodepath founder
+
+---
+ test/dotest.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/test/dotest.py b/test/dotest.py
+index 4969304..3f4d705 100755
+--- a/test/dotest.py
++++ b/test/dotest.py
+@@ -840,6 +840,7 @@ def getXcodeOutputPaths(lldbRootDirectory):
+             outputPath = os.path.join(lldbRootDirectory, *(xcode_build_dir+configuration) )
+             result.append(outputPath)
+ 
++    result.append('/Applications/Xcode.app/Contents/SharedFrameworks/')
+     return result
+ 
+ def getOutputPaths(lldbRootDirectory):
+-- 
+2.5.4 (Apple Git-61)
+

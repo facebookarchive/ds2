@@ -1,0 +1,20 @@
+diff --git a/test/functionalities/attach_resume/TestAttachResume.py b/test/functionalities/attach_resume/TestAttachResume.py
+index 9837687..6fb92a2 100644
+--- a/test/functionalities/attach_resume/TestAttachResume.py
++++ b/test/functionalities/attach_resume/TestAttachResume.py
+@@ -16,6 +16,7 @@ class AttachResumeTestCase(TestBase):
+ 
+     @expectedFlakeyLinux('llvm.org/pr19310')
+     @expectedFailureFreeBSD('llvm.org/pr19310')
++    @expectedFailureDarwin
+     @skipIfRemote
+     @dwarf_test
+     def test_attach_continue_interrupt_detach(self):
+@@ -23,6 +24,7 @@ class AttachResumeTestCase(TestBase):
+         self.buildDwarf()
+         self.process_attach_continue_interrupt_detach()
+ 
++    @expectedFailureDarwin
+     @expectedFlakeyLinux('llvm.org/pr19478') # intermittent ~2/14 runs
+     @skipIfRemote
+     def process_attach_continue_interrupt_detach(self):

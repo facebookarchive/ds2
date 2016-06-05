@@ -27,6 +27,7 @@ public:
 
 public:
   ErrorCode traceThat(ProcessId pid) override;
+  ErrorCode traceMe(bool disableASLR) override;
 
 public:
   ErrorCode kill(ProcessThreadId const &ptid, int signal) override;

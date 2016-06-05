@@ -57,17 +57,17 @@ matrix:
       env: TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="1" RELEASE="1"
     # Darwin-X86_64 targets
     - os: osx
-      osx_image: xcode7
+      osx_image: xcode7.3
+      env: TARGET="Darwin-X86_64" LLDB_TESTS="all" CLANG="1"
+    - os: osx
+      osx_image: xcode7.3
       env: TARGET="Darwin-X86_64" CLANG="0"
     - os: osx
       osx_image: xcode7
       env: TARGET="Darwin-X86_64" CLANG="1"
     - os: osx
-      osx_image: xcode7.3
+      osx_image: xcode7
       env: TARGET="Darwin-X86_64" CLANG="0"
-    - os: osx
-      osx_image: xcode7.3
-      env: TARGET="Darwin-X86_64" CLANG="1"
 
 # Use travis_retry during install to reduce the impact of network failures.
 before_install: travis_retry ./Support/Testing/Travis/before-install.py

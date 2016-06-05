@@ -121,6 +121,7 @@ const char *Platform::GetSelfExecutablePath() {
 
 ErrorCode Platform::TranslateKernError(kern_return_t kret) {
   switch (kret) {
+  // KERN error
   case KERN_SUCCESS:
     return ds2::kSuccess;
   case KERN_FAILURE:
@@ -133,6 +134,10 @@ ErrorCode Platform::TranslateKernError(kern_return_t kret) {
     return ds2::kErrorNoPermission;
   case KERN_RESOURCE_SHORTAGE:
     return ds2::kErrorNoMemory;
+
+  // MACH Error
+  case MACH_RCV_TIMED_OUT:
+    return ds2::kErrorBusy;
   default:
     DS2BUG("unknown error code: %d [%s]", kret, mach_error_string(kret));
   }
