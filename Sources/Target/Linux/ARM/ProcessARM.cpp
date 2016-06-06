@@ -270,7 +270,7 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   // We need to know if the process is running in Thumb or ARM mode.
   //
   Architecture::CPUState state;
-  error = ptrace().readCPUState(_pid, info, state);
+  error = ptrace().readCPUState(_currentThread->tid(), info, state);
   if (error != kSuccess)
     return error;
 
@@ -310,7 +310,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   // We need to know if the process is running in Thumb or ARM mode.
   //
   Architecture::CPUState state;
-  error = ptrace().readCPUState(_pid, info, state);
+  error = ptrace().readCPUState(_currentThread->tid(), info, state);
   if (error != kSuccess)
     return error;
 
