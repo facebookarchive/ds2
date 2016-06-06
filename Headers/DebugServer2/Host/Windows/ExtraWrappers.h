@@ -29,6 +29,16 @@ extern "C" {
 
 #define UNLEN 256
 
+WINBASEAPI HANDLE WINAPI CreateRemoteThread(
+  _In_  HANDLE                 hProcess,
+  _In_  LPSECURITY_ATTRIBUTES  lpThreadAttributes,
+  _In_  SIZE_T                 dwStackSize,
+  _In_  LPTHREAD_START_ROUTINE lpStartAddress,
+  _In_  LPVOID                 lpParameter,
+  _In_  DWORD                  dwCreationFlags,
+  _Out_ LPDWORD                lpThreadId
+);
+
 WINBASEAPI BOOL WINAPI GetVersionExA(
   _Inout_  LPOSVERSIONINFOA lpVersionInfo
 );

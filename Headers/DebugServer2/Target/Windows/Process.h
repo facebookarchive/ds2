@@ -34,6 +34,12 @@ public:
 protected:
   ErrorCode initialize(ProcessId pid, uint32_t flags) override;
 
+private:
+#if defined(ARCH_X86)
+  BOOL writeDebugBreakCode(uint64_t address);
+#endif
+  BOOL debugBreakProcess();
+
 public:
   ErrorCode detach() override;
   ErrorCode interrupt() override;
