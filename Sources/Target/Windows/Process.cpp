@@ -14,6 +14,7 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #include "DebugServer2/Target/Thread.h"
+#include "DebugServer2/Types.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/Stringify.h"
 
@@ -104,8 +105,63 @@ ErrorCode Process::detach() {
   return kSuccess;
 }
 
+#if defined(ARCH_X86)
+static uint8_t const debugBreakCode[] = {
+    0xCC,                         // 00: int 3
+    0xB8, 0x00, 0x00, 0x00, 0x00, // 01: mov eax, RtlExitUserThread address
+    0xFF, 0xD0                    // 06: call eax
+};
+
+BOOL Process::writeDebugBreakCode(uint64_t address) {
+
+  FARPROC exitThreadAddress =
+      GetProcAddress(GetModuleHandleA("ntdll"), "RtlExitUserThread");
+  if (exitThreadAddress == NULL) {
+    return FALSE;
+  }
+
+  ByteVector codestr(&debugBreakCode[0],
+                     &debugBreakCode[sizeof(debugBreakCode)]);
+  *reinterpret_cast<uint32_t *>(&codestr[0x02]) =
+      reinterpret_cast<uint32_t>(exitThreadAddress);
+
+  size_t written;
+  if (writeMemory(Address(address), &codestr[0], codestr.size(), &written) !=
+      kSuccess) {
+    return FALSE;
+  }
+  return TRUE;
+}
+#endif
+
+BOOL Process::debugBreakProcess() {
+#if defined(ARCH_X86)
+  SYSTEM_INFO info;
+  GetSystemInfo(&info);
+
+  uint64_t address;
+  if (allocateMemory(info.dwPageSize, kProtectionExecute | kProtectionWrite,
+                     &address) != kSuccess) {
+    return FALSE;
+  }
+
+  if (!writeDebugBreakCode(address)) {
+    return FALSE;
+  }
+
+  DWORD threadId;
+  if (CreateRemoteThread(_handle, NULL, 0, (LPTHREAD_START_ROUTINE)address,
+                         NULL, 0, &threadId) == NULL) {
+    return FALSE;
+  }
+  return TRUE;
+#else
+  return DebugBreakProcess(_handle);
+#endif
+}
+
 ErrorCode Process::interrupt() {
-  BOOL result = DebugBreakProcess(_handle);
+  BOOL result = debugBreakProcess();
   if (!result)
     return Platform::TranslateError();
 
