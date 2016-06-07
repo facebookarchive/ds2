@@ -375,10 +375,6 @@ WINBASEAPI BOOL WINAPI VirtualFreeEx(
   _In_ DWORD  dwFreeType
 );
 
-WINBASEAPI BOOL WINAPI DebugBreakProcess(
-  _In_ HANDLE Process
-);
-
 typedef struct tagTHREADENTRY32 {
   DWORD dwSize;
   DWORD cntUsage;
@@ -419,7 +415,7 @@ WINBASEAPI LPTOP_LEVEL_EXCEPTION_FILTER WINAPI SetUnhandledExceptionFilter(
 
 // The following code allows us to pick some symbols directly from kernel32.dll
 // (against which we cannot link when building for WinStore-ARM for instance.
-// The functions are declared in the above block (see DebugBreakProcess for
+// The functions are declared in the above block (see Thread32First for
 // instance), but these declarations are then hidden with macros below.
 // Basically, we just
 //     GetProcAddress(GetModuleHandle("kernel32"), funcName)
@@ -452,7 +448,6 @@ auto CallK32Proc(char const *name, ArgTypes... args)
 
 #define DO_K32_CALL(FUNC, ...) CallK32Proc<decltype(&FUNC)>(#FUNC, __VA_ARGS__)
 
-#define DebugBreakProcess(...) DO_K32_CALL(DebugBreakProcess, __VA_ARGS__)
 #define CreateToolhelp32Snapshot(...)                                          \
   DO_K32_CALL(CreateToolhelp32Snapshot, __VA_ARGS__)
 #define Thread32First(...) DO_K32_CALL(Thread32First, __VA_ARGS__)

@@ -35,7 +35,7 @@ protected:
   ErrorCode initialize(ProcessId pid, uint32_t flags) override;
 
 private:
-#if defined(ARCH_X86)
+#if defined(ARCH_X86) || defined(ARCH_ARM)
   BOOL writeDebugBreakCode(uint64_t address);
 #endif
   BOOL debugBreakProcess();

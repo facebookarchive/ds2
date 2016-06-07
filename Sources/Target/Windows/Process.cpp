@@ -27,6 +27,23 @@ using ds2::Utils::Stringify;
 
 #define super ds2::Target::ProcessBase
 
+#if defined(ARCH_ARM)
+static uint8_t const debugBreakCode[] = {
+    0xFE, 0xDE,             // 00: UDF #254
+    0xDF, 0xF8, 0x04, 0x40, // 02: LDR.W R4,[PC, #+0x4]
+    0x20, 0x47,             // 06: BX R4
+    0x00, 0x00, 0x00, 0x00  // 08: RtlExitUserThread address
+};
+static const int kRtlExitUserThreadOffset = 0x08;
+#else
+static uint8_t const debugBreakCode[] = {
+    0xCC,                         // 00: int 3
+    0xB8, 0x00, 0x00, 0x00, 0x00, // 01: mov eax, RtlExitUserThread address
+    0xFF, 0xD0                    // 06: call eax
+};
+static const int kRtlExitUserThreadOffset = 0x02;
+#endif
+
 namespace ds2 {
 namespace Target {
 namespace Windows {
@@ -105,15 +122,7 @@ ErrorCode Process::detach() {
   return kSuccess;
 }
 
-#if defined(ARCH_X86)
-static uint8_t const debugBreakCode[] = {
-    0xCC,                         // 00: int 3
-    0xB8, 0x00, 0x00, 0x00, 0x00, // 01: mov eax, RtlExitUserThread address
-    0xFF, 0xD0                    // 06: call eax
-};
-
 BOOL Process::writeDebugBreakCode(uint64_t address) {
-
   FARPROC exitThreadAddress =
       GetProcAddress(GetModuleHandleA("ntdll"), "RtlExitUserThread");
   if (exitThreadAddress == NULL) {
@@ -122,7 +131,7 @@ BOOL Process::writeDebugBreakCode(uint64_t address) {
 
   ByteVector codestr(&debugBreakCode[0],
                      &debugBreakCode[sizeof(debugBreakCode)]);
-  *reinterpret_cast<uint32_t *>(&codestr[0x02]) =
+  *reinterpret_cast<uint32_t *>(&codestr[kRtlExitUserThreadOffset]) =
       reinterpret_cast<uint32_t>(exitThreadAddress);
 
   size_t written;
@@ -132,10 +141,8 @@ BOOL Process::writeDebugBreakCode(uint64_t address) {
   }
   return TRUE;
 }
-#endif
 
 BOOL Process::debugBreakProcess() {
-#if defined(ARCH_X86)
   SYSTEM_INFO info;
   GetSystemInfo(&info);
 
@@ -150,14 +157,18 @@ BOOL Process::debugBreakProcess() {
   }
 
   DWORD threadId;
-  if (CreateRemoteThread(_handle, NULL, 0, (LPTHREAD_START_ROUTINE)address,
-                         NULL, 0, &threadId) == NULL) {
+#if defined(ARCH_ARM)
+  // +1 indicates the thread to start in THUMB mode
+  auto remoteAddress = address + 1;
+#else
+  auto remoteAddress = address;
+#endif
+  if (CreateRemoteThread(_handle, NULL, 0,
+                         (LPTHREAD_START_ROUTINE)remoteAddress, NULL, 0,
+                         &threadId) == NULL) {
     return FALSE;
   }
   return TRUE;
-#else
-  return DebugBreakProcess(_handle);
-#endif
 }
 
 ErrorCode Process::interrupt() {
