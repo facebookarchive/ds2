@@ -12,6 +12,7 @@
 #define __DebugServer2_Host_POSIX_PTrace_h
 
 #include "DebugServer2/Architecture/CPUState.h"
+#include "DebugServer2/Utils/Cast.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/Stringify.h"
 
@@ -127,8 +128,8 @@ protected:
       errno = 0;
 
       ret = ::ptrace(static_cast<PTraceRequestType>(request), pid,
-                     (PTraceAddrType)(uintptr_t)addr,
-                     (PTraceDataType)(uintptr_t)data);
+                     (PTraceAddrType)ds2::Utils::castToInt(addr),
+                     (PTraceDataType)ds2::Utils::castToInt(data));
     } while (ret < 0 && (errno == EAGAIN || errno == EBUSY) && retries > 0);
 
     if (errno != 0) {
