@@ -285,6 +285,12 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
                                        -Wno-tautological-compare)
   endif ()
 
+  # `-Wunused-but-set-parameter` seems to be buggy in gcc 6.0+ when dealing
+  # with `nullptr_t`.
+  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" AND
+      NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "6.0")
+    target_compile_options(ds2 PRIVATE -Wno-unused-but-set-parameter)
+  endif ()
   if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" AND
       NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "5.1")
     target_compile_options(
