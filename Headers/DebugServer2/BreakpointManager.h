@@ -42,6 +42,12 @@ public:
     Type type;
     Mode mode;
     size_t size;
+
+  public:
+    bool operator==(Site const &other) const {
+      return (address == other.address) && (type == other.type) &&
+             (mode == other.mode) && (size == other.size);
+    }
   };
 
   // Address->Site map
