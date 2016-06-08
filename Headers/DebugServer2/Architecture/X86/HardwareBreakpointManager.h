@@ -13,6 +13,8 @@
 
 #include "DebugServer2/BreakpointManager.h"
 
+#include <vector>
+
 namespace ds2 {
 namespace Architecture {
 namespace X86 {
@@ -44,7 +46,13 @@ public:
   virtual int maxWatchpoints();
 
 protected:
+  virtual int getAvailableLocation();
+
+protected:
   friend Target::ProcessBase;
+
+protected:
+  std::vector<uint64_t> _locations;
 };
 }
 }

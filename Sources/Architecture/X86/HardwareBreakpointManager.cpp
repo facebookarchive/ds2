@@ -10,6 +10,9 @@
 
 #include "DebugServer2/Architecture/X86/HardwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Utils/Log.h"
+
+#include <algorithm>
 
 #define super ds2::BreakpointManager
 
@@ -21,12 +24,22 @@ static const int kMaxHWStoppoints = 4; // dr0, dr1, dr2, dr3
 
 HardwareBreakpointManager::HardwareBreakpointManager(
     Target::ProcessBase *process)
-    : super(process) {}
+    : super(process), _locations(kMaxHWStoppoints, 0) {}
 
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
 
 int HardwareBreakpointManager::maxWatchpoints() { return kMaxHWStoppoints; }
 
+int HardwareBreakpointManager::getAvailableLocation() {
+  DS2ASSERT(_locations.size() == kMaxHWStoppoints);
+
+  auto it = std::find(_locations.begin(), _locations.end(), 0);
+  if (it == _locations.end()) {
+    return -1;
+  }
+
+  return (it - _locations.begin());
+}
 }
 }
 }
