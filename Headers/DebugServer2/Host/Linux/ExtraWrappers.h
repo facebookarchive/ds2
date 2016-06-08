@@ -59,4 +59,18 @@ static inline int tkill(pid_t tid, int signo) {
   return ::syscall(SYS_tkill, tid, signo);
 }
 
+// As defined in <asm-generic/siginfo.h>, missing in glibc
+#if !defined(TRAP_BRKPT)
+#define TRAP_BRKPT 1
+#endif
+#if !defined(TRAP_TRACE)
+#define TRAP_TRACE 2
+#endif
+#if !defined(TRAP_BRANCH)
+#define TRAP_BRANCH 3
+#endif
+#if !defined(TRAP_HWBKPT)
+#define TRAP_HWBKPT 4
+#endif
+
 #endif // !__DebugServer2_Host_Linux_ExtraWrappers_h
