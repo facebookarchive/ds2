@@ -1,0 +1,19 @@
+diff --git a/gdb/testsuite/gdb.base/printcmds.exp b/gdb/testsuite/gdb.base/printcmds.exp
+index 3996d98..885155c 100644
+--- a/gdb/testsuite/gdb.base/printcmds.exp
++++ b/gdb/testsuite/gdb.base/printcmds.exp
+@@ -692,10 +692,14 @@ proc test_print_string_constants {} {
+     gdb_test "p \"abcd\"\[2\]"	" = 99 'c'"
+     gdb_test "p sizeof (\"abcdef\")"	" = 7"
+     gdb_test "ptype \"foo\""		" = char \\\[4\\\]"
++    setup_xfail "*-*-*"
+     gdb_test "p *\"foo\""		" = 102 'f'"
+     gdb_test "ptype *\"foo\""		" = char"
++    setup_xfail "*-*-*"
+     gdb_test "p &*\"foo\""		" = \"foo\""
++    setup_xfail "*-*-*"
+     gdb_test "ptype &*\"foo\""	"type = char \\*"
++    setup_xfail "*-*-*"
+     gdb_test "p (char *)\"foo\""	" = \"foo\""
+ }
+ 
