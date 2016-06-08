@@ -142,18 +142,18 @@ BOOL Process::writeDebugBreakCode(uint64_t address) {
   return TRUE;
 }
 
-BOOL Process::debugBreakProcess() {
+ErrorCode Process::interrupt() {
   SYSTEM_INFO info;
   GetSystemInfo(&info);
 
   uint64_t address;
   if (allocateMemory(info.dwPageSize, kProtectionExecute | kProtectionWrite,
                      &address) != kSuccess) {
-    return FALSE;
+    return Platform::TranslateError();
   }
 
   if (!writeDebugBreakCode(address)) {
-    return FALSE;
+    return Platform::TranslateError();
   }
 
   DWORD threadId;
@@ -166,15 +166,8 @@ BOOL Process::debugBreakProcess() {
   if (CreateRemoteThread(_handle, NULL, 0,
                          (LPTHREAD_START_ROUTINE)remoteAddress, NULL, 0,
                          &threadId) == NULL) {
-    return FALSE;
-  }
-  return TRUE;
-}
-
-ErrorCode Process::interrupt() {
-  BOOL result = debugBreakProcess();
-  if (!result)
     return Platform::TranslateError();
+  }
 
   return kSuccess;
 }
