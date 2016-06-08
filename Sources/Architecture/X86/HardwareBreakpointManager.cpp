@@ -93,6 +93,14 @@ ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint32_t &ctrlReg,
   return kSuccess;
 }
 
+ErrorCode HardwareBreakpointManager::disableDebugCtrlReg(uint32_t &ctrlReg,
+                                                         int idx) {
+  // Unset G<idx> flag
+  DisableBit(ctrlReg, 1 + (idx * 2));
+
+  return kSuccess;
+}
+
 int HardwareBreakpointManager::getAvailableLocation() {
   DS2ASSERT(_locations.size() == kMaxHWStoppoints);
 

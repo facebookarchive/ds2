@@ -49,6 +49,7 @@ protected:
   virtual int getAvailableLocation();
 
 protected:
+  virtual ErrorCode disableDebugCtrlReg(uint32_t &ctrlReg, int idx);
   virtual ErrorCode enableDebugCtrlReg(uint32_t &ctrlReg, int idx, Mode mode,
                                        int size);
 
