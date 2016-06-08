@@ -24,6 +24,12 @@ protected:
   friend class Process;
   Thread(Process *process, ThreadId tid);
 
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
+public:
+  uintptr_t readDebugReg(size_t idx) const override;
+  ErrorCode writeDebugReg(size_t idx, uintptr_t val) const override;
+#endif
+
 protected:
   ErrorCode updateStopInfo(int waitStatus) override;
   void updateState() override;

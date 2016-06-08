@@ -151,6 +151,16 @@ void Thread::updateState() {
     break;
   }
 }
+
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
+uintptr_t Thread::readDebugReg(size_t idx) const {
+  return process()->ptrace().readDebugReg(tid(), idx);
+}
+
+ErrorCode Thread::writeDebugReg(size_t idx, uintptr_t val) const {
+  return process()->ptrace().writeDebugReg(tid(), idx, val);
+}
+#endif
 }
 }
 }
