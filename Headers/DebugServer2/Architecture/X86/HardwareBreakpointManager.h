@@ -26,9 +26,7 @@ public:
 
 public:
   virtual ErrorCode add(Address const &address, Type type, size_t size,
-                        Mode mode) override {
-    return kErrorUnsupported;
-  };
+                        Mode mode) override;
 
 protected:
   virtual bool hit(Target::Thread *thread) override { return false; };

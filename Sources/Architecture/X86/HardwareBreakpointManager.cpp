@@ -32,6 +32,13 @@ HardwareBreakpointManager::HardwareBreakpointManager(
 
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
 
+ErrorCode HardwareBreakpointManager::add(Address const &address, Type type,
+                                         size_t size, Mode mode) {
+  DS2ASSERT(_sites.size() <= kMaxHWStoppoints);
+
+  return super::add(address, type, size, mode);
+}
+
 int HardwareBreakpointManager::maxWatchpoints() { return kMaxHWStoppoints; }
 
 ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint32_t &ctrlReg,
