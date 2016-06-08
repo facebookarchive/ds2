@@ -118,3 +118,7 @@ make -j$(num_cpus)
 if [[ -n "${LLDB_TESTS-}" ]]; then
   "$top/Support/Scripts/run-lldb-tests.sh"
 fi
+
+if [[ -n "${GDB_TESTS-}" ]]; then
+  "$top/Support/Scripts/run-gdb-tests.sh"
+fi
