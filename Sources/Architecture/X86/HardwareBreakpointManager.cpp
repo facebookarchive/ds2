@@ -10,11 +10,15 @@
 
 #include "DebugServer2/Architecture/X86/HardwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Utils/Bits.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <algorithm>
 
 #define super ds2::BreakpointManager
+
+using ds2::Utils::EnableBit;
+using ds2::Utils::DisableBit;
 
 namespace ds2 {
 namespace Architecture {
@@ -29,6 +33,65 @@ HardwareBreakpointManager::HardwareBreakpointManager(
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
 
 int HardwareBreakpointManager::maxWatchpoints() { return kMaxHWStoppoints; }
+
+ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint32_t &ctrlReg,
+                                                        int idx, Mode mode,
+                                                        int size) {
+  int enableIdx = 1 + (idx * 2);
+  int infoIdx = 16 + (idx * 4);
+
+  // Set G<idx> flag
+  EnableBit(ctrlReg, enableIdx);
+
+  // Set R/W<idx> flags
+  switch (static_cast<int>(mode)) {
+  case kModeExec:
+    DisableBit(ctrlReg, infoIdx);
+    DisableBit(ctrlReg, infoIdx + 1);
+    break;
+  case kModeWrite:
+    EnableBit(ctrlReg, infoIdx);
+    DisableBit(ctrlReg, infoIdx + 1);
+    break;
+  case kModeRead:
+  case kModeRead | kModeWrite:
+    EnableBit(ctrlReg, infoIdx);
+    EnableBit(ctrlReg, infoIdx + 1);
+    break;
+  default:
+    return kErrorInvalidArgument;
+  }
+
+  // Set LEN<idx> flags, always 0 for exec breakpoints
+  if (mode == kModeExec) {
+    DisableBit(ctrlReg, infoIdx + 2);
+    DisableBit(ctrlReg, infoIdx + 3);
+  } else {
+    switch (size) {
+    case 1:
+      DisableBit(ctrlReg, infoIdx + 2);
+      DisableBit(ctrlReg, infoIdx + 3);
+      break;
+    case 2:
+      EnableBit(ctrlReg, infoIdx + 2);
+      DisableBit(ctrlReg, infoIdx + 3);
+      break;
+    case 4:
+      EnableBit(ctrlReg, infoIdx + 2);
+      EnableBit(ctrlReg, infoIdx + 3);
+      break;
+    case 8:
+      DS2LOG(Warning, "8-byte hw breakpoints not supported on all devices");
+      DisableBit(ctrlReg, infoIdx + 2);
+      EnableBit(ctrlReg, infoIdx + 3);
+      break;
+    default:
+      return kErrorInvalidArgument;
+    }
+  }
+
+  return kSuccess;
+}
 
 int HardwareBreakpointManager::getAvailableLocation() {
   DS2ASSERT(_locations.size() == kMaxHWStoppoints);

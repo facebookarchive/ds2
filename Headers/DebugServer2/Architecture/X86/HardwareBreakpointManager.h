@@ -49,6 +49,10 @@ protected:
   virtual int getAvailableLocation();
 
 protected:
+  virtual ErrorCode enableDebugCtrlReg(uint32_t &ctrlReg, int idx, Mode mode,
+                                       int size);
+
+protected:
   friend Target::ProcessBase;
 
 protected:
