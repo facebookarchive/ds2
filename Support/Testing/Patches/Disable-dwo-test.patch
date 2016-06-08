@@ -1,0 +1,18 @@
+diff --git a/packages/Python/lldbsuite/test/test_categories.py b/packages/Python/lldbsuite/test/test_categories.py
+index 72b7afd..37ad653 100644
+--- a/packages/Python/lldbsuite/test/test_categories.py
++++ b/packages/Python/lldbsuite/test/test_categories.py
+@@ -43,12 +43,7 @@ def unique_string_match(yourentry, list):
+     return candidate
+ 
+ def is_supported_on_platform(category, platform):
+-    if category == "dwo":
+-        # -gsplit-dwarf is not implemented by clang on Windows.
+-        return platform in ["linux", "freebsd"]
+-    elif category == "dsym":
+-        return platform in ["darwin", "macosx", "ios"]
+-    return True
++    return category == "dwarf"
+ 
+ def validate(categories, exact_match):
+     """

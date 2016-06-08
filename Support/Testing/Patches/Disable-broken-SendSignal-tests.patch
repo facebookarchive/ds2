@@ -1,12 +1,12 @@
-diff --git a/test/functionalities/signal/TestSendSignal.py b/test/functionalities/signal/TestSendSignal.py
-index 9a7b6b5..65a6b50 100644
---- a/test/functionalities/signal/TestSendSignal.py
-+++ b/test/functionalities/signal/TestSendSignal.py
-@@ -20,6 +20,7 @@ class SendSignalTestCase(TestBase):
+diff --git a/packages/Python/lldbsuite/test/functionalities/signal/TestSendSignal.py b/packages/Python/lldbsuite/test/functionalities/signal/TestSendSignal.py
+index 971b82a..20af652 100644
+--- a/packages/Python/lldbsuite/test/functionalities/signal/TestSendSignal.py
++++ b/packages/Python/lldbsuite/test/functionalities/signal/TestSendSignal.py
+@@ -22,6 +22,7 @@ class SendSignalTestCase(TestBase):
  
      @expectedFailureFreeBSD("llvm.org/pr23318: does not report running state")
-     @dwarf_test
+     @skipIfWindows # Windows does not support signals
 +    @unittest2.expectedFailure
-     def test_with_dwarf_and_run_command(self):
+     def test_with_run_command(self):
          """Test that lldb command 'process signal SIGUSR1' sends a signal to the inferior process."""
-         self.buildDwarf()
+         self.build()

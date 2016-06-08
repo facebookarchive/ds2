@@ -1,0 +1,12 @@
+diff --git a/packages/Python/lldbsuite/test/expression_command/expr-in-syscall/TestExpressionInSyscall.py b/packages/Python/lldbsuite/test/expression_command/expr-in-syscall/TestExpressionInSyscall.py
+index 0430fa5..94d8245 100644
+--- a/packages/Python/lldbsuite/test/expression_command/expr-in-syscall/TestExpressionInSyscall.py
++++ b/packages/Python/lldbsuite/test/expression_command/expr-in-syscall/TestExpressionInSyscall.py
+@@ -15,6 +15,7 @@ class ExprSyscallTestCase(TestBase):
+     mydir = TestBase.compute_mydir(__file__)
+ 
+     @expectedFailureWindows("llvm.org/pr21765") # Also getpid() is not a function on Windows anyway
++    @unittest2.expectedFailure
+     def test_setpgid(self):
+         self.build()
+         self.expr_syscall()

@@ -92,7 +92,7 @@ fi
 cd "$OLDPWD"
 
 # CentOS uses different compiler names than Ubuntu, so we can only use the
-# toolchain files on Ubuntu In addition, clang-3.7 is also not available for
+# toolchain files on Ubuntu In addition, clang-3.8 is also not available for
 # CentOS
 if [ ! -s "/etc/centos-release" ]; then
   if [[ "${CLANG-}" = "1" ]]; then

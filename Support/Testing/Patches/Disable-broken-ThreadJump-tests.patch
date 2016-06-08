@@ -1,12 +1,12 @@
-diff --git a/test/functionalities/thread/jump/TestThreadJump.py b/test/functionalities/thread/jump/TestThreadJump.py
-index d1c279f..3a28eff 100644
---- a/test/functionalities/thread/jump/TestThreadJump.py
-+++ b/test/functionalities/thread/jump/TestThreadJump.py
-@@ -20,6 +20,7 @@ class ThreadJumpTestCase(TestBase):
-         self.thread_jump_test()
+diff --git a/packages/Python/lldbsuite/test/functionalities/thread/jump/TestThreadJump.py b/packages/Python/lldbsuite/test/functionalities/thread/jump/TestThreadJump.py
+index 768e2fe..274d33a 100644
+--- a/packages/Python/lldbsuite/test/functionalities/thread/jump/TestThreadJump.py
++++ b/packages/Python/lldbsuite/test/functionalities/thread/jump/TestThreadJump.py
+@@ -15,6 +15,7 @@ class ThreadJumpTestCase(TestBase):
  
-     @dwarf_test
-+    @skipIfi386
-     def test_with_dwarf(self):
+     mydir = TestBase.compute_mydir(__file__)
+ 
++    @skipIfLinux
+     def test(self):
          """Test thread jump handling."""
-         self.buildDwarf(dictionary=self.getBuildFlags())
+         self.build(dictionary=self.getBuildFlags())

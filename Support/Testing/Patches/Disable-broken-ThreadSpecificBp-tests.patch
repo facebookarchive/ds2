@@ -1,0 +1,12 @@
+diff --git a/packages/Python/lldbsuite/test/functionalities/thread/thread_specific_break_plus_condition/TestThreadSpecificBpPlusCondition.py b/packages/Python/lldbsuite/test/functionalities/thread/thread_specific_break_plus_condition/TestThreadSpecificBpPlusCondition.py
+index 68c96a0..f0a3e4c 100644
+--- a/packages/Python/lldbsuite/test/functionalities/thread/thread_specific_break_plus_condition/TestThreadSpecificBpPlusCondition.py
++++ b/packages/Python/lldbsuite/test/functionalities/thread/thread_specific_break_plus_condition/TestThreadSpecificBpPlusCondition.py
+@@ -21,6 +21,7 @@ class ThreadSpecificBreakPlusConditionTestCase(TestBase):
+     @expectedFailureFreeBSD('llvm.org/pr18522') # hits break in another thread in testrun
+     @add_test_categories(['pyapi'])
+     @expectedFlakeyLinux # this test fails 6/100 dosep runs
++    @skipIfLinux
+     def test_python(self):
+         """Test that we obey thread conditioned breakpoints."""
+         self.build()

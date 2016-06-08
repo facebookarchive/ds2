@@ -1,14 +1,17 @@
-diff --git a/test/lldbtest.py b/test/lldbtest.py
-index 672f445..55ec945 100644
---- a/test/lldbtest.py
-+++ b/test/lldbtest.py
-@@ -865,10 +865,10 @@ def skipUnlessDarwin(func):
+diff --git a/packages/Python/lldbsuite/test/lldbtest.py b/packages/Python/lldbsuite/test/lldbtest.py
+index de8f57f..9330406 100644
+--- a/packages/Python/lldbsuite/test/lldbtest.py
++++ b/packages/Python/lldbsuite/test/lldbtest.py
+@@ -976,13 +976,10 @@ def skipUnlessGoInstalled(func):
+     return wrapper
  
  def getPlatform():
-     """Returns the target platform which the tests are running on."""
+-    """Returns the target platform which the tests are running on."""
 -    platform = lldb.DBG.GetSelectedPlatform().GetTriple().split('-')[2]
 -    if platform.startswith('freebsd'):
 -        platform = 'freebsd'
+-    elif platform.startswith('netbsd'):
+-        platform = 'netbsd'
 -    return platform
 +    # For some reason this likes to crash, so let's hack it
 +    if sys.platform == 'darwin':

@@ -1,12 +1,12 @@
-diff --git a/test/functionalities/thread/thread_specific_break/TestThreadSpecificBreakpoint.py b/test/functionalities/thread/thread_specific_break/TestThreadSpecificBreakpoint.py
-index 3faed3f..29981f0 100644
---- a/test/functionalities/thread/thread_specific_break/TestThreadSpecificBreakpoint.py
-+++ b/test/functionalities/thread/thread_specific_break/TestThreadSpecificBreakpoint.py
-@@ -24,6 +24,7 @@ class ThreadSpecificBreakTestCase(TestBase):
-     @python_api_test
-     @dwarf_test
-     @expectedFlakeyLinux # this test fails 6/100 dosep runs
+diff --git a/packages/Python/lldbsuite/test/functionalities/thread/thread_specific_break/TestThreadSpecificBreakpoint.py b/packages/Python/lldbsuite/test/functionalities/thread/thread_specific_break/TestThreadSpecificBreakpoint.py
+index 12bacab..61c3d48 100644
+--- a/packages/Python/lldbsuite/test/functionalities/thread/thread_specific_break/TestThreadSpecificBreakpoint.py
++++ b/packages/Python/lldbsuite/test/functionalities/thread/thread_specific_break/TestThreadSpecificBreakpoint.py
+@@ -19,6 +19,7 @@ class ThreadSpecificBreakTestCase(TestBase):
+ 
+     @add_test_categories(['pyapi'])
+     @expectedFailureWindows # Thread specific breakpoints cause the inferior to crash
 +    @skipIfLinux # usually hangs on ds2
-     def test_with_dwarf_python(self):
+     def test_python(self):
          """Test that we obey thread conditioned breakpoints."""
-         self.buildDwarf()
+         self.build()

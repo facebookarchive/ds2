@@ -1,0 +1,12 @@
+diff --git a/packages/Python/lldbsuite/test/expression_command/call-restarts/TestCallThatRestarts.py b/packages/Python/lldbsuite/test/expression_command/call-restarts/TestCallThatRestarts.py
+index abf4874..e18f9b8 100644
+--- a/packages/Python/lldbsuite/test/expression_command/call-restarts/TestCallThatRestarts.py
++++ b/packages/Python/lldbsuite/test/expression_command/call-restarts/TestCallThatRestarts.py
+@@ -24,6 +24,7 @@ class ExprCommandThatRestartsTestCase(TestBase):
+     @skipIfFreeBSD # llvm.org/pr19246: intermittent failure
+     @skipIfDarwin # llvm.org/pr19246: intermittent failure
+     @skipIfWindows # Test relies on signals, unsupported on Windows
++    @skipIfLinux
+     def test(self):
+         """Test calling function that hits a signal and restarts."""
+         self.build()

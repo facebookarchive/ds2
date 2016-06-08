@@ -1,0 +1,30 @@
+commit 030aee7ffdaf62193362e06612661bdbf4b43a4c
+Author: Francis Ricci <francisjricci@gmail.com>
+Date:   Mon Apr 25 20:24:30 2016 +0000
+
+    Add missing qRegisterInfo option to gdbremote testcase
+    
+    Summary:
+    "gcc" is equivalent to "ehframe" in ProcessGDBRemote, but
+    only "ehframe" was a valid response in the test suite.
+    
+    Reviewers: tfiala, jasonmolenda, clayborg
+    
+    Subscribers: lldb-commits, sas
+    
+    Differential Revision: http://reviews.llvm.org/D18807
+    
+    git-svn-id: https://llvm.org/svn/llvm-project/lldb/trunk@267459 91177308-0d34-0410-b5e6-96231b3b80d8
+
+diff --git a/packages/Python/lldbsuite/test/tools/lldb-server/gdbremote_testcase.py b/packages/Python/lldbsuite/test/tools/lldb-server/gdbremote_testcase.py
+index 0fe9fdc..61146eb 100644
+--- a/packages/Python/lldbsuite/test/tools/lldb-server/gdbremote_testcase.py
++++ b/packages/Python/lldbsuite/test/tools/lldb-server/gdbremote_testcase.py
+@@ -630,6 +630,7 @@ class GdbRemoteTestCaseBase(TestBase):
+         "encoding",
+         "format",
+         "set",
++        "gcc",
+         "ehframe",
+         "dwarf",
+         "generic",

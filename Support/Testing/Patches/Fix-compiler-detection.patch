@@ -1,7 +1,27 @@
-diff --git a/test/plugins/builder_base.py b/test/plugins/builder_base.py
-index 07df974..e9e8e12 100644
---- a/test/plugins/builder_base.py
-+++ b/test/plugins/builder_base.py
+commit 5bbb921c4a4d59ced6874ed86915c29ad19d7327
+Author: Stephane Sezer <sas@cd80.net>
+Date:   Mon Feb 1 23:21:27 2016 +0000
+
+    Fix getCompiler in unit testing framework on compiler symlinks
+    
+    Summary:
+    Checks using the result of getCompiler() will fail to identify the compiler
+    correctly if CC is a symlink path (ie /usr/bin/cc).
+    
+    Reviewers: zturner, emaste
+    
+    Subscribers: llvm-commits, sas
+    
+    Differential Revision: http://reviews.llvm.org/D16488
+    
+    Change by Francis Ricci <fjricci@fb.com>
+    
+    git-svn-id: https://llvm.org/svn/llvm-project/lldb/trunk@259433 91177308-0d34-0410-b5e6-96231b3b80d8
+
+diff --git a/packages/Python/lldbsuite/test/plugins/builder_base.py b/packages/Python/lldbsuite/test/plugins/builder_base.py
+index c4e3dff..f4c8056 100644
+--- a/packages/Python/lldbsuite/test/plugins/builder_base.py
++++ b/packages/Python/lldbsuite/test/plugins/builder_base.py
 @@ -22,7 +22,8 @@ def getArchitecture():
  
  def getCompiler():

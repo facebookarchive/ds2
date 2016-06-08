@@ -12,7 +12,9 @@
 import os, platform
 from subprocess import check_call
 
-packages = []
+dist_packages = []
+local_packages = []
+pip_packages = []
 
 linux_packages = { 'Linux-ARM':     'g++-4.8-arm-linux-gnueabihf',
                    'Linux-X86':     'g++-5-multilib',
@@ -28,65 +30,74 @@ tizen_packages = { 'Tizen-ARM': linux_packages['Linux-ARM'],
 
 target = os.getenv('TARGET')
 
-if target == 'Style':
-    packages.append('clang-format-3.8')
-elif target == 'Registers':
-    packages.append('g++-5')
-    packages.append('clang-format-3.8')
+if target == 'Registers':
+    dist_packages.append('g++-5')
 elif target in linux_packages:
     if "CentOS Linux" in platform.linux_distribution():
-        packages.append('gcc')
+        dist_packages.append('gcc')
     else:
         # Install gcc even when using clang, so we can run llgs tests.
-        packages.append(linux_packages[target])
-        if os.getenv('CLANG') == '1':
-            packages.append('clang-3.7')
+        dist_packages.append(linux_packages[target])
 elif target == 'MinGW-X86':
-    packages.append('g++-mingw-w64-i686')
+    dist_packages.append('g++-mingw-w64-i686')
 elif target in android_toolchains:
     # Android builds get the toolchain from AOSP.
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
 elif target in tizen_packages:
-    packages.append(tizen_packages[target])
+    dist_packages.append(tizen_packages[target])
 
 if 'Darwin' in target:
-    packages.append('cmake')
+    dist_packages.append('cmake')
     if os.getenv('CLANG') == '0':
-        packages.append('gcc')
+        dist_packages.append('gcc')
 
 if target != 'Style':
-    packages.append('flex')
-    packages.append('bison')
+    dist_packages.append('flex')
+    dist_packages.append('bison')
 
 # Running LLDB tests requires an install of lldb (for the tests to be able to
 # use the lldb python library without us building it).
 if os.getenv('LLDB_TESTS') != None:
-    packages.append('swig')
+    pip_packages.append('six')
+    dist_packages.append('python-pip')
+    dist_packages.append('swig')
     if "CentOS Linux" in platform.linux_distribution():
-        packages.append('libedit-devel')
-        packages.append('libxml2-devel')
-        packages.append('ncurses-devel')
-        packages.append('python-devel')
+        dist_packages.append('libedit-devel')
+        dist_packages.append('libxml2-devel')
+        dist_packages.append('ncurses-devel')
+        dist_packages.append('python-devel')
     else:
-        packages.append('lldb-3.7')
-        packages.append('liblldb-3.7')
-        packages.append('python-lldb-3.7')
+        dist_packages.append('lldb-3.8')
+        dist_packages.append('liblldb-3.8')
+        dist_packages.append('python-lldb-3.8')
 
 if os.getenv('COVERAGE') == '1':
-    packages.append('python-pip')
-    packages.append('python-yaml')
+    dist_packages.append('python-pip')
+    dist_packages.append('python-yaml')
+    pip_packages.append('pyyaml')
+    pip_packages.append('cpp-coveralls')
 
-if len(packages) > 0:
+if len(dist_packages) > 0:
     if 'Darwin' in target:
         # brew upgrade/install might die if one pkg is already install
-        check_call('brew install "%s" || true' % '" "'.join(packages), shell=True)
-        check_call('brew upgrade "%s" || true' % '" "'.join(packages), shell=True)
+        check_call('brew install "%s" || true' % '" "'.join(dist_packages), shell=True)
+        check_call('brew upgrade "%s" || true' % '" "'.join(dist_packages), shell=True)
     elif "CentOS Linux" in platform.linux_distribution():
-        check_call('sudo yum install -y "%s"' % '" "'.join(packages), shell=True)
+        check_call('sudo yum install -y "%s"' % '" "'.join(dist_packages), shell=True)
     else:
-        check_call('sudo apt-get install -y "%s"' % '" "'.join(packages), shell=True)
+        check_call('sudo apt-get install -y "%s"' % '" "'.join(dist_packages), shell=True)
 
-if os.getenv('COVERAGE') == '1':
+if len(local_packages) > 0:
+    if 'Darwin' in target:
+        # brew upgrade/install might die if one pkg is already install
+        check_call('brew install "%s" || true' % '" "'.join(local_packages), shell=True)
+        check_call('brew upgrade "%s" || true' % '" "'.join(local_packages), shell=True)
+    else:
+        # These need to be installed individually to properly satisfy dependencies
+        for package in local_packages:
+            check_call('sudo dpkg -i ./Support/Packages/' + package + '.deb', shell=True)
+
+if len(pip_packages) > 0:
     check_call('sudo pip install --upgrade pip', shell=True)
-    check_call('pip install --user pyyaml', shell=True)
-    check_call('pip install --user cpp-coveralls', shell=True)
+    for package in pip_packages:
+        check_call('pip install --user ' + package, shell=True)

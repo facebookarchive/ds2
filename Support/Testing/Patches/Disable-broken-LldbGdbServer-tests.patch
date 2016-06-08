@@ -1,44 +1,52 @@
-diff --git a/test/tools/lldb-server/TestLldbGdbServer.py b/test/tools/lldb-server/TestLldbGdbServer.py
-index 03dcc84..2c40d9b 100644
---- a/test/tools/lldb-server/TestLldbGdbServer.py
-+++ b/test/tools/lldb-server/TestLldbGdbServer.py
-@@ -682,6 +682,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+diff --git a/packages/Python/lldbsuite/test/tools/lldb-server/TestLldbGdbServer.py b/packages/Python/lldbsuite/test/tools/lldb-server/TestLldbGdbServer.py
+index aec040c..1ac556d 100644
+--- a/packages/Python/lldbsuite/test/tools/lldb-server/TestLldbGdbServer.py
++++ b/packages/Python/lldbsuite/test/tools/lldb-server/TestLldbGdbServer.py
+@@ -648,6 +648,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+             reg_index += 1
  
-     @llgs_test
-     @dwarf_test
+     @debugserver_test
 +    @expectedFailurei386
-     def test_p_returns_correct_data_size_for_each_qRegisterInfo_launch_llgs_dwarf(self):
-         self.init_llgs_test()
-         self.buildDwarf()
-@@ -698,6 +699,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+     def test_p_returns_correct_data_size_for_each_qRegisterInfo_launch_debugserver(self):
+         self.init_debugserver_test()
+         self.build()
+@@ -655,6 +656,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+         self.p_returns_correct_data_size_for_each_qRegisterInfo()
  
      @llgs_test
-     @dwarf_test
++    @unittest2.expectedFailure
+     def test_p_returns_correct_data_size_for_each_qRegisterInfo_launch_llgs(self):
+         self.init_llgs_test()
+         self.build()
+@@ -669,6 +671,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+         self.p_returns_correct_data_size_for_each_qRegisterInfo()
+ 
+     @llgs_test
 +    @expectedFailurei386
-     def test_p_returns_correct_data_size_for_each_qRegisterInfo_attach_llgs_dwarf(self):
+     def test_p_returns_correct_data_size_for_each_qRegisterInfo_attach_llgs(self):
          self.init_llgs_test()
-         self.buildDwarf()
-@@ -743,6 +745,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+         self.build()
+@@ -712,6 +715,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+         self.Hg_switches_to_3_threads()
  
      @llgs_test
-     @dwarf_test
 +    @unittest2.expectedFailure
-     def test_Hg_switches_to_3_threads_launch_llgs_dwarf(self):
+     def test_Hg_switches_to_3_threads_launch_llgs(self):
          self.init_llgs_test()
-         self.buildDwarf()
-@@ -759,6 +762,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+         self.build()
+@@ -726,6 +730,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+         self.Hg_switches_to_3_threads()
  
      @llgs_test
-     @dwarf_test
 +    @unittest2.expectedFailure
-     def test_Hg_switches_to_3_threads_attach_llgs_dwarf(self):
+     def test_Hg_switches_to_3_threads_attach_llgs(self):
          self.init_llgs_test()
-         self.buildDwarf()
-@@ -879,6 +883,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+         self.build()
+@@ -844,6 +849,7 @@ class LldbGdbServerTestCase(gdbremote_testcase.GdbRemoteTestCaseBase):
+         self.Hc_then_Csignal_signals_correct_thread(self.TARGET_EXC_BAD_ACCESS)
  
      @llgs_test
-     @dwarf_test
-+    @unittest2.expectedFailure() #not really a failure, but super flakey
-     def test_Hc_then_Csignal_signals_correct_thread_launch_llgs_dwarf(self):
++    @unittest2.expectedFailure
+     def test_Hc_then_Csignal_signals_correct_thread_launch_llgs(self):
          self.init_llgs_test()
-         self.buildDwarf()
+         self.build()

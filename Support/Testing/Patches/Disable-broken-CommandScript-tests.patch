@@ -1,11 +1,11 @@
-diff --git a/test/functionalities/command_script/import/TestImport.py b/test/functionalities/command_script/import/TestImport.py
-index 393285b..ccdfccf 100644
---- a/test/functionalities/command_script/import/TestImport.py
-+++ b/test/functionalities/command_script/import/TestImport.py
-@@ -10,6 +10,7 @@ class ImportTestCase(TestBase):
-     mydir = TestBase.compute_mydir(__file__)
+diff --git a/packages/Python/lldbsuite/test/functionalities/command_script/import/TestImport.py b/packages/Python/lldbsuite/test/functionalities/command_script/import/TestImport.py
+index 691045a..bbdbfa0 100644
+--- a/packages/Python/lldbsuite/test/functionalities/command_script/import/TestImport.py
++++ b/packages/Python/lldbsuite/test/functionalities/command_script/import/TestImport.py
+@@ -14,6 +14,7 @@ class ImportTestCase(TestBase):
  
-     @python_api_test
+     @add_test_categories(['pyapi'])
+     @no_debug_info_test
 +    @unittest2.expectedFailure
      def test_import_command(self):
          """Import some Python scripts by path and test them"""
