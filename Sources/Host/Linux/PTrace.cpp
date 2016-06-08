@@ -327,6 +327,15 @@ static size_t computeDebugRegOffset(int idx) {
   return debugOffset + (regSize * idx);
 }
 
+uintptr_t PTrace::readUserData(ProcessThreadId const &ptid, uint64_t offset) {
+  pid_t pid;
+
+  if (ptidToPid(ptid, pid) != kSuccess)
+    return 0;
+
+  return wrapPtrace(PTRACE_PEEKUSER, pid, offset, nullptr);
+}
+
 ErrorCode PTrace::writeUserData(ProcessThreadId const &ptid, uint64_t offset,
                                 uintptr_t val) {
   pid_t pid;
@@ -339,6 +348,10 @@ ErrorCode PTrace::writeUserData(ProcessThreadId const &ptid, uint64_t offset,
     return Platform::TranslateError();
 
   return kSuccess;
+}
+
+uintptr_t PTrace::readDebugReg(ProcessThreadId const &ptid, size_t idx) {
+  return readUserData(ptid, computeDebugRegOffset(idx));
 }
 
 ErrorCode PTrace::writeDebugReg(ProcessThreadId const &ptid, size_t idx,
