@@ -88,7 +88,8 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
       state.gp.pc &= ~1ULL;
       state.gp.lr &= ~1ULL;
     } else {
-      DS2LOG(Warning, "CPU is in thumb mode but doesn't have thumb bit set in pc");
+      DS2LOG(Warning,
+             "CPU is in thumb mode but doesn't have thumb bit set in pc");
     }
   }
 
