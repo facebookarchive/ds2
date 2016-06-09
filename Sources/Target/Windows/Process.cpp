@@ -28,20 +28,20 @@ using ds2::Utils::Stringify;
 #define super ds2::Target::ProcessBase
 
 #if defined(ARCH_ARM)
-static uint8_t const debugBreakCode[] = {
+static uint8_t const gDebugBreakCode[] = {
     0xFE, 0xDE,             // 00: UDF #254
     0xDF, 0xF8, 0x04, 0x40, // 02: LDR.W R4,[PC, #+0x4]
     0x20, 0x47,             // 06: BX R4
     0x00, 0x00, 0x00, 0x00  // 08: RtlExitUserThread address
 };
-static const int kRtlExitUserThreadOffset = 0x08;
-#else
-static uint8_t const debugBreakCode[] = {
+static const int gRtlExitUserThreadOffset = 0x08;
+#elif defined(ARCH_X86)
+static uint8_t const gDebugBreakCode[] = {
     0xCC,                         // 00: int 3
     0xB8, 0x00, 0x00, 0x00, 0x00, // 01: mov eax, RtlExitUserThread address
     0xFF, 0xD0                    // 06: call eax
 };
-static const int kRtlExitUserThreadOffset = 0x02;
+static const int gRtlExitUserThreadOffset = 0x02;
 #endif
 
 namespace ds2 {
@@ -122,24 +122,25 @@ ErrorCode Process::detach() {
   return kSuccess;
 }
 
-BOOL Process::writeDebugBreakCode(uint64_t address) {
+ErrorCode Process::writeDebugBreakCode(uint64_t address) {
   FARPROC exitThreadAddress =
       GetProcAddress(GetModuleHandleA("ntdll"), "RtlExitUserThread");
   if (exitThreadAddress == NULL) {
-    return FALSE;
+    return Platform::TranslateError();
   }
 
-  ByteVector codestr(&debugBreakCode[0],
-                     &debugBreakCode[sizeof(debugBreakCode)]);
-  *reinterpret_cast<uint32_t *>(&codestr[kRtlExitUserThreadOffset]) =
+  ByteVector codestr(&gDebugBreakCode[0],
+                     &gDebugBreakCode[sizeof(gDebugBreakCode)]);
+  *reinterpret_cast<uint32_t *>(&codestr[gRtlExitUserThreadOffset]) =
       reinterpret_cast<uint32_t>(exitThreadAddress);
 
   size_t written;
-  if (writeMemory(Address(address), &codestr[0], codestr.size(), &written) !=
-      kSuccess) {
-    return FALSE;
+  ErrorCode error =
+      writeMemory(Address(address), &codestr[0], codestr.size(), &written);
+  if (error != kSuccess) {
+    return error;
   }
-  return TRUE;
+  return kSuccess;
 }
 
 ErrorCode Process::interrupt() {
@@ -147,13 +148,15 @@ ErrorCode Process::interrupt() {
   GetSystemInfo(&info);
 
   uint64_t address;
-  if (allocateMemory(info.dwPageSize, kProtectionExecute | kProtectionWrite,
-                     &address) != kSuccess) {
-    return Platform::TranslateError();
+  ErrorCode error = allocateMemory(
+      info.dwPageSize, kProtectionExecute | kProtectionWrite, &address);
+  if (error != kSuccess) {
+    return error;
   }
 
-  if (!writeDebugBreakCode(address)) {
-    return Platform::TranslateError();
+  error = writeDebugBreakCode(address);
+  if (error != kSuccess) {
+    return error;
   }
 
   DWORD threadId;
