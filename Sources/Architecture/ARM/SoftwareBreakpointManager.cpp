@@ -16,6 +16,7 @@
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <algorithm>
 #include <cstdlib>
 
 #define super ds2::BreakpointManager
