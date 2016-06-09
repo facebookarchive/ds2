@@ -14,6 +14,7 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #include "DebugServer2/Target/Thread.h"
+#include "DebugServer2/Types.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/Stringify.h"
 
@@ -25,6 +26,23 @@ using ds2::Host::Platform;
 using ds2::Utils::Stringify;
 
 #define super ds2::Target::ProcessBase
+
+#if defined(ARCH_ARM)
+static uint8_t const gDebugBreakCode[] = {
+    0xFE, 0xDE,             // 00: UDF #254
+    0xDF, 0xF8, 0x04, 0x40, // 02: LDR.W R4,[PC, #+0x4]
+    0x20, 0x47,             // 06: BX R4
+    0x00, 0x00, 0x00, 0x00  // 08: RtlExitUserThread address
+};
+static const int gRtlExitUserThreadOffset = 0x08;
+#elif defined(ARCH_X86)
+static uint8_t const gDebugBreakCode[] = {
+    0xCC,                         // 00: int 3
+    0xB8, 0x00, 0x00, 0x00, 0x00, // 01: mov eax, RtlExitUserThread address
+    0xFF, 0xD0                    // 06: call eax
+};
+static const int gRtlExitUserThreadOffset = 0x02;
+#endif
 
 namespace ds2 {
 namespace Target {
@@ -104,10 +122,55 @@ ErrorCode Process::detach() {
   return kSuccess;
 }
 
-ErrorCode Process::interrupt() {
-  BOOL result = DebugBreakProcess(_handle);
-  if (!result)
+ErrorCode Process::writeDebugBreakCode(uint64_t address) {
+  FARPROC exitThreadAddress =
+      GetProcAddress(GetModuleHandleA("ntdll"), "RtlExitUserThread");
+  if (exitThreadAddress == NULL) {
     return Platform::TranslateError();
+  }
+
+  ByteVector codestr(&gDebugBreakCode[0],
+                     &gDebugBreakCode[sizeof(gDebugBreakCode)]);
+  *reinterpret_cast<uint32_t *>(&codestr[gRtlExitUserThreadOffset]) =
+      reinterpret_cast<uint32_t>(exitThreadAddress);
+
+  size_t written;
+  ErrorCode error =
+      writeMemory(Address(address), &codestr[0], codestr.size(), &written);
+  if (error != kSuccess) {
+    return error;
+  }
+  return kSuccess;
+}
+
+ErrorCode Process::interrupt() {
+  SYSTEM_INFO info;
+  GetSystemInfo(&info);
+
+  uint64_t address;
+  ErrorCode error = allocateMemory(
+      info.dwPageSize, kProtectionExecute | kProtectionWrite, &address);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  error = writeDebugBreakCode(address);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  DWORD threadId;
+#if defined(ARCH_ARM)
+  // +1 indicates the thread to start in THUMB mode
+  auto remoteAddress = address + 1;
+#else
+  auto remoteAddress = address;
+#endif
+  if (CreateRemoteThread(_handle, NULL, 0,
+                         (LPTHREAD_START_ROUTINE)remoteAddress, NULL, 0,
+                         &threadId) == NULL) {
+    return Platform::TranslateError();
+  }
 
   return kSuccess;
 }

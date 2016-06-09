@@ -34,6 +34,9 @@ public:
 protected:
   ErrorCode initialize(ProcessId pid, uint32_t flags) override;
 
+private:
+  ErrorCode writeDebugBreakCode(uint64_t address);
+
 public:
   ErrorCode detach() override;
   ErrorCode interrupt() override;
