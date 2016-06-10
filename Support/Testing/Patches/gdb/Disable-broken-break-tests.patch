@@ -1,0 +1,28 @@
+diff --git a/gdb/testsuite/gdb.base/break.exp b/gdb/testsuite/gdb.base/break.exp
+index f879bc8..5c647cb 100644
+--- a/gdb/testsuite/gdb.base/break.exp
++++ b/gdb/testsuite/gdb.base/break.exp
+@@ -646,6 +647,7 @@ gdb_test "break marker2" \
+     "Breakpoint (\[0-9\]*) at .*, line $bp_location8.*" \
+     "set breakpoint on to-be-called function"
+ 
++setup_xfail "*-*-*"
+ gdb_test "print marker2(99)" \
+     "The program being debugged stopped while in a function called from GDB.\r\nEvaluation of the expression containing the function\r\n.marker2$proto. will be abandoned.\r\nWhen the function is done executing, GDB will silently stop.*" \
+     "hit breakpoint on called function"
+@@ -656,6 +658,7 @@ gdb_test "print marker2(99)" \
+ # In this and the following test, the _sr4export check apparently is needed
+ # for hppa*-*-hpux.
+ #
++setup_xfail "*-*-*"
+ gdb_test_multiple "bt" "backtrace while in called function" {
+     -re "#0\[ \t\]*($hex in )?marker2.*:$bp_location8\r\n#1.*_sr4export.*$gdb_prompt $" {
+ 	pass "backtrace while in called function"
+@@ -669,6 +672,7 @@ gdb_test_multiple "bt" "backtrace while in called function" {
+ # this before runto_main, which otherwise may silently stop on the dummy
+ # breakpoint inserted by GDB at the program's entry point.
+ #
++setup_xfail "*-*-*"
+ gdb_test_multiple "finish" "finish from called function" {
+     -re "Run till exit from .*marker2.* at .*$bp_location8\r\n.* in _sr4export.*$gdb_prompt $" {
+ 	pass "finish from called function"

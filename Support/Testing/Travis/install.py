@@ -57,7 +57,7 @@ if target != 'Style':
 
 # Running LLDB tests requires an install of lldb (for the tests to be able to
 # use the lldb python library without us building it).
-if os.getenv('LLDB_TESTS') != None:
+if os.getenv('LLDB_TESTS') != None or os.getenv('GDB_TESTS') != None:
     pip_packages.append('six')
     dist_packages.append('python-pip')
     dist_packages.append('swig')
@@ -72,15 +72,20 @@ if os.getenv('LLDB_TESTS') != None:
         local_packages.append('llvm-3.8-runtime')
         local_packages.append('llvm-3.8')
         local_packages.append('llvm-3.8-dev')
-        local_packages.append('liblldb-3.8')
-        local_packages.append('lldb-3.8')
-        local_packages.append('liblldb-3.8-dev')
-        local_packages.append('python-lldb-3.8')
+        if os.getenv('LLDB_TESTS') != None:
+            local_packages.append('liblldb-3.8')
+            local_packages.append('lldb-3.8')
+            local_packages.append('liblldb-3.8-dev')
+            local_packages.append('python-lldb-3.8')
         if os.getenv('CLANG') == '1':
             dist_packages.append('libobjc-4.8-dev')
             local_packages.append('libclang1-3.8')
             local_packages.append('libclang-common-3.8-dev')
             local_packages.append('clang-3.8')
+
+if os.getenv('GDB_TESTS') != None:
+    dist_packages.append('dejagnu')
+    dist_packages.append('gdb')
 
 if os.getenv('COVERAGE') == '1':
     dist_packages.append('python-pip')
