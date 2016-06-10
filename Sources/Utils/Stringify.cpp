@@ -73,6 +73,7 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_STRINGIFY(StopInfo::kReasonReadWatchpoint)
     DO_STRINGIFY(StopInfo::kReasonAccessWatchpoint)
     DO_STRINGIFY(StopInfo::kReasonBreakpoint)
+    DO_STRINGIFY(StopInfo::kReasonTrace)
     DO_STRINGIFY(StopInfo::kReasonSignalStop)
     DO_STRINGIFY(StopInfo::kReasonTrap)
 #if defined(OS_WIN32)

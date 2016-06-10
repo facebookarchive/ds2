@@ -169,6 +169,9 @@ void StopInfo::reasonToString(std::string &key, std::string &val) const {
   key = "reason";
 
   switch (reason) {
+  case StopInfo::kReasonTrace:
+    val = "trace";
+    break;
   case StopInfo::kReasonBreakpoint:
     val = "breakpoint";
     break;

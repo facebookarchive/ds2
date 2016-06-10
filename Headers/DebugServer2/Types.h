@@ -105,6 +105,7 @@ struct StopInfo {
     kReasonReadWatchpoint,
     kReasonAccessWatchpoint,
     kReasonBreakpoint,
+    kReasonTrace,
     kReasonSignalStop, // TODO better name
     kReasonTrap,
     kReasonThreadSpawn,
