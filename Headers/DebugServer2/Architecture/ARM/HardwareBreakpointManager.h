@@ -23,20 +23,20 @@ public:
   ~HardwareBreakpointManager() override;
 
 public:
-  virtual ErrorCode add(Address const &address, Type type, size_t size,
-                        Mode mode) override {
+  ErrorCode add(Address const &address, Type type, size_t size,
+                Mode mode) override {
     return kErrorUnsupported;
   };
 
 protected:
-  virtual bool hit(Target::Thread *thread) override { return false; };
+  bool hit(Target::Thread *thread) override { return false; };
 
 protected:
-  virtual ErrorCode enableLocation(Site const &site) override {
+  ErrorCode enableLocation(Site const &site) override {
     return kErrorUnsupported;
   };
 
-  virtual ErrorCode disableLocation(Site const &site) override {
+  ErrorCode disableLocation(Site const &site) override {
     return kErrorUnsupported;
   };
 
