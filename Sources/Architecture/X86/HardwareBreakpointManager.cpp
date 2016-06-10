@@ -209,6 +209,10 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
     return kErrorInvalidArgument;
   }
 
+  if (mode == kModeRead) {
+    return kErrorUnsupported;
+  }
+
   return super::isValid(address, size, mode);
 }
 }
