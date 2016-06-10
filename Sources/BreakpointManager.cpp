@@ -148,7 +148,7 @@ void BreakpointManager::disable() {
   }
 }
 
-bool BreakpointManager::hit(Address const &address) {
+bool BreakpointManager::hit(Address const &address, Site &site) {
   if (!address.valid())
     return false;
 
@@ -163,6 +163,7 @@ bool BreakpointManager::hit(Address const &address) {
   it->second.type =
       static_cast<Type>(it->second.type & ~kTypeTemporaryUntilHit);
 
+  site = it->second;
   return true;
 }
 

@@ -295,7 +295,8 @@ ErrorCode ProcessBase::afterResume() {
     }
 
     for (auto it : _threads) {
-      if (bpm->hit(it.second)) {
+      BreakpointManager::Site site;
+      if (bpm->hit(it.second, site) >= 0) {
         DS2LOG(Debug, "hit breakpoint for tid %" PRI_PID, it.second->tid());
       }
     }

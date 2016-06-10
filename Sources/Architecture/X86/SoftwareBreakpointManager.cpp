@@ -34,19 +34,19 @@ void SoftwareBreakpointManager::clear() {
   _insns.clear();
 }
 
-bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
+int SoftwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
   ds2::Architecture::CPUState state;
 
   //
   // Ignore hardware single-stepping.
   //
   if (thread->state() == Target::Thread::kStepped)
-    return true;
+    return 0;
 
   thread->readCPUState(state);
   state.setPC(state.pc() - 1);
 
-  if (super::hit(state.pc())) {
+  if (super::hit(state.pc(), site)) {
     //
     // Move the PC back to the instruction, INT3 will move
     // the instruction pointer to the next byte.
@@ -58,9 +58,9 @@ bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
     thread->readCPUState(state);
     DS2ASSERT(ex == state.pc());
 
-    return true;
+    return 0;
   }
-  return false;
+  return -1;
 }
 
 ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {

@@ -28,8 +28,8 @@ public:
     return kErrorUnsupported;
   };
 
-protected:
-  bool hit(Target::Thread *thread) override { return false; };
+public:
+  int hit(Target::Thread *thread, Site &site) override { return -1; };
 
 protected:
   ErrorCode enableLocation(Site const &site) override {
@@ -42,9 +42,6 @@ protected:
 
 public:
   virtual int maxWatchpoints();
-
-protected:
-  friend Target::ProcessBase;
 
 private:
   int _maxBreakpoints;

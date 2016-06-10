@@ -28,8 +28,8 @@ public:
   ErrorCode add(Address const &address, Type type, size_t size,
                 Mode mode) override;
 
-protected:
-  bool hit(Target::Thread *thread) override { return false; };
+public:
+  int hit(Target::Thread *thread, Site &site) override { return -1; };
 
 protected:
   ErrorCode enableLocation(Site const &site) override;
@@ -50,9 +50,6 @@ protected:
 protected:
   ErrorCode isValid(Address const &address, size_t size,
                     Mode mode) const override;
-
-protected:
-  friend Target::ProcessBase;
 
 protected:
   std::vector<uint64_t> _locations;

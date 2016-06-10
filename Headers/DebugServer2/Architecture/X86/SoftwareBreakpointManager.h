@@ -25,8 +25,8 @@ public:
   SoftwareBreakpointManager(Target::ProcessBase *process);
   ~SoftwareBreakpointManager() override;
 
-protected:
-  bool hit(Target::Thread *thread) override;
+public:
+  int hit(Target::Thread *thread, Site &site) override;
 
 public:
   void clear() override;
@@ -38,9 +38,6 @@ protected:
 protected:
   ErrorCode isValid(Address const &address, size_t size,
                     Mode mode) const override;
-
-protected:
-  friend Target::ProcessBase;
 };
 }
 }

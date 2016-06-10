@@ -85,12 +85,15 @@ protected:
                             Mode mode) const;
 
 protected:
-  friend Target::Process;
   friend Target::ProcessBase;
 
 protected:
-  virtual bool hit(Address const &address);
-  virtual bool hit(Target::Thread *thread) = 0;
+  virtual bool hit(Address const &address, Site &site);
+
+public:
+  // Returns the hardware index of the breakpoint, if applicable.
+  // If not hit, returns a negative integer
+  virtual int hit(Target::Thread *thread, Site &site) = 0;
 
 protected:
   virtual void enable();

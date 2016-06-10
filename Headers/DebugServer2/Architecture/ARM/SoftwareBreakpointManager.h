@@ -40,8 +40,8 @@ public:
   virtual void
   enumerate(std::function<void(Site const &)> const &cb) const override;
 
-protected:
-  virtual bool hit(Target::Thread *thread) override;
+public:
+  virtual int hit(Target::Thread *thread, Site &site) override;
 
 protected:
   virtual void getOpcode(uint32_t type, std::string &opcode) const;
@@ -53,9 +53,6 @@ protected:
 protected:
   ErrorCode isValid(Address const &address, size_t size,
                     Mode mode) const override;
-
-protected:
-  friend Target::ProcessBase;
 };
 }
 }
