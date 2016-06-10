@@ -165,26 +165,34 @@ std::string ProcessThreadId::encode(CompatibilityMode mode) const {
   return ss.str();
 }
 
-std::string StopInfo::reasonToString() const {
+void StopInfo::reasonToString(std::string &key, std::string &val) const {
+  key = "reason";
+
   switch (reason) {
   case StopInfo::kReasonBreakpoint:
-    return "breakpoint";
+    val = "breakpoint";
+    break;
   case StopInfo::kReasonSignalStop:
-    return "signal";
+    val = "signal";
+    break;
   case StopInfo::kReasonTrap:
-    return "trap";
+    val = "trap";
+    break;
   case StopInfo::kReasonWriteWatchpoint:
-    return "watch";
   case StopInfo::kReasonReadWatchpoint:
-    return "rwatch";
   case StopInfo::kReasonAccessWatchpoint:
-    return "awatch";
+    val = "watchpoint";
+    break;
 #if defined(OS_WIN32)
   case StopInfo::kReasonLibraryEvent:
-    return "library";
+    key = "library";
+    val = "1";
+    break;
 #endif
   default:
-    DS2BUG("impossible to convert %s to string", Stringify::StopReason(reason));
+    key = "";
+    val = "";
+    break;
   }
 }
 
@@ -203,37 +211,11 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
     ss << ';' << "core:" << core;
   }
 
-  switch (reason) {
-  case StopInfo::kReasonNone:
-    break;
+  std::string key, val;
+  reasonToString(key, val);
 
-  case StopInfo::kReasonWriteWatchpoint:
-  case StopInfo::kReasonReadWatchpoint:
-  case StopInfo::kReasonAccessWatchpoint:
-#if defined(OS_WIN32)
-  case StopInfo::kReasonLibraryEvent:
-#endif
-    ss << ';' << reasonToString() << ':' << 1;
-    break;
-
-  case StopInfo::kReasonBreakpoint:
-  case StopInfo::kReasonSignalStop:
-  case StopInfo::kReasonTrap:
-    if (mode == kCompatibilityModeLLDB)
-      ss << ';' << "reason:" << reasonToString();
-    break;
-
-  case StopInfo::kReasonThreadSpawn:
-  case StopInfo::kReasonThreadEntry:
-  case StopInfo::kReasonThreadExit:
-#if defined(OS_WIN32)
-  case StopInfo::kReasonMemoryError:
-  case StopInfo::kReasonMemoryAlignment:
-  case StopInfo::kReasonMathError:
-  case StopInfo::kReasonInstructionError:
-  case StopInfo::kReasonDebugOutput:
-#endif
-    break;
+  if (!key.empty() && !val.empty()) {
+    ss << ';' << key << ':' << val;
   }
 
   if (listThreads) {
@@ -425,16 +407,10 @@ JSDictionary *StopInfo::encodeBriefJson() const {
 
   threadObj->set("tid", JSInteger::New(ptid.tid));
 
-  switch (reason) {
-  case StopInfo::kReasonBreakpoint:
-  case StopInfo::kReasonSignalStop:
-  case StopInfo::kReasonTrap:
-  case StopInfo::kReasonWriteWatchpoint:
-  case StopInfo::kReasonReadWatchpoint:
-  case StopInfo::kReasonAccessWatchpoint:
-    threadObj->set("reason", JSString::New(reasonToString()));
-  default:
-    break;
+  std::string key, val;
+  reasonToString(key, val);
+  if (!key.empty() && !val.empty()) {
+    threadObj->set(key, JSString::New(val));
   }
 
   return threadObj;

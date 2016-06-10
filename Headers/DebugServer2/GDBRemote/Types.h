@@ -57,7 +57,7 @@ public:
   JSDictionary *encodeBriefJson() const;
 
 private:
-  std::string reasonToString() const;
+  void reasonToString(std::string &key, std::string &val) const;
   std::string encodeInfo(CompatibilityMode mode, bool listThreads) const;
   void encodeRegisters(std::map<std::string, std::string> &regs,
                        bool hexIndex) const;
