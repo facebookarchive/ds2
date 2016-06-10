@@ -310,6 +310,10 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
                  "make ds2 run in its own session");
 
+  // gdbserver compatibility options
+  opts.addOption(ds2::OptParse::boolOption, "once", 'O',
+                 "exit after one execution of inferior (default)", true);
+
   if (argc < 2)
     opts.usageDie("first argument must be g[dbserver] or p[latform]");
 
