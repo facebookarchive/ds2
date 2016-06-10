@@ -26,6 +26,7 @@ namespace Architecture {
 namespace X86 {
 
 static const int kMaxHWStoppoints = 4; // dr0, dr1, dr2, dr3
+static const int kStatusRegIdx = 6;
 static const int kCtrlRegIdx = 7;
 
 HardwareBreakpointManager::HardwareBreakpointManager(
@@ -74,6 +75,12 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
   error = thread->writeDebugReg(kCtrlRegIdx, ctrlReg);
   if (error != kSuccess) {
     DS2LOG(Error, "failed to write to debug control register");
+    return error;
+  }
+
+  error = thread->writeDebugReg(kStatusRegIdx, 0);
+  if (error != kSuccess) {
+    DS2LOG(Error, "failed to clear debug status register");
     return error;
   }
 
