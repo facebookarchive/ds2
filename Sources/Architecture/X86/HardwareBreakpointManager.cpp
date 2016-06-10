@@ -54,6 +54,7 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
 
   error = thread->writeDebugReg(idx, site.address);
   if (error != kSuccess) {
+    DS2LOG(Error, "failed to write to debug address register");
     return error;
   }
 
@@ -66,6 +67,7 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
 
   error = thread->writeDebugReg(kCtrlRegIdx, ctrlReg);
   if (error != kSuccess) {
+    DS2LOG(Error, "failed to write to debug control register");
     return error;
   }
 
@@ -100,6 +102,7 @@ ErrorCode HardwareBreakpointManager::disableLocation(Site const &site) {
 
   error = thread->writeDebugReg(kCtrlRegIdx, ctrlReg);
   if (error != kSuccess) {
+    DS2LOG(Error, "failed to write to debug control register");
     return error;
   }
 
@@ -159,6 +162,7 @@ ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint32_t &ctrlReg,
       EnableBit(ctrlReg, infoIdx + 3);
       break;
     default:
+      DS2LOG(Error, "invalid hardware breakpoint size: %d", size);
       return kErrorInvalidArgument;
     }
   }
