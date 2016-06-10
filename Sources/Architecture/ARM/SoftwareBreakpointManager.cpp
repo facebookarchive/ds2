@@ -109,7 +109,21 @@ void SoftwareBreakpointManager::enumerate(
 bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
   ds2::Architecture::CPUState state;
   thread->readCPUState(state);
+#if defined(OS_WIN32)
+  state.setPC(state.pc() - 2);
+  if (super::hit(state.pc())) {
+    //
+    // Move the PC back to the instruction
+    //
+    if (thread->writeCPUState(state) != kSuccess) {
+      abort();
+    }
+    return true;
+  }
+  return false;
+#else
   return super::hit(state.pc());
+#endif
 }
 
 void SoftwareBreakpointManager::getOpcode(uint32_t type,
