@@ -193,20 +193,26 @@ ErrorCode HardwareBreakpointManager::disableDebugCtrlReg(uint32_t &ctrlReg,
 
 int HardwareBreakpointManager::getAvailableLocation() {
   DS2ASSERT(_locations.size() == kMaxHWStoppoints);
-
-  auto it = std::find(_locations.begin(), _locations.end(), 0);
-  if (it == _locations.end()) {
+  if (_sites.size() == kMaxHWStoppoints) {
     return -1;
   }
+
+  auto it = std::find(_locations.begin(), _locations.end(), 0);
+  DS2ASSERT(it != _locations.end());
 
   return (it - _locations.begin());
 }
 
 int HardwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
+  if (_sites.size() == 0) {
+    return -1;
+  }
+
   uint32_t status_reg = thread->readDebugReg(kStatusRegIdx);
 
   for (int i = 0; i < kMaxHWStoppoints; ++i) {
     if (status_reg & (1 << i)) {
+      DS2ASSERT(_locations[i] != 0);
       site = _sites.find(_locations[i])->second;
       return i;
     }
