@@ -184,6 +184,29 @@ int HardwareBreakpointManager::getAvailableLocation() {
 
   return (it - _locations.begin());
 }
+
+ErrorCode HardwareBreakpointManager::isValid(Address const &address,
+                                             size_t size, Mode mode) const {
+  switch (size) {
+  case 1:
+    break;
+  case 8:
+    DS2LOG(Warning, "8-byte breakpoints not supported on all architectures");
+  case 2:
+  case 4:
+    if (mode == kModeExec)
+      return kErrorInvalidArgument;
+    break;
+  default:
+    return kErrorInvalidArgument;
+  }
+
+  if ((mode & kModeExec) && (mode & (kModeRead | kModeWrite))) {
+    return kErrorInvalidArgument;
+  }
+
+  return super::isValid(address, size, mode);
+}
 }
 }
 }

@@ -34,14 +34,6 @@ void SoftwareBreakpointManager::clear() {
   _insns.clear();
 }
 
-ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
-                                         size_t size, Mode mode) {
-  DS2ASSERT(size == 0 || size == 1);
-  DS2ASSERT(mode == kModeExec);
-
-  return super::add(address, type, size, mode);
-}
-
 bool SoftwareBreakpointManager::hit(Target::Thread *thread) {
   ds2::Architecture::CPUState state;
 
@@ -115,6 +107,14 @@ ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site) {
   _insns.erase(site.address);
 
   return kSuccess;
+}
+
+ErrorCode SoftwareBreakpointManager::isValid(Address const &address,
+                                             size_t size, Mode mode) const {
+  DS2ASSERT(size == 0 || size == 1);
+  DS2ASSERT(mode == kModeExec);
+
+  return super::isValid(address, size, mode);
 }
 }
 }

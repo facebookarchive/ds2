@@ -48,6 +48,10 @@ protected:
                                        int size);
 
 protected:
+  ErrorCode isValid(Address const &address, size_t size,
+                    Mode mode) const override;
+
+protected:
   friend Target::ProcessBase;
 
 protected:

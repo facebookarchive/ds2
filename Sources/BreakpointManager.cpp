@@ -24,10 +24,10 @@ void BreakpointManager::clear() { _sites.clear(); }
 
 ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
                                  Mode mode) {
-  ErrorCode error = kSuccess;
-
-  if (!address.valid())
-    return kErrorInvalidArgument;
+  ErrorCode error = isValid(address, size, mode);
+  if (error != kSuccess) {
+    return error;
+  }
 
   auto it = _sites.find(address);
   if (it != _sites.end()) {
@@ -168,5 +168,14 @@ bool BreakpointManager::hit(Address const &address) {
       static_cast<Type>(it->second.type & ~kTypeTemporaryUntilHit);
 
   return true;
+}
+
+ErrorCode BreakpointManager::isValid(Address const &address, size_t size,
+                                     Mode mode) const {
+  if (!address.valid()) {
+    return kErrorInvalidArgument;
+  }
+
+  return kSuccess;
 }
 }

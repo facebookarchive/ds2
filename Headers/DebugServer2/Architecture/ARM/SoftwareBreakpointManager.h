@@ -51,6 +51,10 @@ protected:
   virtual ErrorCode disableLocation(Site const &site) override;
 
 protected:
+  ErrorCode isValid(Address const &address, size_t size,
+                    Mode mode) const override;
+
+protected:
   friend Target::ProcessBase;
 };
 }

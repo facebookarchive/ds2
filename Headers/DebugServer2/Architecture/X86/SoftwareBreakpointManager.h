@@ -31,13 +31,13 @@ protected:
 public:
   void clear() override;
 
-public:
-  ErrorCode add(Address const &address, Type type, size_t size,
-                Mode mode) override;
-
 protected:
   ErrorCode enableLocation(Site const &site) override;
   ErrorCode disableLocation(Site const &site) override;
+
+protected:
+  ErrorCode isValid(Address const &address, size_t size,
+                    Mode mode) const override;
 
 protected:
   friend Target::ProcessBase;

@@ -38,8 +38,6 @@ void SoftwareBreakpointManager::clear() {
 
 ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
                                          size_t size, Mode mode) {
-  DS2ASSERT(mode == kModeExec);
-
   if (size < 2 || size > 4) {
     bool isThumb = false;
 
@@ -237,6 +235,14 @@ ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site) {
   _insns.erase(site.address);
 
   return kSuccess;
+}
+
+ErrorCode SoftwareBreakpointManager::isValid(Address const &address,
+                                             size_t size, Mode mode) const {
+  DS2ASSERT(mode == kModeExec);
+  DS2ASSERT((size >= 2) && (size <= 4));
+
+  return super::isValid(address, size, mode);
 }
 }
 }

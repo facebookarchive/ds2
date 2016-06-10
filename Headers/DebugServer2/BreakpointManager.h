@@ -81,6 +81,10 @@ public:
   virtual void enumerate(std::function<void(Site const &)> const &cb) const;
 
 protected:
+  virtual ErrorCode isValid(Address const &address, size_t size,
+                            Mode mode) const;
+
+protected:
   friend Target::Process;
   friend Target::ProcessBase;
 
