@@ -38,6 +38,12 @@ ErrorCode HardwareBreakpointManager::add(Address const &address, Type type,
                                          size_t size, Mode mode) {
   DS2ASSERT(_sites.size() <= kMaxHWStoppoints);
 
+  if (mode == kModeRead) {
+    DS2LOG(Warning,
+           "read-only watchpoints are unsupported, setting as read-write");
+    mode = static_cast<Mode>(mode | kModeWrite);
+  }
+
   return super::add(address, type, size, mode);
 }
 
