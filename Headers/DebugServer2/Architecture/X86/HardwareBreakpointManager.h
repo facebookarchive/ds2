@@ -29,7 +29,7 @@ public:
                 Mode mode) override;
 
 public:
-  int hit(Target::Thread *thread, Site &site) override { return -1; };
+  int hit(Target::Thread *thread, Site &site) override;
 
 protected:
   ErrorCode enableLocation(Site const &site) override;

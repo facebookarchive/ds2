@@ -202,6 +202,19 @@ int HardwareBreakpointManager::getAvailableLocation() {
   return (it - _locations.begin());
 }
 
+int HardwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
+  uint32_t status_reg = thread->readDebugReg(kStatusRegIdx);
+
+  for (int i = 0; i < kMaxHWStoppoints; ++i) {
+    if (status_reg & (1 << i)) {
+      site = _sites.find(_locations[i])->second;
+      return i;
+    }
+  }
+
+  return -1;
+}
+
 ErrorCode HardwareBreakpointManager::isValid(Address const &address,
                                              size_t size, Mode mode) const {
   switch (size) {
