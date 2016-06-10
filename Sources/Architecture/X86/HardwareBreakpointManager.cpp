@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Architecture/X86/HardwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
+#include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Bits.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -25,6 +26,7 @@ namespace Architecture {
 namespace X86 {
 
 static const int kMaxHWStoppoints = 4; // dr0, dr1, dr2, dr3
+static const int kCtrlRegIdx = 7;
 
 HardwareBreakpointManager::HardwareBreakpointManager(
     Target::ProcessBase *process)
@@ -40,6 +42,70 @@ ErrorCode HardwareBreakpointManager::add(Address const &address, Type type,
 }
 
 int HardwareBreakpointManager::maxWatchpoints() { return kMaxHWStoppoints; }
+
+ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
+  ErrorCode error;
+  Target::Thread *thread = _process->currentThread();
+
+  int idx = getAvailableLocation();
+  if (idx < 0) {
+    return kErrorInvalidArgument;
+  }
+
+  error = thread->writeDebugReg(idx, site.address);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  uint32_t ctrlReg = thread->readDebugReg(kCtrlRegIdx);
+
+  error = enableDebugCtrlReg(ctrlReg, idx, site.mode, site.size);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  error = thread->writeDebugReg(kCtrlRegIdx, ctrlReg);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  _locations[idx] = site.address;
+  return kSuccess;
+}
+
+ErrorCode HardwareBreakpointManager::disableLocation(Site const &site) {
+  ErrorCode error;
+  Target::Thread *thread = _process->currentThread();
+
+  int idx = kMaxHWStoppoints;
+  for (int i = 0; i < kMaxHWStoppoints; ++i) {
+    if (site.address == _locations[i]) {
+      DS2ASSERT(static_cast<uint32_t>(site.address) == thread->readDebugReg(i));
+      thread->writeDebugReg(i, 0);
+      idx = i;
+      break;
+    }
+  }
+
+  if (idx >= kMaxHWStoppoints) {
+    return kErrorInvalidArgument;
+  }
+
+  uint32_t ctrlReg = thread->readDebugReg(kCtrlRegIdx);
+
+  error = disableDebugCtrlReg(ctrlReg, idx);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  error = thread->writeDebugReg(kCtrlRegIdx, ctrlReg);
+  if (error != kSuccess) {
+    return error;
+  }
+
+  _locations[idx] = 0;
+  return kSuccess;
+}
 
 ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint32_t &ctrlReg,
                                                         int idx, Mode mode,

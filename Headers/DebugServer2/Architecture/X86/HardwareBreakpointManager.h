@@ -32,13 +32,9 @@ protected:
   virtual bool hit(Target::Thread *thread) override { return false; };
 
 protected:
-  virtual ErrorCode enableLocation(Site const &site) override {
-    return kErrorUnsupported;
-  };
+  virtual ErrorCode enableLocation(Site const &site) override;
 
-  virtual ErrorCode disableLocation(Site const &site) override {
-    return kErrorUnsupported;
-  };
+  virtual ErrorCode disableLocation(Site const &site) override;
 
 public:
   virtual int maxWatchpoints();
