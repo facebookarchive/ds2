@@ -14,7 +14,7 @@ index aec040c..1ac556d 100644
          self.p_returns_correct_data_size_for_each_qRegisterInfo()
  
      @llgs_test
-+    @unittest2.expectedFailure
++    @expectedFailurei386
      def test_p_returns_correct_data_size_for_each_qRegisterInfo_launch_llgs(self):
          self.init_llgs_test()
          self.build()
