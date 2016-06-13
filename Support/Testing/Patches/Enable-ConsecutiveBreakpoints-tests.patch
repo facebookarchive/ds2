@@ -1,0 +1,12 @@
+diff --git a/packages/Python/lldbsuite/test/functionalities/breakpoint/consecutive_breakpoins/TestConsecutiveBreakpoints.py b/packages/Python/lldbsuite/test/functionalities/breakpoint/consecutive_breakpoins/TestConsecutiveBreakpoints.py
+index af6df37..a3f66b1 100644
+--- a/packages/Python/lldbsuite/test/functionalities/breakpoint/consecutive_breakpoins/TestConsecutiveBreakpoints.py
++++ b/packages/Python/lldbsuite/test/functionalities/breakpoint/consecutive_breakpoins/TestConsecutiveBreakpoints.py
+@@ -15,7 +15,6 @@ class ConsecutiveBreakpoitsTestCase(TestBase):
+ 
+     mydir = TestBase.compute_mydir(__file__)
+ 
+-    @expectedFailureAll("llvm.org/pr23478", oslist = not_in(["macosx"]))
+     def test (self):
+         self.build ()
+         self.consecutive_breakpoints_tests()

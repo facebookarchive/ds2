@@ -1,0 +1,12 @@
+diff --git a/packages/Python/lldbsuite/test/lang/cpp/nsimport/TestCppNsImport.py b/packages/Python/lldbsuite/test/lang/cpp/nsimport/TestCppNsImport.py
+index 97e9e27..5d0406e 100644
+--- a/packages/Python/lldbsuite/test/lang/cpp/nsimport/TestCppNsImport.py
++++ b/packages/Python/lldbsuite/test/lang/cpp/nsimport/TestCppNsImport.py
+@@ -10,7 +10,6 @@ class TestCppNsImport(TestBase):
+     mydir = TestBase.compute_mydir(__file__)
+ 
+     @expectedFailureFreeBSD("llvm.org/pr25925")
+-    @expectedFailureGcc(None, ['>=', '4.9'])
+     def test_with_run_command(self):
+         """Tests imported namespaces in C++."""
+         self.build()
