@@ -296,12 +296,12 @@ ErrorCode ProcessBase::afterResume() {
       continue;
     }
 
-    bpm->disable();
     for (auto it : _threads) {
       if (bpm->hit(it.second)) {
         DS2LOG(Debug, "hit breakpoint for tid %" PRI_PID, it.second->tid());
       }
     }
+    bpm->disable();
   }
 
   return kSuccess;

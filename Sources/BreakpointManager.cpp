@@ -160,13 +160,12 @@ bool BreakpointManager::hit(Address const &address) {
   if (it == _sites.end())
     return false;
 
+  //
+  // If this breakpoint type becomes 0, it will be erased after calling
+  // BreakpointManager::disable
+  //
   it->second.type =
       static_cast<Type>(it->second.type & ~kTypeTemporaryUntilHit);
-  if (!it->second.type) {
-    // refs should always be 0 unless we have a kTypePermanent breakpoint.
-    DS2ASSERT(it->second.refs == 0);
-    _sites.erase(it);
-  }
 
   return true;
 }
