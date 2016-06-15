@@ -196,7 +196,7 @@ ds2::Target::Thread *ProcessBase::thread(ThreadId tid) const {
 }
 
 ErrorCode ProcessBase::readMemoryBuffer(Address const &address, size_t length,
-                                        std::string &buffer) {
+                                        ByteVector &buffer) {
   if (_pid == kAnyProcessId)
     return kErrorProcessNotFound;
   else if (!address.valid())
@@ -205,7 +205,7 @@ ErrorCode ProcessBase::readMemoryBuffer(Address const &address, size_t length,
   buffer.resize(length);
 
   size_t nread;
-  ErrorCode error = readMemory(address, &buffer[0], length, &nread);
+  ErrorCode error = readMemory(address, buffer.data(), length, &nread);
   if (error != kSuccess) {
     buffer.clear();
     return error;
@@ -216,29 +216,29 @@ ErrorCode ProcessBase::readMemoryBuffer(Address const &address, size_t length,
 }
 
 ErrorCode ProcessBase::writeMemoryBuffer(Address const &address,
-                                         std::string const &buffer,
+                                         ByteVector const &buffer,
                                          size_t *nwritten) {
   if (_pid == kAnyProcessId)
     return kErrorProcessNotFound;
   else if (!address.valid())
     return kErrorInvalidArgument;
 
-  return writeMemory(address, &buffer[0], buffer.length(), nwritten);
+  return writeMemory(address, buffer.data(), buffer.size(), nwritten);
 }
 
 ErrorCode ProcessBase::writeMemoryBuffer(Address const &address,
-                                         std::string const &buffer,
+                                         ByteVector const &buffer,
                                          size_t length, size_t *nwritten) {
   if (_pid == kAnyProcessId)
     return kErrorProcessNotFound;
   else if (!address.valid())
     return kErrorInvalidArgument;
 
-  if (length > buffer.length()) {
-    length = buffer.length();
+  if (length > buffer.size()) {
+    length = buffer.size();
   }
 
-  return writeMemory(address, &buffer[0], length, nwritten);
+  return writeMemory(address, buffer.data(), length, nwritten);
 }
 
 void ProcessBase::insert(ThreadBase *thread) {

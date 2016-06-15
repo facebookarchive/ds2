@@ -173,10 +173,9 @@ protected: // Debugging Session
                                          std::string const &value) = 0;
 
   virtual ErrorCode onReadMemory(Session &session, Address const &address,
-                                 size_t length, std::string &data) = 0;
+                                 size_t length, ByteVector &data) = 0;
   virtual ErrorCode onWriteMemory(Session &session, Address const &address,
-                                  std::string const &data,
-                                  size_t &nwritten) = 0;
+                                  ByteVector const &data, size_t &nwritten) = 0;
 
   virtual ErrorCode onAllocateMemory(Session &session, size_t size,
                                      uint32_t permissions,
@@ -252,10 +251,9 @@ protected: // Platform Session
                                uint32_t flags, uint32_t mode, int &fd) = 0;
   virtual ErrorCode onFileClose(Session &session, int fd) = 0;
   virtual ErrorCode onFileRead(Session &session, int fd, uint64_t &count,
-                               uint64_t offset, std::string &buffer) = 0;
+                               uint64_t offset, ByteVector &buffer) = 0;
   virtual ErrorCode onFileWrite(Session &session, int fd, uint64_t offset,
-                                std::string const &buffer,
-                                size_t &nwritten) = 0;
+                                ByteVector const &buffer, size_t &nwritten) = 0;
 
   virtual ErrorCode onFileRemove(Session &session, std::string const &path) = 0;
   virtual ErrorCode onFileReadLink(Session &session, std::string const &path,
@@ -312,7 +310,7 @@ protected: // System Session
   virtual ErrorCode onFlashErase(Session &session, Address const &address,
                                  size_t length) = 0;
   virtual ErrorCode onFlashWrite(Session &session, Address const &address,
-                                 std::string const &data) = 0;
+                                 ByteVector const &data) = 0;
   virtual ErrorCode onFlashDone(Session &session) = 0;
 };
 }

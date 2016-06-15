@@ -20,8 +20,7 @@ File::File(std::string const &path, uint32_t flags, uint32_t mode)
 
 File::~File() = default;
 
-ErrorCode File::pread(int fd, std::string &buf, uint64_t &count,
-                      uint64_t offset) {
+ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
   return kErrorUnsupported;
 }
 }

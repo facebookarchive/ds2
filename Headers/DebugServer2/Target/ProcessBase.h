@@ -100,10 +100,10 @@ public:
 
 public:
   ErrorCode readMemoryBuffer(Address const &address, size_t length,
-                             std::string &buffer);
-  ErrorCode writeMemoryBuffer(Address const &address, std::string const &buffer,
+                             ByteVector &buffer);
+  ErrorCode writeMemoryBuffer(Address const &address, ByteVector const &buffer,
                               size_t *nwritten = nullptr);
-  ErrorCode writeMemoryBuffer(Address const &address, std::string const &buffer,
+  ErrorCode writeMemoryBuffer(Address const &address, ByteVector const &buffer,
                               size_t length, size_t *nwritten = nullptr);
 
 public:

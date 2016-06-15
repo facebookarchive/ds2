@@ -13,6 +13,7 @@
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Constants.h"
+#include "DebugServer2/Types.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <string>
@@ -45,7 +46,7 @@ public:
   }
 
 public:
-  ErrorCode pread(std::string &buf, uint64_t &count, uint64_t offset);
+  ErrorCode pread(ByteVector &buf, uint64_t &count, uint64_t offset);
 
 public:
   bool valid() const { return (_fd >= 0); }

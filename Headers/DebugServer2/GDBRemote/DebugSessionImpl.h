@@ -115,9 +115,9 @@ protected:
 
 protected:
   ErrorCode onReadMemory(Session &session, Address const &address,
-                         size_t length, std::string &data) override;
+                         size_t length, ByteVector &data) override;
   ErrorCode onWriteMemory(Session &session, Address const &address,
-                          std::string const &data, size_t &nwritten) override;
+                          ByteVector const &data, size_t &nwritten) override;
 
   ErrorCode onAllocateMemory(Session &session, size_t size,
                              uint32_t permissions, Address &address) override;

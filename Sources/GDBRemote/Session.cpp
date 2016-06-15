@@ -15,6 +15,7 @@
 #include "DebugServer2/GDBRemote/SessionDelegate.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/String.h"
 #include "DebugServer2/Utils/SwapEndian.h"
 
 #include <cstdlib>
@@ -967,9 +968,9 @@ void Session::Handle_M(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  std::string data(HexToString(eptr));
-  if (data.length() > length) {
-    data = data.substr(0, length);
+  ByteVector data(HexToByteVector(eptr));
+  if (data.size() > length) {
+    data.resize(length);
   }
 
   size_t nwritten = 0;
@@ -985,7 +986,7 @@ void Session::Handle_m(ProtocolInterpreter::Handler const &,
                        std::string const &args) {
   uint64_t address;
   uint64_t length;
-  std::string data;
+  ByteVector data;
   char *eptr;
 
   address = strtoull(args.c_str(), &eptr, 16);
@@ -3092,7 +3093,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
     uint64_t offset = strtoull(eptr, &eptr, 16);
 
-    std::string buffer;
+    ByteVector buffer;
     ErrorCode error = _delegate->onFileRead(*this, fd, count, offset, buffer);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
@@ -3114,9 +3115,10 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
 
     size_t nwritten;
+    auto bytePtr = reinterpret_cast<uint8_t *>(eptr);
     size_t length = args.length() - (eptr - args.c_str());
     ErrorCode error = _delegate->onFileWrite(
-        *this, fd, offset, std::string(eptr, length), nwritten);
+        *this, fd, offset, ByteVector(bytePtr, bytePtr + length), nwritten);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
@@ -3221,8 +3223,9 @@ void Session::Handle_vFlashWrite(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  ErrorCode error =
-      _delegate->onFlashWrite(*this, address, std::string(eptr, length));
+  auto bytePtr = reinterpret_cast<uint8_t *>(eptr);
+  ErrorCode error = _delegate->onFlashWrite(
+      *this, address, ByteVector(bytePtr, bytePtr + length));
   if (error == kErrorInvalidAddress) {
     send("E.memtype");
   } else {
@@ -3344,8 +3347,9 @@ void Session::Handle_X(ProtocolInterpreter::Handler const &,
   }
 
   size_t nwritten = 0;
+  auto bytePtr = reinterpret_cast<uint8_t *>(eptr);
   ErrorCode error = _delegate->onWriteMemory(
-      *this, address, std::string(eptr, length), nwritten);
+      *this, address, ByteVector(bytePtr, bytePtr + length), nwritten);
   if (error != kSuccess) {
     sendError(error);
     return;
@@ -3366,7 +3370,7 @@ void Session::Handle_x(ProtocolInterpreter::Handler const &,
   char *eptr;
   uint64_t address;
   uint64_t length;
-  std::string data;
+  ByteVector data;
 
   address = strtoull(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {

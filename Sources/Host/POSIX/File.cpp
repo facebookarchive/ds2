@@ -29,7 +29,7 @@ File::~File() {
   }
 }
 
-ErrorCode File::pread(std::string &buf, uint64_t &count, uint64_t offset) {
+ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
   if (!valid()) {
     return _lastError = kErrorInvalidHandle;
   }
@@ -43,7 +43,7 @@ ErrorCode File::pread(std::string &buf, uint64_t &count, uint64_t offset) {
 
   buf.resize(countArg);
 
-  ssize_t nRead = ::pread(_fd, &buf[0], countArg, offArg);
+  ssize_t nRead = ::pread(_fd, buf.data(), countArg, offArg);
 
   if (nRead < 0) {
     return _lastError = Platform::TranslateError();
