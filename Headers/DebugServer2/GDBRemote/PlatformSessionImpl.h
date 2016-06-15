@@ -45,10 +45,6 @@ protected:
                              std::string const &workingDirectory,
                              ProgramResult &result) override;
 
-  ErrorCode onFileOpen(Session &session, std::string const &path,
-                       uint32_t flags, uint32_t mode, int &fd) override;
-  ErrorCode onFileClose(Session &session, int fd) override;
-
   ErrorCode onFileExists(Session &session, std::string const &path) override;
 
 protected:
