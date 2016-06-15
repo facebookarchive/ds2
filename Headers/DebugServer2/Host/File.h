@@ -45,6 +45,9 @@ public:
   }
 
 public:
+  ErrorCode pread(std::string &buf, uint64_t &count, uint64_t offset);
+
+public:
   bool valid() const { return (_fd >= 0); }
   ErrorCode lastError() const { return _lastError; }
 
