@@ -143,8 +143,8 @@ private:
   void Handle_qOffsets(ProtocolInterpreter::Handler const &,
                        std::string const &);
   void Handle_qP(ProtocolInterpreter::Handler const &, std::string const &);
-  void Handle_qPlatform_IO_MkDir(ProtocolInterpreter::Handler const &,
-                                 std::string const &);
+  void Handle_qPlatform_mkdir(ProtocolInterpreter::Handler const &,
+                              std::string const &);
   void Handle_qPlatform_RunCommand(ProtocolInterpreter::Handler const &,
                                    std::string const &);
   void Handle_qProcessInfo(ProtocolInterpreter::Handler const &,
