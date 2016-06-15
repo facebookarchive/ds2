@@ -12,6 +12,7 @@
 #include "DebugServer2/Host/Platform.h"
 
 #include <fcntl.h>
+#include <limits>
 #include <unistd.h>
 
 namespace ds2 {
@@ -26,6 +27,32 @@ File::~File() {
   if (valid()) {
     ::close(_fd);
   }
+}
+
+ErrorCode File::pread(std::string &buf, uint64_t &count, uint64_t offset) {
+  if (!valid()) {
+    return _lastError = kErrorInvalidHandle;
+  }
+
+  if (offset > std::numeric_limits<off_t>::max()) {
+    return _lastError = kErrorInvalidArgument;
+  }
+
+  auto offArg = static_cast<off_t>(offset);
+  auto countArg = static_cast<size_t>(count);
+
+  buf.resize(countArg);
+
+  ssize_t nRead = ::pread(_fd, &buf[0], countArg, offArg);
+
+  if (nRead < 0) {
+    return _lastError = Platform::TranslateError();
+  }
+
+  buf.resize(nRead);
+  count = static_cast<uint64_t>(nRead);
+
+  return _lastError = kSuccess;
 }
 }
 }

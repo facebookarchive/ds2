@@ -19,5 +19,10 @@ File::File(std::string const &path, uint32_t flags, uint32_t mode)
     : _fd(-1), _lastError(kErrorUnsupported) {}
 
 File::~File() = default;
+
+ErrorCode File::pread(int fd, std::string &buf, uint64_t &count,
+                      uint64_t offset) {
+  return kErrorUnsupported;
+}
 }
 }
