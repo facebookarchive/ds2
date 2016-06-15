@@ -55,6 +55,9 @@ public:
 public:
   static ErrorCode unlink(std::string const &path);
 
+public:
+  static ErrorCode createDirectory(std::string const &path, uint32_t flags);
+
 protected:
   int _fd;
   ErrorCode _lastError;

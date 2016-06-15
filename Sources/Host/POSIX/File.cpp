@@ -13,6 +13,7 @@
 
 #include <fcntl.h>
 #include <limits>
+#include <sys/stat.h>
 #include <unistd.h>
 
 namespace ds2 {
@@ -55,10 +56,32 @@ ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
   return _lastError = kSuccess;
 }
 
+
 ErrorCode File::unlink(std::string const &path) {
   if (::unlink(path.c_str()) < 0) {
     return Platform::TranslateError();
   }
+
+  return kSuccess;
+}
+
+ErrorCode File::createDirectory(std::string const &path, uint32_t flags) {
+  size_t pos = 0;
+
+  // Each parent directory must be created individually, if it does not exist
+  do {
+    pos = path.find('/', pos + 1);
+    std::string partialPath = path.substr(0, pos);
+
+    if (::mkdir(partialPath.c_str(), flags) < 0) {
+      ErrorCode error = Platform::TranslateError();
+      if (error == kErrorAlreadyExist) {
+        continue;
+      }
+
+      return error;
+    }
+  } while (pos != std::string::npos);
 
   return kSuccess;
 }

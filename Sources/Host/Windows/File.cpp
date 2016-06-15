@@ -25,5 +25,9 @@ ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
 }
 
 ErrorCode File::unlink(std::string const &path) { return kErrorUnsupported; }
+
+ErrorCode File::createDirectory(std::string const &path, uint32_t flags) {
+  return kErrorUnsupported;
+}
 }
 }
