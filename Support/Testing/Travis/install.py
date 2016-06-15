@@ -32,6 +32,9 @@ target = os.getenv('TARGET')
 
 if target == 'Registers':
     dist_packages.append('g++-5')
+elif target == 'Documentation':
+    dist_packages.append('doxygen')
+    dist_packages.append('graphviz')
 elif target in linux_packages:
     if "CentOS Linux" in platform.linux_distribution():
         dist_packages.append('gcc')

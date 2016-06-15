@@ -84,8 +84,13 @@ if [[ "$TARGET" = "Style" ]]; then
 fi
 
 if [[ "$TARGET" = "Registers" ]]; then
-  CLANG_FORMAT="$cformat" CC="gcc-5" CXX="g++-5" "./Support/Scripts/generate-reg-descriptors.sh"
+  CLANG_FORMAT="$cformat" CC="gcc-5" CXX="g++-5" ./Support/Scripts/generate-reg-descriptors.sh
   check_dirty "Generated sources up to date." "Generated sources out of date."
+fi
+
+if [[ "$TARGET" = "Documentation" ]]; then
+  ./Support/Scripts/generate-documentation.sh
+  exit
 fi
 
 # Go back to the build tree where we started.

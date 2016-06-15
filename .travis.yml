@@ -22,6 +22,8 @@ matrix:
       env: TARGET="Style"
     - os: linux
       env: TARGET="Registers"
+    - os: linux
+      env: TARGET="Documentation" ENCRYPTION_LABEL="c06a05533acc"
     # Cross-compiled targets
     - os: linux
       env: TARGET="Android-ARM"
