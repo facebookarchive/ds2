@@ -52,8 +52,7 @@ static inline std::string HexToString(std::string const &str) {
   std::string result;
   DS2ASSERT(str.size() % 2 == 0);
   for (size_t n = 0; n < str.size(); n += 2) {
-    result +=
-        static_cast<char>((HexToNibble(str[n]) << 4) | HexToNibble(str[n + 1]));
+    result += static_cast<char>(HexToByte(&str[n]));
   }
   return result;
 }
