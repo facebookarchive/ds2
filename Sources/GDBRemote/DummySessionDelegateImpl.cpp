@@ -436,22 +436,27 @@ ErrorCode DummySessionDelegateImpl::onFileOpen(Session &,
                                                std::string const &path,
                                                uint32_t flags, uint32_t mode,
                                                int &fd) {
-  if ((fd = Platform::OpenFile(path, flags, mode)) < 0)
-    return Platform::TranslateError();
-  else
-    return kSuccess;
+  static int fileIdx = 0;
+
+  Host::File file(path, flags, mode);
+  if (!file.valid()) {
+    return file.lastError();
+  }
+
+  fd = fileIdx++;
+  _openFiles.emplace(fd, std::move(file));
+
+  return kSuccess;
 }
 
 ErrorCode DummySessionDelegateImpl::onFileClose(Session &session, int fd) {
-  //
-  // TODO(sas): Would be nice to have a table storing the FDs that were opened
-  // by the debugger to prevent Platform::CloseFile() getting called on
-  // arbitrary file descriptors.
-  //
-  if (!Platform::CloseFile(fd))
-    return Platform::TranslateError();
-  else
-    return kSuccess;
+  auto const it = _openFiles.find(fd);
+  if (it == _openFiles.end()) {
+    return kErrorInvalidHandle;
+  }
+
+  _openFiles.erase(it);
+  return kSuccess;
 }
 
 ErrorCode DummySessionDelegateImpl::onFileRead(Session &, int, size_t, uint64_t,

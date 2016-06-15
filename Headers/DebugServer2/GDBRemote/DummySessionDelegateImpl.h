@@ -12,6 +12,9 @@
 #define __DebugServer2_GDBRemote_DummySessionDelegateImpl_h
 
 #include "DebugServer2/GDBRemote/SessionDelegate.h"
+#include "DebugServer2/Host/File.h"
+
+#include <unordered_map>
 
 namespace ds2 {
 namespace GDBRemote {
@@ -19,6 +22,7 @@ namespace GDBRemote {
 class DummySessionDelegateImpl : public SessionDelegate {
 protected:
   bool _secure;
+  std::unordered_map<int, Host::File> _openFiles;
 
 protected:
   DummySessionDelegateImpl();
