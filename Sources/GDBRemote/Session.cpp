@@ -119,7 +119,7 @@ Session::Session(CompatibilityMode mode)
   REGISTER_HANDLER_EQUALS_1(qModuleInfo);
   REGISTER_HANDLER_EQUALS_1(qOffsets);
   REGISTER_HANDLER_EQUALS_1(qP);
-  REGISTER_HANDLER_EQUALS_1(qPlatform_IO_MkDir);
+  REGISTER_HANDLER_EQUALS_1(qPlatform_mkdir);
   REGISTER_HANDLER_EQUALS_1(qPlatform_RunCommand);
   REGISTER_HANDLER_EQUALS_1(qProcessInfo);
   REGISTER_HANDLER_EQUALS_1(qProcessInfoPID);
@@ -1956,12 +1956,12 @@ void Session::Handle_qP(ProtocolInterpreter::Handler const &,
 }
 
 //
-// Packet:        qPlatform_IO_MkDir:mode,path
+// Packet:        qPlatform_mkdir:mode,path
 // Description:   Creates a directory on the remote target.
 // Compatibility: LLDB
 //
-void Session::Handle_qPlatform_IO_MkDir(ProtocolInterpreter::Handler const &,
-                                        std::string const &args) {
+void Session::Handle_qPlatform_mkdir(ProtocolInterpreter::Handler const &,
+                                     std::string const &args) {
   char *eptr;
   uint32_t mode = std::strtoul(args.c_str(), &eptr, 16);
   if (*eptr++ != ',') {
@@ -1971,13 +1971,13 @@ void Session::Handle_qPlatform_IO_MkDir(ProtocolInterpreter::Handler const &,
 
   ErrorCode error =
       _delegate->onFileCreateDirectory(*this, HexToString(eptr), mode);
-  //
-  // Contrary to normal GDB protocol, we should send
-  // just -1 or 0.
-  //
-  std::ostringstream ss;
-  ss << std::hex << (error != kSuccess ? -1 : 0);
-  send(ss.str());
+  if (error != kSuccess) {
+    sendError(error);
+    return;
+  }
+
+  // Send F + <return code>, which is always 0 on success
+  send("F0");
 }
 
 //
