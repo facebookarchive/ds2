@@ -15,6 +15,6 @@
 namespace ds2 {
 namespace GDBRemote {
 
-SlaveSessionImpl::SlaveSessionImpl() : DebugSessionImpl() {}
+SlaveSessionImpl::SlaveSessionImpl() = default;
 }
 }
