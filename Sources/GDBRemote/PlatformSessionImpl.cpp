@@ -82,27 +82,6 @@ ErrorCode PlatformSessionImpl::onExecuteProgram(
   return kSuccess;
 }
 
-ErrorCode PlatformSessionImpl::onFileOpen(Session &, std::string const &path,
-                                          uint32_t flags, uint32_t mode,
-                                          int &fd) {
-  if ((fd = Platform::OpenFile(path, flags, mode)) < 0)
-    return Platform::TranslateError();
-  else
-    return kSuccess;
-}
-
-ErrorCode PlatformSessionImpl::onFileClose(Session &session, int fd) {
-  //
-  // TODO(sas): Would be nice to have a table storing the FDs that were opened
-  // by the debugger to prevent Platform::CloseFile() getting called on
-  // arbitrary file descriptors.
-  //
-  if (!Platform::CloseFile(fd))
-    return Platform::TranslateError();
-  else
-    return kSuccess;
-}
-
 ErrorCode PlatformSessionImpl::onFileExists(Session &,
                                             std::string const &path) {
   if (!Platform::IsFilePresent(path))

@@ -11,6 +11,7 @@
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
 using ds2::Host::Platform;
@@ -431,13 +432,26 @@ ErrorCode DummySessionDelegateImpl::onFileCreateDirectory(Session &,
   return kErrorUnsupported;
 }
 
-ErrorCode DummySessionDelegateImpl::onFileOpen(Session &, std::string const &,
-                                               uint32_t, uint32_t, int &) {
-  return kErrorUnsupported;
+ErrorCode DummySessionDelegateImpl::onFileOpen(Session &,
+                                               std::string const &path,
+                                               uint32_t flags, uint32_t mode,
+                                               int &fd) {
+  if ((fd = Platform::OpenFile(path, flags, mode)) < 0)
+    return Platform::TranslateError();
+  else
+    return kSuccess;
 }
 
-ErrorCode DummySessionDelegateImpl::onFileClose(Session &, int) {
-  return kErrorUnsupported;
+ErrorCode DummySessionDelegateImpl::onFileClose(Session &session, int fd) {
+  //
+  // TODO(sas): Would be nice to have a table storing the FDs that were opened
+  // by the debugger to prevent Platform::CloseFile() getting called on
+  // arbitrary file descriptors.
+  //
+  if (!Platform::CloseFile(fd))
+    return Platform::TranslateError();
+  else
+    return kSuccess;
 }
 
 ErrorCode DummySessionDelegateImpl::onFileRead(Session &, int, size_t, uint64_t,
