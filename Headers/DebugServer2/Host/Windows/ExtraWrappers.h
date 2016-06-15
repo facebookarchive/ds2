@@ -24,6 +24,8 @@
 // Some APIs are not exposed when building for UAP.
 #if !WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
 
+#if !defined(DOXYGEN)
+
 // clang-format off
 extern "C" {
 
@@ -412,6 +414,8 @@ WINBASEAPI LPTOP_LEVEL_EXCEPTION_FILTER WINAPI SetUnhandledExceptionFilter(
 );
 } // extern "C"
 // clang-format on
+
+#endif // !DOXYGEN
 
 // The following code allows us to pick some symbols directly from kernel32.dll
 // (against which we cannot link when building for WinStore-ARM for instance.

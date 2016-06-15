@@ -20,6 +20,8 @@
 #include <sys/user.h>
 #include <unistd.h>
 
+#if !defined(DOXYGEN)
+
 // Required structs for PTrace GETREGSET with NT_X86_STATE
 // These structs are not made available by the system headers
 struct YMMHighVector {
@@ -72,5 +74,7 @@ static inline int tkill(pid_t tid, int signo) {
 #if !defined(TRAP_HWBKPT)
 #define TRAP_HWBKPT 4
 #endif
+
+#endif // !DOXYGEN
 
 #endif // !__DebugServer2_Host_Linux_ExtraWrappers_h
