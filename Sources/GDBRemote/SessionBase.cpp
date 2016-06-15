@@ -74,32 +74,6 @@ bool SessionBase::parse(std::string const &data) {
   return true;
 }
 
-bool SessionBase::send(std::string const &data, bool escaped) {
-  std::ostringstream ss;
-  std::string encoded;
-  std::string const *datap = &data;
-
-  //
-  // If data contains $, #, } or * we need to escape the
-  // stream.
-  //
-  if (!escaped && data.find_first_of("$#}*") != std::string::npos) {
-    encoded = Escape(data);
-    datap = &encoded;
-  }
-
-  uint8_t csum = Checksum(*datap);
-
-  ss << '$' << *datap << '#' << std::hex << std::setw(2) << std::setfill('0')
-     << (unsigned)csum;
-
-  std::string final_data = ss.str();
-  DS2LOG(Packet, "putpkt(\"%s\", %u)", final_data.c_str(),
-         (unsigned)final_data.length());
-
-  return _channel->send(final_data);
-}
-
 //
 // Functions used by the ProtocolInterpreter
 //
