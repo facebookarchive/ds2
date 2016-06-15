@@ -40,6 +40,10 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
   endif ()
 
+  if (ASAN)
+    set(COMMON_FLAGS "${COMMON_FLAGS} -fsanitize=address")
+  endif ()
+
   if (PIE)
     set(COMMON_FLAGS "${COMMON_FLAGS} -fpie")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
