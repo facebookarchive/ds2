@@ -1001,7 +1001,7 @@ void Session::Handle_m(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(StringToHex(data));
+  send(ToHex(data));
 }
 
 //
@@ -1088,7 +1088,7 @@ void Session::Handle_p(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(StringToHex(value));
+  send(ToHex(value));
 }
 
 //
@@ -1694,7 +1694,7 @@ void Session::Handle_qGetWorkingDir(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(StringToHex(workingDir));
+  send(ToHex(workingDir));
 }
 
 //
@@ -1712,7 +1712,7 @@ void Session::Handle_qGroupName(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(StringToHex(name));
+  send(ToHex(name));
 }
 
 //
@@ -1951,7 +1951,7 @@ void Session::Handle_qP(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(StringToHex(desc));
+  send(ToHex(desc));
 }
 
 //
@@ -2299,7 +2299,7 @@ void Session::Handle_qSymbol(ProtocolInterpreter::Handler const &,
   if (next.empty()) {
     sendOK();
   } else {
-    send("qSymbol:" + StringToHex(next));
+    send("qSymbol:" + ToHex(next));
   }
 }
 
@@ -2362,7 +2362,7 @@ void Session::Handle_qThreadExtraInfo(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(StringToHex(desc));
+  send(ToHex(desc));
 }
 
 //
@@ -2393,7 +2393,7 @@ void Session::Handle_qUserName(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  send(StringToHex(name));
+  send(ToHex(name));
 }
 
 //
@@ -3136,7 +3136,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
-      ss << 'F' << 0 << ';' << StringToHex(resolved);
+      ss << 'F' << 0 << ';' << ToHex(resolved);
     }
   } else if (op == "exists") {
     error = _delegate->onFileExists(*this, HexToString(&args[op_end]));

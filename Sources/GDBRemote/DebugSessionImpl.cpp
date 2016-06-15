@@ -1178,7 +1178,7 @@ void DebugSessionImpl::appendOutput(char const *buf, size_t size) {
       _resumeSessionLock.lock();
       DS2ASSERT(_resumeSession != nullptr);
       std::string data = "O";
-      data += StringToHex(this->_consoleBuffer);
+      data += ToHex(this->_consoleBuffer);
       _consoleBuffer.clear();
       this->_resumeSession->send(data);
       _resumeSessionLock.unlock();
