@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structds2_1_1_host_1_1_process_spawner_1_1_redirect_descriptor.html" title="ds2::Host::ProcessSpawner\l::RedirectDescriptor" alt="" coords="5,5,191,44"/>
+<area shape="rect" id="node1" href="$structds2_1_1_host_info.html" title="ds2::HostInfo" alt="" coords="5,5,105,31"/>
+<area shape="rect" id="node2" href="$structds2_1_1_g_d_b_remote_1_1_host_info.html" title="ds2::GDBRemote::HostInfo" alt="" coords="153,5,336,31"/>
 </map>

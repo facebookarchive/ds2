@@ -118,10 +118,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6a7cd3bec3671f007360634ad0712880"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6a7cd3bec3671f007360634ad0712880"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Session</b> (CompatibilityMode mode)</td></tr>
 <tr class="separator:a6a7cd3bec3671f007360634ad0712880"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a35311650cf9e52ab4ab3cb5c45b731fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a35311650cf9e52ab4ab3cb5c45b731fb"></a>
-CompatibilityMode&#160;</td><td class="memItemRight" valign="bottom"><b>mode</b> () const  override</td></tr>
-<tr class="separator:a35311650cf9e52ab4ab3cb5c45b731fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classds2_1_1_g_d_b_remote_1_1_session_base.html">ds2::GDBRemote::SessionBase</a></td></tr>
+<tr class="memitem:a5525bafa9e2b4a1f261dd79da8d940b9 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5525bafa9e2b4a1f261dd79da8d940b9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>SessionBase</b> (CompatibilityMode mode)</td></tr>
+<tr class="separator:a5525bafa9e2b4a1f261dd79da8d940b9 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e58e65d7ce4db4a367b706ce90d238f inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0e58e65d7ce4db4a367b706ce90d238f"></a>
+CompatibilityMode&#160;</td><td class="memItemRight" valign="bottom"><b>mode</b> () const </td></tr>
+<tr class="separator:a0e58e65d7ce4db4a367b706ce90d238f inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03bb67b42d604d9aac797b32d8c4f24a inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a03bb67b42d604d9aac797b32d8c4f24a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setDelegate</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session_delegate.html">SessionDelegate</a> *delegate)</td></tr>
 <tr class="separator:a03bb67b42d604d9aac797b32d8c4f24a inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,9 +140,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>receive</b> (bool coo
 <tr class="memitem:a32d76fa801e9b1a04c21ccb6c6dea752 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32d76fa801e9b1a04c21ccb6c6dea752"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>parse</b> (std::string const &amp;data)</td></tr>
 <tr class="separator:a32d76fa801e9b1a04c21ccb6c6dea752 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6618762d5c5b87930b2e38dc923f5024 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6618762d5c5b87930b2e38dc923f5024"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>send</b> (std::string const &amp;data, bool escaped=false)</td></tr>
-<tr class="separator:a6618762d5c5b87930b2e38dc923f5024 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a058c86ca9329f94f157c77f4c0d72c34 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a058c86ca9329f94f157c77f4c0d72c34"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>send</b> (char const *data, bool escaped=false)</td></tr>
+<tr class="separator:a058c86ca9329f94f157c77f4c0d72c34 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e41c5dac2243b4f50643a9666a1567e inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4e41c5dac2243b4f50643a9666a1567e"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4e41c5dac2243b4f50643a9666a1567e inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>send</b> (T const &amp;data, bool escaped=false)</td></tr>
+<tr class="separator:a4e41c5dac2243b4f50643a9666a1567e inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80742b174d9aacb9fc3e79a004117ed7 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a80742b174d9aacb9fc3e79a004117ed7"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>getAckMode</b> ()</td></tr>
 <tr class="separator:a80742b174d9aacb9fc3e79a004117ed7 inherit pub_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -152,9 +159,6 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a9a5191116866bee9378151fa3ed4076b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9a5191116866bee9378151fa3ed4076b"></a>
 std::map&lt; char, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_process_thread_id.html">ProcessThreadId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_ptids</b></td></tr>
 <tr class="separator:a9a5191116866bee9378151fa3ed4076b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a10e8fbb8cd93360187f9609c6f3f2d78"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a10e8fbb8cd93360187f9609c6f3f2d78"></a>
-CompatibilityMode&#160;</td><td class="memItemRight" valign="bottom"><b>_compatMode</b></td></tr>
-<tr class="separator:a10e8fbb8cd93360187f9609c6f3f2d78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad254e024004702498f1fe08330afa93b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad254e024004702498f1fe08330afa93b"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>_threadsInStopReply</b></td></tr>
 <tr class="separator:ad254e024004702498f1fe08330afa93b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -165,10 +169,16 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>_threadsInStopReply</
 <tr class="memitem:aa8385019541830bd855343bca3a0637b inherit pro_attribs_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8385019541830bd855343bca3a0637b"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>_ackmode</b></td></tr>
 <tr class="separator:aa8385019541830bd855343bca3a0637b inherit pro_attribs_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e801e9d8e3aa4dd3be46d87c77b93ba inherit pro_attribs_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e801e9d8e3aa4dd3be46d87c77b93ba"></a>
+CompatibilityMode&#160;</td><td class="memItemRight" valign="bottom"><b>_compatMode</b></td></tr>
+<tr class="separator:a7e801e9d8e3aa4dd3be46d87c77b93ba inherit pro_attribs_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classds2_1_1_g_d_b_remote_1_1_session_base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classds2_1_1_g_d_b_remote_1_1_session_base.html">ds2::GDBRemote::SessionBase</a></td></tr>
+<tr class="memitem:a609c0a90b822316c0e3a54e5b9420eb4 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a609c0a90b822316c0e3a54e5b9420eb4"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>getPacketSeparator</b> ()</td></tr>
+<tr class="separator:a609c0a90b822316c0e3a54e5b9420eb4 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bbdb9f5e1de708b405eded348869448 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3bbdb9f5e1de708b405eded348869448"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>sendACK</b> ()</td></tr>
 <tr class="separator:a3bbdb9f5e1de708b405eded348869448 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_session_base"><td class="memSeparator" colspan="2">&#160;</td></tr>

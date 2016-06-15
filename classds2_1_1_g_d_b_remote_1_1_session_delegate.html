@@ -209,6 +209,9 @@ virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onTermin
 <tr class="memitem:a27ad913e35c8e09040e63decb60ec4a9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a27ad913e35c8e09040e63decb60ec4a9"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onTerminate</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid)=0</td></tr>
 <tr class="separator:a27ad913e35c8e09040e63decb60ec4a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a73efba4d6b3eff28c664692e21859ff2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a73efba4d6b3eff28c664692e21859ff2"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onExitServer</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session)=0</td></tr>
+<tr class="separator:a73efba4d6b3eff28c664692e21859ff2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a062320b4ffdb1803c30811f9a83908f8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a062320b4ffdb1803c30811f9a83908f8"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSynchronizeThreadState</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid)=0</td></tr>
 <tr class="separator:a062320b4ffdb1803c30811f9a83908f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -257,12 +260,12 @@ virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onReadRe
 <tr class="memitem:abd0c2c338d719befd994bd7cfec34b0e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd0c2c338d719befd994bd7cfec34b0e"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onWriteRegisterValue</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="structds2_1_1_g_d_b_remote_1_1_process_thread_id.html">ProcessThreadId</a> const &amp;ptid, uint32_t regno, std::string const &amp;value)=0</td></tr>
 <tr class="separator:abd0c2c338d719befd994bd7cfec34b0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c90154f50049037bb5f4ab7adf05b82"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c90154f50049037bb5f4ab7adf05b82"></a>
-virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onReadMemory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t length, std::string &amp;data)=0</td></tr>
-<tr class="separator:a0c90154f50049037bb5f4ab7adf05b82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4992cf00f12ee20af5ab6a3c0b4c951e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4992cf00f12ee20af5ab6a3c0b4c951e"></a>
-virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onWriteMemory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, std::string const &amp;data, size_t &amp;nwritten)=0</td></tr>
-<tr class="separator:a4992cf00f12ee20af5ab6a3c0b4c951e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a328c493406ba2cfcf868b8445c420c76"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a328c493406ba2cfcf868b8445c420c76"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onReadMemory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t length, ByteVector &amp;data)=0</td></tr>
+<tr class="separator:a328c493406ba2cfcf868b8445c420c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd3400040e964ea991afd42ad9da6cbd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afd3400040e964ea991afd42ad9da6cbd"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onWriteMemory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, ByteVector const &amp;data, size_t &amp;nwritten)=0</td></tr>
+<tr class="separator:afd3400040e964ea991afd42ad9da6cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43f042b0cf4c2e1cf1e959748341d9e1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a43f042b0cf4c2e1cf1e959748341d9e1"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onAllocateMemory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, size_t size, uint32_t permissions, <a class="el" href="classds2_1_1_address.html">Address</a> &amp;address)=0</td></tr>
 <tr class="separator:a43f042b0cf4c2e1cf1e959748341d9e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -329,12 +332,12 @@ virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileOp
 <tr class="memitem:a5f007eeda572091820453034f526844f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f007eeda572091820453034f526844f"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileClose</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, int fd)=0</td></tr>
 <tr class="separator:a5f007eeda572091820453034f526844f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e2411eef4ce12f40c4753f2bd99c3b6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9e2411eef4ce12f40c4753f2bd99c3b6"></a>
-virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileRead</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, int fd, size_t count, uint64_t offset, std::string &amp;buffer)=0</td></tr>
-<tr class="separator:a9e2411eef4ce12f40c4753f2bd99c3b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46a59a8598fcb60f8841302c84a5e13d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a46a59a8598fcb60f8841302c84a5e13d"></a>
-virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileWrite</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, int fd, uint64_t offset, std::string const &amp;buffer, size_t &amp;nwritten)=0</td></tr>
-<tr class="separator:a46a59a8598fcb60f8841302c84a5e13d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ae88fb3ba21663e5199400c9244cf22"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2ae88fb3ba21663e5199400c9244cf22"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileRead</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, int fd, uint64_t &amp;count, uint64_t offset, ByteVector &amp;buffer)=0</td></tr>
+<tr class="separator:a2ae88fb3ba21663e5199400c9244cf22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe8e183b37f76f29caeb6ad86eea6e9b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afe8e183b37f76f29caeb6ad86eea6e9b"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileWrite</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, int fd, uint64_t offset, ByteVector const &amp;buffer, size_t &amp;nwritten)=0</td></tr>
+<tr class="separator:afe8e183b37f76f29caeb6ad86eea6e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3c79cdcdb30c983c112518c982d738c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3c79cdcdb30c983c112518c982d738c"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileRemove</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;path)=0</td></tr>
 <tr class="separator:ad3c79cdcdb30c983c112518c982d738c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -377,9 +380,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>onReset</b> (
 <tr class="memitem:ae9c5e4b299920a6d4e69a1717e48a555"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae9c5e4b299920a6d4e69a1717e48a555"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFlashErase</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t length)=0</td></tr>
 <tr class="separator:ae9c5e4b299920a6d4e69a1717e48a555"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30acef0177e081a05164af3c649f62eb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a30acef0177e081a05164af3c649f62eb"></a>
-virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFlashWrite</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, std::string const &amp;data)=0</td></tr>
-<tr class="separator:a30acef0177e081a05164af3c649f62eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af616752f635c23c1f957a385c7212e25"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af616752f635c23c1f957a385c7212e25"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFlashWrite</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, ByteVector const &amp;data)=0</td></tr>
+<tr class="separator:af616752f635c23c1f957a385c7212e25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0edb613d8fca9107e937958be7eb8fa9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0edb613d8fca9107e937958be7eb8fa9"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFlashDone</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session)=0</td></tr>
 <tr class="separator:a0edb613d8fca9107e937958be7eb8fa9"><td class="memSeparator" colspan="2">&#160;</td></tr>

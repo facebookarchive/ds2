@@ -110,14 +110,13 @@ Collaboration diagram for ds2::Target::FreeBSD::Process:</div>
 <div class="dyncontent">
 <div class="center"><img src="classds2_1_1_target_1_1_free_b_s_d_1_1_process__coll__graph.png" border="0" usemap="#ds2_1_1_target_1_1_free_b_s_d_1_1_process_coll__map" alt="Collaboration graph"/></div>
 <map name="ds2_1_1_target_1_1_free_b_s_d_1_1_process_coll__map" id="ds2_1_1_target_1_1_free_b_s_d_1_1_process_coll__map">
-<area shape="rect" id="node2" href="classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="959,48,1095,87"/>
-<area shape="rect" id="node3" href="classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="674,51,809,89"/>
-<area shape="rect" id="node4" href="classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="269,71,442,96"/>
-<area shape="rect" id="node5" href="classds2_1_1_address.html" title="ds2::Address" alt="" coords="16,5,115,31"/>
-<area shape="rect" id="node7" href="structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="5,124,126,149"/>
-<area shape="rect" id="node8" href="classds2_1_1_host_1_1_free_b_s_d_1_1_p_trace.html" title="ds2::Host::FreeBSD\l::PTrace" alt="" coords="957,111,1097,149"/>
-<area shape="rect" id="node9" href="classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title="ds2::Host::POSIX::PTrace" alt="" coords="654,116,830,141"/>
-<area shape="rect" id="node10" href="structds2_1_1_host_1_1_free_b_s_d_1_1_p_trace_private_data.html" title="ds2::Host::FreeBSD\l::PTracePrivateData" alt="" coords="671,165,812,204"/>
+<area shape="rect" id="node2" href="classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="106,280,241,319"/>
+<area shape="rect" id="node3" href="classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="106,192,241,231"/>
+<area shape="rect" id="node4" href="classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="119,105,292,131"/>
+<area shape="rect" id="node5" href="classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,104,31"/>
+<area shape="rect" id="node7" href="structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="251,5,371,31"/>
+<area shape="rect" id="node8" href="classds2_1_1_host_1_1_free_b_s_d_1_1_p_trace.html" title="ds2::Host::FreeBSD\l::PTrace" alt="" coords="274,280,414,319"/>
+<area shape="rect" id="node9" href="classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title="ds2::Host::POSIX::PTrace" alt="" coords="266,199,441,224"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -216,15 +215,15 @@ virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>resume</
 <tr class="memitem:a32ed5b13427fa546e56aef3034b6e401 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32ed5b13427fa546e56aef3034b6e401"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>enumerateThreads</b> (std::function&lt; void(Thread *)&gt; const &amp;cb) const </td></tr>
 <tr class="separator:a32ed5b13427fa546e56aef3034b6e401 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9e3629e533b9ac3f536fc30fe2f6fef inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad9e3629e533b9ac3f536fc30fe2f6fef"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>readMemoryBuffer</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t length, std::string &amp;buffer)</td></tr>
-<tr class="separator:ad9e3629e533b9ac3f536fc30fe2f6fef inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a229cdd4fde98751d2a5496d2ffa79e77 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a229cdd4fde98751d2a5496d2ffa79e77"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>writeMemoryBuffer</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, std::string const &amp;buffer, size_t *nwritten=nullptr)</td></tr>
-<tr class="separator:a229cdd4fde98751d2a5496d2ffa79e77 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2236bb715c00a56cfc0aed973f421dce inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2236bb715c00a56cfc0aed973f421dce"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>writeMemoryBuffer</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, std::string const &amp;buffer, size_t length, size_t *nwritten=nullptr)</td></tr>
-<tr class="separator:a2236bb715c00a56cfc0aed973f421dce inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1b7d8d46e6d2db4ef5b08b7133c1ab4 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac1b7d8d46e6d2db4ef5b08b7133c1ab4"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>readMemoryBuffer</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t length, ByteVector &amp;buffer)</td></tr>
+<tr class="separator:ac1b7d8d46e6d2db4ef5b08b7133c1ab4 inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a106d13709ad7275e1174f8d7118b9fbf inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a106d13709ad7275e1174f8d7118b9fbf"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>writeMemoryBuffer</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, ByteVector const &amp;buffer, size_t *nwritten=nullptr)</td></tr>
+<tr class="separator:a106d13709ad7275e1174f8d7118b9fbf inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab90524971b81a4109e89fb829e87b0ab inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab90524971b81a4109e89fb829e87b0ab"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>writeMemoryBuffer</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, ByteVector const &amp;buffer, size_t length, size_t *nwritten=nullptr)</td></tr>
+<tr class="separator:ab90524971b81a4109e89fb829e87b0ab inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a140c6fa387f8c6d77170ccb4e9cd700c inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a140c6fa387f8c6d77170ccb4e9cd700c"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>getThreadIds</b> (std::vector&lt; ThreadId &gt; &amp;tids)</td></tr>
 <tr class="separator:a140c6fa387f8c6d77170ccb4e9cd700c inherit pub_methods_classds2_1_1_target_1_1_process_base"><td class="memSeparator" colspan="2">&#160;</td></tr>

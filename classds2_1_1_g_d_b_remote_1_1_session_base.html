@@ -92,7 +92,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a href="#friends">Friends</a> &#124;
 <a href="classds2_1_1_g_d_b_remote_1_1_session_base-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">ds2::GDBRemote::SessionBase Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">ds2::GDBRemote::SessionBase Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="dynheader">
@@ -116,9 +116,12 @@ Collaboration diagram for ds2::GDBRemote::SessionBase:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa6a7a85e4d120397ad7cee9c5948c8c3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa6a7a85e4d120397ad7cee9c5948c8c3"></a>
-virtual CompatibilityMode&#160;</td><td class="memItemRight" valign="bottom"><b>mode</b> () const  =0</td></tr>
-<tr class="separator:aa6a7a85e4d120397ad7cee9c5948c8c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5525bafa9e2b4a1f261dd79da8d940b9"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5525bafa9e2b4a1f261dd79da8d940b9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>SessionBase</b> (CompatibilityMode mode)</td></tr>
+<tr class="separator:a5525bafa9e2b4a1f261dd79da8d940b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e58e65d7ce4db4a367b706ce90d238f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0e58e65d7ce4db4a367b706ce90d238f"></a>
+CompatibilityMode&#160;</td><td class="memItemRight" valign="bottom"><b>mode</b> () const </td></tr>
+<tr class="separator:a0e58e65d7ce4db4a367b706ce90d238f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03bb67b42d604d9aac797b32d8c4f24a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a03bb67b42d604d9aac797b32d8c4f24a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setDelegate</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session_delegate.html">SessionDelegate</a> *delegate)</td></tr>
 <tr class="separator:a03bb67b42d604d9aac797b32d8c4f24a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -134,9 +137,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>receive</b> (bool coo
 <tr class="memitem:a32d76fa801e9b1a04c21ccb6c6dea752"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32d76fa801e9b1a04c21ccb6c6dea752"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>parse</b> (std::string const &amp;data)</td></tr>
 <tr class="separator:a32d76fa801e9b1a04c21ccb6c6dea752"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6618762d5c5b87930b2e38dc923f5024"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6618762d5c5b87930b2e38dc923f5024"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>send</b> (std::string const &amp;data, bool escaped=false)</td></tr>
-<tr class="separator:a6618762d5c5b87930b2e38dc923f5024"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a058c86ca9329f94f157c77f4c0d72c34"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a058c86ca9329f94f157c77f4c0d72c34"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>send</b> (char const *data, bool escaped=false)</td></tr>
+<tr class="separator:a058c86ca9329f94f157c77f4c0d72c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e41c5dac2243b4f50643a9666a1567e"><td class="memTemplParams" colspan="2"><a class="anchor" id="a4e41c5dac2243b4f50643a9666a1567e"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a4e41c5dac2243b4f50643a9666a1567e"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><b>send</b> (T const &amp;data, bool escaped=false)</td></tr>
+<tr class="separator:a4e41c5dac2243b4f50643a9666a1567e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80742b174d9aacb9fc3e79a004117ed7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a80742b174d9aacb9fc3e79a004117ed7"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>getAckMode</b> ()</td></tr>
 <tr class="separator:a80742b174d9aacb9fc3e79a004117ed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,6 +153,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>getAckMode</b> ()</td
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:a609c0a90b822316c0e3a54e5b9420eb4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a609c0a90b822316c0e3a54e5b9420eb4"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>getPacketSeparator</b> ()</td></tr>
+<tr class="separator:a609c0a90b822316c0e3a54e5b9420eb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bbdb9f5e1de708b405eded348869448"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3bbdb9f5e1de708b405eded348869448"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>sendACK</b> ()</td></tr>
 <tr class="separator:a3bbdb9f5e1de708b405eded348869448"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -182,6 +192,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:aa8385019541830bd855343bca3a0637b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa8385019541830bd855343bca3a0637b"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>_ackmode</b></td></tr>
 <tr class="separator:aa8385019541830bd855343bca3a0637b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e801e9d8e3aa4dd3be46d87c77b93ba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7e801e9d8e3aa4dd3be46d87c77b93ba"></a>
+CompatibilityMode&#160;</td><td class="memItemRight" valign="bottom"><b>_compatMode</b></td></tr>
+<tr class="separator:a7e801e9d8e3aa4dd3be46d87c77b93ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>

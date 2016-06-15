@@ -1,10 +1,9 @@
 <map id="ds2::Target::FreeBSD::Process" name="ds2::Target::FreeBSD::Process">
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="959,48,1095,87"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="674,51,809,89"/>
-<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="269,71,442,96"/>
-<area shape="rect" id="node5" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="16,5,115,31"/>
-<area shape="rect" id="node7" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="5,124,126,149"/>
-<area shape="rect" id="node8" href="$classds2_1_1_host_1_1_free_b_s_d_1_1_p_trace.html" title="ds2::Host::FreeBSD\l::PTrace" alt="" coords="957,111,1097,149"/>
-<area shape="rect" id="node9" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title="ds2::Host::POSIX::PTrace" alt="" coords="654,116,830,141"/>
-<area shape="rect" id="node10" href="$structds2_1_1_host_1_1_free_b_s_d_1_1_p_trace_private_data.html" title="ds2::Host::FreeBSD\l::PTracePrivateData" alt="" coords="671,165,812,204"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="106,280,241,319"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="106,192,241,231"/>
+<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="119,105,292,131"/>
+<area shape="rect" id="node5" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,104,31"/>
+<area shape="rect" id="node7" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="251,5,371,31"/>
+<area shape="rect" id="node8" href="$classds2_1_1_host_1_1_free_b_s_d_1_1_p_trace.html" title="ds2::Host::FreeBSD\l::PTrace" alt="" coords="274,280,414,319"/>
+<area shape="rect" id="node9" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title="ds2::Host::POSIX::PTrace" alt="" coords="266,199,441,224"/>
 </map>
