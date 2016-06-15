@@ -180,7 +180,7 @@ void ProtocolInterpreter::onCommand(std::string const &command,
   extra += arguments;
 
   if (extra.find_first_of("*}") != std::string::npos) {
-    extra = Uncompress(extra);
+    extra = Unescape(extra);
     DS2LOG(Packet, "args='%.*s'", static_cast<int>(extra.length()), &extra[0]);
   }
 

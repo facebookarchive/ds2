@@ -12,6 +12,9 @@
 #define __DebugServer2_GDBRemote_DummySessionDelegateImpl_h
 
 #include "DebugServer2/GDBRemote/SessionDelegate.h"
+#include "DebugServer2/Host/File.h"
+
+#include <unordered_map>
 
 namespace ds2 {
 namespace GDBRemote {
@@ -19,6 +22,7 @@ namespace GDBRemote {
 class DummySessionDelegateImpl : public SessionDelegate {
 protected:
   bool _secure;
+  std::unordered_map<int, Host::File> _openFiles;
 
 protected:
   DummySessionDelegateImpl();
@@ -157,9 +161,9 @@ protected: // Debugging Session
                                  std::string const &value) override;
 
   ErrorCode onReadMemory(Session &session, Address const &address,
-                         size_t length, std::string &data) override;
+                         size_t length, ByteVector &data) override;
   ErrorCode onWriteMemory(Session &session, Address const &address,
-                          std::string const &data, size_t &nwritten) override;
+                          ByteVector const &data, size_t &nwritten) override;
 
   ErrorCode onAllocateMemory(Session &session, size_t size,
                              uint32_t permissions, Address &address) override;
@@ -225,10 +229,10 @@ protected: // Platform Session
   ErrorCode onFileOpen(Session &session, std::string const &path,
                        uint32_t flags, uint32_t mode, int &fd) override;
   ErrorCode onFileClose(Session &session, int fd) override;
-  ErrorCode onFileRead(Session &session, int fd, size_t count, uint64_t offset,
-                       std::string &buffer) override;
+  ErrorCode onFileRead(Session &session, int fd, uint64_t &count,
+                       uint64_t offset, ByteVector &buffer) override;
   ErrorCode onFileWrite(Session &session, int fd, uint64_t offset,
-                        std::string const &buffer, size_t &nwritten) override;
+                        ByteVector const &buffer, size_t &nwritten) override;
 
   ErrorCode onFileRemove(Session &session, std::string const &path) override;
   ErrorCode onFileReadLink(Session &session, std::string const &path,
@@ -283,7 +287,7 @@ protected: // System Session
   ErrorCode onFlashErase(Session &session, Address const &address,
                          size_t length) override;
   ErrorCode onFlashWrite(Session &session, Address const &address,
-                         std::string const &data) override;
+                         ByteVector const &data) override;
   ErrorCode onFlashDone(Session &session) override;
 };
 }

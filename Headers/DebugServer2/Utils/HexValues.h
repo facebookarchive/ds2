@@ -39,11 +39,20 @@ static inline uint8_t HexToByte(char const *chars) {
   return (HexToNibble(chars[0]) << 4) | HexToNibble(chars[1]);
 }
 
-static inline std::string StringToHex(std::string const &str) {
+template <typename T> static inline std::string ToHex(T const &vec) {
   std::string result;
-  for (char n : str) {
+  for (char n : vec) {
     result += NibbleToHex(n >> 4);
     result += NibbleToHex(n & 15);
+  }
+  return result;
+}
+
+static inline ByteVector HexToByteVector(std::string const &str) {
+  ByteVector result;
+  DS2ASSERT(str.size() % 2 == 0);
+  for (size_t n = 0; n < str.size(); n += 2) {
+    result.emplace_back(HexToByte(&str[n]));
   }
   return result;
 }
@@ -52,8 +61,7 @@ static inline std::string HexToString(std::string const &str) {
   std::string result;
   DS2ASSERT(str.size() % 2 == 0);
   for (size_t n = 0; n < str.size(); n += 2) {
-    result +=
-        static_cast<char>((HexToNibble(str[n]) << 4) | HexToNibble(str[n + 1]));
+    result += static_cast<char>(HexToByte(&str[n]));
   }
   return result;
 }

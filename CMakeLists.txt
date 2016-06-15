@@ -106,6 +106,7 @@ set(HOST_COMMON_SOURCES
     )
 
 set(HOST_POSIX_SOURCES
+    Sources/Host/POSIX/File.cpp
     Sources/Host/POSIX/Platform.cpp
     Sources/Host/POSIX/PTrace.cpp
     Sources/Host/POSIX/ProcessSpawner.cpp
@@ -138,6 +139,7 @@ set(HOST_FreeBSD_SOURCES
     )
 
 set(HOST_Windows_SOURCES
+    Sources/Host/Windows/File.cpp
     Sources/Host/Windows/Platform.cpp
     Sources/Host/Windows/ProcessSpawner.cpp
     )
@@ -197,7 +199,6 @@ set(GDBREMOTE_SOURCES
     Sources/GDBRemote/DummySessionDelegateImpl.cpp
     Sources/GDBRemote/PacketProcessor.cpp
     Sources/GDBRemote/PlatformSessionImpl.cpp
-    Sources/GDBRemote/ProtocolHelpers.cpp
     Sources/GDBRemote/ProtocolInterpreter.cpp
     Sources/GDBRemote/Session.cpp
     Sources/GDBRemote/SessionBase.cpp

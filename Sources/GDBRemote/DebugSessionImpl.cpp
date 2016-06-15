@@ -760,7 +760,7 @@ ErrorCode DebugSessionImpl::onWriteRegisterValue(Session &session,
 }
 
 ErrorCode DebugSessionImpl::onReadMemory(Session &, Address const &address,
-                                         size_t length, std::string &data) {
+                                         size_t length, ByteVector &data) {
   if (_process == nullptr)
     return kErrorProcessNotFound;
   else
@@ -768,7 +768,7 @@ ErrorCode DebugSessionImpl::onReadMemory(Session &, Address const &address,
 }
 
 ErrorCode DebugSessionImpl::onWriteMemory(Session &, Address const &address,
-                                          std::string const &data,
+                                          ByteVector const &data,
                                           size_t &nwritten) {
   if (_process == nullptr)
     return kErrorProcessNotFound;
@@ -1178,7 +1178,7 @@ void DebugSessionImpl::appendOutput(char const *buf, size_t size) {
       _resumeSessionLock.lock();
       DS2ASSERT(_resumeSession != nullptr);
       std::string data = "O";
-      data += StringToHex(this->_consoleBuffer);
+      data += ToHex(this->_consoleBuffer);
       _consoleBuffer.clear();
       this->_resumeSession->send(data);
       _resumeSessionLock.unlock();

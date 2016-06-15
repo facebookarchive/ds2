@@ -11,6 +11,7 @@
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
 using ds2::Host::Platform;
@@ -319,12 +320,12 @@ ErrorCode DummySessionDelegateImpl::onRestoreRegisters(
 }
 
 ErrorCode DummySessionDelegateImpl::onReadMemory(Session &, Address const &,
-                                                 size_t, std::string &) {
+                                                 size_t, ByteVector &) {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onWriteMemory(Session &, Address const &,
-                                                  std::string const &,
+                                                  ByteVector const &,
                                                   size_t &) {
   return kErrorUnsupported;
 }
@@ -431,22 +432,46 @@ ErrorCode DummySessionDelegateImpl::onFileCreateDirectory(Session &,
   return kErrorUnsupported;
 }
 
-ErrorCode DummySessionDelegateImpl::onFileOpen(Session &, std::string const &,
-                                               uint32_t, uint32_t, int &) {
-  return kErrorUnsupported;
+ErrorCode DummySessionDelegateImpl::onFileOpen(Session &,
+                                               std::string const &path,
+                                               uint32_t flags, uint32_t mode,
+                                               int &fd) {
+  static int fileIdx = 0;
+
+  Host::File file(path, flags, mode);
+  if (!file.valid()) {
+    return file.lastError();
+  }
+
+  fd = fileIdx++;
+  _openFiles.emplace(fd, std::move(file));
+
+  return kSuccess;
 }
 
-ErrorCode DummySessionDelegateImpl::onFileClose(Session &, int) {
-  return kErrorUnsupported;
+ErrorCode DummySessionDelegateImpl::onFileClose(Session &session, int fd) {
+  auto const it = _openFiles.find(fd);
+  if (it == _openFiles.end()) {
+    return kErrorInvalidHandle;
+  }
+
+  _openFiles.erase(it);
+  return kSuccess;
 }
 
-ErrorCode DummySessionDelegateImpl::onFileRead(Session &, int, size_t, uint64_t,
-                                               std::string &) {
-  return kErrorUnsupported;
+ErrorCode DummySessionDelegateImpl::onFileRead(Session &session, int fd,
+                                               uint64_t &count, uint64_t offset,
+                                               ByteVector &buffer) {
+  auto it = _openFiles.find(fd);
+  if (it == _openFiles.end()) {
+    return kErrorInvalidHandle;
+  }
+
+  return it->second.pread(buffer, count, offset);
 }
 
 ErrorCode DummySessionDelegateImpl::onFileWrite(Session &, int, uint64_t,
-                                                std::string const &, size_t &) {
+                                                ByteVector const &, size_t &) {
   return kErrorUnsupported;
 }
 
@@ -567,7 +592,7 @@ ErrorCode DummySessionDelegateImpl::onFlashErase(Session &, Address const &,
 }
 
 ErrorCode DummySessionDelegateImpl::onFlashWrite(Session &, Address const &,
-                                                 std::string const &) {
+                                                 ByteVector const &) {
   return kErrorUnsupported;
 }
 

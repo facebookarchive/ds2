@@ -12,9 +12,16 @@
 #define __DebugServer2_GDBRemote_SessionBase_h
 
 #include "DebugServer2/GDBRemote/PacketProcessor.h"
+#include "DebugServer2/GDBRemote/ProtocolHelpers.h"
 #include "DebugServer2/GDBRemote/ProtocolInterpreter.h"
 #include "DebugServer2/GDBRemote/Types.h"
 #include "DebugServer2/Host/Channel.h"
+#include "DebugServer2/Utils/Log.h"
+
+#include <algorithm>
+#include <iomanip>
+#include <sstream>
+#include <type_traits>
 
 namespace ds2 {
 namespace GDBRemote {
@@ -56,7 +63,43 @@ public:
   bool parse(std::string const &data);
 
 public:
-  bool send(std::string const &data, bool escaped = false);
+  bool send(char const *data, bool escaped = false) {
+    return send(std::string(data), escaped);
+  }
+
+  template <typename T> bool send(T const &data, bool escaped = false) {
+    std::ostringstream ss;
+    static std::string const searchStr = "$#}*";
+    uint8_t csum;
+
+    ss << '$';
+
+    //
+    // If data contains $, #, } or * we need to escape the
+    // stream.
+    //
+    if (!escaped &&
+        std::find_first_of(data.begin(), data.end(), searchStr.begin(),
+                           searchStr.end()) != data.end()) {
+      std::string encoded = Escape(data);
+      ss << encoded;
+      csum = Checksum(encoded);
+    } else {
+      for (char c : data) {
+        ss << c;
+      }
+      csum = Checksum(data);
+    }
+
+    ss << '#' << std::hex << std::setw(2) << std::setfill('0')
+       << (unsigned)csum;
+
+    std::string final_data = ss.str();
+    DS2LOG(Packet, "putpkt(\"%s\", %u)", final_data.c_str(),
+           (unsigned)final_data.length());
+
+    return _channel->send(final_data);
+  }
 
 protected:
   bool sendACK();
