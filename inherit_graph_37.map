@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structds2_1_1_g_d_b_remote_1_1_iteration_state.html" title="ds2::GDBRemote::Iteration\lState\&lt; ProcessId \&gt;" alt="" coords="5,5,187,44"/>
+<area shape="rect" id="node1" href="$structds2_1_1_g_d_b_remote_1_1_packet_processor_delegate.html" title="ds2::GDBRemote::PacketProcessor\lDelegate" alt="" coords="5,33,239,72"/>
+<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_protocol_interpreter.html" title="ds2::GDBRemote::Protocol\lInterpreter" alt="" coords="287,5,469,44"/>
+<area shape="rect" id="node3" href="$class_session_thread.html" title="SessionThread" alt="" coords="323,68,434,93"/>
 </map>

@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structds2_1_1_g_d_b_remote_1_1_register_info.html" title="ds2::GDBRemote::RegisterInfo" alt="" coords="5,5,210,31"/>
+<area shape="rect" id="node1" href="$classds2_1_1_host_1_1_channel.html" title="ds2::Host::Channel" alt="" coords="5,31,140,56"/>
+<area shape="rect" id="node2" href="$classds2_1_1_host_1_1_queue_channel.html" title="ds2::Host::QueueChannel" alt="" coords="188,5,363,31"/>
+<area shape="rect" id="node3" href="$classds2_1_1_host_1_1_socket.html" title="ds2::Host::Socket" alt="" coords="213,55,338,80"/>
 </map>

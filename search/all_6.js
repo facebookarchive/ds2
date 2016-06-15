@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['feature',['Feature',['../structds2_1_1_g_d_b_remote_1_1_feature.html',1,'ds2::GDBRemote']]],
-  ['file',['File',['../classds2_1_1_host_1_1_file.html',1,'ds2::Host']]],
-  ['flagdef',['FlagDef',['../structds2_1_1_architecture_1_1_flag_def.html',1,'ds2::Architecture']]],
-  ['flagset',['FlagSet',['../structds2_1_1_architecture_1_1_flag_set.html',1,'ds2::Architecture']]]
+  ['gdbdescriptor',['GDBDescriptor',['../structds2_1_1_architecture_1_1_g_d_b_descriptor.html',1,'ds2::Architecture']]],
+  ['gdbfeature',['GDBFeature',['../structds2_1_1_architecture_1_1_g_d_b_feature.html',1,'ds2::Architecture']]],
+  ['gdbfeatureentry',['GDBFeatureEntry',['../structds2_1_1_architecture_1_1_g_d_b_feature_entry.html',1,'ds2::Architecture']]],
+  ['gdbvectordef',['GDBVectorDef',['../structds2_1_1_architecture_1_1_g_d_b_vector_def.html',1,'ds2::Architecture']]],
+  ['gdbvectorunion',['GDBVectorUnion',['../structds2_1_1_architecture_1_1_g_d_b_vector_union.html',1,'ds2::Architecture']]],
+  ['gdbvectorunionfield',['GDBVectorUnionField',['../structds2_1_1_architecture_1_1_g_d_b_vector_union_field.html',1,'ds2::Architecture']]],
+  ['gpregistervalue',['GPRegisterValue',['../structds2_1_1_architecture_1_1_g_p_register_value.html',1,'ds2::Architecture']]]
 ];

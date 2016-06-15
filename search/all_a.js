@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['libproc',['LibProc',['../classds2_1_1_host_1_1_darwin_1_1_lib_proc.html',1,'ds2::Host::Darwin']]],
-  ['lldbdescriptor',['LLDBDescriptor',['../structds2_1_1_architecture_1_1_l_l_d_b_descriptor.html',1,'ds2::Architecture']]],
-  ['lldbregisterinfo',['LLDBRegisterInfo',['../structds2_1_1_architecture_1_1_l_l_d_b_register_info.html',1,'ds2::Architecture']]],
-  ['lldbregisterset',['LLDBRegisterSet',['../structds2_1_1_architecture_1_1_l_l_d_b_register_set.html',1,'ds2::Architecture']]]
+  ['mach',['Mach',['../classds2_1_1_host_1_1_darwin_1_1_mach.html',1,'ds2::Host::Darwin']]],
+  ['machoprocess',['MachOProcess',['../classds2_1_1_target_1_1_darwin_1_1_mach_o_process.html',1,'ds2::Target::Darwin']]],
+  ['memoryregioninfo',['MemoryRegionInfo',['../structds2_1_1_g_d_b_remote_1_1_memory_region_info.html',1,'ds2::GDBRemote']]],
+  ['memoryregioninfo',['MemoryRegionInfo',['../structds2_1_1_memory_region_info.html',1,'ds2']]],
+  ['messagequeue',['MessageQueue',['../classds2_1_1_message_queue.html',1,'ds2']]]
 ];

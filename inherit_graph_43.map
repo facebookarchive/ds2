@@ -1,5 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structds2_1_1_g_d_b_remote_1_1_protocol_handler.html" title="ds2::GDBRemote::Protocol\lHandler" alt="" coords="5,5,187,44"/>
-<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_session_base.html" title="ds2::GDBRemote::SessionBase" alt="" coords="235,12,447,37"/>
-<area shape="rect" id="node3" href="$classds2_1_1_g_d_b_remote_1_1_session.html" title="ds2::GDBRemote::Session" alt="" coords="495,12,675,37"/>
+<area shape="rect" id="node1" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title="ds2::GDBRemote::SessionDelegate" alt="" coords="5,33,239,59"/>
+<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html" title="ds2::GDBRemote::DummySession\lDelegateImpl" alt="" coords="287,27,514,65"/>
+<area shape="rect" id="node3" href="$classds2_1_1_g_d_b_remote_1_1_debug_session_impl.html" title="ds2::GDBRemote::DebugSessionImpl" alt="" coords="562,5,807,31"/>
+<area shape="rect" id="node5" href="$classds2_1_1_g_d_b_remote_1_1_platform_session_impl.html" title="ds2::GDBRemote::Platform\lSessionImpl" alt="" coords="593,55,776,93"/>
+<area shape="rect" id="node4" href="$classds2_1_1_g_d_b_remote_1_1_slave_session_impl.html" title="ds2::GDBRemote::SlaveSessionImpl" alt="" coords="855,5,1094,31"/>
 </map>

@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['gdbdescriptor',['GDBDescriptor',['../structds2_1_1_architecture_1_1_g_d_b_descriptor.html',1,'ds2::Architecture']]],
-  ['gdbfeature',['GDBFeature',['../structds2_1_1_architecture_1_1_g_d_b_feature.html',1,'ds2::Architecture']]],
-  ['gdbfeatureentry',['GDBFeatureEntry',['../structds2_1_1_architecture_1_1_g_d_b_feature_entry.html',1,'ds2::Architecture']]],
-  ['gdbvectordef',['GDBVectorDef',['../structds2_1_1_architecture_1_1_g_d_b_vector_def.html',1,'ds2::Architecture']]],
-  ['gdbvectorunion',['GDBVectorUnion',['../structds2_1_1_architecture_1_1_g_d_b_vector_union.html',1,'ds2::Architecture']]],
-  ['gdbvectorunionfield',['GDBVectorUnionField',['../structds2_1_1_architecture_1_1_g_d_b_vector_union_field.html',1,'ds2::Architecture']]],
-  ['gpregistervalue',['GPRegisterValue',['../structds2_1_1_architecture_1_1_g_p_register_value.html',1,'ds2::Architecture']]]
+  ['handler',['Handler',['../structds2_1_1_g_d_b_remote_1_1_protocol_interpreter_1_1_handler.html',1,'ds2::GDBRemote::ProtocolInterpreter']]],
+  ['hardwarebreakpointmanager',['HardwareBreakpointManager',['../classds2_1_1_architecture_1_1_x86_1_1_hardware_breakpoint_manager.html',1,'ds2::Architecture::X86']]],
+  ['hardwarebreakpointmanager',['HardwareBreakpointManager',['../classds2_1_1_architecture_1_1_a_r_m_1_1_hardware_breakpoint_manager.html',1,'ds2::Architecture::ARM']]],
+  ['hostinfo',['HostInfo',['../structds2_1_1_g_d_b_remote_1_1_host_info.html',1,'ds2::GDBRemote']]],
+  ['hostinfo',['HostInfo',['../structds2_1_1_host_info.html',1,'ds2']]]
 ];
