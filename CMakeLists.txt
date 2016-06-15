@@ -199,7 +199,6 @@ set(GDBREMOTE_SOURCES
     Sources/GDBRemote/DummySessionDelegateImpl.cpp
     Sources/GDBRemote/PacketProcessor.cpp
     Sources/GDBRemote/PlatformSessionImpl.cpp
-    Sources/GDBRemote/ProtocolHelpers.cpp
     Sources/GDBRemote/ProtocolInterpreter.cpp
     Sources/GDBRemote/Session.cpp
     Sources/GDBRemote/SessionBase.cpp
