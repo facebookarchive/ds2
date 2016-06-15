@@ -251,7 +251,7 @@ protected: // Platform Session
   virtual ErrorCode onFileOpen(Session &session, std::string const &path,
                                uint32_t flags, uint32_t mode, int &fd) = 0;
   virtual ErrorCode onFileClose(Session &session, int fd) = 0;
-  virtual ErrorCode onFileRead(Session &session, int fd, size_t count,
+  virtual ErrorCode onFileRead(Session &session, int fd, uint64_t &count,
                                uint64_t offset, std::string &buffer) = 0;
   virtual ErrorCode onFileWrite(Session &session, int fd, uint64_t offset,
                                 std::string const &buffer,

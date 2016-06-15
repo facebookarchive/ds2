@@ -459,9 +459,15 @@ ErrorCode DummySessionDelegateImpl::onFileClose(Session &session, int fd) {
   return kSuccess;
 }
 
-ErrorCode DummySessionDelegateImpl::onFileRead(Session &, int, size_t, uint64_t,
-                                               std::string &) {
-  return kErrorUnsupported;
+ErrorCode DummySessionDelegateImpl::onFileRead(Session &session, int fd,
+                                               uint64_t &count, uint64_t offset,
+                                               std::string &buffer) {
+  auto it = _openFiles.find(fd);
+  if (it == _openFiles.end()) {
+    return kErrorInvalidHandle;
+  }
+
+  return it->second.pread(buffer, count, offset);
 }
 
 ErrorCode DummySessionDelegateImpl::onFileWrite(Session &, int, uint64_t,
