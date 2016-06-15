@@ -393,8 +393,8 @@ std::string
 StopInfo::encodeWithAllThreads(CompatibilityMode mode,
                                const JSArray &threadsStopInfo) const {
   std::ostringstream ss;
-  ss << encode(mode, true)
-     << "jstopinfo:" << StringToHex(threadsStopInfo.toString()) << ";";
+  ss << encode(mode, true) << "jstopinfo:" << ToHex(threadsStopInfo.toString())
+     << ";";
   return ss.str();
 }
 
@@ -471,10 +471,10 @@ std::string HostInfo::encode() const {
     ss << "vendor:" << osVendor << ';';
   }
   if (!osBuild.empty()) {
-    ss << "os_build:" << StringToHex(osBuild) << ';';
+    ss << "os_build:" << ToHex(osBuild) << ';';
   }
   if (!osKernel.empty()) {
-    ss << "os_kernel:" << StringToHex(osKernel) << ';';
+    ss << "os_kernel:" << ToHex(osKernel) << ';';
   }
   if (!osVersion.empty()) {
     unsigned int major, minor, revision;
@@ -491,7 +491,7 @@ std::string HostInfo::encode() const {
     }
   }
   if (!hostName.empty()) {
-    ss << "hostname:" << StringToHex(hostName) << ';';
+    ss << "hostname:" << ToHex(hostName) << ';';
   }
   ss << "endian:";
   switch (endian) {
@@ -547,8 +547,8 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
     ss << "euid:" << DEC << effectiveUid << ';';
     ss << "egid:" << DEC << effectiveGid << ';';
 #endif
-    ss << "name:" << StringToHex(name) << ';';
-    ss << "triple:" << StringToHex(triple) << ';';
+    ss << "name:" << ToHex(name) << ';';
+    ss << "triple:" << ToHex(triple) << ';';
   } else {
     ss << "pid:" << HEX0 << pid << ';';
     ss << "real-uid:" << HEX0 << FORMAT_ID(realUid) << ';';
@@ -559,7 +559,7 @@ std::string ProcessInfo::encode(CompatibilityMode mode,
     ss << "effective-gid:" << HEX0 << effectiveGid << ';';
 #endif
     if (mode == kCompatibilityModeLLDB) {
-      ss << "triple:" << StringToHex(triple) << ';';
+      ss << "triple:" << ToHex(triple) << ';';
     } else {
       // CPU{,Sub}Type contains an `enum CPUType`, and nativeCPU{,Sub}Type
       // contains the actual value that will be sent on the wire (e.g.: for ELF
