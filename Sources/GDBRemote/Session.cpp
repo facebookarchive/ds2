@@ -3097,7 +3097,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
-      ss << 'F' << 0 << ';' << Escape(buffer);
+      ss << 'F' << std::hex << count << ';' << Escape(buffer);
       escaped = true;
     }
   } else if (op == "pwrite") {
