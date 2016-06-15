@@ -68,7 +68,5 @@ std::string Unescape(std::string const &data) {
 
   return ss.str();
 }
-
-std::string Uncompress(std::string const &data) { return Unescape(data); }
 }
 }

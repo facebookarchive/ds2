@@ -21,10 +21,6 @@ uint8_t Checksum(std::string const &data);
 std::string Escape(std::string const &data);
 
 std::string Unescape(std::string const &data);
-
-std::string Compress(std::string const &data);
-
-std::string Uncompress(std::string const &data);
 }
 }
 
