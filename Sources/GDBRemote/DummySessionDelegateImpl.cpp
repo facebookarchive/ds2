@@ -320,12 +320,12 @@ ErrorCode DummySessionDelegateImpl::onRestoreRegisters(
 }
 
 ErrorCode DummySessionDelegateImpl::onReadMemory(Session &, Address const &,
-                                                 size_t, std::string &) {
+                                                 size_t, ByteVector &) {
   return kErrorUnsupported;
 }
 
 ErrorCode DummySessionDelegateImpl::onWriteMemory(Session &, Address const &,
-                                                  std::string const &,
+                                                  ByteVector const &,
                                                   size_t &) {
   return kErrorUnsupported;
 }
@@ -461,7 +461,7 @@ ErrorCode DummySessionDelegateImpl::onFileClose(Session &session, int fd) {
 
 ErrorCode DummySessionDelegateImpl::onFileRead(Session &session, int fd,
                                                uint64_t &count, uint64_t offset,
-                                               std::string &buffer) {
+                                               ByteVector &buffer) {
   auto it = _openFiles.find(fd);
   if (it == _openFiles.end()) {
     return kErrorInvalidHandle;
@@ -471,7 +471,7 @@ ErrorCode DummySessionDelegateImpl::onFileRead(Session &session, int fd,
 }
 
 ErrorCode DummySessionDelegateImpl::onFileWrite(Session &, int, uint64_t,
-                                                std::string const &, size_t &) {
+                                                ByteVector const &, size_t &) {
   return kErrorUnsupported;
 }
 
@@ -592,7 +592,7 @@ ErrorCode DummySessionDelegateImpl::onFlashErase(Session &, Address const &,
 }
 
 ErrorCode DummySessionDelegateImpl::onFlashWrite(Session &, Address const &,
-                                                 std::string const &) {
+                                                 ByteVector const &) {
   return kErrorUnsupported;
 }
 

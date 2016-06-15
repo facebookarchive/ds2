@@ -760,7 +760,7 @@ ErrorCode DebugSessionImpl::onWriteRegisterValue(Session &session,
 }
 
 ErrorCode DebugSessionImpl::onReadMemory(Session &, Address const &address,
-                                         size_t length, std::string &data) {
+                                         size_t length, ByteVector &data) {
   if (_process == nullptr)
     return kErrorProcessNotFound;
   else
@@ -768,7 +768,7 @@ ErrorCode DebugSessionImpl::onReadMemory(Session &, Address const &address,
 }
 
 ErrorCode DebugSessionImpl::onWriteMemory(Session &, Address const &address,
-                                          std::string const &data,
+                                          ByteVector const &data,
                                           size_t &nwritten) {
   if (_process == nullptr)
     return kErrorProcessNotFound;

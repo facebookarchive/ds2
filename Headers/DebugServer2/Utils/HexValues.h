@@ -48,6 +48,15 @@ template <typename T> static inline std::string ToHex(T const &vec) {
   return result;
 }
 
+static inline ByteVector HexToByteVector(std::string const &str) {
+  ByteVector result;
+  DS2ASSERT(str.size() % 2 == 0);
+  for (size_t n = 0; n < str.size(); n += 2) {
+    result.emplace_back(HexToByte(&str[n]));
+  }
+  return result;
+}
+
 static inline std::string HexToString(std::string const &str) {
   std::string result;
   DS2ASSERT(str.size() % 2 == 0);
