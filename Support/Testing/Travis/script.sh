@@ -112,6 +112,10 @@ if [[ "${COVERAGE-}" = "1" ]]; then
   cmake_options+=(-DCOVERAGE="1")
 fi
 
+if [[ "${CLANG-}" = "1" ]] && [[ "$TARGET" = "Linux-X86_64" ]]; then
+  cmake_options+=(-DASAN="1")
+fi
+
 cmake "${cmake_options[@]}" "$top"
 make -j$(num_cpus)
 
