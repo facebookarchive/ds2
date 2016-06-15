@@ -34,7 +34,7 @@ protected:
 
 public:
   SessionBase(CompatibilityMode mode);
-  virtual ~SessionBase();
+  virtual ~SessionBase() = default;
 
 public:
   CompatibilityMode mode() const { return _compatMode; };

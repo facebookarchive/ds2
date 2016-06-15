@@ -30,8 +30,6 @@ SessionBase::SessionBase(CompatibilityMode mode)
   _interpreter.setSession(this);
 }
 
-SessionBase::~SessionBase() { delete _channel; }
-
 bool SessionBase::create(Host::Channel *channel) {
   if (_channel != nullptr || channel == nullptr)
     return false;
