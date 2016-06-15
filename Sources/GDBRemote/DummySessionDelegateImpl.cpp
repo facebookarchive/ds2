@@ -426,10 +426,9 @@ ErrorCode DummySessionDelegateImpl::onExecuteProgram(Session &,
   return kErrorUnsupported;
 }
 
-ErrorCode DummySessionDelegateImpl::onFileCreateDirectory(Session &,
-                                                          std::string const &,
-                                                          uint32_t) {
-  return kErrorUnsupported;
+ErrorCode DummySessionDelegateImpl::onFileCreateDirectory(
+    Session &, std::string const &path, uint32_t flags) {
+  return Host::File::createDirectory(path, flags);
 }
 
 ErrorCode DummySessionDelegateImpl::onFileOpen(Session &,
