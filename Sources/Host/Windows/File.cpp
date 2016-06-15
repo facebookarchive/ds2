@@ -23,5 +23,9 @@ File::~File() = default;
 ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
   return kErrorUnsupported;
 }
+
+ErrorCode File::createDirectory(std::string const &path, uint32_t flags) {
+  return kErrorUnsupported;
+}
 }
 }
