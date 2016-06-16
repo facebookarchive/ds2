@@ -12,11 +12,12 @@
 #define __DebugServer2_GDBRemote_PlatformSessionImpl_h
 
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
+#include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
 
 namespace ds2 {
 namespace GDBRemote {
 
-class PlatformSessionImpl : public DummySessionDelegateImpl {
+class PlatformSessionImplBase : public DummySessionDelegateImpl {
 protected:
   typedef std::map<std::string, std::string> EnvironmentMap;
 
@@ -32,7 +33,7 @@ protected:
   EnvironmentMap _environment;
 
 public:
-  PlatformSessionImpl();
+  PlatformSessionImplBase();
 
 protected:
   ErrorCode onQueryProcessList(Session &session, ProcessInfoMatch const &match,
@@ -77,6 +78,8 @@ protected:
 private:
   void updateProcesses(ProcessInfoMatch const &match) const;
 };
+
+typedef FileOperationsMixin<PlatformSessionImplBase> PlatformSessionImpl;
 }
 }
 

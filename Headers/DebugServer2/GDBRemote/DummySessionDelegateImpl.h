@@ -12,7 +12,6 @@
 #define __DebugServer2_GDBRemote_DummySessionDelegateImpl_h
 
 #include "DebugServer2/GDBRemote/SessionDelegate.h"
-#include "DebugServer2/Host/File.h"
 
 #include <unordered_map>
 
@@ -22,7 +21,6 @@ namespace GDBRemote {
 class DummySessionDelegateImpl : public SessionDelegate {
 protected:
   bool _secure;
-  std::unordered_map<int, Host::File> _openFiles;
 
 protected:
   DummySessionDelegateImpl();
@@ -237,26 +235,6 @@ protected: // Platform Session
   ErrorCode onFileRemove(Session &session, std::string const &path) override;
   ErrorCode onFileReadLink(Session &session, std::string const &path,
                            std::string &resolved) override;
-
-#if 0
-    //
-    // more F packets:
-    // https://sourceware.org/gdb/onlinedocs/gdb/List-of-Supported-Calls.html#List-of-Supported-Calls
-    //
-    virtual ErrorCode onGetCurrentTime(Session &session, TimeValue &tv);
-
-    virtual ErrorCode onFileIsATTY(Session &session, int fd);
-    virtual ErrorCode onFileRename(Session &session,
-            std::string const &oldPath, std::string const &newPath);
-
-    virtual ErrorCode onFileGetStat(Session &session, std::string const &path,
-            FileStat &stat);
-    virtual ErrorCode onFileGetStat(Session &session, int fd,
-            FileStat &stat);
-
-    virtual ErrorCode onFileSeek(Session &session, int fd,
-            int64_t offset, int whence, int64_t &newOffset);
-#endif
 
   ErrorCode onFileExists(Session &session, std::string const &path) override;
   ErrorCode onFileComputeMD5(Session &session, std::string const &path,

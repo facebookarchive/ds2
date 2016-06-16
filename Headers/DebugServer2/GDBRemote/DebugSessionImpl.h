@@ -12,6 +12,7 @@
 #define __DebugServer2_GDBRemote_DebugSessionImpl_h
 
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
+#include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
@@ -20,7 +21,7 @@
 
 namespace ds2 {
 namespace GDBRemote {
-class DebugSessionImpl : public DummySessionDelegateImpl {
+class DebugSessionImplBase : public DummySessionDelegateImpl {
 protected:
   Target::Process *_process;
   std::vector<int> _programmedSignals;
@@ -38,10 +39,11 @@ protected:
   std::string _consoleBuffer;
 
 public:
-  DebugSessionImpl(StringCollection const &args, EnvironmentBlock const &env);
-  DebugSessionImpl(int attachPid);
-  DebugSessionImpl();
-  ~DebugSessionImpl() override;
+  DebugSessionImplBase(StringCollection const &args,
+                       EnvironmentBlock const &env);
+  DebugSessionImplBase(int attachPid);
+  DebugSessionImplBase();
+  ~DebugSessionImplBase() override;
 
 protected:
   size_t getGPRSize() const override;
@@ -176,6 +178,8 @@ private:
                          EnvironmentBlock const &env);
   void appendOutput(char const *buf, size_t size);
 };
+
+typedef FileOperationsMixin<DebugSessionImplBase> DebugSessionImpl;
 }
 }
 

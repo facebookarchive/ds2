@@ -275,43 +275,13 @@ ErrorCode DummySessionDelegateImpl::onFileCreateDirectory(
   return Host::File::createDirectory(path, flags);
 }
 
-ErrorCode DummySessionDelegateImpl::onFileOpen(Session &,
-                                               std::string const &path,
-                                               uint32_t flags, uint32_t mode,
-                                               int &fd) {
-  static int fileIdx = 0;
+DUMMY_IMPL_EMPTY(onFileOpen, Session &, std::string const &path, uint32_t flags,
+                 uint32_t mode, int &fd)
 
-  Host::File file(path, flags, mode);
-  if (!file.valid()) {
-    return file.lastError();
-  }
+DUMMY_IMPL_EMPTY(onFileClose, Session &session, int fd)
 
-  fd = fileIdx++;
-  _openFiles.emplace(fd, std::move(file));
-
-  return kSuccess;
-}
-
-ErrorCode DummySessionDelegateImpl::onFileClose(Session &session, int fd) {
-  auto const it = _openFiles.find(fd);
-  if (it == _openFiles.end()) {
-    return kErrorInvalidHandle;
-  }
-
-  _openFiles.erase(it);
-  return kSuccess;
-}
-
-ErrorCode DummySessionDelegateImpl::onFileRead(Session &session, int fd,
-                                               uint64_t &count, uint64_t offset,
-                                               ByteVector &buffer) {
-  auto it = _openFiles.find(fd);
-  if (it == _openFiles.end()) {
-    return kErrorInvalidHandle;
-  }
-
-  return it->second.pread(buffer, count, offset);
-}
+DUMMY_IMPL_EMPTY(onFileRead, Session &session, int fd, uint64_t &count,
+                 uint64_t offset, ByteVector &buffer)
 
 DUMMY_IMPL_EMPTY(onFileWrite, Session &, int, uint64_t, ByteVector const &,
                  size_t &)
@@ -322,48 +292,6 @@ ErrorCode DummySessionDelegateImpl::onFileRemove(Session &session,
 }
 
 DUMMY_IMPL_EMPTY(onFileReadLink, Session &, std::string const &, std::string &)
-
-#if 0
-//
-// more F packets:
-// https://sourceware.org/gdb/onlinedocs/gdb/List-of-Supported-Calls.html#List-of-Supported-Calls
-//
-ErrorCode DummySessionDelegateImpl::
-onGetCurrentTime(Session &, TimeValue &)
-{
-    return kErrorUnsupported;
-}
-
-ErrorCode DummySessionDelegateImpl::
-onFileIsATTY(Session &, int)
-{
-    return kErrorUnsupported;
-}
-
-ErrorCode DummySessionDelegateImpl::
-onFileRename(Session &, std::string const &, std::string const &)
-{
-    return kErrorUnsupported;
-}
-
-ErrorCode DummySessionDelegateImpl::
-onFileGetStat(Session &, std::string const &, FileStat &)
-{
-    return kErrorUnsupported;
-}
-
-ErrorCode DummySessionDelegateImpl::
-onFileGetStat(Session &, int, FileStat &)
-{
-    return kErrorUnsupported;
-}
-
-ErrorCode DummySessionDelegateImpl::
-onFileSeek(Session &, int, int64_t, int, int64_t &)
-{
-    return kErrorUnsupported;
-}
-#endif
 
 DUMMY_IMPL_EMPTY(onFileExists, Session &, std::string const &)
 
