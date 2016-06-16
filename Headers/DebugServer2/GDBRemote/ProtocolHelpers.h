@@ -55,7 +55,7 @@ template <typename T> std::string Unescape(T const &data) {
   auto first = data.begin();
   auto last = data.begin();
 
-  while ((last = std::find(first, data.end(), '{')) != data.end()) {
+  while ((last = std::find(first, data.end(), '}')) != data.end()) {
     while (first < last) {
       ss << *first++;
     }
