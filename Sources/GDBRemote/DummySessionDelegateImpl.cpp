@@ -146,7 +146,7 @@ DUMMY_IMPL_EMPTY_CONST(onQuerySectionOffsets, Session &, Address &, Address &,
 
 DUMMY_IMPL_EMPTY_CONST(onQuerySharedLibrariesInfoAddress, Session &, Address &)
 
-DUMMY_IMPL_EMPTY_CONST(onQuerySharedLibraryInfo, Session &session,
+DUMMY_IMPL_EMPTY_CONST(onQuerySharedLibraryInfo, Session &,
                        std::string const &path, std::string const &triple,
                        SharedLibraryInfo &info)
 
@@ -162,7 +162,7 @@ ErrorCode DummySessionDelegateImpl::onTerminate(Session &session,
   return onTerminate(session, pid, stop);
 }
 
-DUMMY_IMPL_EMPTY(onExitServer, Session &session)
+DUMMY_IMPL_EMPTY(onExitServer, Session &)
 
 DUMMY_IMPL_EMPTY(onSynchronizeThreadState, Session &, ProcessId)
 
@@ -206,11 +206,11 @@ DUMMY_IMPL_EMPTY(onReadRegisterValue, Session &, ProcessThreadId const &,
 DUMMY_IMPL_EMPTY(onWriteRegisterValue, Session &, ProcessThreadId const &,
                  uint32_t, std::string const &)
 
-DUMMY_IMPL_EMPTY(onSaveRegisters, Session &session, ProcessThreadId const &ptid,
+DUMMY_IMPL_EMPTY(onSaveRegisters, Session &, ProcessThreadId const &ptid,
                  uint64_t &id)
 
-DUMMY_IMPL_EMPTY(onRestoreRegisters, Session &session,
-                 ProcessThreadId const &ptid, uint64_t id)
+DUMMY_IMPL_EMPTY(onRestoreRegisters, Session &, ProcessThreadId const &ptid,
+                 uint64_t id)
 
 DUMMY_IMPL_EMPTY(onReadMemory, Session &, Address const &, size_t, ByteVector &)
 
@@ -269,9 +269,9 @@ ErrorCode DummySessionDelegateImpl::onFileCreateDirectory(
 DUMMY_IMPL_EMPTY(onFileOpen, Session &, std::string const &path, uint32_t flags,
                  uint32_t mode, int &fd)
 
-DUMMY_IMPL_EMPTY(onFileClose, Session &session, int fd)
+DUMMY_IMPL_EMPTY(onFileClose, Session &, int fd)
 
-DUMMY_IMPL_EMPTY(onFileRead, Session &session, int fd, uint64_t &count,
+DUMMY_IMPL_EMPTY(onFileRead, Session &, int fd, uint64_t &count,
                  uint64_t offset, ByteVector &buffer)
 
 DUMMY_IMPL_EMPTY(onFileWrite, Session &, int, uint64_t, ByteVector const &,
@@ -317,10 +317,9 @@ DUMMY_IMPL_EMPTY(onFlashWrite, Session &, Address const &, ByteVector const &)
 
 DUMMY_IMPL_EMPTY(onFlashDone, Session &)
 
-DUMMY_IMPL_EMPTY(fetchStopInfoForAllThreads, Session &session,
+DUMMY_IMPL_EMPTY(fetchStopInfoForAllThreads, Session &,
                  std::vector<StopInfo> &stops, StopInfo &processStop)
 
-DUMMY_IMPL_EMPTY(createThreadsStopInfo, Session &session,
-                 JSArray &threadsStopInfo)
+DUMMY_IMPL_EMPTY(createThreadsStopInfo, Session &, JSArray &threadsStopInfo)
 }
 }
