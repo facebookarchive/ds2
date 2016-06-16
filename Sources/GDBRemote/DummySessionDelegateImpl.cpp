@@ -475,9 +475,9 @@ ErrorCode DummySessionDelegateImpl::onFileWrite(Session &, int, uint64_t,
   return kErrorUnsupported;
 }
 
-ErrorCode DummySessionDelegateImpl::onFileRemove(Session &,
-                                                 std::string const &) {
-  return kErrorUnsupported;
+ErrorCode DummySessionDelegateImpl::onFileRemove(Session &session,
+                                                 std::string const &path) {
+  return Host::File::unlink(path);
 }
 
 ErrorCode DummySessionDelegateImpl::onFileReadLink(Session &,
