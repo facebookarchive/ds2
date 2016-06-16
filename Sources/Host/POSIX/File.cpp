@@ -56,7 +56,6 @@ ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
   return _lastError = kSuccess;
 }
 
-
 ErrorCode File::unlink(std::string const &path) {
   if (::unlink(path.c_str()) < 0) {
     return Platform::TranslateError();
