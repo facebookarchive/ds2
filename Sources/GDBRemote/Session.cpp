@@ -3117,6 +3117,11 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
 
     auto bytePtr = reinterpret_cast<uint8_t *>(eptr);
     uint64_t length = args.length() - (eptr - args.c_str());
+    if (length == 0) {
+      sendError(kErrorInvalidArgument);
+      return;
+    }
+
     ErrorCode error = _delegate->onFileWrite(
         *this, fd, offset, ByteVector(bytePtr, bytePtr + length), length);
     if (error != kSuccess) {

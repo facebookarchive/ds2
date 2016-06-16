@@ -58,6 +58,8 @@ ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
 
 ErrorCode File::pwrite(ByteVector const &buf, uint64_t &count,
                        uint64_t offset) {
+  DS2ASSERT(count > 0);
+
   if (!valid()) {
     return _lastError = kErrorInvalidHandle;
   }
