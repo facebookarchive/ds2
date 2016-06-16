@@ -3109,6 +3109,13 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       sendError(kErrorInvalidArgument);
       return;
     }
+
+    flags = ConvertOpenFlags(flags, _compatMode);
+    if (flags == 0) {
+      sendError(kErrorInvalidArgument);
+      return;
+    }
+
     uint32_t mode = std::strtoul(eptr, nullptr, 16);
 
     int fd;
