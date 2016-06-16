@@ -76,6 +76,23 @@ enum /*Protection*/ {
   kProtectionRead = (1 << 2)
 };
 
+//
+// Open flags
+//
+
+enum OpenFlags {
+  kOpenFlagInvalid = 0,
+  kOpenFlagRead = (1 << 0),
+  kOpenFlagWrite = (1 << 1),
+  kOpenFlagAppend = (1 << 2),
+  kOpenFlagTruncate = (1 << 3),
+  kOpenFlagNonBlocking = (1 << 4),
+  kOpenFlagCreate = (1 << 5),
+  kOpenFlagNewOnly = (1 << 6),
+  kOpenFlagNoFollow = (1 << 7),
+  kOpenFlagCloseOnExec = (1 << 8)
+};
+
 char const *GetErrorCodeString(ErrorCode err);
 }
 
