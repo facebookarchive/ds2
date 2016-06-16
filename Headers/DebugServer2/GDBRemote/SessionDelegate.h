@@ -247,7 +247,7 @@ protected: // Platform Session
                                           uint32_t mode) = 0;
 
   virtual ErrorCode onFileOpen(Session &session, std::string const &path,
-                               uint32_t flags, uint32_t mode, int &fd) = 0;
+                               OpenFlags flags, uint32_t mode, int &fd) = 0;
   virtual ErrorCode onFileClose(Session &session, int fd) = 0;
   virtual ErrorCode onFileRead(Session &session, int fd, uint64_t &count,
                                uint64_t offset, ByteVector &buffer) = 0;

@@ -18,7 +18,7 @@ namespace GDBRemote {
 
 template <typename T>
 ErrorCode FileOperationsMixin<T>::onFileOpen(Session &, std::string const &path,
-                                             uint32_t flags, uint32_t mode,
+                                             OpenFlags flags, uint32_t mode,
                                              int &fd) {
   static int fileIdx = 0;
 

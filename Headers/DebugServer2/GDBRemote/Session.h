@@ -228,7 +228,8 @@ private:
                         std::function<void(std::string const &)> const &cb);
 
 private:
-  static OpenFlags ConvertOpenFlags(uint32_t oldFlags, CompatibilityMode compat);
+  static OpenFlags ConvertOpenFlags(uint32_t oldFlags,
+                                    CompatibilityMode compat);
 
 private:
   bool parseAddress(Address &address, const char *ptr, char **eptr,
