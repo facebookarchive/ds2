@@ -3115,15 +3115,14 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       return;
     }
 
-    size_t nwritten;
     auto bytePtr = reinterpret_cast<uint8_t *>(eptr);
-    size_t length = args.length() - (eptr - args.c_str());
+    uint64_t length = args.length() - (eptr - args.c_str());
     ErrorCode error = _delegate->onFileWrite(
-        *this, fd, offset, ByteVector(bytePtr, bytePtr + length), nwritten);
+        *this, fd, offset, ByteVector(bytePtr, bytePtr + length), length);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
-      ss << 'F' << 0 << ';' << std::hex << nwritten;
+      ss << 'F' << std::hex << length << ';';
     }
   } else if (op == "unlink") {
     error = _delegate->onFileRemove(*this, HexToString(&args[op_end]));
