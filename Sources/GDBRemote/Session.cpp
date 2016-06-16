@@ -2910,8 +2910,8 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       return;
     }
 
-    flags = ConvertOpenFlags(flags);
-    if (flags == 0) {
+    OpenFlags openFlags = ConvertOpenFlags(flags);
+    if (openFlags == kOpenFlagInvalid) {
       sendError(kErrorInvalidArgument);
       return;
     }
@@ -2920,8 +2920,8 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
 
     int fd;
     error = _delegate->onFileOpen(
-        *this, HexToString(args.substr(op_end, comma - op_end)), flags, mode,
-        fd);
+        *this, HexToString(args.substr(op_end, comma - op_end)), openFlags,
+        mode, fd);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
