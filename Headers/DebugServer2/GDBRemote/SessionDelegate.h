@@ -252,7 +252,8 @@ protected: // Platform Session
   virtual ErrorCode onFileRead(Session &session, int fd, uint64_t &count,
                                uint64_t offset, ByteVector &buffer) = 0;
   virtual ErrorCode onFileWrite(Session &session, int fd, uint64_t offset,
-                                ByteVector const &buffer, size_t &nwritten) = 0;
+                                ByteVector const &buffer,
+                                uint64_t &nwritten) = 0;
 
   virtual ErrorCode onFileRemove(Session &session, std::string const &path) = 0;
   virtual ErrorCode onFileReadLink(Session &session, std::string const &path,

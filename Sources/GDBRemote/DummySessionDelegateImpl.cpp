@@ -267,7 +267,7 @@ DUMMY_IMPL_EMPTY(onFileRead, Session &, int fd, uint64_t &count,
                  uint64_t offset, ByteVector &buffer)
 
 DUMMY_IMPL_EMPTY(onFileWrite, Session &, int, uint64_t, ByteVector const &,
-                 size_t &)
+                 uint64_t &)
 
 DUMMY_IMPL_EMPTY(onFileRemove, Session &, std::string const &path)
 

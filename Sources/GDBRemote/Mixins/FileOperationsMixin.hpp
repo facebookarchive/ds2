@@ -57,6 +57,19 @@ ErrorCode FileOperationsMixin<T>::onFileRead(Session &session, int fd,
 }
 
 template <typename T>
+ErrorCode FileOperationsMixin<T>::onFileWrite(Session &session, int fd,
+                                              uint64_t offset,
+                                              ByteVector const &buffer,
+                                              uint64_t &nwritten) {
+  auto it = _openFiles.find(fd);
+  if (it == _openFiles.end()) {
+    return kErrorInvalidHandle;
+  }
+
+  return it->second.pwrite(buffer, nwritten, offset);
+}
+
+template <typename T>
 ErrorCode FileOperationsMixin<T>::onFileCreateDirectory(Session &,
                                                         std::string const &path,
                                                         uint32_t flags) {

@@ -37,6 +37,8 @@ public:
   ErrorCode onFileClose(Session &session, int fd) override;
   ErrorCode onFileRead(Session &session, int fd, uint64_t &count,
                        uint64_t offset, ByteVector &buffer) override;
+  ErrorCode onFileWrite(Session &session, int fd, uint64_t offset,
+                        const ByteVector &buffer, uint64_t &nwritten) override;
 
 public:
   ErrorCode onFileCreateDirectory(Session &session, std::string const &path,

@@ -226,7 +226,7 @@ protected: // Platform Session
   ErrorCode onFileRead(Session &session, int fd, uint64_t &count,
                        uint64_t offset, ByteVector &buffer) override;
   ErrorCode onFileWrite(Session &session, int fd, uint64_t offset,
-                        ByteVector const &buffer, size_t &nwritten) override;
+                        ByteVector const &buffer, uint64_t &nwritten) override;
 
   ErrorCode onFileRemove(Session &session, std::string const &path) override;
   ErrorCode onFileReadLink(Session &session, std::string const &path,
