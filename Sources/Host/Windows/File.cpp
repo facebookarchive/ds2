@@ -23,5 +23,7 @@ File::~File() = default;
 ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
   return kErrorUnsupported;
 }
+
+ErrorCode File::unlink(std::string const &path) { return kErrorUnsupported; }
 }
 }

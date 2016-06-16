@@ -52,6 +52,9 @@ public:
   bool valid() const { return (_fd >= 0); }
   ErrorCode lastError() const { return _lastError; }
 
+public:
+  static ErrorCode unlink(std::string const &path);
+
 protected:
   int _fd;
   ErrorCode _lastError;
