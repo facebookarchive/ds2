@@ -20,9 +20,6 @@ namespace GDBRemote {
 
 class DummySessionDelegateImpl : public SessionDelegate {
 protected:
-  bool _secure;
-
-protected:
   DummySessionDelegateImpl();
 
 protected: // General Information

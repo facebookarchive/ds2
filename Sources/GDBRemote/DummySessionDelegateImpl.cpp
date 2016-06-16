@@ -29,7 +29,7 @@ namespace GDBRemote {
     return kErrorUnsupported;                                                  \
   }
 
-DummySessionDelegateImpl::DummySessionDelegateImpl() : _secure(true) {}
+DummySessionDelegateImpl::DummySessionDelegateImpl() = default;
 
 size_t DummySessionDelegateImpl::getGPRSize() const {
   DS2ASSERT(!"this method shall be implemented by inheriting class");
@@ -65,15 +65,7 @@ ErrorCode DummySessionDelegateImpl::onQuerySupported(
   return kSuccess;
 }
 
-ErrorCode
-DummySessionDelegateImpl::onExecuteCommand(Session &session,
-                                           std::string const &command) {
-  if (!_secure)
-    return kErrorUnsupported;
-
-  DS2LOG(Error, "monitor command: %s not supported", command.c_str());
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onExecuteCommand, Session &, std::string const &command)
 
 ErrorCode
 DummySessionDelegateImpl::onQueryServerVersion(Session &,
