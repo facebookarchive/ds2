@@ -1740,8 +1740,9 @@ void Session::Handle_qHostInfo(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_qKillSpawnedProcess(ProtocolInterpreter::Handler const &,
                                          std::string const &args) {
+  StopInfo stop;
   ProcessId pid = std::strtoul(args.c_str(), nullptr, 10);
-  sendError(_delegate->onTerminate(*this, pid));
+  sendError(_delegate->onTerminate(*this, pid, stop));
 }
 
 //

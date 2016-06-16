@@ -156,12 +156,6 @@ DUMMY_IMPL_EMPTY(onInterrupt, Session &)
 
 DUMMY_IMPL_EMPTY(onTerminate, Session &, ProcessThreadId const &, StopInfo &)
 
-ErrorCode DummySessionDelegateImpl::onTerminate(Session &session,
-                                                ProcessId pid) {
-  StopInfo stop;
-  return onTerminate(session, pid, stop);
-}
-
 DUMMY_IMPL_EMPTY(onExitServer, Session &)
 
 DUMMY_IMPL_EMPTY(onSynchronizeThreadState, Session &, ProcessId)

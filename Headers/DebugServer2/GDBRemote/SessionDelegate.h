@@ -105,7 +105,6 @@ protected: // Debugging Session
   virtual ErrorCode onInterrupt(Session &session) = 0;
   virtual ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
                                 StopInfo &stop) = 0;
-  virtual ErrorCode onTerminate(Session &session, ProcessId pid) = 0;
   virtual ErrorCode onExitServer(Session &session) = 0;
 
   virtual ErrorCode onSynchronizeThreadState(Session &session,
