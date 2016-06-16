@@ -244,6 +244,53 @@ std::string Session::formatAddress(Address const &address,
   return ss.str();
 }
 
+OpenFlags Session::ConvertOpenFlags(uint32_t protocolFlags) {
+  int flags = 0;
+  if (_compatMode == kCompatibilityModeLLDB) {
+    if (protocolFlags & (1u << 0)) // eOpenOptionRead
+      flags |= kOpenFlagRead;
+    if (protocolFlags & (1u << 1)) // eOpenOptionWrite
+      flags |= kOpenFlagWrite;
+    if (flags == 0)
+      return kOpenFlagInvalid;
+
+    if (protocolFlags & (1u << 2)) // eOpenOptionAppend
+      flags |= kOpenFlagAppend;
+    if (protocolFlags & (1u << 3)) // eOpenOptionTruncate
+      flags |= kOpenFlagTruncate;
+    if (protocolFlags & (1u << 4)) // eOpenOptionNonBlocking
+      flags |= kOpenFlagNonBlocking;
+    if (protocolFlags & (1u << 5)) // eOpenOptionCanCreate
+      flags |= kOpenFlagCreate;
+    if (protocolFlags & (1u << 6)) // eOpenOptionCanCreateNewOnly
+      flags |= (kOpenFlagCreate | kOpenFlagNewOnly);
+    if (protocolFlags & (1u << 7)) // eOpenOptionDontFollowSymlinks
+      flags |= kOpenFlagNoFollow;
+    if (protocolFlags & (1u << 8)) // eOpenOptionCloseOnExec
+      flags |= kOpenFlagCloseOnExec;
+  } else {
+    if ((protocolFlags & 0x3) == 0x0) // O_RDONLY
+      flags |= kOpenFlagRead;
+    else if (protocolFlags & 0x1) // O_WRONLY
+      flags |= kOpenFlagWrite;
+    else if (protocolFlags & 0x2) // O_RDWR
+      flags |= (kOpenFlagRead | kOpenFlagWrite);
+    else
+      return kOpenFlagInvalid; // Invalid mode
+
+    if (protocolFlags & 0x8) // O_APPEND
+      flags |= kOpenFlagAppend;
+    if (protocolFlags & 0x200) // O_CREAT
+      flags |= kOpenFlagCreate;
+    if (protocolFlags & 0x400) // O_TRUNC
+      flags |= kOpenFlagTruncate;
+    if (protocolFlags & 0x800) // O_EXCL
+      flags |= kOpenFlagNewOnly;
+  }
+
+  return static_cast<OpenFlags>(flags);
+}
+
 //
 // Packet:        \x03
 // Description:   A Ctrl+C has been issued in the debugger.

@@ -230,6 +230,9 @@ private:
                         std::function<void(std::string const &)> const &cb);
 
 private:
+  OpenFlags ConvertOpenFlags(uint32_t protocolFlags);
+
+private:
   bool parseAddress(Address &address, const char *ptr, char **eptr,
                     Endian endianness) const;
   std::string formatAddress(Address const &address, Endian endianness) const;
