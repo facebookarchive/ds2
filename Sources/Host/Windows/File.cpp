@@ -29,6 +29,10 @@ ErrorCode File::pwrite(ByteVector const &buf, uint64_t &count,
   return kErrorUnsupported;
 }
 
+ErrorCode File::chmod(std::string const &path, uint32_t mode) {
+  return kErrorUnsupported;
+}
+
 ErrorCode File::unlink(std::string const &path) { return kErrorUnsupported; }
 
 ErrorCode File::createDirectory(std::string const &path, uint32_t flags) {

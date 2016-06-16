@@ -82,6 +82,14 @@ ErrorCode File::pwrite(ByteVector const &buf, uint64_t &count,
   return _lastError = kSuccess;
 }
 
+ErrorCode File::chmod(std::string const &path, uint32_t mode) {
+  if (::chmod(path.c_str(), mode) < 0) {
+    return Platform::TranslateError();
+  }
+
+  return kSuccess;
+}
+
 ErrorCode File::unlink(std::string const &path) {
   if (::unlink(path.c_str()) < 0) {
     return Platform::TranslateError();

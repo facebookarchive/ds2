@@ -54,6 +54,9 @@ public:
   ErrorCode lastError() const { return _lastError; }
 
 public:
+  static ErrorCode chmod(std::string const &path, uint32_t mode);
+
+public:
   static ErrorCode unlink(std::string const &path);
 
 public:
