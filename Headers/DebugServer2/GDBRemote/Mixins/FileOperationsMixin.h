@@ -37,6 +37,12 @@ public:
   ErrorCode onFileClose(Session &session, int fd) override;
   ErrorCode onFileRead(Session &session, int fd, uint64_t &count,
                        uint64_t offset, ByteVector &buffer) override;
+
+public:
+  ErrorCode onFileCreateDirectory(Session &session, std::string const &path,
+                                  uint32_t mode) override;
+  ErrorCode onFileRemove(Session &session, std::string const &path) override;
+
 #if 0
     // more F packets:
     // https://sourceware.org/gdb/onlinedocs/gdb/List-of-Supported-Calls.html#List-of-Supported-Calls

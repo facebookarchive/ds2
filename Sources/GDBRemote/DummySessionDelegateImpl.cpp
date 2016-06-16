@@ -255,10 +255,8 @@ DUMMY_IMPL_EMPTY(onSetProgramArguments, Session &, StringCollection const &)
 DUMMY_IMPL_EMPTY(onExecuteProgram, Session &, std::string const &, uint32_t,
                  std::string const &, ProgramResult &)
 
-ErrorCode DummySessionDelegateImpl::onFileCreateDirectory(
-    Session &, std::string const &path, uint32_t flags) {
-  return Host::File::createDirectory(path, flags);
-}
+DUMMY_IMPL_EMPTY(onFileCreateDirectory, Session &, std::string const &path,
+                 uint32_t flags)
 
 DUMMY_IMPL_EMPTY(onFileOpen, Session &, std::string const &path, uint32_t flags,
                  uint32_t mode, int &fd)
@@ -271,10 +269,7 @@ DUMMY_IMPL_EMPTY(onFileRead, Session &, int fd, uint64_t &count,
 DUMMY_IMPL_EMPTY(onFileWrite, Session &, int, uint64_t, ByteVector const &,
                  size_t &)
 
-ErrorCode DummySessionDelegateImpl::onFileRemove(Session &session,
-                                                 std::string const &path) {
-  return Host::File::unlink(path);
-}
+DUMMY_IMPL_EMPTY(onFileRemove, Session &, std::string const &path)
 
 DUMMY_IMPL_EMPTY(onFileReadLink, Session &, std::string const &, std::string &)
 

@@ -55,6 +55,19 @@ ErrorCode FileOperationsMixin<T>::onFileRead(Session &session, int fd,
 
   return it->second.pread(buffer, count, offset);
 }
+
+template <typename T>
+ErrorCode FileOperationsMixin<T>::onFileCreateDirectory(Session &,
+                                                        std::string const &path,
+                                                        uint32_t flags) {
+  return Host::File::createDirectory(path, flags);
+}
+
+template <typename T>
+ErrorCode FileOperationsMixin<T>::onFileRemove(Session &session,
+                                               std::string const &path) {
+  return Host::File::unlink(path);
+}
 }
 }
 
