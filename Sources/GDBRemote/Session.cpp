@@ -119,6 +119,7 @@ Session::Session(CompatibilityMode mode)
   REGISTER_HANDLER_EQUALS_1(qModuleInfo);
   REGISTER_HANDLER_EQUALS_1(qOffsets);
   REGISTER_HANDLER_EQUALS_1(qP);
+  REGISTER_HANDLER_EQUALS_1(qPlatform_chmod);
   REGISTER_HANDLER_EQUALS_1(qPlatform_mkdir);
   REGISTER_HANDLER_EQUALS_1(qPlatform_RunCommand);
   REGISTER_HANDLER_EQUALS_1(qProcessInfo);
@@ -1954,6 +1955,31 @@ void Session::Handle_qP(ProtocolInterpreter::Handler const &,
   }
 
   send(ToHex(desc));
+}
+
+//
+// Packet:        qPlatform_chmod:mode,path
+// Description:   Change permissions of a file on the remote.
+// Compatibility: LLDB
+//
+void Session::Handle_qPlatform_chmod(ProtocolInterpreter::Handler const &,
+                                     std::string const &args) {
+  char *eptr;
+  uint32_t mode = std::strtoul(args.c_str(), &eptr, 16);
+  if (*eptr++ != ',') {
+    sendError(kErrorInvalidArgument);
+    return;
+  }
+
+  ErrorCode error =
+      _delegate->onFileSetPermissions(*this, HexToString(eptr), mode);
+  if (error != kSuccess) {
+    sendError(error);
+    return;
+  }
+
+  // Send F + <return code>, which is always 0 on success
+  send("F0");
 }
 
 //
