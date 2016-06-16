@@ -19,6 +19,16 @@ using ds2::Host::Platform;
 namespace ds2 {
 namespace GDBRemote {
 
+#define DUMMY_IMPL_EMPTY(NAME, ...)                                            \
+  ErrorCode DummySessionDelegateImpl::NAME(__VA_ARGS__) {                      \
+    return kErrorUnsupported;                                                  \
+  }
+
+#define DUMMY_IMPL_EMPTY_CONST(NAME, ...)                                      \
+  ErrorCode DummySessionDelegateImpl::NAME(__VA_ARGS__) const {                \
+    return kErrorUnsupported;                                                  \
+  }
+
 DummySessionDelegateImpl::DummySessionDelegateImpl() : _secure(true) {}
 
 size_t DummySessionDelegateImpl::getGPRSize() const {
@@ -38,13 +48,9 @@ ErrorCode DummySessionDelegateImpl::onToggleDebugFlag(Session &) {
   return kSuccess;
 }
 
-ErrorCode DummySessionDelegateImpl::onSetMaxPacketSize(Session &, size_t) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSetMaxPacketSize, Session &, size_t)
 
-ErrorCode DummySessionDelegateImpl::onSetMaxPayloadSize(Session &, size_t) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSetMaxPayloadSize, Session &, size_t)
 
 void DummySessionDelegateImpl::onSetLogging(Session &, std::string const &,
                                             std::string const &,
@@ -113,107 +119,51 @@ ErrorCode DummySessionDelegateImpl::onQueryHostInfo(Session &,
   return kSuccess;
 }
 
-ErrorCode DummySessionDelegateImpl::onEnableControlAgent(Session &, bool) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onEnableControlAgent, Session &, bool)
 
-ErrorCode DummySessionDelegateImpl::onNonStopMode(Session &, bool) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onNonStopMode, Session &, bool)
 
-ErrorCode DummySessionDelegateImpl::onEnableBTSTracing(Session &, bool) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onEnableBTSTracing, Session &, bool)
 
-ErrorCode DummySessionDelegateImpl::onPassSignals(Session &,
-                                                  std::vector<int> const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onPassSignals, Session &, std::vector<int> const &)
 
-ErrorCode DummySessionDelegateImpl::onProgramSignals(Session &,
-                                                     std::vector<int> const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onProgramSignals, Session &, std::vector<int> const &)
 
-ErrorCode DummySessionDelegateImpl::onQuerySymbol(Session &,
-                                                  std::string const &,
-                                                  std::string const &,
-                                                  std::string &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQuerySymbol, Session &, std::string const &,
+                       std::string const &, std::string &)
 
-ErrorCode DummySessionDelegateImpl::onQueryRegisterInfo(Session &, uint32_t,
-                                                        RegisterInfo &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryRegisterInfo, Session &, uint32_t, RegisterInfo &)
 
-ErrorCode DummySessionDelegateImpl::onAttach(Session &, ProcessId, AttachMode,
-                                             StopInfo &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onAttach, Session &, ProcessId, AttachMode, StopInfo &)
 
-ErrorCode DummySessionDelegateImpl::onAttach(Session &, std::string const &,
-                                             AttachMode, StopInfo &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onAttach, Session &, std::string const &, AttachMode,
+                 StopInfo &)
 
-ErrorCode DummySessionDelegateImpl::onRunAttach(Session &, std::string const &,
-                                                StringCollection const &,
-                                                StopInfo &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onRunAttach, Session &, std::string const &,
+                 StringCollection const &, StopInfo &)
 
-ErrorCode DummySessionDelegateImpl::onDetach(Session &, ProcessId, bool) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onDetach, Session &, ProcessId, bool)
 
-ErrorCode DummySessionDelegateImpl::onQueryAttached(Session &, ProcessId,
-                                                    bool &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryAttached, Session &, ProcessId, bool &)
 
-ErrorCode DummySessionDelegateImpl::onQueryProcessInfo(Session &,
-                                                       ProcessInfo &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryProcessInfo, Session &, ProcessInfo &)
 
-ErrorCode
-DummySessionDelegateImpl::onQueryHardwareWatchpointCount(Session &,
-                                                         size_t &) const {
-  return kSuccess;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryHardwareWatchpointCount, Session &, size_t &)
 
-ErrorCode DummySessionDelegateImpl::onQuerySectionOffsets(Session &, Address &,
-                                                          Address &,
-                                                          bool &) const {
-  return kSuccess;
-}
+DUMMY_IMPL_EMPTY_CONST(onQuerySectionOffsets, Session &, Address &, Address &,
+                       bool &)
 
-ErrorCode
-DummySessionDelegateImpl::onQuerySharedLibrariesInfoAddress(Session &,
-                                                            Address &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQuerySharedLibrariesInfoAddress, Session &, Address &)
 
-ErrorCode DummySessionDelegateImpl::onQuerySharedLibraryInfo(
-    Session &session, std::string const &path, std::string const &triple,
-    SharedLibraryInfo &info) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQuerySharedLibraryInfo, Session &session,
+                       std::string const &path, std::string const &triple,
+                       SharedLibraryInfo &info)
 
-ErrorCode DummySessionDelegateImpl::onRestart(Session &, ProcessId) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onRestart, Session &, ProcessId)
 
-ErrorCode DummySessionDelegateImpl::onInterrupt(Session &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onInterrupt, Session &)
 
-ErrorCode DummySessionDelegateImpl::onTerminate(Session &,
-                                                ProcessThreadId const &,
-                                                StopInfo &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onTerminate, Session &, ProcessThreadId const &, StopInfo &)
 
 ErrorCode DummySessionDelegateImpl::onTerminate(Session &session,
                                                 ProcessId pid) {
@@ -223,208 +173,102 @@ ErrorCode DummySessionDelegateImpl::onTerminate(Session &session,
 
 void DummySessionDelegateImpl::onExitServer(Session &session) { return; }
 
-ErrorCode DummySessionDelegateImpl::onSynchronizeThreadState(Session &,
-                                                             ProcessId) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSynchronizeThreadState, Session &, ProcessId)
 
-ErrorCode DummySessionDelegateImpl::onQueryThreadList(Session &, ProcessId,
-                                                      ThreadId,
-                                                      ThreadId &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryThreadList, Session &, ProcessId, ThreadId,
+                       ThreadId &)
 
-ErrorCode
-DummySessionDelegateImpl::onQueryCurrentThread(Session &,
-                                               ProcessThreadId &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryCurrentThread, Session &, ProcessThreadId &)
 
-ErrorCode DummySessionDelegateImpl::onQueryThreadStopInfo(
-    Session &, ProcessThreadId const &, StopInfo &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryThreadStopInfo, Session &,
+                       ProcessThreadId const &, StopInfo &)
 
-ErrorCode DummySessionDelegateImpl::onThreadIsAlive(Session &,
-                                                    ProcessThreadId const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onThreadIsAlive, Session &, ProcessThreadId const &)
 
-ErrorCode DummySessionDelegateImpl::onQueryThreadInfo(Session &,
-                                                      ProcessThreadId const &,
-                                                      uint32_t, void *) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryThreadInfo, Session &, ProcessThreadId const &,
+                       uint32_t, void *)
 
-ErrorCode DummySessionDelegateImpl::onQueryTLSAddress(Session &,
-                                                      ProcessThreadId const &,
-                                                      Address const &,
-                                                      Address const &,
-                                                      Address &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryTLSAddress, Session &, ProcessThreadId const &,
+                       Address const &, Address const &, Address &)
 
-ErrorCode DummySessionDelegateImpl::onQueryTIBAddress(Session &,
-                                                      ProcessThreadId const &,
-                                                      Address &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryTIBAddress, Session &, ProcessThreadId const &,
+                       Address &)
 
-ErrorCode DummySessionDelegateImpl::onEnableAsynchronousProfiling(
-    Session &, ProcessThreadId const &, bool, uint32_t, uint32_t) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onEnableAsynchronousProfiling, Session &,
+                 ProcessThreadId const &, bool, uint32_t, uint32_t)
 
-ErrorCode DummySessionDelegateImpl::onQueryProfileData(Session &,
-                                                       ProcessThreadId const &,
-                                                       uint32_t, void *) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryProfileData, Session &, ProcessThreadId const &,
+                       uint32_t, void *)
 
-ErrorCode DummySessionDelegateImpl::onResume(
-    Session &, ThreadResumeAction::Collection const &, StopInfo &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onResume, Session &, ThreadResumeAction::Collection const &,
+                 StopInfo &)
 
-ErrorCode DummySessionDelegateImpl::onReadGeneralRegisters(
-    Session &, ProcessThreadId const &, Architecture::GPRegisterValueVector &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onReadGeneralRegisters, Session &, ProcessThreadId const &,
+                 Architecture::GPRegisterValueVector &)
 
-ErrorCode DummySessionDelegateImpl::onWriteGeneralRegisters(
-    Session &, ProcessThreadId const &, std::vector<uint64_t> const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onWriteGeneralRegisters, Session &, ProcessThreadId const &,
+                 std::vector<uint64_t> const &)
 
-ErrorCode DummySessionDelegateImpl::onReadRegisterValue(Session &,
-                                                        ProcessThreadId const &,
-                                                        uint32_t,
-                                                        std::string &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onReadRegisterValue, Session &, ProcessThreadId const &,
+                 uint32_t, std::string &)
 
-ErrorCode DummySessionDelegateImpl::onWriteRegisterValue(
-    Session &, ProcessThreadId const &, uint32_t, std::string const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onWriteRegisterValue, Session &, ProcessThreadId const &,
+                 uint32_t, std::string const &)
 
-ErrorCode DummySessionDelegateImpl::onSaveRegisters(Session &session,
-                                                    ProcessThreadId const &ptid,
-                                                    uint64_t &id) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSaveRegisters, Session &session, ProcessThreadId const &ptid,
+                 uint64_t &id)
 
-ErrorCode DummySessionDelegateImpl::onRestoreRegisters(
-    Session &session, ProcessThreadId const &ptid, uint64_t id) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onRestoreRegisters, Session &session,
+                 ProcessThreadId const &ptid, uint64_t id)
 
-ErrorCode DummySessionDelegateImpl::onReadMemory(Session &, Address const &,
-                                                 size_t, ByteVector &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onReadMemory, Session &, Address const &, size_t, ByteVector &)
 
-ErrorCode DummySessionDelegateImpl::onWriteMemory(Session &, Address const &,
-                                                  ByteVector const &,
-                                                  size_t &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onWriteMemory, Session &, Address const &, ByteVector const &,
+                 size_t &)
 
-ErrorCode DummySessionDelegateImpl::onAllocateMemory(Session &, size_t,
-                                                     uint32_t, Address &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onAllocateMemory, Session &, size_t, uint32_t, Address &)
 
-ErrorCode DummySessionDelegateImpl::onDeallocateMemory(Session &,
-                                                       Address const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onDeallocateMemory, Session &, Address const &)
 
-ErrorCode
-DummySessionDelegateImpl::onQueryMemoryRegionInfo(Session &, Address const &,
-                                                  MemoryRegionInfo &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryMemoryRegionInfo, Session &, Address const &,
+                       MemoryRegionInfo &)
 
-ErrorCode DummySessionDelegateImpl::onComputeCRC(Session &, Address const &,
-                                                 size_t, uint32_t &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onComputeCRC, Session &, Address const &, size_t, uint32_t &)
 
-ErrorCode DummySessionDelegateImpl::onSearchBackward(Session &, Address const &,
-                                                     uint32_t, uint32_t,
-                                                     Address &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSearchBackward, Session &, Address const &, uint32_t,
+                 uint32_t, Address &)
 
-ErrorCode DummySessionDelegateImpl::onSearch(Session &, Address const &,
-                                             std::string const &, Address &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSearch, Session &, Address const &, std::string const &,
+                 Address &)
 
-ErrorCode DummySessionDelegateImpl::onInsertBreakpoint(
-    Session &, BreakpointType, Address const &, uint32_t,
-    StringCollection const &, StringCollection const &, bool) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onInsertBreakpoint, Session &, BreakpointType, Address const &,
+                 uint32_t, StringCollection const &, StringCollection const &,
+                 bool)
 
-ErrorCode DummySessionDelegateImpl::onRemoveBreakpoint(Session &,
-                                                       BreakpointType,
-                                                       Address const &,
-                                                       uint32_t) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onRemoveBreakpoint, Session &, BreakpointType, Address const &,
+                 uint32_t)
 
-ErrorCode DummySessionDelegateImpl::onXferRead(Session &, std::string const &,
-                                               std::string const &, uint64_t,
-                                               uint64_t, std::string &,
-                                               bool &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onXferRead, Session &, std::string const &,
+                 std::string const &, uint64_t, uint64_t, std::string &, bool &)
 
-ErrorCode DummySessionDelegateImpl::onXferWrite(Session &, std::string const &,
-                                                std::string const &, uint64_t,
-                                                std::string const &, size_t &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onXferWrite, Session &, std::string const &,
+                 std::string const &, uint64_t, std::string const &, size_t &)
 
-ErrorCode DummySessionDelegateImpl::onDisableASLR(Session &, bool) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onDisableASLR, Session &, bool)
 
-ErrorCode DummySessionDelegateImpl::onSetEnvironmentVariable(
-    Session &, std::string const &, std::string const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSetEnvironmentVariable, Session &, std::string const &,
+                 std::string const &)
 
-ErrorCode DummySessionDelegateImpl::onSetWorkingDirectory(Session &,
-                                                          std::string const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSetWorkingDirectory, Session &, std::string const &)
 
-ErrorCode DummySessionDelegateImpl::onSetStdFile(Session &, int,
-                                                 std::string const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSetStdFile, Session &, int, std::string const &)
 
-ErrorCode DummySessionDelegateImpl::onSetArchitecture(Session &,
-                                                      std::string const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSetArchitecture, Session &, std::string const &)
 
-ErrorCode
-DummySessionDelegateImpl::onSetProgramArguments(Session &,
-                                                StringCollection const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onSetProgramArguments, Session &, StringCollection const &)
 
-ErrorCode DummySessionDelegateImpl::onExecuteProgram(Session &,
-                                                     std::string const &,
-                                                     uint32_t,
-                                                     std::string const &,
-                                                     ProgramResult &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onExecuteProgram, Session &, std::string const &, uint32_t,
+                 std::string const &, ProgramResult &)
 
 ErrorCode DummySessionDelegateImpl::onFileCreateDirectory(
     Session &, std::string const &path, uint32_t flags) {
@@ -469,21 +313,15 @@ ErrorCode DummySessionDelegateImpl::onFileRead(Session &session, int fd,
   return it->second.pread(buffer, count, offset);
 }
 
-ErrorCode DummySessionDelegateImpl::onFileWrite(Session &, int, uint64_t,
-                                                ByteVector const &, size_t &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onFileWrite, Session &, int, uint64_t, ByteVector const &,
+                 size_t &)
 
 ErrorCode DummySessionDelegateImpl::onFileRemove(Session &session,
                                                  std::string const &path) {
   return Host::File::unlink(path);
 }
 
-ErrorCode DummySessionDelegateImpl::onFileReadLink(Session &,
-                                                   std::string const &,
-                                                   std::string &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onFileReadLink, Session &, std::string const &, std::string &)
 
 #if 0
 //
@@ -527,87 +365,43 @@ onFileSeek(Session &, int, int64_t, int, int64_t &)
 }
 #endif
 
-ErrorCode DummySessionDelegateImpl::onFileExists(Session &,
-                                                 std::string const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onFileExists, Session &, std::string const &)
 
-ErrorCode DummySessionDelegateImpl::onFileComputeMD5(Session &,
-                                                     std::string const &,
-                                                     uint8_t[16]) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onFileComputeMD5, Session &, std::string const &, uint8_t[16])
 
-ErrorCode DummySessionDelegateImpl::onFileGetSize(Session &,
-                                                  std::string const &,
-                                                  uint64_t &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onFileGetSize, Session &, std::string const &, uint64_t &)
 
-ErrorCode DummySessionDelegateImpl::onQueryProcessList(Session &,
-                                                       ProcessInfoMatch const &,
-                                                       bool,
-                                                       ProcessInfo &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryProcessList, Session &, ProcessInfoMatch const &,
+                       bool, ProcessInfo &)
 
-ErrorCode DummySessionDelegateImpl::onQueryProcessInfo(Session &, ProcessId,
-                                                       ProcessInfo &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryProcessInfo, Session &, ProcessId, ProcessInfo &)
 
-ErrorCode DummySessionDelegateImpl::onLaunchDebugServer(Session &,
-                                                        std::string const &,
-                                                        uint16_t &,
-                                                        ProcessId &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onLaunchDebugServer, Session &, std::string const &,
+                 uint16_t &, ProcessId &)
 
-ErrorCode DummySessionDelegateImpl::onQueryLaunchSuccess(Session &,
-                                                         ProcessId) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryLaunchSuccess, Session &, ProcessId)
 
-ErrorCode DummySessionDelegateImpl::onQueryUserName(Session &, UserId const &,
-                                                    std::string &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryUserName, Session &, UserId const &,
+                       std::string &)
 
-ErrorCode DummySessionDelegateImpl::onQueryGroupName(Session &, GroupId const &,
-                                                     std::string &) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryGroupName, Session &, GroupId const &,
+                       std::string &)
 
-ErrorCode DummySessionDelegateImpl::onQueryWorkingDirectory(
-    Session &, std::string &woringDir) const {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY_CONST(onQueryWorkingDirectory, Session &,
+                       std::string &woringDir)
 
 void DummySessionDelegateImpl::onReset(Session &) {}
 
-ErrorCode DummySessionDelegateImpl::onFlashErase(Session &, Address const &,
-                                                 size_t) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onFlashErase, Session &, Address const &, size_t)
 
-ErrorCode DummySessionDelegateImpl::onFlashWrite(Session &, Address const &,
-                                                 ByteVector const &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onFlashWrite, Session &, Address const &, ByteVector const &)
 
-ErrorCode DummySessionDelegateImpl::onFlashDone(Session &) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(onFlashDone, Session &)
 
-ErrorCode DummySessionDelegateImpl::fetchStopInfoForAllThreads(
-    Session &session, std::vector<StopInfo> &stops, StopInfo &processStop) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(fetchStopInfoForAllThreads, Session &session,
+                 std::vector<StopInfo> &stops, StopInfo &processStop)
 
-ErrorCode
-DummySessionDelegateImpl::createThreadsStopInfo(Session &session,
-                                                JSArray &threadsStopInfo) {
-  return kErrorUnsupported;
-}
+DUMMY_IMPL_EMPTY(createThreadsStopInfo, Session &session,
+                 JSArray &threadsStopInfo)
 }
 }
