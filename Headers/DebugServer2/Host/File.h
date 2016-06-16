@@ -47,6 +47,7 @@ public:
 
 public:
   ErrorCode pread(ByteVector &buf, uint64_t &count, uint64_t offset);
+  ErrorCode pwrite(ByteVector const &buf, uint64_t &count, uint64_t offset);
 
 public:
   bool valid() const { return (_fd >= 0); }

@@ -56,6 +56,30 @@ ErrorCode File::pread(ByteVector &buf, uint64_t &count, uint64_t offset) {
   return _lastError = kSuccess;
 }
 
+ErrorCode File::pwrite(ByteVector const &buf, uint64_t &count,
+                       uint64_t offset) {
+  if (!valid()) {
+    return _lastError = kErrorInvalidHandle;
+  }
+
+  if (offset > std::numeric_limits<off_t>::max()) {
+    return _lastError = kErrorInvalidArgument;
+  }
+
+  auto offArg = static_cast<off_t>(offset);
+  auto countArg = static_cast<size_t>(count);
+
+  ssize_t nWritten = ::pwrite(_fd, buf.data(), countArg, offArg);
+
+  if (nWritten < 0) {
+    return _lastError = Platform::TranslateError();
+  }
+
+  count = static_cast<uint64_t>(nWritten);
+
+  return _lastError = kSuccess;
+}
+
 ErrorCode File::unlink(std::string const &path) {
   if (::unlink(path.c_str()) < 0) {
     return Platform::TranslateError();
