@@ -52,9 +52,8 @@ DUMMY_IMPL_EMPTY(onSetMaxPacketSize, Session &, size_t)
 
 DUMMY_IMPL_EMPTY(onSetMaxPayloadSize, Session &, size_t)
 
-void DummySessionDelegateImpl::onSetLogging(Session &, std::string const &,
-                                            std::string const &,
-                                            StringCollection const &) {}
+DUMMY_IMPL_EMPTY(onSetLogging, Session &, std::string const &,
+                 std::string const &, StringCollection const &)
 
 ErrorCode DummySessionDelegateImpl::onAllowOperations(
     Session &, std::map<std::string, bool> const &) {
@@ -171,7 +170,7 @@ ErrorCode DummySessionDelegateImpl::onTerminate(Session &session,
   return onTerminate(session, pid, stop);
 }
 
-void DummySessionDelegateImpl::onExitServer(Session &session) { return; }
+DUMMY_IMPL_EMPTY(onExitServer, Session &session)
 
 DUMMY_IMPL_EMPTY(onSynchronizeThreadState, Session &, ProcessId)
 
@@ -318,7 +317,7 @@ DUMMY_IMPL_EMPTY_CONST(onQueryGroupName, Session &, GroupId const &,
 DUMMY_IMPL_EMPTY_CONST(onQueryWorkingDirectory, Session &,
                        std::string &woringDir)
 
-void DummySessionDelegateImpl::onReset(Session &) {}
+DUMMY_IMPL_EMPTY(onReset, Session &)
 
 DUMMY_IMPL_EMPTY(onFlashErase, Session &, Address const &, size_t)
 

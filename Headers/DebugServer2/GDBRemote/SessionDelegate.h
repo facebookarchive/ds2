@@ -36,9 +36,9 @@ protected: // Common
   virtual ErrorCode onSetMaxPacketSize(Session &session, size_t size) = 0;
   virtual ErrorCode onSetMaxPayloadSize(Session &session, size_t size) = 0;
 
-  virtual void onSetLogging(Session &session, std::string const &mode,
-                            std::string const &filename,
-                            StringCollection const &flags) = 0;
+  virtual ErrorCode onSetLogging(Session &session, std::string const &mode,
+                                 std::string const &filename,
+                                 StringCollection const &flags) = 0;
 
   virtual ErrorCode
   onAllowOperations(Session &session,
@@ -106,7 +106,7 @@ protected: // Debugging Session
   virtual ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
                                 StopInfo &stop) = 0;
   virtual ErrorCode onTerminate(Session &session, ProcessId pid) = 0;
-  virtual void onExitServer(Session &session) = 0;
+  virtual ErrorCode onExitServer(Session &session) = 0;
 
   virtual ErrorCode onSynchronizeThreadState(Session &session,
                                              ProcessId pid) = 0;
@@ -306,7 +306,7 @@ protected: // Platform Session
                                             std::string &workingDir) const = 0;
 
 protected: // System Session
-  virtual void onReset(Session &session) = 0;
+  virtual ErrorCode onReset(Session &session) = 0;
   virtual ErrorCode onFlashErase(Session &session, Address const &address,
                                  size_t length) = 0;
   virtual ErrorCode onFlashWrite(Session &session, Address const &address,

@@ -36,9 +36,9 @@ protected: // Common
   ErrorCode onSetMaxPacketSize(Session &session, size_t size) override;
   ErrorCode onSetMaxPayloadSize(Session &session, size_t size) override;
 
-  void onSetLogging(Session &session, std::string const &mode,
-                    std::string const &filename,
-                    StringCollection const &flags) override;
+  ErrorCode onSetLogging(Session &session, std::string const &mode,
+                         std::string const &filename,
+                         StringCollection const &flags) override;
 
   ErrorCode
   onAllowOperations(Session &session,
@@ -101,7 +101,7 @@ protected: // Debugging Session
   ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
                         StopInfo &stop) override;
   ErrorCode onTerminate(Session &session, ProcessId pid) override;
-  void onExitServer(Session &session) override;
+  ErrorCode onExitServer(Session &session) override;
 
   ErrorCode onSynchronizeThreadState(Session &session, ProcessId pid) override;
 
@@ -261,7 +261,7 @@ protected: // Platform Session
                                     std::string &workingDir) const override;
 
 protected: // System Session
-  void onReset(Session &session) override;
+  ErrorCode onReset(Session &session) override;
   ErrorCode onFlashErase(Session &session, Address const &address,
                          size_t length) override;
   ErrorCode onFlashWrite(Session &session, Address const &address,
