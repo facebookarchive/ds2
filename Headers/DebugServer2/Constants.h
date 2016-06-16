@@ -14,38 +14,6 @@
 namespace ds2 {
 
 //
-// Error Codes as defined by GDB remoting documentation,
-// plus some others.
-//
-
-enum ErrorCode {
-  kSuccess,
-  kErrorNoPermission = 1,
-  kErrorNotFound = 2,
-  kErrorProcessNotFound = 3,
-  kErrorInterrupted = 4,
-  kErrorInvalidHandle = 9,
-  kErrorNoMemory = 12,
-  kErrorAccessDenied = 13,
-  kErrorInvalidAddress = 14,
-  kErrorBusy = 16,
-  kErrorAlreadyExist = 17,
-  kErrorNoDevice = 19,
-  kErrorNotDirectory = 20,
-  kErrorIsDirectory = 21,
-  kErrorInvalidArgument = 22,
-  kErrorTooManySystemFiles = 23,
-  kErrorTooManyFiles = 24,
-  kErrorFileTooBig = 27,
-  kErrorNoSpace = 28,
-  kErrorInvalidSeek = 29,
-  kErrorNotWriteable = 30,
-  kErrorNameTooLong = 91,
-  kErrorUnknown = 9999,
-  kErrorUnsupported = 10000
-};
-
-//
 // Endian
 //
 
@@ -75,8 +43,6 @@ enum /*Protection*/ {
   kProtectionWrite = (1 << 1),
   kProtectionRead = (1 << 2)
 };
-
-char const *GetErrorCodeString(ErrorCode err);
 }
 
 #endif // !__DebugServer2_Constants_h
