@@ -105,11 +105,11 @@ static int PlatformMain(std::string const &host, std::string const &port) {
 static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
   Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
                              : ds2::GDBRemote::kCompatibilityModeLLDB);
-  auto qchannel = ds2::make_unique<QueueChannel>(socket);
-  SessionThread thread(qchannel.get(), &session);
+  QueueChannel qchannel(socket);
+  SessionThread thread(&qchannel, &session);
 
   session.setDelegate(impl);
-  session.create(qchannel.get());
+  session.create(&qchannel);
 
   DS2LOG(Debug, "DEBUG SERVER STARTED");
   thread.start();
@@ -167,16 +167,17 @@ static int SlaveMain() {
   }
 
   if (pid == 0) {
-    // When in slave mode, output is suppressed but
-    // for standard error.
+    std::unique_ptr<Socket> client = server->accept();
+
+    // When in slave mode, output is suppressed but for standard error.
     close(0);
     close(1);
 
     open("/dev/null", O_RDONLY);
     open("/dev/null", O_WRONLY);
 
-    auto impl = ds2::make_unique<SlaveSessionImpl>();
-    return RunDebugServer(server->accept().get(), impl.get());
+    SlaveSessionImpl impl;
+    return RunDebugServer(client.get(), &impl);
   } else {
     // Write to the standard output to let our parent know
     // where we're listening.
