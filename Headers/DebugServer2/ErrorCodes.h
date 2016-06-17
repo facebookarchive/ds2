@@ -46,15 +46,17 @@ enum ErrorCode {
 
 char const *GetErrorCodeString(ErrorCode err);
 
-#define CHK(C)                                                                 \
+#define CHK_ACTION(C, A)                                                       \
   do {                                                                         \
     static_assert(std::is_same<decltype(C), ErrorCode>::value,                 \
                   #C "does not return an ErrorCode");                          \
-    ErrorCode CHK_error_ = (C);                                                \
-    if (CHK_error_ != kSuccess) {                                              \
-      return CHK_error_;                                                       \
+    ErrorCode CHK_error = (C);                                                 \
+    if (CHK_error != kSuccess) {                                               \
+      A;                                                                       \
     }                                                                          \
   } while (0)
 }
+
+#define CHK(C) CHK_ACTION(C, return CHK_error)
 
 #endif // !__DebugServer2_ErrorCodes_h
