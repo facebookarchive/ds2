@@ -49,9 +49,7 @@ ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
       isThumb = true;
     } else {
       ds2::Architecture::CPUState state;
-      ErrorCode error = _process->currentThread()->readCPUState(state);
-      if (error != kSuccess)
-        return error;
+      CHK(_process->currentThread()->readCPUState(state));
       isThumb = state.isThumb();
     }
 
@@ -63,11 +61,7 @@ ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
       // is equivalent to the one used by GDB.
       //
       uint32_t insn;
-      ErrorCode error =
-          _process->readMemory(address.value() & ~1ULL, &insn, sizeof(insn));
-      if (error != kSuccess) {
-        return error;
-      }
+      CHK(_process->readMemory(address.value() & ~1ULL, &insn, sizeof(insn)));
       auto inst_size = GetThumbInstSize(insn);
       size = inst_size == ThumbInstSize::TwoByteInst ? 2 : 3;
     } else {
