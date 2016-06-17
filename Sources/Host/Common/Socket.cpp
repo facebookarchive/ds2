@@ -150,7 +150,7 @@ bool Socket::listen(std::string const &address, std::string const &port) {
   return true;
 }
 
-Socket *Socket::accept() {
+std::unique_ptr<Socket> Socket::accept() {
   if (!listening())
     return nullptr;
 
@@ -170,7 +170,7 @@ Socket *Socket::accept() {
   ::fcntl(handle, F_SETFD, flags);
 #endif
 
-  auto client = new Socket(handle);
+  auto client = make_protected_unique(handle);
   client->setNonBlocking();
   return client;
 }
