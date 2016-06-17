@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classds2_1_1_host_1_1_darwin_1_1_lib_proc.html" title="ds2::Host::Darwin::\lLibProc" alt="" coords="5,5,139,44"/>
+<area shape="rect" id="node1" href="$classds2_1_1_host_1_1_channel.html" title="ds2::Host::Channel" alt="" coords="6,31,141,57"/>
+<area shape="rect" id="node2" href="$classds2_1_1_host_1_1_queue_channel.html" title="ds2::Host::QueueChannel" alt="" coords="189,5,363,32"/>
+<area shape="rect" id="node3" href="$classds2_1_1_host_1_1_socket.html" title="ds2::Host::Socket" alt="" coords="212,56,340,83"/>
 </map>

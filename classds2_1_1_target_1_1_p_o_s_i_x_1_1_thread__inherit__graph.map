@@ -1,6 +1,6 @@
 <map id="ds2::Target::POSIX::Thread" name="ds2::Target::POSIX::Thread">
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_darwin_1_1_thread.html" title="ds2::Target::Darwin\l::Thread" alt="" coords="411,5,547,44"/>
-<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_thread.html" title="ds2::Target::FreeBSD\l::Thread" alt="" coords="404,68,554,107"/>
-<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_linux_1_1_thread.html" title="ds2::Target::Linux\l::Thread" alt="" coords="416,131,542,169"/>
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_thread_base.html" title="ds2::Target::ThreadBase" alt="" coords="5,75,173,100"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_darwin_1_1_thread.html" title="ds2::Target::Darwin\l::Thread" alt="" coords="415,5,553,46"/>
+<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_thread.html" title="ds2::Target::FreeBSD\l::Thread" alt="" coords="409,70,559,111"/>
+<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_linux_1_1_thread.html" title="ds2::Target::Linux\l::Thread" alt="" coords="421,135,547,177"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_thread_base.html" title="ds2::Target::ThreadBase" alt="" coords="6,77,173,104"/>
 </map>

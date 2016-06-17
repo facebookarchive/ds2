@@ -1,4 +1,4 @@
 <map id="ds2::GDBRemote::PacketProcessorDelegate" name="ds2::GDBRemote::PacketProcessorDelegate">
-<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_protocol_interpreter.html" title="ds2::GDBRemote::Protocol\lInterpreter" alt="" coords="5,92,187,131"/>
-<area shape="rect" id="node3" href="$class_session_thread.html" title="SessionThread" alt="" coords="212,99,323,124"/>
+<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_protocol_interpreter.html" title="ds2::GDBRemote::Protocol\lInterpreter" alt="" coords="5,97,187,138"/>
+<area shape="rect" id="node3" href="$class_session_thread.html" title="SessionThread" alt="" coords="212,104,321,131"/>
 </map>

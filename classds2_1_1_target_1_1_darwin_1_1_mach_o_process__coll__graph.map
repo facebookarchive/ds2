@@ -1,7 +1,7 @@
 <map id="ds2::Target::Darwin::MachOProcess" name="ds2::Target::Darwin::MachOProcess">
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="106,192,241,231"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="119,105,292,131"/>
-<area shape="rect" id="node4" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,104,31"/>
-<area shape="rect" id="node6" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="251,5,371,31"/>
-<area shape="rect" id="node7" href="$classds2_1_1_host_1_1_darwin_1_1_mach.html" title="ds2::Host::Darwin::Mach" alt="" coords="265,199,432,224"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="103,201,240,242"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="115,109,289,136"/>
+<area shape="rect" id="node4" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,104,32"/>
+<area shape="rect" id="node6" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="246,5,367,32"/>
+<area shape="rect" id="node7" href="$classds2_1_1_host_1_1_darwin_1_1_mach.html" title="ds2::Host::Darwin::Mach" alt="" coords="265,208,433,235"/>
 </map>
