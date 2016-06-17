@@ -11,6 +11,8 @@
 #ifndef __DebugServer2_ErrorCodes_h
 #define __DebugServer2_ErrorCodes_h
 
+#include <type_traits>
+
 namespace ds2 {
 
 // Error Codes as defined by GDB remoting documentation,
@@ -44,6 +46,15 @@ enum ErrorCode {
 
 char const *GetErrorCodeString(ErrorCode err);
 
+#define CHK(C)                                                                 \
+  do {                                                                         \
+    static_assert(std::is_same<decltype(C), ErrorCode>::value,                 \
+                  #C "does not return an ErrorCode");                          \
+    ErrorCode CHK_error_ = (C);                                                \
+    if (CHK_error_ != kSuccess) {                                              \
+      return CHK_error_;                                                       \
+    }                                                                          \
+  } while (0)
 }
 
 #endif // !__DebugServer2_ErrorCodes_h
