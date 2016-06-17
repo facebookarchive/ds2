@@ -59,7 +59,7 @@ ErrorCode PlatformSessionImplBase::onExecuteProgram(
 
   ProcessSpawner ps;
 
-  ps.setExecutable(command);
+  ps.setShellCommand(command);
 
   ps.redirectInputToNull();
   ps.redirectOutputToBuffer();
