@@ -26,9 +26,7 @@ namespace Target {
 
 ProcessBase::ProcessBase()
     : _terminated(false), _flags(0), _pid(kAnyProcessId), _loadBase(),
-      _entryPoint(), _currentThread(nullptr),
-      _softwareBreakpointManager(nullptr), _hardwareBreakpointManager(nullptr) {
-}
+      _entryPoint(), _currentThread(nullptr) {}
 
 ProcessBase::~ProcessBase() {
   for (auto thread : _threads) {
@@ -308,18 +306,17 @@ ErrorCode ProcessBase::afterResume() {
 }
 
 SoftwareBreakpointManager *ProcessBase::softwareBreakpointManager() const {
-  if (_softwareBreakpointManager == nullptr) {
+  if (!_softwareBreakpointManager) {
 #if defined(ARCH_ARM) || defined(ARCH_ARM64)
     typedef Architecture::ARM::SoftwareBreakpointManager SWBPMType;
 #elif defined(ARCH_X86) || defined(ARCH_X86_64)
     typedef Architecture::X86::SoftwareBreakpointManager SWBPMType;
 #endif
-
-    auto mutableThis = const_cast<ProcessBase *>(this);
-    mutableThis->_softwareBreakpointManager = new SWBPMType(mutableThis);
+    _softwareBreakpointManager =
+        ds2::make_unique<SWBPMType>(const_cast<ProcessBase *>(this));
   }
 
-  return _softwareBreakpointManager;
+  return _softwareBreakpointManager.get();
 }
 
 HardwareBreakpointManager *ProcessBase::hardwareBreakpointManager() const {
@@ -328,18 +325,17 @@ HardwareBreakpointManager *ProcessBase::hardwareBreakpointManager() const {
   return nullptr;
 #endif
 
-  if (_hardwareBreakpointManager == nullptr) {
+  if (!_hardwareBreakpointManager) {
 #if defined(ARCH_ARM) || defined(ARCH_ARM64)
     typedef Architecture::ARM::HardwareBreakpointManager HWBPMType;
 #elif defined(ARCH_X86) || defined(ARCH_X86_64)
     typedef Architecture::X86::HardwareBreakpointManager HWBPMType;
 #endif
-
-    auto mutableThis = const_cast<ProcessBase *>(this);
-    mutableThis->_hardwareBreakpointManager = new HWBPMType(mutableThis);
+    _hardwareBreakpointManager =
+        ds2::make_unique<HWBPMType>(const_cast<ProcessBase *>(this));
   }
 
-  return _hardwareBreakpointManager;
+  return _hardwareBreakpointManager.get();
 }
 
 void ProcessBase::prepareForDetach() {

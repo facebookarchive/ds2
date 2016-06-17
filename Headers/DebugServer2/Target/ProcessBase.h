@@ -17,6 +17,7 @@
 #include "DebugServer2/Target/ThreadBase.h"
 
 #include <functional>
+#include <memory>
 #include <set>
 
 namespace ds2 {
@@ -36,8 +37,8 @@ protected:
   Address _entryPoint;
   IdentityMap _threads;
   Thread *_currentThread;
-  mutable SoftwareBreakpointManager *_softwareBreakpointManager;
-  mutable HardwareBreakpointManager *_hardwareBreakpointManager;
+  mutable std::unique_ptr<SoftwareBreakpointManager> _softwareBreakpointManager;
+  mutable std::unique_ptr<HardwareBreakpointManager> _hardwareBreakpointManager;
 
 protected:
   ProcessBase();
