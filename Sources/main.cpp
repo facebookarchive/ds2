@@ -142,19 +142,17 @@ static int DebugMain(ds2::StringCollection const &args,
   }
 
   do {
-    DebugSessionImpl *impl;
+    std::unique_ptr<DebugSessionImpl> impl;
 
     if (attachPid > 0)
-      impl = new DebugSessionImpl(attachPid);
+      impl = ds2::make_unique<DebugSessionImpl>(attachPid);
     else if (args.size() > 0)
-      impl = new DebugSessionImpl(args, env);
+      impl = ds2::make_unique<DebugSessionImpl>(args, env);
     else
-      impl = new DebugSessionImpl();
+      impl = ds2::make_unique<DebugSessionImpl>();
 
     auto client = reverse ? socket : std::shared_ptr<Socket>(socket->accept());
-    return RunDebugServer(client.get(), impl);
-
-    delete impl;
+    return RunDebugServer(client.get(), impl.get());
   } while (gKeepAlive);
 
   return EXIT_SUCCESS;
@@ -180,7 +178,8 @@ static int SlaveMain() {
     open("/dev/null", O_WRONLY);
 
     auto client = std::unique_ptr<Socket>(server->accept());
-    return RunDebugServer(client.get(), new SlaveSessionImpl);
+    auto impl = ds2::make_unique<SlaveSessionImpl>();
+    return RunDebugServer(client.get(), impl.get());
   } else {
     // Write to the standard output to let our parent know
     // where we're listening.
