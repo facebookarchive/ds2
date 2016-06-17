@@ -88,8 +88,9 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
 }
 
 Target::Process *Process::Attach(ProcessId pid) {
-  if (pid <= 0)
+  if (pid <= 0) {
     return nullptr;
+  }
 
   BOOL result = DebugActiveProcess(pid);
   if (!result) {
@@ -98,14 +99,13 @@ Target::Process *Process::Attach(ProcessId pid) {
 
   DS2LOG(Debug, "attached to process %" PRIu64, (uint64_t)pid);
 
-  auto process = new Process;
-  ErrorCode error = process->initialize(pid, kFlagAttachedProcess);
-  if (error != kSuccess) {
-    delete process;
+  auto process = make_protected_unique();
+
+  if (process->initialize(pid, kFlagAttachedProcess) != kSuccess) {
     return nullptr;
   }
 
-  return process;
+  return process.release();
 }
 
 ErrorCode Process::detach() {
@@ -387,21 +387,20 @@ ErrorCode Process::updateInfo() {
 }
 
 ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
-  ErrorCode error = spawner.run();
-  if (error != kSuccess) {
+  if (spawner.run() != kSuccess) {
     return nullptr;
   }
 
   DS2LOG(Debug, "created process %" PRIu64, (uint64_t)spawner.pid());
 
-  auto process = new Process;
-  error = process->initialize(spawner.pid(), kFlagNewProcess);
-  if (error != kSuccess) {
-    delete process;
+  struct MakeUniqueEnabler : public Process {};
+  auto process = ds2::make_unique<MakeUniqueEnabler>();
+
+  if (process->initialize(spawner.pid(), kFlagNewProcess) != kSuccess) {
     return nullptr;
   }
 
-  return process;
+  return process.release();
 }
 
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,

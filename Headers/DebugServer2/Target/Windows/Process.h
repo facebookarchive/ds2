@@ -18,7 +18,8 @@ namespace ds2 {
 namespace Target {
 namespace Windows {
 
-class Process : public ds2::Target::ProcessBase {
+class Process : public ds2::Target::ProcessBase,
+                public ds2::make_unique_enabler<Process> {
 protected:
   HANDLE _handle;
 
