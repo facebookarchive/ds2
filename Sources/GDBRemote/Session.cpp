@@ -121,7 +121,7 @@ Session::Session(CompatibilityMode mode)
   REGISTER_HANDLER_EQUALS_1(qP);
   REGISTER_HANDLER_EQUALS_1(qPlatform_chmod);
   REGISTER_HANDLER_EQUALS_1(qPlatform_mkdir);
-  REGISTER_HANDLER_EQUALS_1(qPlatform_RunCommand);
+  REGISTER_HANDLER_EQUALS_1(qPlatform_shell);
   REGISTER_HANDLER_EQUALS_1(qProcessInfo);
   REGISTER_HANDLER_EQUALS_1(qProcessInfoPID);
   REGISTER_HANDLER_EQUALS_1(qRcmd);
@@ -2008,13 +2008,13 @@ void Session::Handle_qPlatform_mkdir(ProtocolInterpreter::Handler const &,
 }
 
 //
-// Packet:        qPlatform_RunCommand
+// Packet:        qPlatform_shell
 // Description:   Execute a command and redirect output to the debugger
 //                using F reply packets.
 // Compatibility: LLDB
 //
-void Session::Handle_qPlatform_RunCommand(ProtocolInterpreter::Handler const &,
-                                          std::string const &args) {
+void Session::Handle_qPlatform_shell(ProtocolInterpreter::Handler const &,
+                                     std::string const &args) {
   size_t comma = args.find(',');
   std::string workingDir;
   std::string command(HexToString(args.substr(0, comma)));
@@ -2022,7 +2022,7 @@ void Session::Handle_qPlatform_RunCommand(ProtocolInterpreter::Handler const &,
   char *eptr;
   uint32_t timeout = std::strtoul(&args[comma + 1], &eptr, 16);
   if (*eptr++ == ',') {
-    workingDir = eptr;
+    workingDir = HexToString(eptr);
   }
 
   ProgramResult result;
@@ -2036,7 +2036,7 @@ void Session::Handle_qPlatform_RunCommand(ProtocolInterpreter::Handler const &,
 
     // F,-1 in case of failure
     std::ostringstream ss;
-    ss << 'F' << ',' << std::hex << 0xffffffff;
+    ss << 'F' << ',' << std::hex << error;
     send(ss.str());
   } else {
     send(result.encode(), true);

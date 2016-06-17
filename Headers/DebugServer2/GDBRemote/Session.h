@@ -147,8 +147,8 @@ private:
                               std::string const &);
   void Handle_qPlatform_mkdir(ProtocolInterpreter::Handler const &,
                               std::string const &);
-  void Handle_qPlatform_RunCommand(ProtocolInterpreter::Handler const &,
-                                   std::string const &);
+  void Handle_qPlatform_shell(ProtocolInterpreter::Handler const &,
+                              std::string const &);
   void Handle_qProcessInfo(ProtocolInterpreter::Handler const &,
                            std::string const &);
   void Handle_qProcessInfoPID(ProtocolInterpreter::Handler const &,
