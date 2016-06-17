@@ -24,6 +24,8 @@ typedef SSIZE_T ssize_t;
 #endif
 #include <iostream>
 #include <type_traits>
+#include <memory>
+#include <utility>
 
 #if defined(__clang__)
 #define COMPILER_CLANG
@@ -111,6 +113,15 @@ typename std::enable_if<
     size_t>::type static inline constexpr array_sizeof(T const &array) {
   return sizeof(array) / (reinterpret_cast<uintptr_t>(&array[1]) -
                           reinterpret_cast<uintptr_t>(&array[0]));
+}
+
+namespace ds2 {
+
+// We don't use C++14 (yet).
+template <typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args &&... args) {
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
 }
 
 #endif // !__DebugServer2_Base_h
