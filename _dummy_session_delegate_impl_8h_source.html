@@ -319,43 +319,45 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  ErrorCode onFileRemove(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;  ErrorCode onFileReadLink(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
 <div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;                           std::string &amp;resolved) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;  ErrorCode onFileExists(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;  ErrorCode onFileComputeMD5(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;                             uint8_t digest[16]) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;  ErrorCode onFileGetSize(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                          uint64_t &amp;size) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;  ErrorCode onQueryProcessList(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info_match.html">ProcessInfoMatch</a> <span class="keyword">const</span> &amp;match,</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                               <span class="keywordtype">bool</span> first, <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  ErrorCode onQueryProcessInfo(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid,</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                               <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;  ErrorCode onLaunchDebugServer(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;host,</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;                                uint16_t &amp;port, ProcessId &amp;pid) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;  ErrorCode onQueryLaunchSuccess(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;                                 ProcessId pid) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  ErrorCode onQueryUserName(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, UserId <span class="keyword">const</span> &amp;uid,</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;                            std::string &amp;name) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  ErrorCode onQueryGroupName(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, GroupId <span class="keyword">const</span> &amp;gid,</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;                             std::string &amp;name) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;  ErrorCode onQueryWorkingDirectory(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;                                    std::string &amp;workingDir) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="keyword">protected</span>: <span class="comment">// System Session</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;  ErrorCode onReset(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  ErrorCode onFlashErase(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                         <span class="keywordtype">size_t</span> length) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  ErrorCode onFlashWrite(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;                         ByteVector <span class="keyword">const</span> &amp;data) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  ErrorCode onFlashDone(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;};</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;}</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;}</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="preprocessor">#endif // !__DebugServer2_GDBRemote_DummySessionDelegateImpl_h</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;  ErrorCode onFileSetPermissions(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;                                 uint32_t mode) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;  ErrorCode onFileExists(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;  ErrorCode onFileComputeMD5(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                             uint8_t digest[16]) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;  ErrorCode onFileGetSize(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;                          uint64_t &amp;size) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  ErrorCode onQueryProcessList(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info_match.html">ProcessInfoMatch</a> <span class="keyword">const</span> &amp;match,</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                               <span class="keywordtype">bool</span> first, <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;  ErrorCode onQueryProcessInfo(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid,</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;                               <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;  ErrorCode onLaunchDebugServer(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;host,</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;                                uint16_t &amp;port, ProcessId &amp;pid) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;  ErrorCode onQueryLaunchSuccess(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;                                 ProcessId pid) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  ErrorCode onQueryUserName(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, UserId <span class="keyword">const</span> &amp;uid,</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;                            std::string &amp;name) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;  ErrorCode onQueryGroupName(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, GroupId <span class="keyword">const</span> &amp;gid,</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;                             std::string &amp;name) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  ErrorCode onQueryWorkingDirectory(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                                    std::string &amp;workingDir) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="keyword">protected</span>: <span class="comment">// System Session</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  ErrorCode onReset(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  ErrorCode onFlashErase(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;                         <span class="keywordtype">size_t</span> length) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  ErrorCode onFlashWrite(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                         ByteVector <span class="keyword">const</span> &amp;data) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  ErrorCode onFlashDone(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;};</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;}</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;}</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="preprocessor">#endif // !__DebugServer2_GDBRemote_DummySessionDelegateImpl_h</span></div>
 <div class="ttc" id="classds2_1_1_address_html"><div class="ttname"><a href="classds2_1_1_address.html">ds2::Address</a></div><div class="ttdef"><b>Definition:</b> Types.h:151</div></div>
 <div class="ttc" id="structds2_1_1_g_d_b_remote_1_1_process_info_match_html"><div class="ttname"><a href="structds2_1_1_g_d_b_remote_1_1_process_info_match.html">ds2::GDBRemote::ProcessInfoMatch</a></div><div class="ttdef"><b>Definition:</b> Types.h:180</div></div>
 <div class="ttc" id="structds2_1_1_g_d_b_remote_1_1_memory_region_info_html"><div class="ttname"><a href="structds2_1_1_g_d_b_remote_1_1_memory_region_info.html">ds2::GDBRemote::MemoryRegionInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:31</div></div>

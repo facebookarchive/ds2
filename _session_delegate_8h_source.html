@@ -346,65 +346,68 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileRemove(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path) = 0;</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileReadLink(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;                                   std::string &amp;resolved) = 0;</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="preprocessor">#if 0</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="preprocessor"></span>    <span class="comment">//</span></div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    <span class="comment">// more F packets:</span></div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <span class="comment">// https://sourceware.org/gdb/onlinedocs/gdb/List-of-Supported-Calls.html#List-of-Supported-Calls</span></div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <span class="comment">//</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    <span class="keyword">virtual</span> ErrorCode onGetCurrentTime(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, TimeValue &amp;tv) = 0;</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileIsATTY(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd) = 0;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileRename(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;            std::string <span class="keyword">const</span> &amp;oldPath, std::string <span class="keyword">const</span> &amp;newPath) = 0;</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileGetStat(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            FileStat &amp;stat) = 0;</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileGetStat(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd,</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            FileStat &amp;stat) = 0;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileSeek(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd,</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            int64_t offset, <span class="keywordtype">int</span> whence, int64_t &amp;newOffset) = 0;</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileExists(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path) = 0;</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileComputeMD5(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                                     uint8_t digest[16]) = 0;</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileGetSize(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;                                  uint64_t &amp;size) = 0;</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryProcessList(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;                                       <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info_match.html">ProcessInfoMatch</a> <span class="keyword">const</span> &amp;match,</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                                       <span class="keywordtype">bool</span> first, <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryProcessInfo(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid,</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;                                       <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  <span class="keyword">virtual</span> ErrorCode onLaunchDebugServer(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                                        std::string <span class="keyword">const</span> &amp;host, uint16_t &amp;port,</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                                        ProcessId &amp;pid) = 0;</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryLaunchSuccess(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                                         ProcessId pid) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileSetPermissions(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                                         std::string <span class="keyword">const</span> &amp;path,</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                                         uint32_t mode) = 0;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="preprocessor">#if 0</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="preprocessor"></span>    <span class="comment">//</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    <span class="comment">// more F packets:</span></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="comment">// https://sourceware.org/gdb/onlinedocs/gdb/List-of-Supported-Calls.html#List-of-Supported-Calls</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="comment">//</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="keyword">virtual</span> ErrorCode onGetCurrentTime(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, TimeValue &amp;tv) = 0;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileIsATTY(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd) = 0;</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileRename(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            std::string <span class="keyword">const</span> &amp;oldPath, std::string <span class="keyword">const</span> &amp;newPath) = 0;</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileGetStat(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            FileStat &amp;stat) = 0;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileGetStat(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd,</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            FileStat &amp;stat) = 0;</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    <span class="keyword">virtual</span> ErrorCode onFileSeek(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd,</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            int64_t offset, <span class="keywordtype">int</span> whence, int64_t &amp;newOffset) = 0;</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileExists(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path) = 0;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileComputeMD5(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;                                     uint8_t digest[16]) = 0;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileGetSize(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;                                  uint64_t &amp;size) = 0;</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryProcessList(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;                                       <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info_match.html">ProcessInfoMatch</a> <span class="keyword">const</span> &amp;match,</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;                                       <span class="keywordtype">bool</span> first, <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryProcessInfo(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid,</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                                       <a class="code" href="structds2_1_1_g_d_b_remote_1_1_process_info.html">ProcessInfo</a> &amp;info) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;  <span class="keyword">virtual</span> ErrorCode onLaunchDebugServer(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                                        std::string <span class="keyword">const</span> &amp;host, uint16_t &amp;port,</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                                        ProcessId &amp;pid) = 0;</div>
 <div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryUserName(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, UserId <span class="keyword">const</span> &amp;uid,</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                                    std::string &amp;name) <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryGroupName(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, GroupId <span class="keyword">const</span> &amp;gid,</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                                     std::string &amp;name) <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryWorkingDirectory(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                                            std::string &amp;workingDir) <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="keyword">protected</span>: <span class="comment">// System Session</span></div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;  <span class="keyword">virtual</span> ErrorCode onReset(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session) = 0;</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFlashErase(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                                 <span class="keywordtype">size_t</span> length) = 0;</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFlashWrite(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                                 ByteVector <span class="keyword">const</span> &amp;data) = 0;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFlashDone(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session) = 0;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;};</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;}</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;}</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="preprocessor">#endif // !__DebugServer2_GDBRemote_SessionDelegate_h</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryLaunchSuccess(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                                         ProcessId pid) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryUserName(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, UserId <span class="keyword">const</span> &amp;uid,</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;                                    std::string &amp;name) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryGroupName(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, GroupId <span class="keyword">const</span> &amp;gid,</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                                     std::string &amp;name) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;  <span class="keyword">virtual</span> ErrorCode onQueryWorkingDirectory(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                                            std::string &amp;workingDir) <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;<span class="keyword">protected</span>: <span class="comment">// System Session</span></div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;  <span class="keyword">virtual</span> ErrorCode onReset(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session) = 0;</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFlashErase(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;                                 <span class="keywordtype">size_t</span> length) = 0;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFlashWrite(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address,</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                                 ByteVector <span class="keyword">const</span> &amp;data) = 0;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFlashDone(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session) = 0;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;};</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;}</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;}</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;<span class="preprocessor">#endif // !__DebugServer2_GDBRemote_SessionDelegate_h</span></div>
 <div class="ttc" id="classds2_1_1_address_html"><div class="ttname"><a href="classds2_1_1_address.html">ds2::Address</a></div><div class="ttdef"><b>Definition:</b> Types.h:151</div></div>
 <div class="ttc" id="structds2_1_1_g_d_b_remote_1_1_process_info_match_html"><div class="ttname"><a href="structds2_1_1_g_d_b_remote_1_1_process_info_match.html">ds2::GDBRemote::ProcessInfoMatch</a></div><div class="ttdef"><b>Definition:</b> Types.h:180</div></div>
 <div class="ttc" id="structds2_1_1_g_d_b_remote_1_1_memory_region_info_html"><div class="ttname"><a href="structds2_1_1_g_d_b_remote_1_1_memory_region_info.html">ds2::GDBRemote::MemoryRegionInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:31</div></div>
