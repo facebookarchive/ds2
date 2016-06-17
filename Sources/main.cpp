@@ -105,7 +105,7 @@ static int PlatformMain(std::string const &host, std::string const &port) {
 static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
   Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
                              : ds2::GDBRemote::kCompatibilityModeLLDB);
-  auto qchannel = std::unique_ptr<QueueChannel>(new QueueChannel(socket));
+  auto qchannel = ds2::make_unique<QueueChannel>(socket);
   SessionThread thread(qchannel.get(), &session);
 
   session.setDelegate(impl);
