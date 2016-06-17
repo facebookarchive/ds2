@@ -24,10 +24,7 @@ void BreakpointManager::clear() { _sites.clear(); }
 
 ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
                                  Mode mode) {
-  ErrorCode error = isValid(address, size, mode);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(isValid(address, size, mode));
 
   auto it = _sites.find(address);
   if (it != _sites.end()) {
@@ -48,15 +45,14 @@ ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
     site.mode = mode;
     site.size = size;
 
-    //
     // If the breakpoint manager is already in enabled state, enable
     // the newly added breakpoint too.
-    //
-    if (_enabled)
-      error = enableLocation(site);
+    if (_enabled) {
+      return enableLocation(site);
+    }
   }
 
-  return error;
+  return kSuccess;
 }
 
 ErrorCode BreakpointManager::remove(Address const &address) {

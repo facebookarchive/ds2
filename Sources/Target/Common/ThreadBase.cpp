@@ -26,10 +26,7 @@ ThreadBase::ThreadBase(Process *process, ThreadId tid)
 ErrorCode ThreadBase::modifyRegisters(
     std::function<void(Architecture::CPUState &state)> action) {
   Architecture::CPUState state;
-  ErrorCode error = readCPUState(state);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(readCPUState(state));
   action(state);
   return writeCPUState(state);
 }

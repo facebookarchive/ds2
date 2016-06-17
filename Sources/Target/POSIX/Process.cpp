@@ -55,10 +55,7 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
 ErrorCode Process::detach() {
   prepareForDetach();
 
-  ErrorCode error = ptrace().detach(_pid);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(ptrace().detach(_pid));
 
   cleanup();
   _flags &= ~kFlagAttachedProcess;

@@ -94,17 +94,9 @@ ErrorCode Thread::step(int signal, Address const &address) {
 
   // Prepare a software (arch-dependent) single step and resume execution.
   Architecture::CPUState state;
-  ErrorCode error = readCPUState(state);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  error = PrepareSoftwareSingleStep(
-      process(), process()->softwareBreakpointManager(), state, address);
-  if (error != kSuccess) {
-    return error;
-  }
-
+  CHK(readCPUState(state));
+  CHK(PrepareSoftwareSingleStep(
+      process(), process()->softwareBreakpointManager(), state, address));
   return resume(signal, address);
 }
 #else
@@ -118,17 +110,9 @@ ErrorCode Thread::step(int signal, Address const &address) {
   DS2LOG(Debug, "stepping tid %d", tid());
 
   ProcessInfo info;
-  ErrorCode error = process()->getInfo(info);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  error = process()->ptrace().step(ProcessThreadId(process()->pid(), tid()),
-                                   info, signal, address);
-  if (error != kSuccess) {
-    return error;
-  }
-
+  CHK(process()->getInfo(info));
+  CHK(process()->ptrace().step(ProcessThreadId(process()->pid(), tid()), info,
+                               signal, address));
   _state = kStepped;
   return kSuccess;
 }

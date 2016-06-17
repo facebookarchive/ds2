@@ -38,16 +38,9 @@ namespace Darwin {
 ErrorCode Process::attach(int waitStatus) {
 
   if (waitStatus <= 0) {
-    ErrorCode error = ptrace().attach(_pid);
-    if (error != kSuccess) {
-      return error;
-    }
-
+    CHK(ptrace().attach(_pid));
     _flags |= kFlagAttachedProcess;
-
-    error = ptrace().wait(_pid, &waitStatus);
-    if (error != kSuccess)
-      return error;
+    CHK(ptrace().wait(_pid, &waitStatus));
     ptrace().traceThat(_pid);
   }
 
@@ -334,11 +327,7 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
 ErrorCode Process::afterResume() {
   // We are calling the Thread's afterResume from here, but it might make sense
   // to have this known by ThreadBase and call it from ProcessBase::resume.
-  ErrorCode error = _currentThread->afterResume();
-  if (error != kSuccess) {
-    return error;
-  }
-
+  CHK(_currentThread->afterResume());
   return super::afterResume();
 }
 }
