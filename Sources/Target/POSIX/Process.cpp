@@ -103,59 +103,43 @@ ds2::Target::Process *Process::Attach(ProcessId pid) {
   if (pid <= 0)
     return nullptr;
 
-  // Create the process.
-  auto process = new Target::Process;
+  auto process = ds2::make_unique<Target::Process>();
 
-  // And try to attach.
-  ErrorCode error = process->ptrace().attach(pid);
-  if (error != kSuccess) {
+  if (process->ptrace().attach(pid) != kSuccess) {
     DS2LOG(Error, "ptrace attach failed: %s", strerror(errno));
-    goto fail;
+    return nullptr;
   }
 
-  error = process->initialize(pid, kFlagAttachedProcess);
-  if (error != kSuccess) {
+  if (process->initialize(pid, kFlagAttachedProcess) != kSuccess) {
     process->ptrace().detach(pid);
-    goto fail;
+    return nullptr;
   }
 
-  return process;
-
-fail:
-  delete process;
-  return nullptr;
+  return process.release();
 }
 
 ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
-  ErrorCode error;
-  pid_t pid;
+  auto process = ds2::make_unique<Target::Process>();
 
-  // Create the process.
-  auto process = new Target::Process;
+  if (spawner.run([&process]() {
+        return process->ptrace().traceMe(true) == kSuccess;
+      }) != kSuccess) {
+    return nullptr;
+  }
 
-  error = spawner.run(
-      [process]() { return process->ptrace().traceMe(true) == kSuccess; });
-  if (error != kSuccess)
-    goto fail;
-
-  pid = spawner.pid();
+  pid_t pid = spawner.pid();
   DS2LOG(Debug, "created process %d", pid);
 
-  // Wait the process.
-  error = process->initialize(pid, kFlagNewProcess);
-  if (error != kSuccess)
-    goto fail;
+  if (process->initialize(pid, kFlagNewProcess) != kSuccess) {
+    return nullptr;
+  }
 
-  // Give a chance to the ptracer to set any specific options.
-  error = process->ptrace().traceThat(pid);
-  if (error != kSuccess)
-    goto fail;
+  // Give a chance to the ptrace implementation to set any specific options.
+  if (process->ptrace().traceThat(pid) != kSuccess) {
+    return nullptr;
+  }
 
-  return process;
-
-fail:
-  delete process;
-  return nullptr;
+  return process.release();
 }
 
 void Process::resetSignalPass() {
