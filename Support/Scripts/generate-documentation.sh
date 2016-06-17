@@ -48,7 +48,7 @@ git add .
 git commit -m "Update documentation." -m "Bump to ${SHA}."
 
 
-if [ -n "${TRAVIS_PULL_REQUEST-}" ]; then
+if [ "${TRAVIS_PULL_REQUEST-false}" != "false" ]; then
   do_nothing "Documentation build on a pull request, not pushing."
 fi
 
