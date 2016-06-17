@@ -273,6 +273,8 @@ DUMMY_IMPL_EMPTY(onFileRemove, Session &, std::string const &path)
 
 DUMMY_IMPL_EMPTY(onFileReadLink, Session &, std::string const &, std::string &)
 
+DUMMY_IMPL_EMPTY(onFileSetPermissions, Session &, std::string const &, uint32_t)
+
 DUMMY_IMPL_EMPTY(onFileExists, Session &, std::string const &)
 
 DUMMY_IMPL_EMPTY(onFileComputeMD5, Session &, std::string const &, uint8_t[16])

@@ -231,6 +231,8 @@ protected: // Platform Session
   ErrorCode onFileRemove(Session &session, std::string const &path) override;
   ErrorCode onFileReadLink(Session &session, std::string const &path,
                            std::string &resolved) override;
+  ErrorCode onFileSetPermissions(Session &session, std::string const &path,
+                                 uint32_t mode) override;
 
   ErrorCode onFileExists(Session &session, std::string const &path) override;
   ErrorCode onFileComputeMD5(Session &session, std::string const &path,

@@ -258,6 +258,9 @@ protected: // Platform Session
   virtual ErrorCode onFileRemove(Session &session, std::string const &path) = 0;
   virtual ErrorCode onFileReadLink(Session &session, std::string const &path,
                                    std::string &resolved) = 0;
+  virtual ErrorCode onFileSetPermissions(Session &session,
+                                         std::string const &path,
+                                         uint32_t mode) = 0;
 
 #if 0
     //

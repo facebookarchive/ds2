@@ -45,6 +45,10 @@ public:
                                   uint32_t mode) override;
   ErrorCode onFileRemove(Session &session, std::string const &path) override;
 
+public:
+  ErrorCode onFileSetPermissions(Session &session, std::string const &path,
+                                 uint32_t mode) override;
+
 #if 0
     // more F packets:
     // https://sourceware.org/gdb/onlinedocs/gdb/List-of-Supported-Calls.html#List-of-Supported-Calls

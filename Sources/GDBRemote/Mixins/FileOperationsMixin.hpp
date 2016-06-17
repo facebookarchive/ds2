@@ -81,6 +81,13 @@ ErrorCode FileOperationsMixin<T>::onFileRemove(Session &session,
                                                std::string const &path) {
   return Host::File::unlink(path);
 }
+
+template <typename T>
+ErrorCode FileOperationsMixin<T>::onFileSetPermissions(Session &session,
+                                                       std::string const &path,
+                                                       uint32_t mode) {
+  return Host::File::chmod(path, mode);
+}
 }
 }
 
