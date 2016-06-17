@@ -38,6 +38,7 @@ protected:
 
 public:
   bool setExecutable(std::string const &path);
+  bool setShellCommand(std::string const &command);
   bool setWorkingDirectory(std::string const &path);
 
 public:

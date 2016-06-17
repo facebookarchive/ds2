@@ -34,6 +34,15 @@ bool ProcessSpawner::setExecutable(std::string const &path) {
   return true;
 }
 
+bool ProcessSpawner::setShellCommand(std::string const &command) {
+  if (_pid != 0) {
+    return false;
+  }
+
+  setExecutable(command);
+  return true;
+}
+
 bool ProcessSpawner::setArguments(StringCollection const &args) {
   if (_pid != 0)
     return false;

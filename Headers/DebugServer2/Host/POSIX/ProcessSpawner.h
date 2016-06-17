@@ -53,6 +53,7 @@ protected:
   int _exitStatus;
   int _signalCode;
   ProcessId _pid;
+  bool _shell;
 
 public:
   ProcessSpawner();
@@ -60,6 +61,7 @@ public:
 
 public:
   bool setExecutable(std::string const &path);
+  bool setShellCommand(std::string const &command);
   bool setWorkingDirectory(std::string const &path);
 
 public:

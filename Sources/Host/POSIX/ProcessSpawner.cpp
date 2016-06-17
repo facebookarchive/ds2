@@ -75,7 +75,8 @@ static inline void close_terminal(int fds[2]) {
   ::close(fds[1]);
 }
 
-ProcessSpawner::ProcessSpawner() : _exitStatus(0), _signalCode(0), _pid(0) {}
+ProcessSpawner::ProcessSpawner()
+    : _exitStatus(0), _signalCode(0), _pid(0), _shell(false) {}
 
 ProcessSpawner::~ProcessSpawner() { flushAndExit(); }
 
@@ -89,6 +90,24 @@ bool ProcessSpawner::setExecutable(std::string const &path) {
     return false;
 
   _executablePath = path;
+  _shell = false;
+  return true;
+}
+
+bool ProcessSpawner::setShellCommand(std::string const &command) {
+  if (_pid != 0) {
+    return false;
+  }
+
+  setExecutable("sh");
+
+  StringCollection args;
+  args.push_back("-c");
+  args.push_back(command);
+
+  setArguments(args);
+
+  _shell = true;
   return true;
 }
 
@@ -419,9 +438,16 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
         return kErrorUnknown;
       }
 
-      if (::execve(_executablePath.c_str(), &args[0], &environment[0]) < 0) {
-        DS2LOG(Error, "cannot spawn executable %s, error=%s",
-               _executablePath.c_str(), strerror(errno));
+      if (_shell) {
+        if (::execvp(_executablePath.c_str(), &args[0]) < 0) {
+          DS2LOG(Error, "cannot run shell command %s, error=%s",
+                 _executablePath.c_str(), strerror(errno));
+        }
+      } else {
+        if (::execve(_executablePath.c_str(), &args[0], &environment[0]) < 0) {
+          DS2LOG(Error, "cannot spawn executable %s, error=%s",
+                 _executablePath.c_str(), strerror(errno));
+        }
       }
     }
     ::_exit(127);
