@@ -44,7 +44,7 @@ if git diff --name-only --exit-code; then
   do_nothing "No changes to the documentation."
 fi
 
-git add .
+git add --all .
 git commit -m "Update documentation." -m "Bump to ${SHA}."
 
 
