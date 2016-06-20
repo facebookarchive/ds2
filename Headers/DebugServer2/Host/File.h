@@ -24,7 +24,7 @@ namespace Host {
 
 class File {
 public:
-  File(std::string const &path, uint32_t flags, uint32_t mode);
+  File(std::string const &path, OpenFlags flags, uint32_t mode);
   ~File();
 
 public:

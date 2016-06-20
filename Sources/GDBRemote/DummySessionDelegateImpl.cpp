@@ -258,8 +258,8 @@ DUMMY_IMPL_EMPTY(onExecuteProgram, Session &, std::string const &, uint32_t,
 DUMMY_IMPL_EMPTY(onFileCreateDirectory, Session &, std::string const &path,
                  uint32_t flags)
 
-DUMMY_IMPL_EMPTY(onFileOpen, Session &, std::string const &path, uint32_t flags,
-                 uint32_t mode, int &fd)
+DUMMY_IMPL_EMPTY(onFileOpen, Session &, std::string const &path,
+                 OpenFlags flags, uint32_t mode, int &fd)
 
 DUMMY_IMPL_EMPTY(onFileClose, Session &, int fd)
 

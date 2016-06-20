@@ -19,8 +19,44 @@
 namespace ds2 {
 namespace Host {
 
-File::File(std::string const &path, uint32_t flags, uint32_t mode) {
-  _fd = ::open(path.c_str(), flags, mode);
+static int convertFlags(OpenFlags ds2Flags) {
+  int flags = 0;
+
+  if (ds2Flags & kOpenFlagRead)
+    flags |= (ds2Flags & kOpenFlagWrite) ? O_RDWR : O_RDONLY;
+  else if (ds2Flags & kOpenFlagWrite)
+    flags |= O_WRONLY;
+
+  if (ds2Flags & kOpenFlagAppend)
+    flags |= O_APPEND;
+  if (ds2Flags & kOpenFlagTruncate)
+    flags |= O_TRUNC;
+  if (ds2Flags & kOpenFlagNonBlocking)
+    flags |= O_NONBLOCK;
+  if (ds2Flags & kOpenFlagCreate)
+    flags |= O_CREAT;
+  if (ds2Flags & kOpenFlagNewOnly)
+    flags |= O_EXCL;
+  if (ds2Flags & kOpenFlagNoFollow)
+#if defined(O_NOFOLLOW)
+    flags |= O_NOFOLLOW;
+#else
+    return -1;
+#endif
+  if (ds2Flags & kOpenFlagCloseOnExec)
+    flags |= O_CLOEXEC;
+
+  return flags;
+}
+
+File::File(std::string const &path, OpenFlags flags, uint32_t mode) {
+  int posixFlags = convertFlags(flags);
+  if (posixFlags < 0) {
+    _lastError = kErrorInvalidArgument;
+    return;
+  }
+
+  _fd = ::open(path.c_str(), posixFlags, mode);
   _lastError = (_fd < 0) ? Platform::TranslateError() : kSuccess;
 }
 

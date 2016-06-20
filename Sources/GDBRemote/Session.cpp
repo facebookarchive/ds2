@@ -242,6 +242,54 @@ std::string Session::formatAddress(Address const &address,
   return ss.str();
 }
 
+OpenFlags Session::ConvertOpenFlags(uint32_t oldFlags,
+                                    CompatibilityMode compat) {
+  int flags = 0;
+  if (compat == kCompatibilityModeLLDB) {
+    if (oldFlags & (1u << 0)) // eOpenOptionRead
+      flags |= kOpenFlagRead;
+    if (oldFlags & (1u << 1)) // eOpenOptionWrite
+      flags |= kOpenFlagWrite;
+    if (flags == 0)
+      return kOpenFlagInvalid;
+
+    if (oldFlags & (1u << 2)) // eOpenOptionAppend
+      flags |= kOpenFlagAppend;
+    if (oldFlags & (1u << 3)) // eOpenOptionTruncate
+      flags |= kOpenFlagTruncate;
+    if (oldFlags & (1u << 4)) // eOpenOptionNonBlocking
+      flags |= kOpenFlagNonBlocking;
+    if (oldFlags & (1u << 5)) // eOpenOptionCanCreate
+      flags |= kOpenFlagCreate;
+    if (oldFlags & (1u << 6)) // eOpenOptionCanCreateNewOnly
+      flags |= (kOpenFlagCreate | kOpenFlagNewOnly);
+    if (oldFlags & (1u << 7)) // eOpenOptionDontFollowSymlinks
+      flags |= kOpenFlagNoFollow;
+    if (oldFlags & (1u << 8)) // eOpenOptionCloseOnExec
+      flags |= kOpenFlagCloseOnExec;
+  } else {
+    if ((oldFlags & 0x3) == 0x0) // O_RDONLY
+      flags |= kOpenFlagRead;
+    else if (oldFlags & 0x1) // O_WRONLY
+      flags |= kOpenFlagWrite;
+    else if (oldFlags & 0x2) // O_RDWR
+      flags |= (kOpenFlagRead | kOpenFlagWrite);
+    else
+      return kOpenFlagInvalid; // Invalid mode
+
+    if (oldFlags & 0x8) // O_APPEND
+      flags |= kOpenFlagAppend;
+    if (oldFlags & 0x200) // O_CREAT
+      flags |= kOpenFlagCreate;
+    if (oldFlags & 0x400) // O_TRUNC
+      flags |= kOpenFlagTruncate;
+    if (oldFlags & 0x800) // O_EXCL
+      flags |= kOpenFlagNewOnly;
+  }
+
+  return static_cast<OpenFlags>(flags);
+}
+
 //
 // Packet:        \x03
 // Description:   A Ctrl+C has been issued in the debugger.
@@ -3092,12 +3140,19 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       sendError(kErrorInvalidArgument);
       return;
     }
+
+    OpenFlags openFlags = ConvertOpenFlags(flags, _compatMode);
+    if (openFlags == kOpenFlagInvalid) {
+      sendError(kErrorInvalidArgument);
+      return;
+    }
+
     uint32_t mode = std::strtoul(eptr, nullptr, 16);
 
     int fd;
     error = _delegate->onFileOpen(
-        *this, HexToString(args.substr(op_end, comma - op_end)), flags, mode,
-        fd);
+        *this, HexToString(args.substr(op_end, comma - op_end)), openFlags,
+        mode, fd);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {

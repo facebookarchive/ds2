@@ -15,7 +15,7 @@
 namespace ds2 {
 namespace Host {
 
-File::File(std::string const &path, uint32_t flags, uint32_t mode)
+File::File(std::string const &path, OpenFlags flags, uint32_t mode)
     : _fd(-1), _lastError(kErrorUnsupported) {}
 
 File::~File() = default;

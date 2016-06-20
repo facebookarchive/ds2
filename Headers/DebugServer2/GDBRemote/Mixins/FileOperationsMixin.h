@@ -33,7 +33,7 @@ public:
 
 public:
   ErrorCode onFileOpen(Session &session, std::string const &path,
-                       uint32_t flags, uint32_t mode, int &fd) override;
+                       OpenFlags flags, uint32_t mode, int &fd) override;
   ErrorCode onFileClose(Session &session, int fd) override;
   ErrorCode onFileRead(Session &session, int fd, uint64_t &count,
                        uint64_t offset, ByteVector &buffer) override;
