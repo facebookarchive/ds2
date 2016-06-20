@@ -99,14 +99,14 @@ Inheritance diagram for ds2::Host::Socket:</div>
 <div class="dyncontent">
 <div class="center"><img src="classds2_1_1_host_1_1_socket__inherit__graph.png" border="0" usemap="#ds2_1_1_host_1_1_socket_inherit__map" alt="Inheritance graph"/></div>
 <map name="ds2_1_1_host_1_1_socket_inherit__map" id="ds2_1_1_host_1_1_socket_inherit__map">
-<area shape="rect" id="node2" href="classds2_1_1_host_1_1_channel.html" title="ds2::Host::Channel" alt="" coords="5,5,139,32"/></map>
+<area shape="rect" id="node2" href="classds2_1_1_host_1_1_channel.html" title="ds2::Host::Channel" alt="" coords="5,13,139,40"/><area shape="rect" id="node3" href="structds2_1_1make__unique__enabler.html" title="ds2::make_unique_enabler\l\&lt; Socket \&gt;" alt="" coords="163,6,340,47"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for ds2::Host::Socket:</div>
 <div class="dyncontent">
 <div class="center"><img src="classds2_1_1_host_1_1_socket__coll__graph.png" border="0" usemap="#ds2_1_1_host_1_1_socket_coll__map" alt="Collaboration graph"/></div>
 <map name="ds2_1_1_host_1_1_socket_coll__map" id="ds2_1_1_host_1_1_socket_coll__map">
-<area shape="rect" id="node2" href="classds2_1_1_host_1_1_channel.html" title="ds2::Host::Channel" alt="" coords="5,5,139,32"/></map>
+<area shape="rect" id="node2" href="classds2_1_1_host_1_1_channel.html" title="ds2::Host::Channel" alt="" coords="5,13,139,40"/><area shape="rect" id="node3" href="structds2_1_1make__unique__enabler.html" title="ds2::make_unique_enabler\l\&lt; Socket \&gt;" alt="" coords="163,6,340,47"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -129,9 +129,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>listen</b> (std::stri
 <tr class="memitem:ae6e2ac66706138588580255351284ad8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae6e2ac66706138588580255351284ad8"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>listen</b> (std::string const &amp;port)</td></tr>
 <tr class="separator:ae6e2ac66706138588580255351284ad8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a657c57ca1ee4d9bc11c3484ad8cb2a89"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a657c57ca1ee4d9bc11c3484ad8cb2a89"></a>
-<a class="el" href="classds2_1_1_host_1_1_socket.html">Socket</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>accept</b> ()</td></tr>
-<tr class="separator:a657c57ca1ee4d9bc11c3484ad8cb2a89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfd8e2f69f367b98df4511d05a75de45"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adfd8e2f69f367b98df4511d05a75de45"></a>
+std::unique_ptr&lt; <a class="el" href="classds2_1_1_host_1_1_socket.html">Socket</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>accept</b> ()</td></tr>
+<tr class="separator:adfd8e2f69f367b98df4511d05a75de45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0e6929f650caa1d2f38e190b0150d85"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae0e6929f650caa1d2f38e190b0150d85"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>connect</b> (std::string const &amp;host, std::string const &amp;port)</td></tr>
 <tr class="separator:ae0e6929f650caa1d2f38e190b0150d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -174,6 +174,9 @@ Protected Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:a63adbd416fa39bbf0d1a5ab6ad42cb7b"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a63adbd416fa39bbf0d1a5ab6ad42cb7b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Socket</b> (SOCKET handle)</td></tr>
+<tr class="separator:a63adbd416fa39bbf0d1a5ab6ad42cb7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a675764c04383353057fecaba9a572411"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a675764c04383353057fecaba9a572411"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>create</b> (int af)</td></tr>
 <tr class="separator:a675764c04383353057fecaba9a572411"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,6 +195,13 @@ State&#160;</td><td class="memItemRight" valign="bottom"><b>_state</b></td></tr>
 <tr class="memitem:add0c6116abd75ba8c81ce9ea455e96ef"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add0c6116abd75ba8c81ce9ea455e96ef"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>_lastError</b></td></tr>
 <tr class="separator:add0c6116abd75ba8c81ce9ea455e96ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_static_methods_structds2_1_1make__unique__enabler"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_structds2_1_1make__unique__enabler')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="structds2_1_1make__unique__enabler.html">ds2::make_unique_enabler&lt; Socket &gt;</a></td></tr>
+<tr class="memitem:ae64b89d238e1d381efff1e4c106ef30a inherit pub_static_methods_structds2_1_1make__unique__enabler"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae64b89d238e1d381efff1e4c106ef30a"></a>
+static std::unique_ptr&lt; Socket &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>make_protected_unique</b> (Args...args)</td></tr>
+<tr class="separator:ae64b89d238e1d381efff1e4c106ef30a inherit pub_static_methods_structds2_1_1make__unique__enabler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Headers/DebugServer2/Host/<a class="el" href="_socket_8h_source.html">Socket.h</a></li>

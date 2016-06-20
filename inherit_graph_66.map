@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structds2_1_1_shared_library_info.html" title="ds2::SharedLibraryInfo" alt="" coords="6,5,159,32"/>
+<area shape="rect" id="node1" href="$structds2_1_1_process_thread_id.html" title="ds2::ProcessThreadId" alt="" coords="6,5,157,32"/>
+<area shape="rect" id="node2" href="$structds2_1_1_g_d_b_remote_1_1_process_thread_id.html" title="ds2::GDBRemote::ProcessThreadId" alt="" coords="206,5,439,32"/>
 </map>
