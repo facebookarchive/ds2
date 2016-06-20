@@ -122,6 +122,23 @@ template <typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args &&... args) {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
+
+// This thing allows classes with protected constructors to call
+// make_protected_unique to construct a unique_ptr cleanly (which calls
+// make_unique internally). Without this, classes with protected constructors
+// cannot be make_unique'd.
+template <typename T> struct make_unique_enabler {
+  struct make_unique_enabler_helper : public T {
+    template <typename... Args>
+    make_unique_enabler_helper(Args... args) : T(std::forward<Args>(args)...) {}
+  };
+
+  template <typename... Args>
+  static std::unique_ptr<T> make_protected_unique(Args... args) {
+    return ds2::make_unique<make_unique_enabler_helper>(
+        std::forward<Args>(args)...);
+  }
+};
 }
 
 #endif // !__DebugServer2_Base_h
