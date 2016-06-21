@@ -335,7 +335,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;                                          uint32_t mode) = 0;</div>
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileOpen(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;                               uint32_t flags, uint32_t mode, <span class="keywordtype">int</span> &amp;fd) = 0;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;                               OpenFlags flags, uint32_t mode, <span class="keywordtype">int</span> &amp;fd) = 0;</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileClose(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd) = 0;</div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  <span class="keyword">virtual</span> ErrorCode onFileRead(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd, uint64_t &amp;count,</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;                               uint64_t offset, ByteVector &amp;buffer) = 0;</div>

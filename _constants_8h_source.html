@@ -131,9 +131,26 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  kProtectionWrite = (1 &lt;&lt; 1),</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  kProtectionRead = (1 &lt;&lt; 2)</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;};</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif // !__DebugServer2_Constants_h</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment">// Open flags</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">enum</span> OpenFlags {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  kOpenFlagInvalid = 0,</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  kOpenFlagRead = (1 &lt;&lt; 0),</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  kOpenFlagWrite = (1 &lt;&lt; 1),</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  kOpenFlagAppend = (1 &lt;&lt; 2),</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  kOpenFlagTruncate = (1 &lt;&lt; 3),</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  kOpenFlagNonBlocking = (1 &lt;&lt; 4),</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  kOpenFlagCreate = (1 &lt;&lt; 5),</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  kOpenFlagNewOnly = (1 &lt;&lt; 6),</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  kOpenFlagNoFollow = (1 &lt;&lt; 7),</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  kOpenFlagCloseOnExec = (1 &lt;&lt; 8)</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif // !__DebugServer2_Constants_h</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

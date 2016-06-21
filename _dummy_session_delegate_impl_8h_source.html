@@ -309,7 +309,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                                  uint32_t mode) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;  ErrorCode onFileOpen(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;path,</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                       uint32_t flags, uint32_t mode, <span class="keywordtype">int</span> &amp;fd) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                       OpenFlags flags, uint32_t mode, <span class="keywordtype">int</span> &amp;fd) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;  ErrorCode onFileClose(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;  ErrorCode onFileRead(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, <span class="keywordtype">int</span> fd, uint64_t &amp;count,</div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                       uint64_t offset, ByteVector &amp;buffer) <span class="keyword">override</span>;</div>
