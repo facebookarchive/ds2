@@ -167,14 +167,14 @@ static int SlaveMain() {
   }
 
   if (pid == 0) {
-    std::unique_ptr<Socket> client = server->accept();
-
     // When in slave mode, output is suppressed but for standard error.
     close(0);
     close(1);
 
     open("/dev/null", O_RDONLY);
     open("/dev/null", O_WRONLY);
+
+    std::unique_ptr<Socket> client = server->accept();
 
     SlaveSessionImpl impl;
     return RunDebugServer(client.get(), &impl);
