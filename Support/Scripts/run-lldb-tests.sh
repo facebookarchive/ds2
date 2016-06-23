@@ -16,9 +16,9 @@
 cherry_pick_patches() {
   cd "$1"
 
-  testPath="$top/Support/Testing"
   # Disabled tests
-  for p in $testPath/Patches/lldb/*.patch ; do
+  local testPath="$top/Support/Testing"
+  for p in "$testPath"/Patches/lldb/*.patch; do
     echo "Applying $p"
     patch -d "$lldb_path" -p1 <"$p"
   done
@@ -28,7 +28,7 @@ cherry_pick_patches() {
   rm -fr "$lldb_path/packages/Python/lldbsuite/test/functionalities/watchpoint"
   rm -fr "$lldb_path/packages/Python/lldbsuite/test/python_api/watchpoint"
 
-  cd -
+  cd "$OLDPWD"
 }
 
 REPO_BASE="https://github.com/llvm-mirror"
@@ -105,13 +105,14 @@ else
 fi
 
 cd "$lldb_path/test"
-args="-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C $cc_exe -v"
+
+args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v)
 
 if [ -n "${TARGET-}" ]; then
   if [[ "${TARGET}" = "Linux-X86_64" ]]; then
-    args="$args --arch=x86_64"
+    args+=("--arch=x86_64")
   elif [[ "${TARGET}" = "Linux-X86" ]]; then
-    args="$args --arch=i386"
+    args+=("--arch=i386")
   fi
 else
   # If this is a developer run (not running on Travis with a $TARGET), run all
@@ -119,9 +120,9 @@ else
   LLDB_TESTS="${LLDB_TESTS-all}"
 
   if [[ "$(uname -m)" = "x86_64" ]]; then
-    args="$args --arch=x86_64"
+    args+=("--arch=x86_64")
   elif [[ "$(uname -m)" =~ "i[3-6]86" ]]; then
-    args="$args --arch=i386"
+    args+=("--arch=i386")
   fi
 fi
 
@@ -144,7 +145,7 @@ fi
 export LLDB_TEST_TIMEOUT=8m
 
 if [ "$LLDB_TESTS" != "all" ]; then
-  args="$args -p $LLDB_TESTS"
+  args+=(-p "$LLDB_TESTS")
 fi
 
-exec python2.7 dotest.py $args
+exec python2.7 dotest.py "${args[@]}"
