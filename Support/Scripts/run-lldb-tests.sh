@@ -17,8 +17,8 @@ cherry_pick_patches() {
   cd "$1"
 
   # Disabled tests
-  local testPath="$top/Support/Testing"
-  for p in "$testPath"/Patches/lldb/*.patch; do
+  local testingPath="$top/Support/Testing"
+  for p in "$testingPath"/Patches/lldb/*.patch; do
     echo "Applying $p"
     patch -d "$lldb_path" -p1 <"$p"
   done

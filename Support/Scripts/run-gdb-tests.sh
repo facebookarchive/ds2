@@ -29,7 +29,7 @@ wget "$gdb_ftp_path/$gdb_basename.tar.gz"
 tar -zxf "$gdb_basename.tar.gz"
 
 testingPath="$top/Support/Testing"
-for p in $testingPath/Patches/gdb/*.patch ; do
+for p in $testingPath/Patches/gdb/*.patch; do
   echo "Applying $p"
   patch -d "$gdb_src_path" -p1 <"$p"
 done
