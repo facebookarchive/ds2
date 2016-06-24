@@ -215,13 +215,8 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
     // On non-android linux systems, main executable has an empty path.
     shlib.main = shlib.path.empty();
 #elif defined(OS_LINUX) && defined(PLATFORM_ANDROID)
-    // On android, libraries have just their basename as path, except for
-    // /system/bin/linker and /system/bin/linker64 that have the full path.
-    // The main executable also has a full path, except when debugging an app,
-    // where the app's bundle indentifier is used as path. (wat?)
-    shlib.main = shlib.svr4.ldAddress == 0 ||
-                 (shlib.path.find("/system/bin/linker") != 0 &&
-                  !shlib.path.empty() && shlib.path[0] == '/');
+    // On android, the main executable has a load address of 0.
+    shlib.main = shlib.svr4.ldAddress == 0;
 #elif defined(OS_FREEBSD)
     // FIXME(sas): not sure how exactly to determine this on FreeBSD.
     shlib.main = false;
