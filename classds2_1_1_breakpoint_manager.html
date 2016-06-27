@@ -148,6 +148,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>has</b> (<a c
 <tr class="memitem:afe213509dba6721eb709368404cf018d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afe213509dba6721eb709368404cf018d"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enumerate</b> (std::function&lt; void(<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;)&gt; const &amp;cb) const </td></tr>
 <tr class="separator:afe213509dba6721eb709368404cf018d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf541341791ac8fd87d96c3063722689"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf541341791ac8fd87d96c3063722689"></a>
+virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (Target::Thread *thread, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site)=0</td></tr>
+<tr class="separator:adf541341791ac8fd87d96c3063722689"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -157,12 +160,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a50d9c40c1a2f731568914ad3e70d9ae8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a50d9c40c1a2f731568914ad3e70d9ae8"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>isValid</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t size, Mode mode) const </td></tr>
 <tr class="separator:a50d9c40c1a2f731568914ad3e70d9ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ff6d3a680a91c67947e76a70724716d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ff6d3a680a91c67947e76a70724716d"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address)</td></tr>
-<tr class="separator:a1ff6d3a680a91c67947e76a70724716d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d221310b8f364be0942cdc53373e70e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0d221310b8f364be0942cdc53373e70e"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (Target::Thread *thread)=0</td></tr>
-<tr class="separator:a0d221310b8f364be0942cdc53373e70e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04108b1e7e01ff84a5306c2924d318c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab04108b1e7e01ff84a5306c2924d318c"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site)</td></tr>
+<tr class="separator:ab04108b1e7e01ff84a5306c2924d318c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a03f301e0fdc194c037fd8e4cb2e934"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3a03f301e0fdc194c037fd8e4cb2e934"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> ()</td></tr>
 <tr class="separator:a3a03f301e0fdc194c037fd8e4cb2e934"><td class="memSeparator" colspan="2">&#160;</td></tr>

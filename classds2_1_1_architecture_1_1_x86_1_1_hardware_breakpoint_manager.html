@@ -116,6 +116,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8837cda76505a4cb65491bfac7db663c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8837cda76505a4cb65491bfac7db663c"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, Type type, size_t size, Mode mode) override</td></tr>
 <tr class="separator:a8837cda76505a4cb65491bfac7db663c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99193f96be1f4c6e1995d88ff8b1ec2c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a99193f96be1f4c6e1995d88ff8b1ec2c"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (Target::Thread *thread, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site) override</td></tr>
+<tr class="separator:a99193f96be1f4c6e1995d88ff8b1ec2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a454a995220914f49c068ed598644cc5a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a454a995220914f49c068ed598644cc5a"></a>
 virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>maxWatchpoints</b> ()</td></tr>
 <tr class="separator:a454a995220914f49c068ed598644cc5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,9 +138,6 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enumerate</b>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:ab5b07253ba2eda719f4a26dcb16af6ac"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab5b07253ba2eda719f4a26dcb16af6ac"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (Target::Thread *thread) override</td></tr>
-<tr class="separator:ab5b07253ba2eda719f4a26dcb16af6ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf79c8623fd1fa5d1183c34d2da9b901"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acf79c8623fd1fa5d1183c34d2da9b901"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>enableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site) override</td></tr>
 <tr class="separator:acf79c8623fd1fa5d1183c34d2da9b901"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -160,9 +160,9 @@ ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>isValid</b> (<a 
 <tr class="memitem:a395905f5d438102cbbbd66383cad0ffd inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a395905f5d438102cbbbd66383cad0ffd"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>BreakpointManager</b> (<a class="el" href="classds2_1_1_target_1_1_process_base.html">Target::ProcessBase</a> *process)</td></tr>
 <tr class="separator:a395905f5d438102cbbbd66383cad0ffd inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ff6d3a680a91c67947e76a70724716d inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ff6d3a680a91c67947e76a70724716d"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address)</td></tr>
-<tr class="separator:a1ff6d3a680a91c67947e76a70724716d inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab04108b1e7e01ff84a5306c2924d318c"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site)</td></tr>
+<tr class="separator:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a03f301e0fdc194c037fd8e4cb2e934 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3a03f301e0fdc194c037fd8e4cb2e934"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> ()</td></tr>
 <tr class="separator:a3a03f301e0fdc194c037fd8e4cb2e934 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>

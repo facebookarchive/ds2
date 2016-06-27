@@ -127,12 +127,12 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>has</b> (<a c
 <tr class="memitem:a71cb317f610769a68e744c897e867179"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a71cb317f610769a68e744c897e867179"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enumerate</b> (std::function&lt; void(<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;)&gt; const &amp;cb) const override</td></tr>
 <tr class="separator:a71cb317f610769a68e744c897e867179"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a499831b824e70642ac5729729ed88369"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a499831b824e70642ac5729729ed88369"></a>
+virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (Target::Thread *thread, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site) override</td></tr>
+<tr class="separator:a499831b824e70642ac5729729ed88369"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:add7425932d26adf0d5134d453d4ac520"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add7425932d26adf0d5134d453d4ac520"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (Target::Thread *thread) override</td></tr>
-<tr class="separator:add7425932d26adf0d5134d453d4ac520"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a595e9b98c7c1f8ee0d5b1e528bbba26c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a595e9b98c7c1f8ee0d5b1e528bbba26c"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>getOpcode</b> (uint32_t type, std::string &amp;opcode) const </td></tr>
 <tr class="separator:a595e9b98c7c1f8ee0d5b1e528bbba26c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,9 +149,9 @@ ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>isValid</b> (<a 
 <tr class="memitem:a395905f5d438102cbbbd66383cad0ffd inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a395905f5d438102cbbbd66383cad0ffd"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>BreakpointManager</b> (<a class="el" href="classds2_1_1_target_1_1_process_base.html">Target::ProcessBase</a> *process)</td></tr>
 <tr class="separator:a395905f5d438102cbbbd66383cad0ffd inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ff6d3a680a91c67947e76a70724716d inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1ff6d3a680a91c67947e76a70724716d"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address)</td></tr>
-<tr class="separator:a1ff6d3a680a91c67947e76a70724716d inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab04108b1e7e01ff84a5306c2924d318c"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site)</td></tr>
+<tr class="separator:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a03f301e0fdc194c037fd8e4cb2e934 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3a03f301e0fdc194c037fd8e4cb2e934"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> ()</td></tr>
 <tr class="separator:a3a03f301e0fdc194c037fd8e4cb2e934 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
