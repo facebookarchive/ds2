@@ -753,45 +753,57 @@ void Session::Handle_H(ProtocolInterpreter::Handler const &,
 }
 
 //
+// NOTE: This packet has completely different behavior in LLDB and GDB
+//
 // Packet:        I sig[;addr[,nnn]]
 // Description:   Step the remote target by a single clock cycle
 //                at the address specified if any, using the
 //                specified signal.
 // Compatibility: GDB
 //
+// Packet:        I data
+// Description:   Send data to the inferior process. The data
+//                is hex-encoded.
+// Compatibility: LLDB
+//
 void Session::Handle_I(ProtocolInterpreter::Handler const &,
                        std::string const &args) {
-  char *eptr;
-  int signal;
-  Address address;
-  uint32_t ncycles = 1;
+  if (_compatMode == kCompatibilityModeLLDB) {
+    ByteVector data(HexToByteVector(args.data()));
+    CHK_SEND(_delegate->onSendInput(*this, data));
 
-  signal = std::strtol(args.c_str(), &eptr, 16);
-  if (*eptr++ == ';') {
-    parseAddress(address, eptr, &eptr, kEndianNative);
-    if (*eptr++ == ',') {
-      ncycles = std::strtoul(eptr, nullptr, 16); // TODO is it really hex?
+    sendOK();
+  } else {
+    char *eptr;
+    int signal;
+    Address address;
+    uint32_t ncycles = 1;
+
+    signal = std::strtol(args.c_str(), &eptr, 16);
+    if (*eptr++ == ';') {
+      parseAddress(address, eptr, &eptr, kEndianNative);
+      if (*eptr++ == ',') {
+        ncycles = std::strtoul(eptr, nullptr, 16); // TODO is it really hex?
+      }
     }
-  }
 
-  //
-  // Use what previously has been set with H packet.
-  //
-  ThreadResumeAction action;
-  action.action = kResumeActionSingleStepCycleWithSignal;
-  action.signal = signal;
-  action.address = address;
-  action.ncycles = ncycles;
+    //
+    // Use what previously has been set with H packet.
+    //
+    ThreadResumeAction action;
+    action.action = kResumeActionSingleStepCycleWithSignal;
+    action.signal = signal;
+    action.address = address;
+    action.ncycles = ncycles;
 
-  ThreadResumeAction::Collection actions;
-  actions.push_back(action);
+    ThreadResumeAction::Collection actions;
+    actions.push_back(action);
 
-  StopInfo stop;
-  CHK_SEND(_delegate->onResume(*this, actions, stop));
+    StopInfo stop;
+    CHK_SEND(_delegate->onResume(*this, actions, stop));
 
-  send(stop.encode(_compatMode, _threadsInStopReply));
+    send(stop.encode(_compatMode, _threadsInStopReply));
 
-  if (_compatMode != kCompatibilityModeLLDB) {
     //
     // Update the 'c' and 'g' ptids.
     //
