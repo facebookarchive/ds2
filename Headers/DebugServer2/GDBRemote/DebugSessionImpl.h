@@ -60,6 +60,7 @@ protected:
   ErrorCode onProgramSignals(Session &session,
                              std::vector<int> const &signals) override;
   ErrorCode onNonStopMode(Session &session, bool enable) override;
+  ErrorCode onSendInput(Session &session, ByteVector const &buf) override;
 
 protected:
   ErrorCode onQueryCurrentThread(Session &session,

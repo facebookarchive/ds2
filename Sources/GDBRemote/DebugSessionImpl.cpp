@@ -1157,6 +1157,7 @@ ErrorCode DebugSessionImplBase::spawnProcess(StringCollection const &args,
     appendOutput(static_cast<char *>(buf), size);
   };
 
+  _spawner.redirectInputToTerminal();
   _spawner.redirectOutputToDelegate(outputDelegate);
   _spawner.redirectErrorToDelegate(outputDelegate);
 
@@ -1182,6 +1183,11 @@ void DebugSessionImplBase::appendOutput(char const *buf, size_t size) {
       _resumeSessionLock.unlock();
     }
   }
+}
+
+ErrorCode DebugSessionImplBase::onSendInput(Session &session,
+                                            ByteVector const &buf) {
+  return _spawner.input(buf);
 }
 
 ErrorCode DebugSessionImplBase::fetchStopInfoForAllThreads(

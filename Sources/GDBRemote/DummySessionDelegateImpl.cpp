@@ -55,6 +55,8 @@ DUMMY_IMPL_EMPTY(onSetMaxPayloadSize, Session &, size_t)
 DUMMY_IMPL_EMPTY(onSetLogging, Session &, std::string const &,
                  std::string const &, StringCollection const &)
 
+DUMMY_IMPL_EMPTY(onSendInput, Session &, ByteVector const &)
+
 ErrorCode DummySessionDelegateImpl::onAllowOperations(
     Session &, std::map<std::string, bool> const &) {
   return kSuccess;

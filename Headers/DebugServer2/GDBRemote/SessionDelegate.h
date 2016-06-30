@@ -39,7 +39,7 @@ protected: // Common
   virtual ErrorCode onSetLogging(Session &session, std::string const &mode,
                                  std::string const &filename,
                                  StringCollection const &flags) = 0;
-
+  virtual ErrorCode onSendInput(Session &session, ByteVector const &buf) = 0;
   virtual ErrorCode
   onAllowOperations(Session &session,
                     std::map<std::string, bool> const &operations) = 0;

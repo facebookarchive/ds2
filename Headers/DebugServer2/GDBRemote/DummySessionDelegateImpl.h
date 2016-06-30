@@ -36,6 +36,7 @@ protected: // Common
   ErrorCode onSetLogging(Session &session, std::string const &mode,
                          std::string const &filename,
                          StringCollection const &flags) override;
+  ErrorCode onSendInput(Session &session, ByteVector const &buf) override;
 
   ErrorCode
   onAllowOperations(Session &session,
