@@ -356,7 +356,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
     // fall-through
     case kRedirectDelegate:
       startRedirectThread = true;
-      if (term[0] == -1) {
+      if (term[RD] == -1) {
         if (!open_terminal(term)) {
           DS2LOG(Error, "failed to open terminal: %s", Stringify::Errno(errno));
           return Platform::TranslateError();
