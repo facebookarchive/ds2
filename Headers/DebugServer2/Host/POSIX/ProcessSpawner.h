@@ -27,7 +27,8 @@ protected:
     kRedirectNull,
     kRedirectFile,
     kRedirectBuffer,
-    kRedirectDelegate
+    kRedirectDelegate,
+    kRedirectTerminal,
   };
 
   typedef std::function<void(void *buf, size_t size)> RedirectDelegate;
@@ -96,6 +97,9 @@ public:
   bool redirectErrorToBuffer();
 
 public:
+  bool redirectInputToTerminal();
+
+public:
   bool redirectOutputToDelegate(RedirectDelegate delegate);
   bool redirectErrorToDelegate(RedirectDelegate delegate);
 
@@ -111,6 +115,7 @@ public:
   inline int signalCode() const { return _signalCode; }
 
 public:
+  ErrorCode input(ByteVector const &buf);
   inline std::string const &output() const { return _outputBuffer; }
 
 private:

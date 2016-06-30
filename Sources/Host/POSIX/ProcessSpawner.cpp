@@ -278,6 +278,44 @@ bool ProcessSpawner::redirectErrorToBuffer() {
 }
 
 //
+// Terminal input redirection
+//
+ErrorCode ProcessSpawner::input(ByteVector const &buf) {
+  if (_pid == 0) {
+    return kErrorProcessNotFound;
+  }
+
+  if (_descriptors[0].mode != kRedirectTerminal) {
+    return kErrorInvalidArgument;
+  }
+
+  size_t size = buf.size();
+  const unsigned char *data = buf.data();
+  while (size > 0) {
+    ssize_t nwritten = ::write(_descriptors[0].fd, data, size);
+    if (nwritten < 0) {
+      return Platform::TranslateError();
+    }
+
+    size -= nwritten;
+    data += nwritten;
+  }
+
+  return kSuccess;
+}
+
+bool ProcessSpawner::redirectInputToTerminal() {
+  if (_pid != 0 || _descriptors[0].mode != kRedirectUnset)
+    return false;
+
+  _descriptors[0].mode = kRedirectTerminal;
+  _descriptors[0].delegate = nullptr;
+  _descriptors[0].fd = -1;
+  _descriptors[0].path.clear();
+  return true;
+}
+
+//
 // Delegate redirection
 //
 bool ProcessSpawner::redirectOutputToDelegate(RedirectDelegate delegate) {
@@ -356,6 +394,8 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
     // fall-through
     case kRedirectDelegate:
       startRedirectThread = true;
+    // fall-through
+    case kRedirectTerminal:
       if (term[RD] == -1) {
         if (!open_terminal(term)) {
           DS2LOG(Error, "failed to open terminal: %s", Stringify::Errno(errno));
@@ -386,6 +426,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
           break;
 
         case kRedirectDelegate:
+        case kRedirectTerminal:
           //
           // We are using the same virtual terminal for all delegate
           // redirections, so dup2() only, do not close. We will close when all
@@ -461,6 +502,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
       // do nothing
       break;
 
+    case kRedirectTerminal:
     case kRedirectDelegate:
       _descriptors[n].fd = term[RD];
       break;
@@ -572,7 +614,9 @@ void ProcessSpawner::redirectionThread() {
       size_t index;
       RedirectDescriptor *descriptor = nullptr;
       for (index = 0; index < 3; index++) {
-        if (_descriptors[index].fd == pfds[n].fd) {
+        if (_descriptors[index].fd == pfds[n].fd &&
+            (_descriptors[index].mode == kRedirectBuffer ||
+             _descriptors[index].mode == kRedirectDelegate)) {
           descriptor = &_descriptors[index];
           break;
         }
