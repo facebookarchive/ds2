@@ -23,6 +23,15 @@ cherry_pick_patches() {
     patch -d "$lldb_path" -p1 <"$p"
   done
 
+  if [[ "${PLATFORM-}" = "1" ]]; then
+    # Platform tests
+    local testingPath="$top/Support/Testing"
+    for p in "$testingPath"/Patches/lldb-platform/*.patch; do
+      echo "Applying $p"
+      patch -d "$lldb_path" -p1 <"$p"
+    done
+  fi
+
   # Watchpoint tests are each in their own directory, so are tough to disable
   # Will be re-enabled soon anyway, so hack the deletion for now.
   rm -fr "$lldb_path/packages/Python/lldbsuite/test/functionalities/watchpoint"
@@ -126,20 +135,38 @@ else
   fi
 fi
 
-if $opt_log; then
-  export LLDB_DEBUGSERVER_LOG_FILE="$build_dir/ds2.log"
-  export LLDB_DEBUGSERVER_EXTRA_ARG_1="--remote-debug"
-fi
-
 if $opt_strace; then
   cat >"$build_dir/ds2-strace.sh" <<EEOOFF
 #!/usr/bin/env bash
 exec strace -o $build_dir/ds2-strace.log $build_dir/ds2 "\$@"
 EEOOFF
   chmod +x "$build_dir/ds2-strace.sh"
-  export LLDB_DEBUGSERVER_PATH="$build_dir/ds2-strace.sh"
+  ds2_path="$build_dir/ds2-strace.sh"
 else
-  export LLDB_DEBUGSERVER_PATH="$build_dir/ds2"
+  ds2_path="$build_dir/ds2"
+fi
+
+if [[ "${PLATFORM-}" = "1" ]]; then
+  args+=("--platform-name=remote-linux" "--platform-url=connect://localhost:12345" "--platform-working-dir=$build_dir" "--no-multiprocess")
+  ds2_args=("p")
+
+  if $opt_log; then
+    ds2_args+=("--remote-debug" "--log-file=$build_dir/ds2.log")
+  fi
+
+  # These tests are not currently supported on Platform mode, because of deficiencies in the 
+  # lldb platform python API
+  rm -fr "$lldb_path/packages/Python/lldbsuite/test/tools/lldb-server"
+
+  $ds2_path "${ds2_args[@]}" &
+  sleep 3
+else
+  if $opt_log; then
+    export LLDB_DEBUGSERVER_LOG_FILE="$build_dir/ds2.log"
+    export LLDB_DEBUGSERVER_EXTRA_ARG_1="--remote-debug"
+  fi
+
+  export LLDB_DEBUGSERVER_PATH="$ds2_path"
 fi
 
 export LLDB_TEST_TIMEOUT=8m

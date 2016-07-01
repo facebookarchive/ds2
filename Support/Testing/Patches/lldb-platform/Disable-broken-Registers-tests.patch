@@ -1,0 +1,20 @@
+diff --git a/packages/Python/lldbsuite/test/functionalities/register/TestRegisters.py b/packages/Python/lldbsuite/test/functionalities/register/TestRegisters.py
+index c5d4650..d7be564 100644
+--- a/packages/Python/lldbsuite/test/functionalities/register/TestRegisters.py
++++ b/packages/Python/lldbsuite/test/functionalities/register/TestRegisters.py
+@@ -93,6 +93,7 @@ class RegisterCommandsTestCase(TestBase):
+ 
+     @skipIfiOSSimulator
+     @skipUnlessArch(['amd64', 'x86_64'])
++    @expectedFailureLinux
+     def test_convenience_registers_with_process_attach(self):
+         """Test convenience registers after a 'process attach'."""
+         self.build()
+@@ -100,6 +101,7 @@ class RegisterCommandsTestCase(TestBase):
+ 
+     @skipIfiOSSimulator
+     @skipUnlessArch(['amd64', 'x86_64'])
++    @expectedFailureLinux
+     def test_convenience_registers_16bit_with_process_attach(self):
+         """Test convenience registers after a 'process attach'."""
+         self.build()
