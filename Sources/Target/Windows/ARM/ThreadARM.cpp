@@ -86,7 +86,6 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
     if (state.gp.pc & 1ULL) {
       DS2LOG(Debug, "removing thumb bit from pc and lr");
       state.gp.pc &= ~1ULL;
-      state.gp.lr &= ~1ULL;
     } else {
       DS2LOG(Warning,
              "CPU is in thumb mode but doesn't have thumb bit set in pc");
@@ -129,9 +128,6 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
     DS2ASSERT(!(state.gp.pc & 1ULL));
     DS2LOG(Debug, "setting back thumb bit on pc and lr");
     context.Pc |= 1ULL;
-    // TODO: The CPU being in THUMB mode doesn't necessarily mean that the
-    // caller (lr) was THUMB code as well.
-    context.Lr |= 1ULL;
   }
 
   BOOL result = SetThreadContext(_handle, &context);
