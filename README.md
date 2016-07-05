@@ -102,9 +102,14 @@ Then, as with linux, use CMake to generate the build system, then use msbuild
 ```sh
 cd ds2
 mkdir build && cd build
-cmake ..
+cmake -G "Visual Studio 14 2015" -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Windows.cmake ..
 ..\Support\Scripts\build-windows.bat
 ```
+
+To build for WinStore, which generates a .dll instead of an .exe, use the
+`Toolchain-WinStore.cmake` toolchain file.
+
+To build for Windows arm, use the generator "Visual Studio 14 2015 arm".
 
 ### Cross compiling for Android
 
