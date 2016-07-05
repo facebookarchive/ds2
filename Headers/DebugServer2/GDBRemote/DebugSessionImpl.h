@@ -149,7 +149,7 @@ protected:
   ErrorCode onTerminate(Session &session, ProcessThreadId const &ptid,
                         StopInfo &stop) override;
   ErrorCode onDetach(Session &session, ProcessId pid, bool stopped) override;
-  [[noreturn]] ErrorCode onExitServer(Session &session) override;
+  ErrorCode onExitServer(Session &session) override;
 
 protected:
   ErrorCode onInsertBreakpoint(Session &session, BreakpointType type,
