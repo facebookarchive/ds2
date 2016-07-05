@@ -611,9 +611,8 @@ void ProcessSpawner::redirectionThread() {
         hup = true;
       }
 
-      size_t index;
       RedirectDescriptor *descriptor = nullptr;
-      for (index = 0; index < 3; index++) {
+      for (int index = 0; index < 3; index++) {
         if (_descriptors[index].fd == pfds[n].fd &&
             (_descriptors[index].mode == kRedirectBuffer ||
              _descriptors[index].mode == kRedirectDelegate)) {
