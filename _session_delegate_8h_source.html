@@ -127,7 +127,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keyword">virtual</span> ErrorCode onSetLogging(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string <span class="keyword">const</span> &amp;mode,</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                                 std::string <span class="keyword">const</span> &amp;filename,</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                                 StringCollection <span class="keyword">const</span> &amp;flags) = 0;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="keyword">virtual</span> ErrorCode onSendInput(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ByteVector <span class="keyword">const</span> &amp;buf) = 0;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keyword">virtual</span> ErrorCode</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  onAllowOperations(<a class="code" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session,</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                    std::map&lt;std::string, bool&gt; <span class="keyword">const</span> &amp;operations) = 0;</div>
