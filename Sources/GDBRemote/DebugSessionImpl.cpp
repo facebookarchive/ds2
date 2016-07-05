@@ -1043,7 +1043,7 @@ ErrorCode DebugSessionImplBase::onTerminate(Session &session,
   return queryStopInfo(session, _process->currentThread(), stop);
 }
 
-[[noreturn]] ErrorCode DebugSessionImplBase::onExitServer(Session &session) {
+ErrorCode DebugSessionImplBase::onExitServer(Session &session) {
   ErrorCode error = kSuccess;
   ProcessId pid = kAnyProcessId;
   StopInfo stop;
