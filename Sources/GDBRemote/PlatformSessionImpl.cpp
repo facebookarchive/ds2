@@ -126,7 +126,9 @@ ErrorCode PlatformSessionImplBase::onLaunchDebugServer(Session &session,
   } else if (GetLogLevel() == kLogLevelPacket) {
     args.push_back("--remote-debug");
   }
+#if defined(OS_POSIX)
   args.push_back("--setsid");
+#endif
   ps.setArguments(args);
   ps.redirectInputToNull();
   ps.redirectOutputToBuffer();

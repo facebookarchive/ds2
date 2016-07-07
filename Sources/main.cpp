@@ -304,8 +304,10 @@ int main(int argc, char **argv) {
                  "determine a port dynamically and write back to FIFO");
   opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
                  "use native registers (no-op)", true);
+#if defined(OS_POSIX)
   opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
                  "make ds2 run in its own session");
+#endif
 
   // gdbserver compatibility options
   opts.addOption(ds2::OptParse::boolOption, "once", 'O',
@@ -431,13 +433,11 @@ int main(int argc, char **argv) {
   // it.
   namedPipePath = opts.getString("named-pipe");
 
+#if defined(OS_POSIX)
   if (opts.getBool("setsid")) {
-#if defined(OS_WIN32)
-    opts.usageDie("--setsid not supported on Windows");
-#else
     ::setsid();
-#endif
   }
+#endif
 
   // Default host and port options.
   if (port.empty()) {
