@@ -87,6 +87,38 @@ typedef std::vector<std::string> StringCollection;
 typedef std::map<std::string, std::string> EnvironmentBlock;
 
 //
+// Represents an address
+//
+
+class Address {
+private:
+  uint64_t _value;
+  bool _unset;
+
+public:
+  Address() : _value(0), _unset(true) {}
+
+  Address(uint64_t address) : _value(address), _unset(false) {}
+
+public:
+  inline operator uint64_t() const { return _value; }
+  inline Address &operator=(uint64_t address) {
+    _unset = false, _value = address;
+    return *this;
+  }
+
+public:
+  inline bool valid() const { return !_unset; }
+
+public:
+  inline uint64_t value() const { return _value; }
+
+public:
+  inline void unset() { _unset = true, _value = 0; }
+  inline void clear() { unset(); }
+};
+
+//
 // Repesents the stop information of a process.
 //
 
@@ -143,38 +175,6 @@ struct StopInfo {
 #endif
     core = -1;
   }
-};
-
-//
-// Represents an address
-//
-
-class Address {
-private:
-  uint64_t _value;
-  bool _unset;
-
-public:
-  Address() : _value(0), _unset(true) {}
-
-  Address(uint64_t address) : _value(address), _unset(false) {}
-
-public:
-  inline operator uint64_t() const { return _value; }
-  inline Address &operator=(uint64_t address) {
-    _unset = false, _value = address;
-    return *this;
-  }
-
-public:
-  inline bool valid() const { return !_unset; }
-
-public:
-  inline uint64_t value() const { return _value; }
-
-public:
-  inline void unset() { _unset = true, _value = 0; }
-  inline void clear() { unset(); }
 };
 
 //
