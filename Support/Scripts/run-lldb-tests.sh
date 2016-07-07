@@ -147,7 +147,7 @@ else
 fi
 
 if [[ "${PLATFORM-}" = "1" ]]; then
-  args+=("--platform-name=remote-linux" "--platform-url=connect://localhost:12345" "--platform-working-dir=$build_dir" "--no-multiprocess")
+  args+=("--platform-name=remote-linux" "--platform-url=connect://localhost:12345" "--platform-working-dir=$build_dir")
   ds2_args=("p")
 
   if $opt_log; then
