@@ -134,7 +134,7 @@ struct CPUState64 {
   // TODO - add information about xstate_hdr here
 
   struct {
-    uint32_t dr[8];
+    uint64_t dr[8];
   } dr;
 
 #if defined(OS_LINUX)
