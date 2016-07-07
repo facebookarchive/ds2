@@ -59,7 +59,10 @@ public:
   JSDictionary *encodeBriefJson() const;
 
 private:
-  void reasonToString(std::string &key, std::string &val) const;
+  void getWatchpointInfo(std::string &key, std::string &val,
+                         CompatibilityMode mode, bool encodeHex) const;
+  void reasonToString(std::string &key, std::string &val,
+                      CompatibilityMode mode) const;
   std::string encodeInfo(CompatibilityMode mode, bool listThreads) const;
   void encodeRegisters(std::map<std::string, std::string> &regs,
                        bool hexIndex) const;

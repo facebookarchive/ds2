@@ -17,6 +17,7 @@
 #include "DebugServer2/Utils/SwapEndian.h"
 #include "JSObjects/JSObjects.h"
 
+#include <climits>
 #include <cstdlib>
 #include <cstring>
 #include <iomanip>
@@ -165,7 +166,35 @@ std::string ProcessThreadId::encode(CompatibilityMode mode) const {
   return ss.str();
 }
 
-void StopInfo::reasonToString(std::string &key, std::string &val) const {
+void StopInfo::getWatchpointInfo(std::string &key, std::string &val,
+                                 CompatibilityMode mode, bool encodeHex) const {
+  std::ostringstream ss;
+
+  if (mode == kCompatibilityModeLLDB) {
+    key = "description";
+    ss << watchpointAddress << " " << watchpointIndex;
+  } else {
+    switch (reason) {
+    case StopInfo::kReasonWriteWatchpoint:
+      key = "watch";
+      break;
+    case StopInfo::kReasonReadWatchpoint:
+      key = "rwatch";
+      break;
+    case StopInfo::kReasonAccessWatchpoint:
+      key = "awatch";
+      break;
+    default:
+      DS2BUG("Watchpoint stop reason invalid");
+    }
+    ss << std::hex << watchpointAddress;
+  }
+
+  val = encodeHex ? ToHex(ss.str()) : ss.str();
+}
+
+void StopInfo::reasonToString(std::string &key, std::string &val,
+                              CompatibilityMode mode) const {
   key = "reason";
 
   switch (reason) {
@@ -184,7 +213,12 @@ void StopInfo::reasonToString(std::string &key, std::string &val) const {
   case StopInfo::kReasonWriteWatchpoint:
   case StopInfo::kReasonReadWatchpoint:
   case StopInfo::kReasonAccessWatchpoint:
-    val = "watchpoint";
+    if (mode == kCompatibilityModeLLDB) {
+      val = "watchpoint";
+    } else {
+      key = "";
+      val = "";
+    }
     break;
 #if defined(OS_WIN32)
   case StopInfo::kReasonLibraryEvent:
@@ -215,9 +249,14 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
   }
 
   std::string key, val;
-  reasonToString(key, val);
+  reasonToString(key, val, mode);
 
   if (!key.empty() && !val.empty()) {
+    ss << ';' << key << ':' << val;
+  }
+
+  if (watchpointAddress) {
+    getWatchpointInfo(key, val, mode, mode == kCompatibilityModeLLDB);
     ss << ';' << key << ':' << val;
   }
 
@@ -392,6 +431,12 @@ JSDictionary *StopInfo::encodeJson() const {
   if (core)
     threadObj->set("core", JSInteger::New(core));
 
+  if (watchpointAddress) {
+    std::string key, val;
+    getWatchpointInfo(key, val, kCompatibilityModeLLDB, false);
+    threadObj->set(key, JSString::New(val));
+  }
+
   auto regSet = JSDictionary::New();
   std::map<std::string, std::string> regs;
   encodeRegisters(regs, false);
@@ -411,7 +456,7 @@ JSDictionary *StopInfo::encodeBriefJson() const {
   threadObj->set("tid", JSInteger::New(ptid.tid));
 
   std::string key, val;
-  reasonToString(key, val);
+  reasonToString(key, val, kCompatibilityModeLLDB);
   if (!key.empty() && !val.empty()) {
     threadObj->set(key, JSString::New(val));
   }
