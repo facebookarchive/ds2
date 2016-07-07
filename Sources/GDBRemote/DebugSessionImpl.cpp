@@ -213,6 +213,15 @@ ErrorCode DebugSessionImplBase::queryStopInfo(Session &session, Thread *thread,
     DS2BUG("impossible StopInfo event: %s", Stringify::StopEvent(stop.event));
   }
 
+  HardwareBreakpointManager *hwBpm = _process->hardwareBreakpointManager();
+  if (hwBpm) {
+    BreakpointManager::Site site;
+    stop.watchpointIndex = hwBpm->hit(thread, site);
+    if (stop.watchpointIndex >= 0) {
+      stop.watchpointAddress = site.address;
+    }
+  }
+
   _process->enumerateThreads(
       [&](Thread *thread) { stop.threads.insert(thread->tid()); });
 

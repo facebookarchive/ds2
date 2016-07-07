@@ -33,6 +33,35 @@ namespace Linux {
 
 Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {}
 
+void Thread::fillStoppointData() {
+  HardwareBreakpointManager *hwBpm = process()->hardwareBreakpointManager();
+
+  if (hwBpm) {
+    BreakpointManager::Site site;
+
+    if (hwBpm->hit(this, site) >= 0) {
+      switch (static_cast<int>(site.mode)) {
+      case BreakpointManager::kModeExec:
+        _stopInfo.reason = StopInfo::kReasonBreakpoint;
+        return;
+      case BreakpointManager::kModeWrite:
+        _stopInfo.reason = StopInfo::kReasonWriteWatchpoint;
+        return;
+      case BreakpointManager::kModeRead:
+        _stopInfo.reason = StopInfo::kReasonReadWatchpoint;
+        return;
+      case BreakpointManager::kModeRead | BreakpointManager::kModeWrite:
+        _stopInfo.reason = StopInfo::kReasonAccessWatchpoint;
+        return;
+      default:
+        DS2BUG("invalid mode");
+      }
+    }
+  }
+
+  _stopInfo.reason = StopInfo::kReasonBreakpoint;
+}
+
 ErrorCode Thread::updateStopInfo(int waitStatus) {
   super::updateStopInfo(waitStatus);
 
@@ -93,7 +122,7 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
                _stopInfo.signal == SIGSTOP) { // (4)
       _stopInfo.reason = StopInfo::kReasonTrap;
     } else if (_stopInfo.signal == SIGTRAP) { // (5)
-      _stopInfo.reason = StopInfo::kReasonBreakpoint;
+      fillStoppointData();
     } else {
       // This is not a signal that we originated. We can output a
       // warning if the signal comes from an external source.
