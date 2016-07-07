@@ -27,6 +27,7 @@ public:
 public:
   ErrorCode add(Address const &address, Type type, size_t size,
                 Mode mode) override;
+  ErrorCode remove(Address const &address) override;
 
 public:
   int hit(Target::Thread *thread, Site &site) override;

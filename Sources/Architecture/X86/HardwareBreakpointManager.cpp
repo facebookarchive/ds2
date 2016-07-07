@@ -48,16 +48,32 @@ ErrorCode HardwareBreakpointManager::add(Address const &address, Type type,
   return super::add(address, type, size, mode);
 }
 
+ErrorCode HardwareBreakpointManager::remove(Address const &address) {
+  auto loc = std::find(_locations.begin(), _locations.end(), address);
+  if (loc != _locations.end()) {
+    _locations[loc - _locations.begin()] = 0;
+  }
+
+  return super::remove(address);
+}
+
 int HardwareBreakpointManager::maxWatchpoints() { return kMaxHWStoppoints; }
 
 ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
   ErrorCode error;
-  Target::Thread *thread = _process->currentThread();
+  int idx;
 
-  int idx = getAvailableLocation();
-  if (idx < 0) {
-    return kErrorInvalidArgument;
+  auto loc = std::find(_locations.begin(), _locations.end(), site.address);
+  if (loc == _locations.end()) {
+    idx = getAvailableLocation();
+    if (idx < 0) {
+      return kErrorInvalidArgument;
+    }
+  } else {
+    idx = loc - _locations.begin();
   }
+
+  Target::Thread *thread = _process->currentThread();
 
   error = thread->writeDebugReg(idx, site.address);
   if (error != kSuccess) {
@@ -92,18 +108,18 @@ ErrorCode HardwareBreakpointManager::disableLocation(Site const &site) {
   ErrorCode error;
   Target::Thread *thread = _process->currentThread();
 
-  int idx = kMaxHWStoppoints;
-  for (int i = 0; i < kMaxHWStoppoints; ++i) {
-    if (site.address == _locations[i]) {
-      DS2ASSERT(static_cast<uint32_t>(site.address) == thread->readDebugReg(i));
-      thread->writeDebugReg(i, 0);
-      idx = i;
-      break;
-    }
-  }
-
-  if (idx >= kMaxHWStoppoints) {
+  auto loc = std::find(_locations.begin(), _locations.end(), site.address);
+  if (loc == _locations.end()) {
     return kErrorInvalidArgument;
+  }
+  int idx = loc - _locations.begin();
+
+  DS2ASSERT(static_cast<uint32_t>(site.address) == thread->readDebugReg(idx));
+
+  error = thread->writeDebugReg(idx, 0);
+  if (error != kSuccess) {
+    DS2LOG(Error, "failed to clear addresss register");
+    return error;
   }
 
   uint32_t ctrlReg = thread->readDebugReg(kCtrlRegIdx);
@@ -119,7 +135,6 @@ ErrorCode HardwareBreakpointManager::disableLocation(Site const &site) {
     return error;
   }
 
-  _locations[idx] = 0;
   return kSuccess;
 }
 
