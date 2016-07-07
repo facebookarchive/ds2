@@ -58,6 +58,8 @@ ds2::CPUSubType Platform::GetCPUSubType() {
   return kCPUSubTypeARM_V7EM;
 #elif defined(__ARM_ARCH_7M__)
   return kCPUSubTypeARM_V7M;
+#else
+  return kCPUSubTypeARM_V7;
 #endif
 #endif
   return kCPUSubTypeInvalid;
