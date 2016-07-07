@@ -360,6 +360,10 @@ int main(int argc, char **argv) {
     ds2::SetLogLevel(ds2::kLogLevelPacket);
   } else if (opts.getBool("debug")) {
     ds2::SetLogLevel(ds2::kLogLevelDebug);
+#if !defined(OS_WIN32)
+  } else if (mode == kRunModeSlave) {
+    ds2::SetLogLevel(ds2::kLogLevelWarning);
+#endif
   }
 
   if (opts.getBool("no-colors")) {
