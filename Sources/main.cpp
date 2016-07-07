@@ -30,6 +30,7 @@
 #include <string>
 #if !defined(OS_WIN32)
 #include <sys/stat.h>
+#include <thread>
 #include <unistd.h>
 #endif
 
@@ -83,19 +84,35 @@ CreateSocket(std::string const &host, std::string const &port, bool reverse) {
 
 #if !defined(OS_WIN32)
 static int PlatformMain(std::string const &host, std::string const &port) {
-  std::unique_ptr<Socket> server = CreateSocket(host, port, false);
+  struct PlatformClient {
+    std::unique_ptr<Socket> socket;
+    PlatformSessionImpl impl;
+    Session session;
 
-  PlatformSessionImpl impl;
+    PlatformClient(std::unique_ptr<Socket> socket_)
+        : socket(std::move(socket_)),
+          session(ds2::GDBRemote::kCompatibilityModeLLDB) {
+      session.setDelegate(&impl);
+      session.create(socket.get());
+    }
+  };
+
+  std::unique_ptr<Socket> serverSocket = CreateSocket(host, port, false);
 
   do {
-    std::unique_ptr<Socket> client = server->accept();
-    // Platform mode implies that we are talking to an LLDB remote.
-    Session session(ds2::GDBRemote::kCompatibilityModeLLDB);
-    session.setDelegate(&impl);
-    session.create(client.get());
+    std::unique_ptr<Socket> clientSocket = serverSocket->accept();
+    auto platformClient =
+        ds2::make_unique<PlatformClient>(std::move(clientSocket));
 
-    while (session.receive(/*cooked=*/false))
-      continue;
+    std::thread thread(
+        [](std::unique_ptr<PlatformClient> client) {
+          while (client->session.receive(/*cooked=*/false)) {
+            continue;
+          }
+        },
+        std::move(platformClient));
+
+    thread.detach();
   } while (gKeepAlive);
 
   return EXIT_SUCCESS;
