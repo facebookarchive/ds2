@@ -59,21 +59,9 @@ ErrorCode HardwareBreakpointManager::remove(Address const &address) {
 
 int HardwareBreakpointManager::maxWatchpoints() { return kMaxHWStoppoints; }
 
-ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
+ErrorCode HardwareBreakpointManager::enableLocation(Site const &site, int idx,
+                                                    Target::Thread *thread) {
   ErrorCode error;
-  int idx;
-
-  auto loc = std::find(_locations.begin(), _locations.end(), site.address);
-  if (loc == _locations.end()) {
-    idx = getAvailableLocation();
-    if (idx < 0) {
-      return kErrorInvalidArgument;
-    }
-  } else {
-    idx = loc - _locations.begin();
-  }
-
-  Target::Thread *thread = _process->currentThread();
 
   error = thread->writeDebugReg(idx, site.address);
   if (error != kSuccess) {
@@ -100,21 +88,49 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
     return error;
   }
 
+  return kSuccess;
+}
+
+ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
+  int idx;
+
+  auto loc = std::find(_locations.begin(), _locations.end(), site.address);
+  if (loc == _locations.end()) {
+    idx = getAvailableLocation();
+    if (idx < 0) {
+      return kErrorInvalidArgument;
+    }
+  } else {
+    idx = loc - _locations.begin();
+  }
+
+  std::set<Target::Thread *> threads;
+  _process->enumerateThreads([&](Target::Thread *thread) {
+    if (thread->state() == Target::Thread::kStopped) {
+      threads.insert(thread);
+    }
+  });
+
+  for (auto thread : threads) {
+    ErrorCode error = enableLocation(site, idx, thread);
+    if (error != kSuccess) {
+      return error;
+    }
+  }
+
   _locations[idx] = site.address;
   return kSuccess;
 }
 
-ErrorCode HardwareBreakpointManager::disableLocation(Site const &site) {
+ErrorCode HardwareBreakpointManager::disableLocation(int idx,
+                                                     Target::Thread *thread) {
   ErrorCode error;
-  Target::Thread *thread = _process->currentThread();
 
-  auto loc = std::find(_locations.begin(), _locations.end(), site.address);
-  if (loc == _locations.end()) {
-    return kErrorInvalidArgument;
+  error = thread->writeDebugReg(idx, 0);
+  if (error != kSuccess) {
+    DS2LOG(Error, "failed to clear debug address register: dr%d", idx);
+    return error;
   }
-  int idx = loc - _locations.begin();
-
-  DS2ASSERT(static_cast<uint32_t>(site.address) == thread->readDebugReg(idx));
 
   error = thread->writeDebugReg(idx, 0);
   if (error != kSuccess) {
@@ -133,6 +149,32 @@ ErrorCode HardwareBreakpointManager::disableLocation(Site const &site) {
   if (error != kSuccess) {
     DS2LOG(Error, "failed to write to debug control register");
     return error;
+  }
+
+  return kSuccess;
+}
+
+ErrorCode HardwareBreakpointManager::disableLocation(Site const &site) {
+  auto loc = std::find(_locations.begin(), _locations.end(), site.address);
+  if (loc == _locations.end()) {
+    return kErrorInvalidArgument;
+  }
+  int idx = loc - _locations.begin();
+
+  std::set<Target::Thread *> threads;
+  _process->enumerateThreads([&](Target::Thread *thread) {
+    if (thread->state() == Target::Thread::kStopped) {
+      threads.insert(thread);
+    }
+  });
+
+  for (auto thread : threads) {
+    DS2ASSERT(static_cast<uintptr_t>(site.address) ==
+              static_cast<uintptr_t>(thread->readDebugReg(idx)));
+    ErrorCode error = disableLocation(idx, thread);
+    if (error != kSuccess) {
+      return error;
+    }
   }
 
   return kSuccess;
@@ -220,6 +262,10 @@ int HardwareBreakpointManager::getAvailableLocation() {
 
 int HardwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
   if (_sites.size() == 0) {
+    return -1;
+  }
+
+  if (thread->state() != Target::Thread::kStopped) {
     return -1;
   }
 

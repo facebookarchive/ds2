@@ -34,8 +34,10 @@ public:
 
 protected:
   ErrorCode enableLocation(Site const &site) override;
-
+  virtual ErrorCode enableLocation(Site const &site, int idx,
+                                   Target::Thread *thread);
   ErrorCode disableLocation(Site const &site) override;
+  virtual ErrorCode disableLocation(int idx, Target::Thread *thread);
 
 public:
   virtual int maxWatchpoints();
