@@ -158,7 +158,7 @@ static int DebugMain(ds2::StringCollection const &args,
 
 #if !defined(OS_WIN32)
 static int SlaveMain() {
-  std::unique_ptr<Socket> server = CreateSocket("localhost", "0", false);
+  std::unique_ptr<Socket> server = CreateSocket("127.0.0.1", "0", false);
   std::string port = server->port();
 
   pid_t pid = ::fork();
