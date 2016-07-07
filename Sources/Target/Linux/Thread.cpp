@@ -11,6 +11,7 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Thread"
 
 #include "DebugServer2/Target/Linux/Thread.h"
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Host/Linux/ProcFS.h"
 #include "DebugServer2/SoftwareBreakpointManager.h"
@@ -33,7 +34,7 @@ namespace Linux {
 
 Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {}
 
-void Thread::fillStoppointData() {
+void Thread::fillWatchpointData() {
   HardwareBreakpointManager *hwBpm = process()->hardwareBreakpointManager();
 
   if (hwBpm) {
@@ -59,7 +60,7 @@ void Thread::fillStoppointData() {
     }
   }
 
-  _stopInfo.reason = StopInfo::kReasonBreakpoint;
+  _stopInfo.reason = StopInfo::kReasonTrace;
 }
 
 ErrorCode Thread::updateStopInfo(int waitStatus) {
@@ -122,7 +123,21 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
                _stopInfo.signal == SIGSTOP) { // (4)
       _stopInfo.reason = StopInfo::kReasonTrap;
     } else if (_stopInfo.signal == SIGTRAP) { // (5)
-      fillStoppointData();
+      switch (si.si_code) {
+      case 0:
+        _stopInfo.reason = StopInfo::kReasonTrap;
+        break;
+      case TRAP_HWBKPT:
+      case TRAP_TRACE:
+        fillWatchpointData();
+        break;
+      case SI_KERNEL:
+      case TRAP_BRKPT:
+        _stopInfo.reason = StopInfo::kReasonBreakpoint;
+        break;
+      default:
+        DS2BUG("unknown sigtrap code");
+      }
     } else {
       // This is not a signal that we originated. We can output a
       // warning if the signal comes from an external source.

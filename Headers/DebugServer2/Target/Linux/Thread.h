@@ -31,7 +31,7 @@ public:
 #endif
 
 protected:
-  void fillStoppointData();
+  void fillWatchpointData();
 
 protected:
   ErrorCode updateStopInfo(int waitStatus) override;
