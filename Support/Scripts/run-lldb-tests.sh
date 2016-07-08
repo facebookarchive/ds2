@@ -158,7 +158,7 @@ if [[ "${PLATFORM-}" = "1" ]]; then
   # lldb platform python API
   rm -fr "$lldb_path/packages/Python/lldbsuite/test/tools/lldb-server"
 
-  $ds2_path "${ds2_args[@]}" &
+  "$ds2_path" "${ds2_args[@]}" &
   add_exit_handler kill -9 $!
   sleep 3
 else
