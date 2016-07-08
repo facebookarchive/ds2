@@ -54,3 +54,8 @@ realpath() { python -c "import os,sys; print os.path.realpath(sys.argv[1])" "$1"
 same_dir() {
   [ "$(realpath "$1")" = "$(realpath "$2")" ]
 }
+
+exit_handlers="exit"
+exit_handler() { set +e; eval "$exit_handlers"; }
+trap exit_handler EXIT
+add_exit_handler() { exit_handlers="$*; $exit_handlers"; }
