@@ -159,6 +159,7 @@ if [[ "${PLATFORM-}" = "1" ]]; then
   rm -fr "$lldb_path/packages/Python/lldbsuite/test/tools/lldb-server"
 
   $ds2_path "${ds2_args[@]}" &
+  add_exit_handler kill -9 $!
   sleep 3
 else
   if $opt_log; then
@@ -175,4 +176,4 @@ if [ "$LLDB_TESTS" != "all" ]; then
   args+=(-p "$LLDB_TESTS")
 fi
 
-exec python2.7 dotest.py "${args[@]}"
+python2.7 dotest.py "${args[@]}"
