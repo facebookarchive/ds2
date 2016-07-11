@@ -102,14 +102,25 @@ Then, as with linux, use CMake to generate the build system, then use msbuild
 ```sh
 cd ds2
 mkdir build && cd build
-cmake -G "Visual Studio 14 2015" -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Windows.cmake ..
+cmake ..
 ..\Support\Scripts\build-windows.bat
 ```
 
-To build for WinStore, which generates a .dll instead of an .exe, use the
-`Toolchain-WinStore.cmake` toolchain file.
+### Cross compiling for Windows Phone
 
-To build for Windows arm, use the generator "Visual Studio 14 2015 arm".
+ds2 can be built for Windows Phone, which will generate a dll that can later be
+loaded in by the application we are debugging as a separate process. This needs
+Visual Studio 2015.
+
+To build for Windows Phone, use the `Toolchain-WinStore.cmake` toolchain file
+as well as the "Visual Studio 14 2015 ARM" CMake generator.
+
+```sh
+cd ds2
+mkdir build && cd build
+cmake -G "Visual Studio 14 2015 ARM" -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-WinStore.cmake" ..
+..\Support\Scripts\build-windows.bat
+```
 
 ### Cross compiling for Android
 
