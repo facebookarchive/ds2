@@ -74,7 +74,7 @@ targets.
 
 ds2 needs cmake, a C++11 compiler, flex and bison.
 
-### Compiling on Linux and FreeBSD
+### Compiling on Linux, FreeBSD and macOS
 
 After cloning the ds2 repository, run the following commands to build for the
 current host:
