@@ -1,0 +1,12 @@
+diff --git a/packages/Python/lldbsuite/test/lang/cpp/virtual/TestVirtual.py b/packages/Python/lldbsuite/test/lang/cpp/virtual/TestVirtual.py
+index 1553a43..b6ba797 100644
+--- a/packages/Python/lldbsuite/test/lang/cpp/virtual/TestVirtual.py
++++ b/packages/Python/lldbsuite/test/lang/cpp/virtual/TestVirtual.py
+@@ -33,6 +33,7 @@ class CppVirtualMadness(TestBase):
+ 
+     @expectedFailureIcc('llvm.org/pr16808') # lldb does not call the correct virtual function with icc
+     @expectedFailureAll(oslist=['windows'])
++    @expectedFailureAndroid(archs=['arm'])
+     def test_virtual_madness(self):
+         """Test that expression works correctly with virtual inheritance as well as virtual function."""
+         self.build()
