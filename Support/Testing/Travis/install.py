@@ -56,6 +56,10 @@ if 'Darwin' in target:
     if os.getenv('CLANG') == '0':
         dist_packages.append('gcc')
 
+if 'Android' in target:
+    dist_packages.append('openjdk-7-jdk')
+    dist_packages.append('android-tools-adb')
+
 if target != 'Style':
     dist_packages.append('flex')
     dist_packages.append('bison')
