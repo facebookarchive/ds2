@@ -332,6 +332,11 @@ struct SharedLibraryInfo {
   } svr4;
   std::vector<uint64_t> sections;
 };
+
+struct MappedFileInfo {
+  std::string path;
+  uint64_t baseAddress;
+};
 }
 
 #endif // !__DebugServer2_Types_h

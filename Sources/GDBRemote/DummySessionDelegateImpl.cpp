@@ -112,6 +112,9 @@ ErrorCode DummySessionDelegateImpl::onQueryHostInfo(Session &,
   return kSuccess;
 }
 
+DUMMY_IMPL_EMPTY(onQueryFileLoadAddress, Session &, std::string const &,
+                 Address &)
+
 DUMMY_IMPL_EMPTY(onEnableControlAgent, Session &, bool)
 
 DUMMY_IMPL_EMPTY(onNonStopMode, Session &, bool)

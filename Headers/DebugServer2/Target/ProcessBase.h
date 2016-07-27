@@ -98,6 +98,12 @@ public:
                                size_t length, size_t *nread = nullptr) = 0;
   virtual ErrorCode writeMemory(Address const &address, void const *buffer,
                                 size_t length, size_t *nwritten = nullptr) = 0;
+  virtual ErrorCode enumerateSharedLibraries(
+      std::function<void(SharedLibraryInfo const &)> const &cb) = 0;
+
+public:
+  virtual ErrorCode
+  enumerateMappedFiles(std::function<void(MappedFileInfo const &)> const &cb);
 
 public:
   ErrorCode readMemoryBuffer(Address const &address, size_t length,

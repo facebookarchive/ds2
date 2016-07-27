@@ -105,6 +105,7 @@ Session::Session(CompatibilityMode mode)
   REGISTER_HANDLER_EQUALS_1(qAttached);
   REGISTER_HANDLER_EQUALS_1(qC);
   REGISTER_HANDLER_EQUALS_1(qCRC);
+  REGISTER_HANDLER_EQUALS_1(qFileLoadAddress);
   REGISTER_HANDLER_EQUALS_1(qGDBServerVersion);
   REGISTER_HANDLER_EQUALS_1(qGetPid);
   REGISTER_HANDLER_EQUALS_1(qGetProfileData);
@@ -1538,6 +1539,25 @@ void Session::Handle_qCRC(ProtocolInterpreter::Handler const &,
   std::ostringstream ss;
   ss << std::hex << std::setw(8) << std::setfill('0') << crc;
   send(ss.str());
+}
+
+//
+// Packet:        qFileLoadAddress:<file_path>
+// Description:   Returns the load address of a memory mapped file.
+// Compatibility: LLDB
+//
+void Session::Handle_qFileLoadAddress(ProtocolInterpreter::Handler const &,
+                                      std::string const &args) {
+  if (args.empty()) {
+    sendError(kErrorInvalidArgument);
+    return;
+  }
+
+  Address address;
+  CHK_SEND(
+      _delegate->onQueryFileLoadAddress(*this, HexToString(args), address));
+
+  send(formatAddress(address, kEndianBig));
 }
 
 //

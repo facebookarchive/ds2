@@ -193,6 +193,15 @@ ds2::Target::Thread *ProcessBase::thread(ThreadId tid) const {
   return (it == _threads.end()) ? nullptr : it->second;
 }
 
+ErrorCode ProcessBase::enumerateMappedFiles(
+    std::function<void(MappedFileInfo const &)> const &cb) {
+  // TODO: this is only looking for modules loaded in memory, not all the
+  // possible files
+  return enumerateSharedLibraries([&](SharedLibraryInfo const &library) {
+    cb({library.path, library.sections[0]});
+  });
+}
+
 ErrorCode ProcessBase::readMemoryBuffer(Address const &address, size_t length,
                                         ByteVector &buffer) {
   if (_pid == kAnyProcessId)

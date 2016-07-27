@@ -51,6 +51,9 @@ protected: // Common
   ErrorCode onQueryServerVersion(Session &session,
                                  ServerVersion &version) const override;
   ErrorCode onQueryHostInfo(Session &session, HostInfo &info) const override;
+  ErrorCode onQueryFileLoadAddress(Session &session,
+                                   std::string const &file_path,
+                                   Address &address) override;
 
 protected: // Debugging Session
   ErrorCode onEnableControlAgent(Session &session, bool enable) override;

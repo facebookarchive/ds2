@@ -79,6 +79,10 @@ protected:
   ErrorCode onQueryThreadList(Session &session, ProcessId pid, ThreadId lastTid,
                               ThreadId &tid) const override;
 
+  ErrorCode onQueryFileLoadAddress(Session &session,
+                                   std::string const &file_path,
+                                   Address &address) override;
+
 protected:
   ErrorCode onQueryRegisterInfo(Session &session, uint32_t regno,
                                 RegisterInfo &info) const override;

@@ -75,7 +75,7 @@ public:
 
 public:
   ErrorCode enumerateSharedLibraries(
-      std::function<void(SharedLibraryInfo const &)> const &cb);
+      std::function<void(SharedLibraryInfo const &)> const &cb) override;
 };
 }
 }

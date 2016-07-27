@@ -458,6 +458,28 @@ ErrorCode DebugSessionImplBase::onQuerySharedLibrariesInfoAddress(
 #endif
 }
 
+ErrorCode DebugSessionImplBase::onQueryFileLoadAddress(
+    Session &session, std::string const &file_path, Address &address) {
+  if (_process == nullptr) {
+    return kErrorProcessNotFound;
+  }
+
+  ErrorCode error =
+      _process->enumerateMappedFiles([&](MappedFileInfo const &file) {
+        if (file.path == file_path ||
+            ds2::Utils::Basename(file.path) == file_path) {
+          address = Address(file.baseAddress);
+        }
+      });
+  if (error != kSuccess) {
+    return error;
+  }
+  if (!address.valid()) {
+    return kErrorNotFound;
+  }
+  return kSuccess;
+}
+
 ErrorCode DebugSessionImplBase::onXferRead(Session &session,
                                            std::string const &object,
                                            std::string const &annex,

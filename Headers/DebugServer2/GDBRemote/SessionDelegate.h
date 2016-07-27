@@ -54,6 +54,10 @@ protected: // Common
                                          ServerVersion &version) const = 0;
   virtual ErrorCode onQueryHostInfo(Session &session, HostInfo &info) const = 0;
 
+  virtual ErrorCode onQueryFileLoadAddress(Session &session,
+                                           std::string const &file_path,
+                                           Address &address) = 0;
+
 protected: // Debugging Session
   virtual ErrorCode onEnableControlAgent(Session &session, bool enable) = 0;
   virtual ErrorCode onNonStopMode(Session &session, bool enable) = 0;
