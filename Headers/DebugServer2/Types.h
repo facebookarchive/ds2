@@ -331,11 +331,13 @@ struct SharedLibraryInfo {
     uint64_t ldAddress;
   } svr4;
   std::vector<uint64_t> sections;
+  uint64_t sizeOfImage;
 };
 
 struct MappedFileInfo {
   std::string path;
   uint64_t baseAddress;
+  uint64_t size;
 };
 }
 
