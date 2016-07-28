@@ -493,6 +493,9 @@ ErrorCode Process::enumerateSharedLibraries(
     // module itself.
     sl.sections.push_back(reinterpret_cast<uint64_t>(m));
 
+    // TODO: import GetModuleInformation to fetch the actual size
+    sl.sizeOfImage = -1;
+
     cb(sl);
   }
 
