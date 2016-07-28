@@ -471,9 +471,7 @@ ErrorCode DebugSessionImplBase::onQueryFileLoadAddress(
           address = Address(file.baseAddress);
         }
       });
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(error);
   if (!address.valid()) {
     return kErrorNotFound;
   }
