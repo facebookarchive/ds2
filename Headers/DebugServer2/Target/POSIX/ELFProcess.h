@@ -29,7 +29,7 @@ public:
 
 public:
   virtual ErrorCode getSharedLibraryInfoAddress(Address &address);
-  virtual ErrorCode enumerateSharedLibraries(
+  ErrorCode enumerateSharedLibraries(
       std::function<void(SharedLibraryInfo const &)> const &cb) override;
 
 public:
