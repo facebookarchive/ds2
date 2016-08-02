@@ -144,12 +144,9 @@ ErrorCode Process::writeDebugBreakCode(uint64_t address) {
 }
 
 ErrorCode Process::interrupt() {
-  SYSTEM_INFO info;
-  GetSystemInfo(&info);
-
   uint64_t address;
   ErrorCode error = allocateMemory(
-      info.dwPageSize, kProtectionExecute | kProtectionWrite, &address);
+      Platform::GetPageSize(), kProtectionExecute | kProtectionWrite, &address);
   if (error != kSuccess) {
     return error;
   }
@@ -329,8 +326,119 @@ ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
   return kSuccess;
 }
 
+ErrorCode Process::restoreRegionsProtection(
+    const std::vector<MemoryRegionInfo> &regions) {
+  for (const auto &region : regions) {
+    LPVOID allocError = VirtualAllocEx(
+        _handle, reinterpret_cast<LPVOID>(region.start.value()), region.length,
+        MEM_COMMIT, convertMemoryProtectionToWindows(region.protection));
+    if (allocError == NULL) {
+      return Platform::TranslateError();
+    }
+  }
+  return kSuccess;
+}
+
+DWORD Process::convertMemoryProtectionToWindows(uint32_t protection) {
+  DWORD allocProtection = 0;
+
+  if (protection & kProtectionExecute) {
+    if (protection & kProtectionWrite)
+      allocProtection = PAGE_EXECUTE_READWRITE;
+    else if (protection & kProtectionRead)
+      allocProtection = PAGE_EXECUTE_READ;
+    else
+      allocProtection = PAGE_EXECUTE;
+  } else {
+    if (protection & kProtectionWrite)
+      allocProtection = PAGE_READWRITE;
+    else if (protection & kProtectionRead)
+      allocProtection = PAGE_READONLY;
+    else
+      allocProtection = PAGE_NOACCESS;
+  }
+  return allocProtection;
+}
+
+uint32_t Process::convertMemoryProtectionFromWindows(DWORD winProtection) {
+  switch (winProtection) {
+  case PAGE_EXECUTE_READWRITE:
+  case PAGE_EXECUTE_WRITECOPY:
+    return kProtectionWrite | kProtectionExecute;
+  case PAGE_EXECUTE_READ:
+    return kProtectionRead | kProtectionExecute;
+  case PAGE_EXECUTE:
+    return kProtectionExecute;
+  case PAGE_READWRITE:
+  case PAGE_WRITECOPY:
+    return kProtectionWrite | kProtectionRead;
+  case PAGE_READONLY:
+    return kProtectionRead;
+  // case PAGE_NOACCESS:
+  // case PAGE_TARGETS_INVALID:
+  // case PAGE_TARGETS_NO_UPDATE:
+  default:
+    return 0;
+  }
+}
+
+// TODO: rename this function to getMemoryRegionInfo and make lldb work with it
+ErrorCode Process::getMemoryRegionInfoInternal(Address const &address,
+                                               MemoryRegionInfo &region) {
+  _MEMORY_BASIC_INFORMATION64 mem;
+  SIZE_T bytesQuery = VirtualQueryEx(
+      _handle, reinterpret_cast<LPVOID>(address.value()),
+      reinterpret_cast<PMEMORY_BASIC_INFORMATION>(&mem), sizeof(mem));
+
+  if (bytesQuery == sizeof(_MEMORY_BASIC_INFORMATION64)) {
+    region = {Address(mem.BaseAddress), mem.RegionSize,
+              convertMemoryProtectionFromWindows(mem.AllocationProtect)};
+  } else if (bytesQuery == sizeof(_MEMORY_BASIC_INFORMATION32)) {
+    MEMORY_BASIC_INFORMATION32 *mem32 =
+        reinterpret_cast<_MEMORY_BASIC_INFORMATION32 *>(&mem);
+    region = {Address(mem32->BaseAddress), mem32->RegionSize,
+              convertMemoryProtectionFromWindows(mem32->AllocationProtect)};
+  } else {
+    return Platform::TranslateError();
+  }
+  return kSuccess;
+}
+
+ErrorCode
+Process::makeMemoryWritable(Address const &address, size_t length,
+                            std::vector<MemoryRegionInfo> &modifiedRegions) {
+  Address startAddress = address;
+  Address endAddress = startAddress + length;
+
+  while (startAddress < endAddress) {
+    MemoryRegionInfo region;
+    CHK_ACTION(getMemoryRegionInfoInternal(address, region), goto error);
+
+    if (region.protection == kProtectionRead || !region.protection) {
+      LPVOID allocError = VirtualAllocEx(
+          _handle, reinterpret_cast<LPVOID>(region.start.value()),
+          region.length, MEM_COMMIT, PAGE_READWRITE);
+      // Even in case of a failure, we consider the current region to be
+      // modified because it could have been modified
+      modifiedRegions.push_back(region);
+      if (allocError == NULL) {
+        goto error;
+      }
+    }
+    startAddress = region.start + region.length;
+  }
+  return kSuccess;
+error:
+  auto error = GetLastError();
+  CHK(restoreRegionsProtection(modifiedRegions));
+  return Platform::TranslateError(error);
+}
+
 ErrorCode Process::writeMemory(Address const &address, void const *data,
                                size_t length, size_t *nwritten) {
+  std::vector<MemoryRegionInfo> modifiedRegions;
+  CHK(makeMemoryWritable(address, length, modifiedRegions));
+
   SIZE_T bytesWritten;
   BOOL result =
       WriteProcessMemory(_handle, reinterpret_cast<LPVOID>(address.value()),
@@ -340,10 +448,11 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
     *nwritten = static_cast<size_t>(bytesWritten);
   }
 
+  ErrorCode error = kSuccess;
   if (!result) {
-    auto error = GetLastError();
-    if (error != ERROR_PARTIAL_COPY || bytesWritten == 0) {
-      return Host::Platform::TranslateError(error);
+    auto winError = GetLastError();
+    if (winError != ERROR_PARTIAL_COPY || bytesWritten == 0) {
+      error = Host::Platform::TranslateError(winError);
     }
   }
 
@@ -352,7 +461,8 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
     DS2LOG(Warning, "unable to flush instruction cache");
   }
 
-  return kSuccess;
+  CHK(restoreRegionsProtection(modifiedRegions));
+  return error;
 }
 
 ErrorCode Process::updateInfo() {
@@ -410,23 +520,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
 
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
                                   uint64_t *address) {
-  DWORD allocProtection = 0;
-
-  if (protection & kProtectionExecute) {
-    if (protection & kProtectionWrite)
-      allocProtection = PAGE_EXECUTE_READWRITE;
-    else if (protection & kProtectionRead)
-      allocProtection = PAGE_EXECUTE_READ;
-    else
-      allocProtection = PAGE_EXECUTE;
-  } else {
-    if (protection & kProtectionWrite)
-      allocProtection = PAGE_READWRITE;
-    else if (protection & kProtectionRead)
-      allocProtection = PAGE_READONLY;
-    else
-      allocProtection = PAGE_NOACCESS;
-  }
+  DWORD allocProtection = convertMemoryProtectionToWindows(protection);
 
   LPVOID result = VirtualAllocEx(_handle, nullptr, size,
                                  MEM_COMMIT | MEM_RESERVE, allocProtection);

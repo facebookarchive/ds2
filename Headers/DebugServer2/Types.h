@@ -308,6 +308,12 @@ struct MemoryRegionInfo {
 #endif
 
   MemoryRegionInfo() { clear(); }
+  MemoryRegionInfo(Address const &start, uint64_t length, uint64_t protection) {
+    clear();
+    this->start = start;
+    this->length = length;
+    this->protection = protection;
+  }
 
   inline void clear() {
     start.clear();
