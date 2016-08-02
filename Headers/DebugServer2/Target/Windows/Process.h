@@ -51,6 +51,16 @@ public:
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,
                         size_t *nwritten = nullptr) override;
 
+private:
+  ErrorCode makeMemoryWritable(Address const &address, size_t length,
+                               std::vector<MemoryRegionInfo> &modifiedRegions);
+  ErrorCode
+  restoreRegionsProtection(const std::vector<MemoryRegionInfo> &regions);
+  ErrorCode getMemoryRegionInfoInternal(Address const &address,
+                                        MemoryRegionInfo &info);
+  DWORD convertMemoryProtectionToWindows(uint32_t protection);
+  uint32_t convertMemoryProtectionFromWindows(DWORD winProtection);
+
 public:
   ErrorCode getMemoryRegionInfo(Address const &address,
                                 MemoryRegionInfo &info) override {
