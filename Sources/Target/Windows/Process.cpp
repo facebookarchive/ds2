@@ -331,6 +331,18 @@ ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
 
 ErrorCode Process::writeMemory(Address const &address, void const *data,
                                size_t length, size_t *nwritten) {
+  // We try to commit the necessary pages in case they have been uncommitted.
+  // Otherwise writes may fail.
+  LPVOID allocError = VirtualAllocEx(
+      _handle,
+      reinterpret_cast<LPVOID>(address.value()),
+      length,
+      MEM_COMMIT,
+      PAGE_EXECUTE_READWRITE);
+  if (allocError == NULL) {
+    return Platform::TranslateError();
+  }
+
   SIZE_T bytesWritten;
   BOOL result =
       WriteProcessMemory(_handle, reinterpret_cast<LPVOID>(address.value()),
