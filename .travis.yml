@@ -8,8 +8,9 @@
 ## PATENTS file in the same directory.
 ##
 
-sudo: required
 dist: trusty
+sudo: required
+language: generic
 branches:
   only:
     - master
