@@ -338,6 +338,12 @@ WINBASEAPI BOOL WINAPI WriteProcessMemory(
   _Out_  SIZE_T *lpNumberOfBytesWritten
 );
 
+WINBASEAPI BOOL WINAPI FlushInstructionCache(
+  _In_ HANDLE  hProcess,
+  _In_ LPCVOID lpBaseAddress,
+  _In_ SIZE_T  dwSize
+);
+
 WINBASEAPI BOOL WINAPI WaitForDebugEvent(
   _Out_  LPDEBUG_EVENT lpDebugEvent,
   _In_   DWORD dwMilliseconds
