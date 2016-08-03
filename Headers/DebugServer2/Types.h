@@ -336,6 +336,7 @@ struct SharedLibraryInfo {
 struct MappedFileInfo {
   std::string path;
   uint64_t baseAddress;
+  uint64_t size;
 };
 }
 
