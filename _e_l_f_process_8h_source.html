@@ -117,8 +117,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <span class="keyword">virtual</span> ErrorCode getSharedLibraryInfoAddress(<a class="code" href="classds2_1_1_address.html">Address</a> &amp;address);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <span class="keyword">virtual</span> ErrorCode enumerateSharedLibraries(</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="structds2_1_1_shared_library_info.html">SharedLibraryInfo</a> <span class="keyword">const</span> &amp;)&gt; <span class="keyword">const</span> &amp;cb);</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  ErrorCode enumerateSharedLibraries(</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;      std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="structds2_1_1_shared_library_info.html">SharedLibraryInfo</a> <span class="keyword">const</span> &amp;)&gt; <span class="keyword">const</span> &amp;cb) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keyword">virtual</span> ErrorCode enumerateAuxiliaryVector(</div>

@@ -180,6 +180,12 @@ virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>readMemo
 <tr class="memitem:a9b1e1d7232641ade744ba06633be5562"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b1e1d7232641ade744ba06633be5562"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>writeMemory</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, void const *buffer, size_t length, size_t *nwritten=nullptr)=0</td></tr>
 <tr class="separator:a9b1e1d7232641ade744ba06633be5562"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc01959222dd9a5379c86bda532ede04"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acc01959222dd9a5379c86bda532ede04"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>enumerateSharedLibraries</b> (std::function&lt; void(<a class="el" href="structds2_1_1_shared_library_info.html">SharedLibraryInfo</a> const &amp;)&gt; const &amp;cb)=0</td></tr>
+<tr class="separator:acc01959222dd9a5379c86bda532ede04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19c4a2fcfc4d8ac7e7133621ecff8d7f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a19c4a2fcfc4d8ac7e7133621ecff8d7f"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>enumerateMappedFiles</b> (std::function&lt; void(<a class="el" href="structds2_1_1_mapped_file_info.html">MappedFileInfo</a> const &amp;)&gt; const &amp;cb)</td></tr>
+<tr class="separator:a19c4a2fcfc4d8ac7e7133621ecff8d7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1b7d8d46e6d2db4ef5b08b7133c1ab4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac1b7d8d46e6d2db4ef5b08b7133c1ab4"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>readMemoryBuffer</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t length, ByteVector &amp;buffer)</td></tr>
 <tr class="separator:ac1b7d8d46e6d2db4ef5b08b7133c1ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
