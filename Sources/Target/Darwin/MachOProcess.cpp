@@ -35,7 +35,6 @@ ErrorCode MachOProcess::getAuxiliaryVector(std::string &auxv) {
 
 uint64_t MachOProcess::getAuxiliaryVectorValue(uint64_t type) {
   DS2BUG("not implemented");
-  return type;
 }
 
 //
@@ -125,13 +124,8 @@ ErrorCode MachOProcess::getSharedLibraryInfoAddress(Address &address) {
 ErrorCode MachOProcess::enumerateSharedLibraries(
     std::function<void(SharedLibraryInfo const &)> const &cb) {
   Address address;
-
+  CHK(getSharedLibraryInfoAddress(address));
   DS2BUG("not implemented");
-  ErrorCode error = getSharedLibraryInfoAddress(address);
-  if (error != kSuccess)
-    return error;
-
-  return kSuccess;
 }
 }
 }
