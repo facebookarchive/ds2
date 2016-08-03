@@ -195,11 +195,11 @@ ds2::Target::Thread *ProcessBase::thread(ThreadId tid) const {
 
 ErrorCode ProcessBase::enumerateMappedFiles(
     std::function<void(MappedFileInfo const &)> const &cb) {
-  // TODO: this is only looking for modules loaded in memory, not all the
-  // possible files
+  // TODO: This is only looking for libraries loaded in memory, not all mapped
+  // files.
   return enumerateSharedLibraries([&](SharedLibraryInfo const &library) {
-    // TODO: import GetModuleInformation to fetch the actual size instead of -1
-    cb({library.path, library.sections[0], -1});
+    // TODO: Get the real mapping size (will be OS-specific).
+    cb({library.path, library.sections[0], 0});
   });
 }
 
