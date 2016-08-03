@@ -199,7 +199,7 @@ ErrorCode ProcessBase::enumerateMappedFiles(
   // possible files
   return enumerateSharedLibraries([&](SharedLibraryInfo const &library) {
     // TODO: import GetModuleInformation to fetch the actual size instead of -1
-    cb({library.path, library.sections[0], -1});
+    cb({library.path, library.sections[0], static_cast<uint64_t>(-1)});
   });
 }
 
