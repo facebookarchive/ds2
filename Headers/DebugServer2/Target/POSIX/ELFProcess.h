@@ -18,7 +18,7 @@ namespace ds2 {
 namespace Target {
 namespace POSIX {
 
-class ELFProcess : public Process {
+class ELFProcess : public POSIX::Process {
 protected:
   std::string _auxiliaryVector;
   Address _sharedLibraryInfoAddress;

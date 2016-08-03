@@ -18,7 +18,7 @@ namespace ds2 {
 namespace Target {
 namespace Darwin {
 
-class Process : public ds2::Target::Darwin::MachOProcess {
+class Process : public Darwin::MachOProcess {
 protected:
   Host::Darwin::PTrace _ptrace;
 

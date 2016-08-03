@@ -18,7 +18,7 @@ namespace ds2 {
 namespace Target {
 namespace Darwin {
 
-class MachOProcess : public ds2::Target::POSIX::Process {
+class MachOProcess : public POSIX::Process {
 protected:
   std::string _auxiliaryVector;
   Address _sharedLibraryInfoAddress;

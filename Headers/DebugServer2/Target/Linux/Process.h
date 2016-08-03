@@ -18,7 +18,7 @@ namespace ds2 {
 namespace Target {
 namespace Linux {
 
-class Process : public ds2::Target::POSIX::ELFProcess {
+class Process : public POSIX::ELFProcess {
 protected:
   Host::Linux::PTrace _ptrace;
 
