@@ -198,7 +198,8 @@ ErrorCode ProcessBase::enumerateMappedFiles(
   // TODO: this is only looking for modules loaded in memory, not all the
   // possible files
   return enumerateSharedLibraries([&](SharedLibraryInfo const &library) {
-    cb({library.path, library.sections[0], library.sizeOfImage});
+    // TODO: import GetModuleInformation to fetch the actual size instead of -1
+    cb({library.path, library.sections[0], -1});
   });
 }
 
