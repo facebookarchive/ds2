@@ -347,6 +347,11 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
     }
   }
 
+  if (!FlushInstructionCache(_handle, reinterpret_cast<LPVOID>(address.value()),
+                             bytesWritten)) {
+    DS2LOG(Warning, "unable to flush instruction cache");
+  }
+
   return kSuccess;
 }
 
