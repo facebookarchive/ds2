@@ -48,8 +48,6 @@ ErrorCode MachOProcess::updateInfo() {
   if (_info.pid == _pid)
     return kErrorAlreadyExist;
 
-  ErrorCode error;
-
   // This is tricky, we don't know the load base, and to
   // do so we need to update the auxiliary vector, but
   // in order to interpret it we need to determine first
@@ -57,9 +55,10 @@ ErrorCode MachOProcess::updateInfo() {
   // we don't have idea of what is our target platform,
   // so we'll do an empirical test.
   if (!_loadBase.valid() || !_entryPoint.valid()) {
-    error = updateAuxiliaryVector();
-    if (error != kSuccess && error != kErrorAlreadyExist)
+    ErrorCode error = updateAuxiliaryVector();
+    if (error != kSuccess && error != kErrorAlreadyExist) {
       return error;
+    }
 
     // Hack to use enumerateAuxiliaryVector before information is set.
     _info.pid = _pid;
