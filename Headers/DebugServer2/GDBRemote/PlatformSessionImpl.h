@@ -13,6 +13,7 @@
 
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
+#include "DebugServer2/Utils/MPL.h"
 
 namespace ds2 {
 namespace GDBRemote {
@@ -79,7 +80,8 @@ private:
   void updateProcesses(ProcessInfoMatch const &match) const;
 };
 
-typedef FileOperationsMixin<PlatformSessionImplBase> PlatformSessionImpl;
+using PlatformSessionImpl =
+    Utils::MixinApply<PlatformSessionImplBase, FileOperationsMixin>;
 }
 }
 

@@ -16,6 +16,7 @@
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
+#include "DebugServer2/Utils/MPL.h"
 
 #include <mutex>
 
@@ -184,7 +185,8 @@ private:
   void appendOutput(char const *buf, size_t size);
 };
 
-typedef FileOperationsMixin<DebugSessionImplBase> DebugSessionImpl;
+using DebugSessionImpl =
+    Utils::MixinApply<DebugSessionImplBase, FileOperationsMixin>;
 }
 }
 
