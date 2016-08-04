@@ -26,7 +26,6 @@
 
 namespace ds2 {
 namespace Host {
-namespace Windows {
 
 void Platform::Initialize() {
   // Disable buffering on stdout (where we print logs). When running on
@@ -38,46 +37,6 @@ void Platform::Initialize() {
   WSADATA wsaData;
   WSAStartup(MAKEWORD(2, 2), &wsaData);
 }
-
-ds2::CPUType Platform::GetCPUType() {
-#if defined(ARCH_ARM) || defined(ARCH_ARM64)
-  return (sizeof(void *) == 8) ? kCPUTypeARM64 : kCPUTypeARM;
-#elif defined(ARCH_X86) || defined(ARCH_X86_64)
-  return (sizeof(void *) == 8) ? kCPUTypeX86_64 : kCPUTypeI386;
-#else
-#error "Architecture not supported."
-#endif
-}
-
-ds2::CPUSubType Platform::GetCPUSubType() {
-#if defined(ARCH_ARM)
-#if defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) ||                     \
-    defined(__ARM_ARCH_7R__)
-  return kCPUSubTypeARM_V7;
-#elif defined(__ARM_ARCH_7EM__)
-  return kCPUSubTypeARM_V7EM;
-#elif defined(__ARM_ARCH_7M__)
-  return kCPUSubTypeARM_V7M;
-#else
-  return kCPUSubTypeARM_V7;
-#endif
-#endif
-  return kCPUSubTypeInvalid;
-}
-
-ds2::Endian Platform::GetEndian() {
-#if defined(ENDIAN_LITTLE)
-  return kEndianLittle;
-#elif defined(ENDIAN_BIG)
-  return kEndianBig;
-#elif defined(ENDIAN_MIDDLE)
-  return kEndianPDP;
-#else
-  return kEndianUnknown;
-#endif
-}
-
-size_t Platform::GetPointerSize() { return sizeof(void *); }
 
 const char *Platform::GetHostName(bool fqdn) {
   static char hostname[255] = {'\0'};
@@ -198,6 +157,88 @@ ds2::ProcessId Platform::GetCurrentProcessId() {
   return ::GetCurrentProcessId();
 }
 
+const char *Platform::GetSelfExecutablePath() {
+  static std::string filename;
+
+  if (filename.size() == 0) {
+    WCHAR filenameStr[MAX_PATH];
+    DWORD rc;
+
+    rc = ::GetModuleFileNameW(nullptr, filenameStr, sizeof(filenameStr));
+    if (rc == 0 || rc >= sizeof(filenameStr))
+      goto error;
+
+    filename = WideToNarrowString(filenameStr);
+  }
+
+error:
+  return filename.c_str();
+}
+
+bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
+  WCHAR *envStrings = GetEnvironmentStringsW();
+  WCHAR *oldEnvStrings = envStrings;
+  if (envStrings == nullptr)
+    return false;
+
+  while (*envStrings) {
+    std::string envStr;
+    envStr = WideToNarrowString(envStrings);
+
+    size_t equal = envStr.find('=');
+    DS2ASSERT(equal != std::string::npos);
+
+    // Some environment values can start with '=' for MS-DOS compatibility.
+    // Ignore these values.
+    if (equal != 0)
+      env[envStr.substr(0, equal)] = envStr.substr(equal + 1);
+
+    envStrings += wcslen(envStrings) + 1;
+  }
+
+  FreeEnvironmentStringsW(oldEnvStrings);
+
+  return true;
+}
+
+ErrorCode Platform::TranslateError(DWORD error) {
+  switch (error) {
+  case ERROR_FILE_NOT_FOUND:
+  case ERROR_PATH_NOT_FOUND:
+    return ds2::kErrorNotFound;
+  case ERROR_TOO_MANY_OPEN_FILES:
+    return ds2::kErrorTooManySystemFiles;
+  case ERROR_ACCESS_DENIED:
+    return ds2::kErrorAccessDenied;
+  case ERROR_INVALID_HANDLE:
+    return ds2::kErrorInvalidHandle;
+  case ERROR_NOT_ENOUGH_MEMORY:
+  case ERROR_OUTOFMEMORY:
+    return ds2::kErrorNoMemory;
+  case ERROR_WRITE_PROTECT:
+    return ds2::kErrorNotWriteable;
+  case ERROR_READ_FAULT:
+  case ERROR_WRITE_FAULT:
+  case ERROR_INVALID_ADDRESS:
+  case ERROR_NOACCESS:
+    return ds2::kErrorInvalidAddress;
+  case ERROR_NOT_SUPPORTED:
+    return ds2::kErrorUnsupported;
+  case ERROR_FILE_EXISTS:
+    return ds2::kErrorAlreadyExist;
+  case ERROR_INVALID_PARAMETER:
+    return ds2::kErrorInvalidArgument;
+  case ERROR_BAD_EXE_FORMAT:
+    return ds2::kErrorInvalidArgument;
+  case ERROR_PARTIAL_COPY:
+    return ds2::kErrorNoSpace;
+  default:
+    DS2BUG("unknown error code: %#lx", error);
+  }
+}
+
+ErrorCode Platform::TranslateError() { return TranslateError(GetLastError()); }
+
 bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
   HANDLE processHandle;
   BOOL rc;
@@ -208,8 +249,9 @@ bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
 
   processHandle =
       OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
-  if (processHandle == nullptr)
+  if (processHandle == nullptr) {
     goto error;
+  }
 
   // Get process name.
   {
@@ -311,88 +353,6 @@ std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   return "";
 }
 
-const char *Platform::GetSelfExecutablePath() {
-  static std::string filename;
-
-  if (filename.size() == 0) {
-    WCHAR filenameStr[MAX_PATH];
-    DWORD rc;
-
-    rc = ::GetModuleFileNameW(nullptr, filenameStr, sizeof(filenameStr));
-    if (rc == 0 || rc >= sizeof(filenameStr))
-      goto error;
-
-    filename = WideToNarrowString(filenameStr);
-  }
-
-error:
-  return filename.c_str();
-}
-
-bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
-  WCHAR *envStrings = GetEnvironmentStringsW();
-  WCHAR *oldEnvStrings = envStrings;
-  if (envStrings == nullptr)
-    return false;
-
-  while (*envStrings) {
-    std::string envStr;
-    envStr = WideToNarrowString(envStrings);
-
-    size_t equal = envStr.find('=');
-    DS2ASSERT(equal != std::string::npos);
-
-    // Some environment values can start with '=' for MS-DOS compatibility.
-    // Ignore these values.
-    if (equal != 0)
-      env[envStr.substr(0, equal)] = envStr.substr(equal + 1);
-
-    envStrings += wcslen(envStrings) + 1;
-  }
-
-  FreeEnvironmentStringsW(oldEnvStrings);
-
-  return true;
-}
-
-ErrorCode Platform::TranslateError(DWORD error) {
-  switch (error) {
-  case ERROR_FILE_NOT_FOUND:
-  case ERROR_PATH_NOT_FOUND:
-    return ds2::kErrorNotFound;
-  case ERROR_TOO_MANY_OPEN_FILES:
-    return ds2::kErrorTooManySystemFiles;
-  case ERROR_ACCESS_DENIED:
-    return ds2::kErrorAccessDenied;
-  case ERROR_INVALID_HANDLE:
-    return ds2::kErrorInvalidHandle;
-  case ERROR_NOT_ENOUGH_MEMORY:
-  case ERROR_OUTOFMEMORY:
-    return ds2::kErrorNoMemory;
-  case ERROR_WRITE_PROTECT:
-    return ds2::kErrorNotWriteable;
-  case ERROR_READ_FAULT:
-  case ERROR_WRITE_FAULT:
-  case ERROR_INVALID_ADDRESS:
-  case ERROR_NOACCESS:
-    return ds2::kErrorInvalidAddress;
-  case ERROR_NOT_SUPPORTED:
-    return ds2::kErrorUnsupported;
-  case ERROR_FILE_EXISTS:
-    return ds2::kErrorAlreadyExist;
-  case ERROR_INVALID_PARAMETER:
-    return ds2::kErrorInvalidArgument;
-  case ERROR_BAD_EXE_FORMAT:
-    return ds2::kErrorInvalidArgument;
-  case ERROR_PARTIAL_COPY:
-    return ds2::kErrorNoSpace;
-  default:
-    DS2BUG("unknown error code: %#lx", error);
-  }
-}
-
-ErrorCode Platform::TranslateError() { return TranslateError(GetLastError()); }
-
 std::wstring Platform::NarrowToWideString(std::string const &s) {
   std::vector<wchar_t> res;
   int size;
@@ -415,7 +375,6 @@ std::string Platform::WideToNarrowString(std::wstring const &s) {
   WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, res.data(), size, nullptr,
                       nullptr);
   return res.data();
-}
 }
 }
 }

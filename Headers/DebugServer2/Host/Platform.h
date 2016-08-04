@@ -11,34 +11,79 @@
 #ifndef __DebugServer2_Host_Platform_h
 #define __DebugServer2_Host_Platform_h
 
-#include "DebugServer2/Base.h"
+#include "DebugServer2/Types.h"
 
-#if defined(OS_WIN32)
-#include "DebugServer2/Host/Windows/Platform.h"
-#elif defined(OS_LINUX)
-#include "DebugServer2/Host/Linux/Platform.h"
-#elif defined(OS_FREEBSD)
-#include "DebugServer2/Host/FreeBSD/Platform.h"
-#elif defined(OS_DARWIN)
-#include "DebugServer2/Host/Darwin/Platform.h"
-#else
-#error "Target not supported."
+#include <functional>
+#if defined(OS_DARWIN)
+#include <mach/kern_return.h>
 #endif
+#include <string>
 
 namespace ds2 {
 namespace Host {
 
-#if defined(OS_WIN32)
-using Windows::Platform;
-#elif defined(OS_LINUX)
-using Linux::Platform;
-#elif defined(OS_FREEBSD)
-using FreeBSD::Platform;
-#elif defined(OS_DARWIN)
-using Darwin::Platform;
-#else
-#error "Target not supported."
+class Platform {
+public:
+  static void Initialize();
+
+public:
+  static CPUType GetCPUType();
+  static CPUSubType GetCPUSubType();
+  static Endian GetEndian();
+  static size_t GetPointerSize();
+
+public:
+  static char const *GetHostName(bool fqdn = false);
+
+public:
+  static char const *GetOSTypeName();
+  static char const *GetOSVendorName();
+  static char const *GetOSVersion();
+  static char const *GetOSBuild();
+  static char const *GetOSKernelPath();
+
+public:
+  static bool GetUserName(UserId const &uid, std::string &name);
+  static bool GetGroupName(GroupId const &gid, std::string &name);
+
+public:
+  static int OpenFile(std::string const &path, uint32_t flags, uint32_t mode);
+  static bool CloseFile(int fd);
+  static bool IsFilePresent(std::string const &path);
+  static char const *GetWorkingDirectory();
+
+public:
+  static ProcessId GetCurrentProcessId();
+  static const char *GetSelfExecutablePath();
+  static bool GetCurrentEnvironment(EnvironmentBlock &env);
+
+public:
+#if defined(OS_POSIX)
+  static ErrorCode TranslateError(int error);
+#elif defined(OS_WIN32)
+  static ErrorCode TranslateError(DWORD error);
 #endif
+  static ErrorCode TranslateError();
+#if defined(OS_DARWIN)
+  static ErrorCode TranslateKernError(kern_return_t kret);
+#endif
+
+public:
+  static bool GetProcessInfo(ProcessId pid, ProcessInfo &info);
+  static void
+  EnumerateProcesses(bool allUsers, UserId const &uid,
+                     std::function<void(ProcessInfo const &info)> const &cb);
+
+public:
+  static std::string GetThreadName(ProcessId pid, ThreadId tid);
+
+// TODO: Move these to Utils/
+#if defined(OS_WIN32)
+public:
+  static std::wstring NarrowToWideString(std::string const &s);
+  static std::string WideToNarrowString(std::wstring const &s);
+#endif
+};
 }
 }
 

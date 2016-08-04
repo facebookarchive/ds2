@@ -21,7 +21,6 @@
 
 namespace ds2 {
 namespace Host {
-namespace Linux {
 
 char const *Platform::GetOSTypeName() {
 #if defined(PLATFORM_ANDROID)
@@ -42,7 +41,7 @@ char const *Platform::GetOSVendorName() {
 
   FILE *fp = std::fopen("/etc/lsb-release", "r");
   if (fp != nullptr) {
-    ProcFS::ParseKeyValue(
+    Host::Linux::ProcFS::ParseKeyValue(
         fp, 1024, '=', [&](char const *key, char const *value) -> bool {
           if (key == nullptr)
             return true;
@@ -87,36 +86,38 @@ char const *Platform::GetOSBuild() {
   return sBuild;
 }
 
-bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
-  return ProcFS::ReadProcessInfo(pid, info);
-}
-
-void Platform::EnumerateProcesses(
-    bool allUsers, UserId const &uid,
-    std::function<void(ProcessInfo const &info)> const &cb) {
-  ProcFS::EnumerateProcesses(allUsers, uid, [&](pid_t pid, uid_t uid) {
-    ProcessInfo info;
-
-    if (!GetProcessInfo(pid, info))
-      return;
-
-    cb(info);
-  });
-}
-
-std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
-  return ProcFS::GetThreadName(pid, tid);
-}
+char const *Platform::GetOSKernelPath() { return nullptr; }
 
 const char *Platform::GetSelfExecutablePath() {
   static char path[PATH_MAX + 1] = {'\0'};
 
   if (path[0] == '\0') {
-    ProcFS::ReadLink(0, "exe", path, PATH_MAX);
+    Host::Linux::ProcFS::ReadLink(0, "exe", path, PATH_MAX);
   }
 
   return path;
 }
+
+bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
+  return Host::Linux::ProcFS::ReadProcessInfo(pid, info);
+}
+
+void Platform::EnumerateProcesses(
+    bool allUsers, UserId const &uid,
+    std::function<void(ProcessInfo const &info)> const &cb) {
+  Host::Linux::ProcFS::EnumerateProcesses(allUsers, uid,
+                                          [&](pid_t pid, uid_t uid) {
+                                            ProcessInfo info;
+
+                                            if (!GetProcessInfo(pid, info))
+                                              return;
+
+                                            cb(info);
+                                          });
+}
+
+std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
+  return Host::Linux::ProcFS::GetThreadName(pid, tid);
 }
 }
 }

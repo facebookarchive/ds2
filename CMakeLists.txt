@@ -109,6 +109,7 @@ set(ARCHITECTURE_X86_64_SOURCES
 
 set(HOST_COMMON_SOURCES
     Sources/Host/Common/Channel.cpp
+    Sources/Host/Common/Platform.cpp
     Sources/Host/Common/QueueChannel.cpp
     Sources/Host/Common/Socket.cpp
     )

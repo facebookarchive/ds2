@@ -20,7 +20,6 @@
 
 namespace ds2 {
 namespace Host {
-namespace FreeBSD {
 
 char const *Platform::GetOSTypeName() { return "freebsd"; }
 
@@ -38,30 +37,32 @@ char const *Platform::GetOSVersion() { return GetCachedUTSName()->release; }
 
 char const *Platform::GetOSBuild() { return GetCachedUTSName()->version; }
 
+char const *Platform::GetOSKernelPath() { return nullptr; }
+
+const char *Platform::GetSelfExecutablePath() {
+  return Host::FreeBSD::ProcStat::GetExecutablePath(getpid()).c_str();
+}
+
 bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
-  return ProcStat::GetProcessInfo(pid, info);
+  return Host::FreeBSD::ProcStat::GetProcessInfo(pid, info);
 }
 
 void Platform::EnumerateProcesses(
     bool allUsers, UserId const &uid,
     std::function<void(ProcessInfo const &info)> const &cb) {
-  ProcStat::EnumerateProcesses(allUsers, uid, [&](pid_t pid, uid_t uid) {
-    ProcessInfo info;
+  Host::FreeBSD::ProcStat::EnumerateProcesses(allUsers, uid,
+                                              [&](pid_t pid, uid_t uid) {
+                                                ProcessInfo info;
 
-    if (!GetProcessInfo(pid, info))
-      return;
+                                                if (!GetProcessInfo(pid, info))
+                                                  return;
 
-    cb(info);
-  });
+                                                cb(info);
+                                              });
 }
 
 std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
-  return ProcStat::GetThreadName(pid, tid);
-}
-
-const char *Platform::GetSelfExecutablePath() {
-  return ProcStat::GetExecutablePath(getpid()).c_str();
-}
+  return Host::FreeBSD::ProcStat::GetThreadName(pid, tid);
 }
 }
 }

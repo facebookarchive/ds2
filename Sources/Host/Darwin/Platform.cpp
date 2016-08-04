@@ -24,7 +24,6 @@
 
 namespace ds2 {
 namespace Host {
-namespace Darwin {
 
 char const *Platform::GetOSTypeName() { return "macosx"; }
 
@@ -41,9 +40,10 @@ static struct utsname const *GetCachedUTSName() {
 char const *Platform::GetOSVersion() {
   static char version[9] = {0};
 
-  // Mac doesn't offer a C/C++ call to get the OS version. SystemVersion.plist
-  // is used by official applications to get the version. An XML parser would
-  // be nice but would add a heavy dependency to read one static value.
+  // macOS doesn't offer a C/C++ call to get the OS version.
+  // SystemVersion.plist is used by official applications to get the version.
+  // An XML parser would be nice but would add a heavy dependency to read one
+  // static value.
 
   if (version[0] == '\0') {
     std::string line;
@@ -94,29 +94,10 @@ char const *Platform::GetOSVersion() {
 
 char const *Platform::GetOSBuild() { return GetCachedUTSName()->version; }
 
-bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
-  return LibProc::GetProcessInfo(pid, info);
-}
-
-void Platform::EnumerateProcesses(
-    bool allUsers, UserId const &uid,
-    std::function<void(ProcessInfo const &info)> const &cb) {
-  LibProc::EnumerateProcesses(allUsers, uid, [&](pid_t pid, uid_t uid) {
-    ProcessInfo info;
-
-    if (!GetProcessInfo(pid, info))
-      return;
-
-    cb(info);
-  });
-}
-
-std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
-  return LibProc::GetThreadName(ProcessThreadId(pid, tid));
-}
+char const *Platform::GetOSKernelPath() { return nullptr; }
 
 const char *Platform::GetSelfExecutablePath() {
-  return LibProc::GetExecutablePath(getpid());
+  return Host::Darwin::LibProc::GetExecutablePath(getpid());
 }
 
 ErrorCode Platform::TranslateKernError(kern_return_t kret) {
@@ -137,6 +118,27 @@ ErrorCode Platform::TranslateKernError(kern_return_t kret) {
     DS2BUG("unknown error code: %d [%s]", kret, mach_error_string(kret));
   }
 }
+
+bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
+  return Host::Darwin::LibProc::GetProcessInfo(pid, info);
+}
+
+void Platform::EnumerateProcesses(
+    bool allUsers, UserId const &uid,
+    std::function<void(ProcessInfo const &info)> const &cb) {
+  Host::Darwin::LibProc::EnumerateProcesses(allUsers, uid,
+                                            [&](pid_t pid, uid_t uid) {
+                                              ProcessInfo info;
+
+                                              if (!GetProcessInfo(pid, info))
+                                                return;
+
+                                              cb(info);
+                                            });
+}
+
+std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
+  return Host::Darwin::LibProc::GetThreadName(ProcessThreadId(pid, tid));
 }
 }
 }

@@ -29,56 +29,12 @@
 extern char **environ;
 #endif
 
-// TODO HAVE_ENDIAN_H, HAVE_SYS_ENDIAN_H
-#if defined(OS_LINUX)
-#include <endian.h>
-#elif defined(OS_DARWIN)
-#include <machine/endian.h>
-#else
-#include <sys/endian.h>
-#endif
-
 namespace ds2 {
 namespace Host {
-namespace POSIX {
 
 void Platform::Initialize() {
   // Nothing to do here.
 }
-
-ds2::CPUType Platform::GetCPUType() {
-#if defined(ARCH_ARM) || defined(ARCH_ARM64)
-  return (sizeof(void *) == 8) ? kCPUTypeARM64 : kCPUTypeARM;
-#elif defined(ARCH_X86) || defined(ARCH_X86_64)
-  return (sizeof(void *) == 8) ? kCPUTypeX86_64 : kCPUTypeI386;
-#else
-#error "Architecture not supported."
-#endif
-}
-
-ds2::CPUSubType Platform::GetCPUSubType() {
-#if defined(ARCH_ARM)
-#if defined(__ARM_ARCH_7__) || defined(__ARM_ARCH_7A__) ||                     \
-    defined(__ARM_ARCH_7R__)
-  return kCPUSubTypeARM_V7;
-#elif defined(__ARM_ARCH_7EM__)
-  return kCPUSubTypeARM_V7EM;
-#elif defined(__ARM_ARCH_7M__)
-  return kCPUSubTypeARM_V7M;
-#endif
-#endif
-  return kCPUSubTypeInvalid;
-}
-
-char const *Platform::GetOSTypeName() { return "posix"; }
-
-char const *Platform::GetOSVendorName() { return "unknown"; }
-
-char const *Platform::GetOSVersion() { return nullptr; }
-
-char const *Platform::GetOSBuild() { return nullptr; }
-
-char const *Platform::GetOSKernelPath() { return nullptr; }
 
 char const *Platform::GetHostName(bool fqdn) {
   static std::string sHostName;
@@ -115,20 +71,6 @@ end:
   return sHostName.c_str();
 }
 
-ds2::Endian Platform::GetEndian() {
-#if defined(ENDIAN_LITTLE)
-  return kEndianLittle;
-#elif defined(ENDIAN_LITTLE)
-  return kEndianBig;
-#elif defined(ENDIAN_MIDDLE)
-  return kEndianPDP;
-#else
-  return kEndianUnknown;
-#endif
-}
-
-size_t Platform::GetPointerSize() { return sizeof(void *); }
-
 bool Platform::GetUserName(UserId const &uid, std::string &name) {
   struct passwd *pwd = ::getpwuid(uid);
   if (pwd == nullptr)
@@ -151,11 +93,12 @@ int Platform::OpenFile(std::string const &path, uint32_t flags, uint32_t mode) {
   return ::open(path.c_str(), flags, mode);
 }
 
-bool Platform::CloseFile(int fd) { return close(fd); }
+bool Platform::CloseFile(int fd) { return ::close(fd); }
 
 bool Platform::IsFilePresent(std::string const &path) {
-  if (path.empty())
+  if (path.empty()) {
     return false;
+  }
 
   return (::access(path.c_str(), F_OK) == 0);
 }
@@ -204,6 +147,5 @@ ErrorCode Platform::TranslateError(int error) {
 }
 
 ErrorCode Platform::TranslateError() { return TranslateError(errno); }
-}
 }
 }
