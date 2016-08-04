@@ -186,10 +186,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                               <span class="keywordtype">size_t</span> length, <span class="keywordtype">size_t</span> *nread = <span class="keyword">nullptr</span>) = 0;</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <span class="keyword">virtual</span> ErrorCode writeMemory(<a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address, <span class="keywordtype">void</span> <span class="keyword">const</span> *buffer,</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                                <span class="keywordtype">size_t</span> length, <span class="keywordtype">size_t</span> *nwritten = <span class="keyword">nullptr</span>) = 0;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <span class="keyword">virtual</span> ErrorCode enumerateSharedLibraries(</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;      std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="structds2_1_1_shared_library_info.html">SharedLibraryInfo</a> <span class="keyword">const</span> &amp;)&gt; <span class="keyword">const</span> &amp;cb) = 0;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="keyword">virtual</span> ErrorCode enumerateSharedLibraries(</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;      std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="structds2_1_1_shared_library_info.html">SharedLibraryInfo</a> <span class="keyword">const</span> &amp;)&gt; <span class="keyword">const</span> &amp;cb) = 0;</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="keyword">virtual</span> ErrorCode</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  enumerateMappedFiles(std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="structds2_1_1_mapped_file_info.html">MappedFileInfo</a> <span class="keyword">const</span> &amp;)&gt; <span class="keyword">const</span> &amp;cb);</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
