@@ -1,4 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structds2_1_1_host_info.html" title="ds2::HostInfo" alt="" coords="5,5,107,32"/>
-<area shape="rect" id="node2" href="$structds2_1_1_g_d_b_remote_1_1_host_info.html" title="ds2::GDBRemote::HostInfo" alt="" coords="155,5,339,32"/>
+<area shape="rect" id="node1" href="$classds2_1_1_host_1_1_channel.html" title="ds2::Host::Channel" alt="" coords="27,5,162,32"/>
+<area shape="rect" id="node2" href="$classds2_1_1_host_1_1_queue_channel.html" title="ds2::Host::QueueChannel" alt="" coords="232,5,405,32"/>
+<area shape="rect" id="node3" href="$classds2_1_1_host_1_1_socket.html" title="ds2::Host::Socket" alt="" coords="255,60,383,87"/>
+<area shape="rect" id="node4" href="$structds2_1_1make__unique__enabler.html" title="ds2::make_unique_enabler\l\&lt; Socket \&gt;" alt="" coords="6,57,183,98"/>
 </map>
