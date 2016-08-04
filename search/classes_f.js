@@ -13,7 +13,7 @@ var searchData=
   ['softwarebreakpointmanager',['SoftwareBreakpointManager',['../classds2_1_1_architecture_1_1_a_r_m_1_1_software_breakpoint_manager.html',1,'ds2::Architecture::ARM']]],
   ['ssevector',['SSEVector',['../structds2_1_1_architecture_1_1_x86_1_1_s_s_e_vector.html',1,'ds2::Architecture::X86']]],
   ['stat',['Stat',['../structds2_1_1_host_1_1_linux_1_1_proc_f_s_1_1_stat.html',1,'ds2::Host::Linux::ProcFS']]],
-  ['stopinfo',['StopInfo',['../structds2_1_1_g_d_b_remote_1_1_stop_info.html',1,'ds2::GDBRemote']]],
   ['stopinfo',['StopInfo',['../structds2_1_1_stop_info.html',1,'ds2']]],
+  ['stopinfo',['StopInfo',['../structds2_1_1_g_d_b_remote_1_1_stop_info.html',1,'ds2::GDBRemote']]],
   ['stringify',['Stringify',['../classds2_1_1_utils_1_1_stringify.html',1,'ds2::Utils']]]
 ];
