@@ -13,6 +13,7 @@
 
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
+#include "DebugServer2/GDBRemote/Mixins/ProcessLaunchMixin.h"
 #include "DebugServer2/Utils/MPL.h"
 
 namespace ds2 {
@@ -20,18 +21,8 @@ namespace GDBRemote {
 
 class PlatformSessionImplBase : public DummySessionDelegateImpl {
 protected:
-  typedef std::map<std::string, std::string> EnvironmentMap;
-
-protected:
   // a struct to help iterate over the process list for onQueryProcessList
   mutable IterationState<ProcessId> _processIterationState;
-
-protected:
-  bool _disableASLR;
-  std::string _workingDirectory;
-  std::string _stdFile[3];
-  StringCollection _arguments;
-  EnvironmentMap _environment;
 
 public:
   PlatformSessionImplBase();
@@ -52,34 +43,18 @@ protected:
                             std::string &name) const override;
   ErrorCode onQueryGroupName(Session &session, GroupId const &gid,
                              std::string &name) const override;
-  ErrorCode onQueryWorkingDirectory(Session &session,
-                                    std::string &workingDir) const override;
 
 protected:
   ErrorCode onLaunchDebugServer(Session &session, std::string const &host,
                                 uint16_t &port, ProcessId &pid) override;
-
-protected:
-  ErrorCode onDisableASLR(Session &session, bool disable) override;
-  ErrorCode onSetEnvironmentVariable(Session &session, std::string const &name,
-                                     std::string const &value) override;
-  ErrorCode onSetWorkingDirectory(Session &session,
-                                  std::string const &path) override;
-  ErrorCode onSetStdFile(Session &session, int fileno,
-                         std::string const &path) override;
-  ErrorCode onSetArchitecture(Session &session,
-                              std::string const &architecture) override;
-  ErrorCode onSetProgramArguments(Session &session,
-                                  StringCollection const &args) override;
-  ErrorCode onQueryLaunchSuccess(Session &session,
-                                 ProcessId pid) const override;
 
 private:
   void updateProcesses(ProcessInfoMatch const &match) const;
 };
 
 using PlatformSessionImpl =
-    Utils::MixinApply<PlatformSessionImplBase, FileOperationsMixin>;
+    Utils::MixinApply<PlatformSessionImplBase, FileOperationsMixin,
+                      ProcessLaunchMixin>;
 }
 }
 

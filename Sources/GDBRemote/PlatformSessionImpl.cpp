@@ -25,8 +25,7 @@ namespace ds2 {
 namespace GDBRemote {
 
 PlatformSessionImplBase::PlatformSessionImplBase()
-    : DummySessionDelegateImpl(), _disableASLR(false),
-      _workingDirectory(Platform::GetWorkingDirectory()) {}
+    : DummySessionDelegateImpl() {}
 
 ErrorCode PlatformSessionImplBase::onQueryProcessList(
     Session &session, ProcessInfoMatch const &match, bool first,
@@ -98,12 +97,6 @@ ErrorCode PlatformSessionImplBase::onQueryGroupName(Session &,
     return kSuccess;
 }
 
-ErrorCode PlatformSessionImplBase::onQueryWorkingDirectory(
-    Session &, std::string &workingDir) const {
-  workingDir = _workingDirectory;
-  return kSuccess;
-}
-
 ErrorCode PlatformSessionImplBase::onLaunchDebugServer(Session &session,
                                                        std::string const &host,
                                                        uint16_t &port,
@@ -152,76 +145,6 @@ void PlatformSessionImplBase::updateProcesses(
       });
 
   _processIterationState.it = _processIterationState.vals.begin();
-}
-
-ErrorCode PlatformSessionImplBase::onDisableASLR(Session &, bool disable) {
-  _disableASLR = disable;
-  return kSuccess;
-}
-
-ErrorCode PlatformSessionImplBase::onSetEnvironmentVariable(
-    Session &, std::string const &name, std::string const &value) {
-  if (value.empty()) {
-    _environment.erase(name);
-  } else {
-    _environment.insert(std::make_pair(name, value));
-  }
-  return kSuccess;
-}
-
-ErrorCode
-PlatformSessionImplBase::onSetWorkingDirectory(Session &,
-                                               std::string const &path) {
-  _workingDirectory = path;
-  return kSuccess;
-}
-
-ErrorCode PlatformSessionImplBase::onSetStdFile(Session &, int fileno,
-                                                std::string const &path) {
-  DS2LOG(Debug, "stdfile[%d] = %s", fileno, path.c_str());
-
-  if (fileno < 0 || fileno > 2)
-    return kErrorInvalidArgument;
-
-  if (fileno == 0) {
-    //
-    // TODO it seems that QSetSTDIN is the first message sent when
-    // launching a new process, it may be sane to invalidate all
-    // the process state at this point.
-    //
-    _disableASLR = false;
-    _arguments.clear();
-    _environment.clear();
-    _workingDirectory.clear();
-    _stdFile[0].clear();
-    _stdFile[1].clear();
-    _stdFile[2].clear();
-  }
-
-  _stdFile[fileno] = path;
-  return kSuccess;
-}
-
-ErrorCode
-PlatformSessionImplBase::onSetArchitecture(Session &,
-                                           std::string const &architecture) {
-  // Ignored for now
-  return kSuccess;
-}
-
-ErrorCode
-PlatformSessionImplBase::onSetProgramArguments(Session &,
-                                               StringCollection const &args) {
-  _arguments = args;
-  for (auto const &arg : _arguments) {
-    DS2LOG(Debug, "arg=%s", arg.c_str());
-  }
-  return kSuccess;
-}
-
-ErrorCode PlatformSessionImplBase::onQueryLaunchSuccess(Session &,
-                                                        ProcessId) const {
-  return kSuccess;
 }
 }
 }
