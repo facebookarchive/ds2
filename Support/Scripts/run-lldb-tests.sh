@@ -147,7 +147,15 @@ else
 fi
 
 if [[ "${PLATFORM-}" = "1" ]]; then
-  args+=("--platform-name=remote-linux" "--platform-url=connect://localhost:12345" "--platform-working-dir=$build_dir" "--no-multiprocess")
+  args+=("--platform-name=remote-linux"
+         "--platform-url=connect://localhost:12345"
+         "--platform-working-dir=$build_dir")
+
+  # Platform mode testing spends a lot of time doing IO-bound work. Run more
+  # concurrent tests than cores availables to make sure we use all the CPU we
+  # have.
+  args+=("--threads=$(($(num_cpus) * 2))")
+
   ds2_args=("p")
 
   if $opt_log; then
