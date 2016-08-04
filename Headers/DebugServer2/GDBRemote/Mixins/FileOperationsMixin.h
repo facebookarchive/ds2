@@ -31,7 +31,7 @@ public:
   explicit FileOperationsMixin(Args &&... args)
       : T(std::forward<Args>(args)...) {}
 
-public:
+protected:
   ErrorCode onFileOpen(Session &session, std::string const &path,
                        OpenFlags flags, uint32_t mode, int &fd) override;
   ErrorCode onFileClose(Session &session, int fd) override;
@@ -40,15 +40,15 @@ public:
   ErrorCode onFileWrite(Session &session, int fd, uint64_t offset,
                         const ByteVector &buffer, uint64_t &nwritten) override;
 
-public:
+protected:
   ErrorCode onFileCreateDirectory(Session &session, std::string const &path,
                                   uint32_t mode) override;
 
-public:
+protected:
   ErrorCode onFileExists(Session &session, std::string const &path) override;
   ErrorCode onFileRemove(Session &session, std::string const &path) override;
 
-public:
+protected:
   ErrorCode onFileSetPermissions(Session &session, std::string const &path,
                                  uint32_t mode) override;
 
