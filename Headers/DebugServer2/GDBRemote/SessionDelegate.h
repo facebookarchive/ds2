@@ -265,27 +265,6 @@ protected: // Platform Session
   virtual ErrorCode onFileSetPermissions(Session &session,
                                          std::string const &path,
                                          uint32_t mode) = 0;
-
-#if 0
-    //
-    // more F packets:
-    // https://sourceware.org/gdb/onlinedocs/gdb/List-of-Supported-Calls.html#List-of-Supported-Calls
-    //
-    virtual ErrorCode onGetCurrentTime(Session &session, TimeValue &tv) = 0;
-
-    virtual ErrorCode onFileIsATTY(Session &session, int fd) = 0;
-    virtual ErrorCode onFileRename(Session &session,
-            std::string const &oldPath, std::string const &newPath) = 0;
-
-    virtual ErrorCode onFileGetStat(Session &session, std::string const &path,
-            FileStat &stat) = 0;
-    virtual ErrorCode onFileGetStat(Session &session, int fd,
-            FileStat &stat) = 0;
-
-    virtual ErrorCode onFileSeek(Session &session, int fd,
-            int64_t offset, int whence, int64_t &newOffset) = 0;
-#endif
-
   virtual ErrorCode onFileExists(Session &session, std::string const &path) = 0;
   virtual ErrorCode onFileComputeMD5(Session &session, std::string const &path,
                                      uint8_t digest[16]) = 0;
