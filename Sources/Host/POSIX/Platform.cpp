@@ -36,6 +36,16 @@ void Platform::Initialize() {
   // Nothing to do here.
 }
 
+size_t Platform::GetPageSize() {
+  static size_t sPageSize = 0;
+
+  if (sPageSize == 0) {
+    sPageSize = ::sysconf(_SC_PAGESIZE);
+  }
+
+  return sPageSize;
+}
+
 char const *Platform::GetHostName(bool fqdn) {
   static std::string sHostName;
 

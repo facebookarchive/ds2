@@ -111,10 +111,7 @@ ErrorCode Process::checkMemoryErrorCode(uint64_t address) {
   // mmap() returns MAP_FAILED thanks to the libc wrapper. Here we don't have
   // any, so we get the raw kernel return value, which is the address of the
   // newly allocated pages, if the call succeeds, or -errno if the call fails.
-
-  int pgsz = getpagesize();
-
-  if (address & (pgsz - 1)) {
+  if (address & (Platform::GetPageSize() - 1)) {
     int error = -address;
     DS2LOG(Debug, "mmap failed with errno=%s", Stringify::Errno(error));
     return Platform::TranslateError(error);

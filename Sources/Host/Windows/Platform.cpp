@@ -38,6 +38,18 @@ void Platform::Initialize() {
   WSAStartup(MAKEWORD(2, 2), &wsaData);
 }
 
+size_t Platform::GetPageSize() {
+  static size_t sPageSize = 0;
+
+  if (sPageSize == 0) {
+    SYSTEM_INFO info;
+    ::GetSystemInfo(&info);
+    sPageSize = info.dwPageSize;
+  }
+
+  return sPageSize;
+}
+
 const char *Platform::GetHostName(bool fqdn) {
   static char hostname[255] = {'\0'};
 

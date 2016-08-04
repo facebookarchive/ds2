@@ -31,6 +31,7 @@ public:
   static CPUSubType GetCPUSubType();
   static Endian GetEndian();
   static size_t GetPointerSize();
+  static size_t GetPageSize();
 
 public:
   static char const *GetHostName(bool fqdn = false);
