@@ -33,31 +33,30 @@ char const *Platform::GetOSTypeName() {
 }
 
 char const *Platform::GetOSVendorName() {
-  // Use /etc/lsb-release to extract the vendor and cache it.
   static std::string vendor;
 
-  if (!vendor.empty())
-    return vendor.c_str();
+  if (vendor.empty()) {
+    // Use /etc/lsb-release to extract the vendor and cache it.
+    FILE *fp = std::fopen("/etc/lsb-release", "r");
+    if (fp != nullptr) {
+      Host::Linux::ProcFS::ParseKeyValue(
+          fp, 1024, '=', [&](char const *key, char const *value) -> bool {
+            if (key == nullptr)
+              return true;
 
-  FILE *fp = std::fopen("/etc/lsb-release", "r");
-  if (fp != nullptr) {
-    Host::Linux::ProcFS::ParseKeyValue(
-        fp, 1024, '=', [&](char const *key, char const *value) -> bool {
-          if (key == nullptr)
+            if (std::strcmp(key, "DISTRIB_ID") == 0) {
+              vendor = value;
+              // make the vendor lowercase
+              std::transform(vendor.begin(), vendor.end(), vendor.begin(),
+                             static_cast<int (*)(int)>(&std::tolower));
+              return false; // break the loop
+            }
             return true;
-
-          if (std::strcmp(key, "DISTRIB_ID") == 0) {
-            vendor = value;
-            // make the vendor lowercase
-            std::transform(vendor.begin(), vendor.end(), vendor.begin(),
-                           static_cast<int (*)(int)>(&std::tolower));
-            return false; // break the loop
-          }
-          return true;
-        });
-    std::fclose(fp);
-  } else {
-    vendor = "unknown";
+          });
+      std::fclose(fp);
+    } else {
+      vendor = "unknown";
+    }
   }
 
   return vendor.c_str();
@@ -75,14 +74,14 @@ char const *Platform::GetOSVersion() { return GetCachedUTSName()->release; }
 
 char const *Platform::GetOSBuild() {
   static char sBuild[32] = {'\0'};
+
   if (sBuild[0] == '\0') {
     char const *version = GetCachedUTSName()->version;
-    //
     // Linux version is returned as #BUILDNO ...
-    //
     ds2::Utils::SNPrintf(sBuild, sizeof(sBuild), "%lu",
                          std::strtoul(version + 1, nullptr, 10));
   }
+
   return sBuild;
 }
 
