@@ -81,14 +81,6 @@ ErrorCode PlatformSessionImplBase::onExecuteProgram(
   return kSuccess;
 }
 
-ErrorCode PlatformSessionImplBase::onFileExists(Session &,
-                                                std::string const &path) {
-  if (!Platform::IsFilePresent(path))
-    return kErrorNotFound;
-  else
-    return kSuccess;
-}
-
 ErrorCode PlatformSessionImplBase::onQueryUserName(Session &, UserId const &uid,
                                                    std::string &name) const {
   if (!Platform::GetUserName(uid, name))

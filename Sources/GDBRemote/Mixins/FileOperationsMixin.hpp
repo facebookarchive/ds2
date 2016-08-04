@@ -12,6 +12,7 @@
 #define __DebugServer2_GDBRemote_Mixins_FileOperationsMixin_hpp
 
 #include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
+#include "DebugServer2/Host/Platform.h"
 
 namespace ds2 {
 namespace GDBRemote {
@@ -74,6 +75,12 @@ ErrorCode FileOperationsMixin<T>::onFileCreateDirectory(Session &,
                                                         std::string const &path,
                                                         uint32_t flags) {
   return Host::File::createDirectory(path, flags);
+}
+
+template <typename T>
+ErrorCode FileOperationsMixin<T>::onFileExists(Session &,
+                                               std::string const &path) {
+  return Host::Platform::IsFilePresent(path) ? kSuccess : kErrorNotFound;
 }
 
 template <typename T>

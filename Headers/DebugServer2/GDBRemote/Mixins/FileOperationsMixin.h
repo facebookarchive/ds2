@@ -43,6 +43,9 @@ public:
 public:
   ErrorCode onFileCreateDirectory(Session &session, std::string const &path,
                                   uint32_t mode) override;
+
+public:
+  ErrorCode onFileExists(Session &session, std::string const &path) override;
   ErrorCode onFileRemove(Session &session, std::string const &path) override;
 
 public:

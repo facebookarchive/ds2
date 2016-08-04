@@ -47,8 +47,6 @@ protected:
                              std::string const &workingDirectory,
                              ProgramResult &result) override;
 
-  ErrorCode onFileExists(Session &session, std::string const &path) override;
-
 protected:
   ErrorCode onQueryUserName(Session &session, UserId const &uid,
                             std::string &name) const override;
