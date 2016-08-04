@@ -198,8 +198,13 @@ ErrorCode ProcessBase::enumerateMappedFiles(
   // TODO: This is only looking for libraries loaded in memory, not all mapped
   // files.
   return enumerateSharedLibraries([&](SharedLibraryInfo const &library) {
-    // TODO: Get the real mapping size (will be OS-specific).
-    cb({library.path, library.sections[0], 0});
+#if defined(OS_POSIX)
+    uint64_t base = library.svr4.baseAddress;
+#elif defined(OS_WIN32)
+    uint64_t base = library.sections[0];
+#endif
+
+    cb({library.path, base, 0});
   });
 }
 
