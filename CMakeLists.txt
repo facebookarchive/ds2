@@ -293,6 +293,12 @@ if ("${OS_NAME}" MATCHES "Linux")
   if (HAVE_SYS_PERSONALITY_H)
     target_compile_definitions(ds2 PRIVATE HAVE_SYS_PERSONALITY_H)
   endif ()
+
+  include(CheckFunctionExists)
+  CHECK_FUNCTION_EXISTS(posix_openpt HAVE_POSIX_OPENPT)
+  if (HAVE_POSIX_OPENPT)
+    target_compile_definitions(ds2 PRIVATE HAVE_POSIX_OPENPT)
+  endif ()
 endif ()
 
 if (TIZEN)

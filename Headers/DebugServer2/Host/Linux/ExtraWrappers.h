@@ -57,6 +57,12 @@ struct xfpregs_struct {
 } DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
 #endif
 
+#if !defined(HAVE_POSIX_OPENPT)
+// Older android sysroots don't have `posix_openpt` but they all use the
+// `/dev/ptmx` device.
+static inline int posix_openpt(int flags) { return ::open("/dev/ptmx", flags); }
+#endif // !HAVE_POSIX_OPENPT
+
 #if !defined(PLATFORM_ANDROID)
 // Android headers do have a wrapper for `gettid`, unlike glibc.
 static inline pid_t gettid() { return ::syscall(SYS_gettid); }

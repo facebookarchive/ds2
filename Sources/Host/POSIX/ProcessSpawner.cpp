@@ -10,6 +10,7 @@
 
 #define __DS2_LOG_CLASS_NAME__ "ProcessSpawner"
 
+#include "DebugServer2/Base.h"
 #if defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #endif
