@@ -44,8 +44,10 @@ elif target in linux_packages:
 elif target == 'MinGW-X86':
     dist_packages.append('g++-mingw-w64-i686')
 elif target in android_toolchains:
-    # Android builds get the toolchain from AOSP.
-    check_call('./Support/Scripts/prepare-android-toolchain.sh "%s"' % android_toolchains[target], shell=True)
+    # Android builds get the toolchain from AOSP and use platform 21 by default.
+    android_platform = os.getenv('ANDROID_PLATFORM', "21")
+    check_call('./Support/Scripts/prepare-android-toolchain.sh "%s" "%s"' %
+               (android_toolchains[target], android_platform), shell=True)
 elif target in tizen_packages:
     dist_packages.append(tizen_packages[target])
 
