@@ -113,8 +113,8 @@ bool Platform::IsFilePresent(std::string const &path) {
   return (::access(path.c_str(), F_OK) == 0);
 }
 
-char const *Platform::GetWorkingDirectory() {
-  static char buf[PATH_MAX];
+std::string Platform::GetWorkingDirectory() {
+  char buf[PATH_MAX];
   return ::getcwd(buf, sizeof buf);
 }
 

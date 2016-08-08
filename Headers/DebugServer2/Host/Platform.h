@@ -51,7 +51,7 @@ public:
   static int OpenFile(std::string const &path, uint32_t flags, uint32_t mode);
   static bool CloseFile(int fd);
   static bool IsFilePresent(std::string const &path);
-  static char const *GetWorkingDirectory();
+  static std::string GetWorkingDirectory();
 
 public:
   static ProcessId GetCurrentProcessId();

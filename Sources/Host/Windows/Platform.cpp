@@ -163,7 +163,7 @@ bool Platform::IsFilePresent(std::string const &path) {
                                 GetFileExInfoStandard, &attributes) == TRUE;
 }
 
-char const *Platform::GetWorkingDirectory() { return nullptr; }
+std::string Platform::GetWorkingDirectory() { return ""; }
 
 ds2::ProcessId Platform::GetCurrentProcessId() {
   return ::GetCurrentProcessId();
