@@ -17,6 +17,7 @@
 #include "DebugServer2/Utils/SwapEndian.h"
 #include "JSObjects/JSObjects.h"
 
+#include <cerrno>
 #include <climits>
 #include <cstdlib>
 #include <cstring>

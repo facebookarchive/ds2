@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <limits>
 #include <sys/personality.h>
+#include <sys/uio.h>
 #include <sys/user.h>
 #include <sys/wait.h>
 

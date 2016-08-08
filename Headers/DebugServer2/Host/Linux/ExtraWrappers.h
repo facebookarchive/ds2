@@ -16,6 +16,7 @@
 
 #include <asm/unistd.h>
 #include <fcntl.h>
+#include <signal.h>
 #include <sys/syscall.h>
 #include <sys/user.h>
 #include <unistd.h>
