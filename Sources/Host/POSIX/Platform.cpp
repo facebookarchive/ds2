@@ -118,6 +118,10 @@ std::string Platform::GetWorkingDirectory() {
   return ::getcwd(buf, sizeof buf);
 }
 
+bool Platform::SetWorkingDirectory(std::string const &directory) {
+  return ::chdir(directory.c_str()) == 0;
+}
+
 ds2::ProcessId Platform::GetCurrentProcessId() { return ::getpid(); }
 
 bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {

@@ -172,6 +172,10 @@ std::string Platform::GetWorkingDirectory() {
   return WideToNarrowString(std::wstring(pathStorage.data()));
 }
 
+bool Platform::SetWorkingDirectory(std::string const &directory) {
+  return ::SetCurrentDirectoryW(NarrowToWideString(directory).c_str()) == TRUE;
+}
+
 ds2::ProcessId Platform::GetCurrentProcessId() {
   return ::GetCurrentProcessId();
 }

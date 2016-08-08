@@ -52,6 +52,7 @@ public:
   static bool CloseFile(int fd);
   static bool IsFilePresent(std::string const &path);
   static std::string GetWorkingDirectory();
+  static bool SetWorkingDirectory(std::string const &directory);
 
 public:
   static ProcessId GetCurrentProcessId();
