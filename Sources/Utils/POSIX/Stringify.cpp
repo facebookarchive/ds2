@@ -10,6 +10,9 @@
 
 #define __DebugServer2_Utils_Stringify_h_Private
 #include "DebugServer2/Utils/Stringify.h"
+#if defined(OS_LINUX)
+#include "DebugServer2/Host/Linux/ExtraWrappers.h"
+#endif // OS_LINUX
 
 #include <cerrno>
 #include <csignal>

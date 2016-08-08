@@ -20,6 +20,7 @@
 #if defined(HAVE_SYS_PERSONALITY_H)
 #include <sys/personality.h>
 #endif
+#include <sys/ptrace.h>
 #include <sys/syscall.h>
 #include <sys/user.h>
 #include <unistd.h>
@@ -84,6 +85,24 @@ static inline int personality(unsigned long persona) {
   return ::syscall(SYS_personality, persona);
 }
 #endif // !HAVE_SYS_PERSONALITY_H
+
+#if defined(ARCH_ARM)
+#if !defined(PTRACE_GETHBPREGS)
+#define PTRACE_GETHBPREGS 29
+#endif // !PTRACE_GETHBPREGS
+
+#if !defined(PTRACE_SETHBPREGS)
+#define PTRACE_SETHBPREGS 30
+#endif // !PTRACE_SETHBPREGS
+#endif // ARCH_ARM
+
+#if !defined(PTRACE_GETREGSET)
+#define PTRACE_GETREGSET 0x4204
+#endif // !PTRACE_GETREGSET
+
+#if !defined(PTRACE_SETREGSET)
+#define PTRACE_SETREGSET 0x4205
+#endif // !PTRACE_SETREGSET
 
 // As defined in <asm-generic/siginfo.h>, missing in glibc
 #if !defined(TRAP_BRKPT)
