@@ -52,12 +52,18 @@ struct xfpregs_struct {
 #if !defined(PLATFORM_ANDROID)
 // Android headers do have a wrapper for `gettid`, unlike glibc.
 static inline pid_t gettid() { return ::syscall(SYS_gettid); }
-#endif
+#endif // !PLATFORM_ANDROID
 
+#if defined(PLATFORM_ANDROID) && !defined(SYS_tgkill)
+#define SYS_tgkill __NR_tgkill
+#endif // PLATFORM_ANDROID && !SYS_tgkill
 static inline int tgkill(pid_t pid, pid_t tid, int signo) {
   return ::syscall(SYS_tgkill, pid, tid, signo);
 }
 
+#if defined(PLATFORM_ANDROID) && !defined(SYS_tkill)
+#define SYS_tkill __NR_tkill
+#endif // PLATFORM_ANDROID && !SYS_tkill
 static inline int tkill(pid_t tid, int signo) {
   return ::syscall(SYS_tkill, tid, signo);
 }
