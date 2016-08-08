@@ -11,7 +11,7 @@
 
 source "$(dirname "$0")/common.sh"
 
-[ $# -le 1 ] || die "usage: $0 [ARCH]"
+[ $# -le 2 ] || die "usage: $0 [ARCH] [PLATFORM]"
 
 case "$(uname)" in
   "Linux")  host="linux-x86";;
@@ -33,7 +33,18 @@ case "${1}" in
   *)          die "Unknown architecture '${1}'." ;;
 esac
 
-aosp_platform="android-21"
+if [ $# -lt 2 ]; then
+  aosp_platform="android-21"
+else
+  if [ "${2}" -lt 16 ]; then
+    die "Minimum supported android platform is 16."
+  fi
+  if [ "${2}" -lt 21 ] && [ "${1}" != "arm" ]; then
+    die "Minimum supported android platform for \`${1}' target is 21."
+  fi
+  aosp_platform="android-${2}"
+fi
+
 toolchain_version="4.9"
 toolchain_path="/tmp/aosp-toolchain/${toolchain_triple}-${toolchain_version}"
 aosp_ndk_path="/tmp/aosp-toolchain/aosp-ndk"
