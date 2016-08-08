@@ -17,6 +17,9 @@
 #include <asm/unistd.h>
 #include <fcntl.h>
 #include <signal.h>
+#if defined(HAVE_SYS_PERSONALITY_H)
+#include <sys/personality.h>
+#endif
 #include <sys/syscall.h>
 #include <sys/user.h>
 #include <unistd.h>
@@ -67,6 +70,20 @@ static inline int tgkill(pid_t pid, pid_t tid, int signo) {
 static inline int tkill(pid_t tid, int signo) {
   return ::syscall(SYS_tkill, tid, signo);
 }
+
+#if !defined(HAVE_SYS_PERSONALITY_H)
+#if !defined(SYS_personality)
+#define SYS_personality __NR_personality
+#endif // !SYS_personality)
+
+#if !defined(ADDR_NO_RANDOMIZE)
+#define ADDR_NO_RANDOMIZE 0x0040000
+#endif // !ADDR_NO_RANDOMIZE
+
+static inline int personality(unsigned long persona) {
+  return ::syscall(SYS_personality, persona);
+}
+#endif // !HAVE_SYS_PERSONALITY_H
 
 // As defined in <asm-generic/siginfo.h>, missing in glibc
 #if !defined(TRAP_BRKPT)
