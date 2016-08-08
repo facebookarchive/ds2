@@ -39,7 +39,11 @@ struct xstate_hdr {
   uint64_t reserved2[5];
 } DS2_ATTRIBUTE_PACKED;
 
-#if defined(ARCH_X86)
+#if defined(ARCH_ARM)
+#if !defined(ARM_VFPREGS_SIZE)
+#define ARM_VFPREGS_SIZE (32 * 8 + 4)
+#endif // !ARM_VFPREGS_SIZE
+#elif defined(ARCH_X86)
 struct xfpregs_struct {
   user_fpxregs_struct fpregs;
   xstate_hdr header;
