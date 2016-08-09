@@ -85,7 +85,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classds2_1_1_g_d_b_remote_1_1_platform_session_impl_base-members.html">List of all members</a>  </div>
@@ -108,13 +107,6 @@ Collaboration diagram for ds2::GDBRemote::PlatformSessionImplBase:</div>
 <area shape="rect" id="node2" href="classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html" title="ds2::GDBRemote::DummySession\lDelegateImpl" alt="" coords="291,5,517,46"/><area shape="rect" id="node3" href="classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title="ds2::GDBRemote::SessionDelegate" alt="" coords="6,12,239,39"/><area shape="rect" id="node4" href="structds2_1_1_g_d_b_remote_1_1_iteration_state.html" title="ds2::GDBRemote::Iteration\lState\&lt; ProcessId \&gt;" alt="" coords="313,70,495,111"/></map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
-Protected Types</h2></td></tr>
-<tr class="memitem:affeb1cf53266ab4897bd16ce4f7eba4c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affeb1cf53266ab4897bd16ce4f7eba4c"></a>
-typedef std::map&lt; std::string, <br class="typebreak"/>
-std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EnvironmentMap</b></td></tr>
-<tr class="separator:affeb1cf53266ab4897bd16ce4f7eba4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a0c00c7ec18d4588d1bc56b2b52633f8e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c00c7ec18d4588d1bc56b2b52633f8e"></a>
@@ -132,33 +124,9 @@ ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onQueryUserName<
 <tr class="memitem:adabbf7e2a30642b7424b685feb054753"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adabbf7e2a30642b7424b685feb054753"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onQueryGroupName</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, GroupId const &amp;gid, std::string &amp;name) const override</td></tr>
 <tr class="separator:adabbf7e2a30642b7424b685feb054753"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad50326023aeaae35c1cc33abae3f7a7e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad50326023aeaae35c1cc33abae3f7a7e"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onQueryWorkingDirectory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string &amp;workingDir) const override</td></tr>
-<tr class="separator:ad50326023aeaae35c1cc33abae3f7a7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5de301ae25e8dabd34bd27df838acd4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa5de301ae25e8dabd34bd27df838acd4"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onLaunchDebugServer</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;host, uint16_t &amp;port, ProcessId &amp;pid) override</td></tr>
 <tr class="separator:aa5de301ae25e8dabd34bd27df838acd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac17263b341080edab162ee4fec3cc977"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac17263b341080edab162ee4fec3cc977"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onDisableASLR</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, bool disable) override</td></tr>
-<tr class="separator:ac17263b341080edab162ee4fec3cc977"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbb71a7527a525efaea31dfa261d00d4"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acbb71a7527a525efaea31dfa261d00d4"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetEnvironmentVariable</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;name, std::string const &amp;value) override</td></tr>
-<tr class="separator:acbb71a7527a525efaea31dfa261d00d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb9a68d07ee3a2785ad742b225cbf918"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adb9a68d07ee3a2785ad742b225cbf918"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetWorkingDirectory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;path) override</td></tr>
-<tr class="separator:adb9a68d07ee3a2785ad742b225cbf918"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c239d63e613aa8ab1a3046f01fffe4f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1c239d63e613aa8ab1a3046f01fffe4f"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetStdFile</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, int fileno, std::string const &amp;path) override</td></tr>
-<tr class="separator:a1c239d63e613aa8ab1a3046f01fffe4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a307fb83a8cc9aa0e14e9fee3a76e87a0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a307fb83a8cc9aa0e14e9fee3a76e87a0"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetArchitecture</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;architecture) override</td></tr>
-<tr class="separator:a307fb83a8cc9aa0e14e9fee3a76e87a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5907ca0c4cc318d058d0f65a9474d01"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5907ca0c4cc318d058d0f65a9474d01"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetProgramArguments</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, StringCollection const &amp;args) override</td></tr>
-<tr class="separator:ad5907ca0c4cc318d058d0f65a9474d01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade27845cdcc8e46b1baeedc19b91cb43"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ade27845cdcc8e46b1baeedc19b91cb43"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onQueryLaunchSuccess</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid) const override</td></tr>
-<tr class="separator:ade27845cdcc8e46b1baeedc19b91cb43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html">ds2::GDBRemote::DummySessionDelegateImpl</a></td></tr>
 <tr class="memitem:a0776d8b91aa395c0a8a58e95cba9bb74 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0776d8b91aa395c0a8a58e95cba9bb74"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><b>getGPRSize</b> () const override</td></tr>
@@ -358,6 +326,24 @@ ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>fetchStopInfoFor
 <tr class="memitem:add2e1ef5b49e0c2d6e241eb69ae61b67 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add2e1ef5b49e0c2d6e241eb69ae61b67"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>createThreadsStopInfo</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, JSArray &amp;threadsStopInfo) override</td></tr>
 <tr class="separator:add2e1ef5b49e0c2d6e241eb69ae61b67 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1330ed448bb70c5e6cb06f228b33e52 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae1330ed448bb70c5e6cb06f228b33e52"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onDisableASLR</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, bool disable) override</td></tr>
+<tr class="separator:ae1330ed448bb70c5e6cb06f228b33e52 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61e8c91e154f7fbbb3d495f75a49adee inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a61e8c91e154f7fbbb3d495f75a49adee"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetEnvironmentVariable</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;name, std::string const &amp;value) override</td></tr>
+<tr class="separator:a61e8c91e154f7fbbb3d495f75a49adee inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae21436abcaee2e2d77b4c9b4a633f4f5 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae21436abcaee2e2d77b4c9b4a633f4f5"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetWorkingDirectory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;path) override</td></tr>
+<tr class="separator:ae21436abcaee2e2d77b4c9b4a633f4f5 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77a710acaeda43d2510bb4b6db33827d inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77a710acaeda43d2510bb4b6db33827d"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetStdFile</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, int fileno, std::string const &amp;path) override</td></tr>
+<tr class="separator:a77a710acaeda43d2510bb4b6db33827d inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6252007dc168571e4c237fbfda9aee98 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6252007dc168571e4c237fbfda9aee98"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetArchitecture</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;architecture) override</td></tr>
+<tr class="separator:a6252007dc168571e4c237fbfda9aee98 inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70df38d985ab0bdcbfb1e49aec3c331c inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a70df38d985ab0bdcbfb1e49aec3c331c"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onSetProgramArguments</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, StringCollection const &amp;args) override</td></tr>
+<tr class="separator:a70df38d985ab0bdcbfb1e49aec3c331c inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3a70edf88bb2a06d45e396de869d0ae inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3a70edf88bb2a06d45e396de869d0ae"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileCreateDirectory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;path, uint32_t mode) override</td></tr>
 <tr class="separator:ad3a70edf88bb2a06d45e396de869d0ae inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -391,6 +377,12 @@ ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileComputeMD5
 <tr class="memitem:ab9adc050413edf298501246e818c72de inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab9adc050413edf298501246e818c72de"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onFileGetSize</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string const &amp;path, uint64_t &amp;size) override</td></tr>
 <tr class="separator:ab9adc050413edf298501246e818c72de inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29e9eb4c0cb97cd91308c2976c3c2bfe inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a29e9eb4c0cb97cd91308c2976c3c2bfe"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onQueryLaunchSuccess</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, ProcessId pid) const override</td></tr>
+<tr class="separator:a29e9eb4c0cb97cd91308c2976c3c2bfe inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1215e40822be98a1884879a87d8680ad inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1215e40822be98a1884879a87d8680ad"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onQueryWorkingDirectory</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session, std::string &amp;workingDir) const override</td></tr>
+<tr class="separator:a1215e40822be98a1884879a87d8680ad inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39453203e01e5900845771f63cac563b inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a39453203e01e5900845771f63cac563b"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>onReset</b> (<a class="el" href="classds2_1_1_g_d_b_remote_1_1_session.html">Session</a> &amp;session) override</td></tr>
 <tr class="separator:a39453203e01e5900845771f63cac563b inherit pro_methods_classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -409,21 +401,6 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:ad5af1f564a38568485831418af907373"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad5af1f564a38568485831418af907373"></a>
 <a class="el" href="structds2_1_1_g_d_b_remote_1_1_iteration_state.html">IterationState</a>&lt; ProcessId &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_processIterationState</b></td></tr>
 <tr class="separator:ad5af1f564a38568485831418af907373"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36cd9a8a9f3f9313eedc08772dcd9dc3"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a36cd9a8a9f3f9313eedc08772dcd9dc3"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_disableASLR</b></td></tr>
-<tr class="separator:a36cd9a8a9f3f9313eedc08772dcd9dc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9015892a1d4939a76574a2e069da3a8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad9015892a1d4939a76574a2e069da3a8"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>_workingDirectory</b></td></tr>
-<tr class="separator:ad9015892a1d4939a76574a2e069da3a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2ee0072ec7eadfbfc2847204c1793ea"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2ee0072ec7eadfbfc2847204c1793ea"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>_stdFile</b> [3]</td></tr>
-<tr class="separator:ac2ee0072ec7eadfbfc2847204c1793ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8160536809aff938dc9f46d507a357e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab8160536809aff938dc9f46d507a357e"></a>
-StringCollection&#160;</td><td class="memItemRight" valign="bottom"><b>_arguments</b></td></tr>
-<tr class="separator:ab8160536809aff938dc9f46d507a357e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa112da698c12fe165164a01f1b06002"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaa112da698c12fe165164a01f1b06002"></a>
-EnvironmentMap&#160;</td><td class="memItemRight" valign="bottom"><b>_environment</b></td></tr>
-<tr class="separator:aaa112da698c12fe165164a01f1b06002"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Headers/DebugServer2/GDBRemote/<a class="el" href="_platform_session_impl_8h_source.html">PlatformSessionImpl.h</a></li>
