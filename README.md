@@ -140,10 +140,6 @@ cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
 make
 ```
 
-Builds of ds2 targetting Android generate a static binary by default. The final
-build product can be copied over to the remote device and used with minimal
-dependencies.
-
 ### Cross compiling for Linux-ARM
 
 Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install an arm
