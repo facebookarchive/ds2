@@ -140,6 +140,21 @@ cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
 make
 ```
 
+#### Build for Android pre-5.0
+
+`prepare-android-toolchain.sh` prepares a toolchain that targets android 5.0
+and up by default. If you want to build for an older version (4.1 and up), pass
+the API level as argument to that script. This will allow you to run ds2 on
+older devices. The other build steps are the same.
+
+```
+cd ds2
+./Support/Scripts/prepare-android-toolchain.sh arm 16
+mkdir build && cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
+make
+```
+
 ### Cross compiling for Linux-ARM
 
 Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install an arm
