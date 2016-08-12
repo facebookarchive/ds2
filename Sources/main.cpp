@@ -8,7 +8,8 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Core/BreakpointManager.h"
+#include "DebugServer2/Core/SessionThread.h"
 #include "DebugServer2/GDBRemote/DebugSessionImpl.h"
 #include "DebugServer2/GDBRemote/PlatformSessionImpl.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
@@ -16,7 +17,6 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/QueueChannel.h"
 #include "DebugServer2/Host/Socket.h"
-#include "DebugServer2/SessionThread.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/OptParse.h"
 #include "DebugServer2/Utils/String.h"

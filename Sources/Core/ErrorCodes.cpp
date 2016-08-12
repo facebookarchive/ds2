@@ -8,7 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/ErrorCodes.h"
+#include "DebugServer2/Core/ErrorCodes.h"
 
 namespace ds2 {
 

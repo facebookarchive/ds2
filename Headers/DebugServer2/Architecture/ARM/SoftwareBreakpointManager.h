@@ -11,7 +11,7 @@
 #ifndef __DebugServer2_Architecture_ARM_SoftwareBreakpointManager_h
 #define __DebugServer2_Architecture_ARM_SoftwareBreakpointManager_h
 
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Core/BreakpointManager.h"
 
 namespace ds2 {
 namespace Architecture {

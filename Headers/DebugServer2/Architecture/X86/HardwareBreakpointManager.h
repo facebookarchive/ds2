@@ -11,7 +11,7 @@
 #ifndef __DebugServer2_Architecture_X86_HardwareBreakpointManager_h
 #define __DebugServer2_Architecture_X86_HardwareBreakpointManager_h
 
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Core/BreakpointManager.h"
 
 #include <vector>
 
