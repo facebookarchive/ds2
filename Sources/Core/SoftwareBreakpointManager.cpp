@@ -10,9 +10,10 @@
 
 #define __DS2_LOG_CLASS_NAME__ "SoftwareBreakpointManager"
 
-#include "DebugServer2/Architecture/X86/SoftwareBreakpointManager.h"
+#include "DebugServer2/Core/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
+#include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <cstdlib>
@@ -20,8 +21,6 @@
 #define super ds2::BreakpointManager
 
 namespace ds2 {
-namespace Architecture {
-namespace X86 {
 
 SoftwareBreakpointManager::SoftwareBreakpointManager(
     Target::ProcessBase *process)
@@ -34,48 +33,21 @@ void SoftwareBreakpointManager::clear() {
   _insns.clear();
 }
 
-int SoftwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
-  ds2::Architecture::CPUState state;
-
-  //
-  // Ignore hardware single-stepping.
-  //
-  if (thread->state() == Target::Thread::kStepped)
-    return 0;
-
-  thread->readCPUState(state);
-  state.setPC(state.pc() - 1);
-
-  if (super::hit(state.pc(), site)) {
-    //
-    // Move the PC back to the instruction, INT3 will move
-    // the instruction pointer to the next byte.
-    //
-    if (thread->writeCPUState(state) != kSuccess)
-      abort();
-
-    uint64_t ex = state.pc();
-    thread->readCPUState(state);
-    DS2ASSERT(ex == state.pc());
-
-    return 0;
-  }
-  return -1;
-}
-
 ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
-  uint8_t const opcode = 0xcc; // int 3
-  uint8_t old;
+  ByteVector opcode;
+  ByteVector old;
   ErrorCode error;
 
-  error = _process->readMemory(site.address, &old, sizeof(old));
+  getOpcode(site.size, opcode);
+  old.resize(opcode.size());
+  error = _process->readMemory(site.address, old.data(), old.size());
   if (error != kSuccess) {
     DS2LOG(Error, "cannot enable breakpoint at %" PRI_PTR ", readMemory failed",
            PRI_PTR_CAST(site.address.value()));
     return error;
   }
 
-  error = _process->writeMemory(site.address, &opcode, sizeof(opcode));
+  error = _process->writeMemory(site.address, opcode.data(), opcode.size());
   if (error != kSuccess) {
     DS2LOG(Error,
            "cannot enable breakpoint at %" PRI_PTR ", writeMemory failed",
@@ -84,8 +56,9 @@ ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
   }
 
   DS2LOG(Debug,
-         "set breakpoint instruction %#x at %" PRI_PTR " (saved insn %#x)",
-         opcode, PRI_PTR_CAST(site.address.value()), old);
+         "set breakpoint instruction 0x%s at %" PRI_PTR " (saved insn 0x%s)",
+         ToHex(opcode).c_str(), PRI_PTR_CAST(site.address.value()),
+         ToHex(old).c_str());
 
   _insns[site.address] = old;
 
@@ -94,30 +67,20 @@ ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
 
 ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site) {
   ErrorCode error;
-  uint8_t old = _insns[site.address];
+  ByteVector old = _insns[site.address];
 
-  error = _process->writeMemory(site.address, &old, sizeof(old));
+  error = _process->writeMemory(site.address, old.data(), old.size());
   if (error != kSuccess) {
     DS2LOG(Error, "cannot restore instruction at %" PRI_PTR,
            PRI_PTR_CAST(site.address.value()));
     return error;
   }
 
-  DS2LOG(Debug, "reset instruction %#x at %" PRI_PTR, old,
+  DS2LOG(Debug, "reset instruction 0x%s at %" PRI_PTR, ToHex(old).c_str(),
          PRI_PTR_CAST(site.address.value()));
 
   _insns.erase(site.address);
 
   return kSuccess;
-}
-
-ErrorCode SoftwareBreakpointManager::isValid(Address const &address,
-                                             size_t size, Mode mode) const {
-  DS2ASSERT(size == 0 || size == 1);
-  DS2ASSERT(mode == kModeExec);
-
-  return super::isValid(address, size, mode);
-}
-}
 }
 }

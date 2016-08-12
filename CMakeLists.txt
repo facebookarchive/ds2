@@ -85,7 +85,6 @@ set(ARCHITECTURE_COMMON_SOURCES
 set(ARCHITECTURE_ARM_SOURCES
     Sources/Architecture/ARM/ARMBranchInfo.cpp
     Sources/Architecture/ARM/ThumbBranchInfo.cpp
-    Sources/Architecture/ARM/SoftwareBreakpointManager.cpp
     Sources/Architecture/ARM/RegistersDescriptors.cpp
     Sources/Architecture/ARM/SoftwareSingleStep.cpp
     )
@@ -96,7 +95,6 @@ set(ARCHITECTURE_ARM64_SOURCES
     )
 
 set(ARCHITECTURE_X86_SOURCES
-    Sources/Architecture/X86/SoftwareBreakpointManager.cpp
     Sources/Architecture/X86/RegistersDescriptors.cpp
     )
 
@@ -253,6 +251,7 @@ set(SUPPORT_Windows_SOURCES
 set(CORE_COMMON_SOURCES
     Sources/Core/BreakpointManager.cpp
     Sources/Core/HardwareBreakpointManager.cpp
+    Sources/Core/SoftwareBreakpointManager.cpp
     Sources/Core/CPUTypes.cpp
     Sources/Core/ErrorCodes.cpp
     Sources/Core/MessageQueue.cpp
@@ -261,10 +260,12 @@ set(CORE_COMMON_SOURCES
 
 set(CORE_ARM_SOURCES
     Sources/Core/ARM/HardwareBreakpointManager.cpp
+    Sources/Core/ARM/SoftwareBreakpointManager.cpp
     )
 
 set(CORE_X86_SOURCES
     Sources/Core/X86/HardwareBreakpointManager.cpp
+    Sources/Core/X86/SoftwareBreakpointManager.cpp
     )
 
 set(CORE_ARM64_SOURCES ${CORE_ARM_SOURCES})

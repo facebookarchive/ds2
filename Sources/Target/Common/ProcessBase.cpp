@@ -323,13 +323,8 @@ ErrorCode ProcessBase::afterResume() {
 
 SoftwareBreakpointManager *ProcessBase::softwareBreakpointManager() const {
   if (!_softwareBreakpointManager) {
-#if defined(ARCH_ARM) || defined(ARCH_ARM64)
-    typedef Architecture::ARM::SoftwareBreakpointManager SWBPMType;
-#elif defined(ARCH_X86) || defined(ARCH_X86_64)
-    typedef Architecture::X86::SoftwareBreakpointManager SWBPMType;
-#endif
-    _softwareBreakpointManager =
-        ds2::make_unique<SWBPMType>(const_cast<ProcessBase *>(this));
+    _softwareBreakpointManager = ds2::make_unique<SoftwareBreakpointManager>(
+        const_cast<ProcessBase *>(this));
   }
 
   return _softwareBreakpointManager.get();
