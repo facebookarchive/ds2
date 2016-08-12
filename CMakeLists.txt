@@ -85,7 +85,6 @@ set(ARCHITECTURE_COMMON_SOURCES
 set(ARCHITECTURE_ARM_SOURCES
     Sources/Architecture/ARM/ARMBranchInfo.cpp
     Sources/Architecture/ARM/ThumbBranchInfo.cpp
-    Sources/Architecture/ARM/HardwareBreakpointManager.cpp
     Sources/Architecture/ARM/SoftwareBreakpointManager.cpp
     Sources/Architecture/ARM/RegistersDescriptors.cpp
     Sources/Architecture/ARM/SoftwareSingleStep.cpp
@@ -97,7 +96,6 @@ set(ARCHITECTURE_ARM64_SOURCES
     )
 
 set(ARCHITECTURE_X86_SOURCES
-    Sources/Architecture/X86/HardwareBreakpointManager.cpp
     Sources/Architecture/X86/SoftwareBreakpointManager.cpp
     Sources/Architecture/X86/RegistersDescriptors.cpp
     )
@@ -252,18 +250,31 @@ set(SUPPORT_Windows_SOURCES
     Sources/Utils/Windows/Stringify.cpp
     )
 
-set(CORE_SOURCES
+set(CORE_COMMON_SOURCES
     Sources/Core/BreakpointManager.cpp
+    Sources/Core/HardwareBreakpointManager.cpp
     Sources/Core/CPUTypes.cpp
     Sources/Core/ErrorCodes.cpp
     Sources/Core/MessageQueue.cpp
     Sources/Core/SessionThread.cpp
     )
 
+set(CORE_ARM_SOURCES
+    Sources/Core/ARM/HardwareBreakpointManager.cpp
+    )
+
+set(CORE_X86_SOURCES
+    Sources/Core/X86/HardwareBreakpointManager.cpp
+    )
+
+set(CORE_ARM64_SOURCES ${CORE_ARM_SOURCES})
+set(CORE_X86_64_SOURCES ${CORE_X86_SOURCES})
+
 set(HOST_SOURCES ${HOST_COMMON_SOURCES} ${HOST_${OS_NAME}_SOURCES})
 set(TARGET_SOURCES ${TARGET_COMMON_SOURCES} ${TARGET_${OS_NAME}_SOURCES})
 set(ARCHITECTURE_SOURCES ${ARCHITECTURE_COMMON_SOURCES} ${ARCHITECTURE_${ARCH_NAME}_SOURCES})
 set(SUPPORT_SOURCES ${SUPPORT_COMMON_SOURCES} ${SUPPORT_${OS_NAME}_SOURCES})
+set(CORE_SOURCES ${CORE_COMMON_SOURCES} ${CORE_${ARCH_NAME}_SOURCES})
 
 set(DEBUGSERVER2_SOURCES
     ${HOST_SOURCES}

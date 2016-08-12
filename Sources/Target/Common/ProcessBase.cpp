@@ -342,13 +342,8 @@ HardwareBreakpointManager *ProcessBase::hardwareBreakpointManager() const {
 #endif
 
   if (!_hardwareBreakpointManager) {
-#if defined(ARCH_ARM) || defined(ARCH_ARM64)
-    typedef Architecture::ARM::HardwareBreakpointManager HWBPMType;
-#elif defined(ARCH_X86) || defined(ARCH_X86_64)
-    typedef Architecture::X86::HardwareBreakpointManager HWBPMType;
-#endif
-    _hardwareBreakpointManager =
-        ds2::make_unique<HWBPMType>(const_cast<ProcessBase *>(this));
+    _hardwareBreakpointManager = ds2::make_unique<HardwareBreakpointManager>(
+        const_cast<ProcessBase *>(this));
   }
 
   return _hardwareBreakpointManager.get();
