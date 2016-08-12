@@ -187,20 +187,22 @@ ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
   old.resize(opcode.size());
   error = _process->readMemory(site.address, old.data(), old.size());
   if (error != kSuccess) {
-    DS2LOG(Error, "cannot enable breakpoint at %#lx, readMemory failed",
-           (unsigned long)site.address.value());
+    DS2LOG(Error, "cannot enable breakpoint at %" PRI_PTR ", readMemory failed",
+           PRI_PTR_CAST(site.address.value()));
     return error;
   }
 
   error = _process->writeMemory(site.address, opcode.data(), opcode.size());
   if (error != kSuccess) {
-    DS2LOG(Error, "cannot enable breakpoint at %#lx, writeMemory failed",
-           (unsigned long)site.address.value());
+    DS2LOG(Error,
+           "cannot enable breakpoint at %" PRI_PTR ", writeMemory failed",
+           PRI_PTR_CAST(site.address.value()));
     return error;
   }
 
-  DS2LOG(Debug, "set breakpoint instruction 0x%s at %#lx (saved insn 0x%s)",
-         ToHex(opcode).c_str(), (unsigned long)site.address.value(),
+  DS2LOG(Debug,
+         "set breakpoint instruction 0x%s at %" PRI_PTR " (saved insn 0x%s)",
+         ToHex(opcode).c_str(), PRI_PTR_CAST(site.address.value()),
          ToHex(old).c_str());
 
   _insns[site.address] = old;
@@ -214,13 +216,13 @@ ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site) {
 
   error = _process->writeMemory(site.address, old.data(), old.size());
   if (error != kSuccess) {
-    DS2LOG(Error, "cannot restore instruction at %#lx",
-           (unsigned long)site.address.value());
+    DS2LOG(Error, "cannot restore instruction at %" PRI_PTR,
+           PRI_PTR_CAST(site.address.value()));
     return error;
   }
 
-  DS2LOG(Debug, "reset instruction 0x%s at %#lx", ToHex(old).c_str(),
-         (unsigned long)site.address.value());
+  DS2LOG(Debug, "reset instruction 0x%s at %" PRI_PTR, ToHex(old).c_str(),
+         PRI_PTR_CAST(site.address.value()));
 
   _insns.erase(site.address);
 
