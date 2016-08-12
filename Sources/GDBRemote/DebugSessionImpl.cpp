@@ -11,10 +11,10 @@
 #define __DS2_LOG_CLASS_NAME__ "DebugSession"
 
 #include "DebugServer2/GDBRemote/DebugSessionImpl.h"
+#include "DebugServer2/Core/HardwareBreakpointManager.h"
+#include "DebugServer2/Core/SoftwareBreakpointManager.h"
 #include "DebugServer2/GDBRemote/Session.h"
-#include "DebugServer2/HardwareBreakpointManager.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/SoftwareBreakpointManager.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/Paths.h"

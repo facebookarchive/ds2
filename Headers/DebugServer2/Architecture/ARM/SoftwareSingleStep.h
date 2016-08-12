@@ -11,7 +11,7 @@
 #pragma once
 
 #include "DebugServer2/Architecture/CPUState.h"
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Core/BreakpointManager.h"
 #include "DebugServer2/Target/Process.h"
 
 namespace ds2 {

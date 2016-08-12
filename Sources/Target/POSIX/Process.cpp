@@ -11,7 +11,7 @@
 #define __DS2_LOG_CLASS_NAME__ "Target::Process"
 
 #include "DebugServer2/Target/Process.h"
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Core/BreakpointManager.h"
 #include "DebugServer2/Host/POSIX/PTrace.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"

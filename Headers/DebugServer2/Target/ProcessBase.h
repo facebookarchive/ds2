@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include "DebugServer2/HardwareBreakpointManager.h"
-#include "DebugServer2/SoftwareBreakpointManager.h"
+#include "DebugServer2/Core/HardwareBreakpointManager.h"
+#include "DebugServer2/Core/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/ProcessDecl.h"
 #include "DebugServer2/Target/ThreadBase.h"
 

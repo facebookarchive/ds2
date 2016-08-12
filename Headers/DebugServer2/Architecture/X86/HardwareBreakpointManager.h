@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Core/BreakpointManager.h"
 
 #include <vector>
 

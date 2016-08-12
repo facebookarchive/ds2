@@ -10,8 +10,8 @@
 
 #pragma once
 
+#include "DebugServer2/Core/MessageQueue.h"
 #include "DebugServer2/Host/Channel.h"
-#include "DebugServer2/MessageQueue.h"
 #include "DebugServer2/Types.h"
 
 #include <string>

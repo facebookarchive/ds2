@@ -11,9 +11,9 @@
 #pragma once
 
 #include "DebugServer2/Base.h"
-#include "DebugServer2/CPUTypes.h"
 #include "DebugServer2/Constants.h"
-#include "DebugServer2/ErrorCodes.h"
+#include "DebugServer2/Core/CPUTypes.h"
+#include "DebugServer2/Core/ErrorCodes.h"
 
 #include <cstdint>
 #include <cstdlib>
