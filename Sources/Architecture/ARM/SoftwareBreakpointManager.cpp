@@ -14,6 +14,7 @@
 #include "DebugServer2/Architecture/ARM/Branching.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
+#include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <algorithm>
@@ -119,7 +120,7 @@ int SoftwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
 }
 
 void SoftwareBreakpointManager::getOpcode(uint32_t type,
-                                          std::string &opcode) const {
+                                          ByteVector &opcode) const {
 #if defined(OS_WIN32) && defined(ARCH_ARM)
   if (type == 4) {
     static const uint32_t WinARMBPType = 2;
@@ -135,31 +136,31 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
   switch (type) {
 #if defined(ARCH_ARM)
   case 2: // udf #1
-    opcode += '\xde';
+    opcode.push_back('\xde');
 #if defined(OS_POSIX)
-    opcode += '\x01';
+    opcode.push_back('\x01');
 #elif defined(OS_WIN32)
-    opcode += '\xfe';
+    opcode.push_back('\xfe');
 #endif
     break;
   case 3: // udf.w #0
-    opcode += '\xa0';
-    opcode += '\x00';
-    opcode += '\xf7';
-    opcode += '\xf0';
+    opcode.push_back('\xa0');
+    opcode.push_back('\x00');
+    opcode.push_back('\xf7');
+    opcode.push_back('\xf0');
     break;
   case 4: // udf #16
-    opcode += '\xe7';
-    opcode += '\xf0';
-    opcode += '\x01';
-    opcode += '\xf0';
+    opcode.push_back('\xe7');
+    opcode.push_back('\xf0');
+    opcode.push_back('\x01');
+    opcode.push_back('\xf0');
     break;
 #elif defined(ARCH_ARM64)
   case 4:
-    opcode += '\xd4';
-    opcode += '\x20';
-    opcode += '\x20';
-    opcode += '\x00';
+    opcode.push_back('\xd4');
+    opcode.push_back('\x20');
+    opcode.push_back('\x20');
+    opcode.push_back('\x00');
     break;
 #endif
   default:
@@ -178,32 +179,29 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
 }
 
 ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
-  std::string opcode;
-  std::string old;
+  ByteVector opcode;
+  ByteVector old;
   ErrorCode error;
 
   getOpcode(site.size, opcode);
   old.resize(opcode.size());
-  error = _process->readMemory(site.address, &old[0], old.size());
+  error = _process->readMemory(site.address, old.data(), old.size());
   if (error != kSuccess) {
     DS2LOG(Error, "cannot enable breakpoint at %#lx, readMemory failed",
            (unsigned long)site.address.value());
     return error;
   }
 
-  error = _process->writeMemory(site.address, &opcode[0], opcode.size());
+  error = _process->writeMemory(site.address, opcode.data(), opcode.size());
   if (error != kSuccess) {
     DS2LOG(Error, "cannot enable breakpoint at %#lx, writeMemory failed",
            (unsigned long)site.address.value());
     return error;
   }
 
-  DS2LOG(Debug, "set breakpoint instruction %#lx at %#lx (saved insn %#lx)",
-         (unsigned long)(site.size == 2 ? *(uint16_t *)&opcode[0]
-                                        : *(uint32_t *)&opcode[0]),
-         (unsigned long)site.address.value(),
-         (unsigned long)(site.size == 2 ? *(uint16_t *)&old[0]
-                                        : *(uint32_t *)&old[0]));
+  DS2LOG(Debug, "set breakpoint instruction 0x%s at %#lx (saved insn 0x%s)",
+         ToHex(opcode).c_str(), (unsigned long)site.address.value(),
+         ToHex(old).c_str());
 
   _insns[site.address] = old;
 
@@ -212,18 +210,16 @@ ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
 
 ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site) {
   ErrorCode error;
-  std::string old = _insns[site.address];
+  ByteVector old = _insns[site.address];
 
-  error = _process->writeMemory(site.address, &old[0], old.size());
+  error = _process->writeMemory(site.address, old.data(), old.size());
   if (error != kSuccess) {
     DS2LOG(Error, "cannot restore instruction at %#lx",
            (unsigned long)site.address.value());
     return error;
   }
 
-  DS2LOG(Debug, "reset instruction %#lx at %#lx",
-         (unsigned long)(site.size == 2 ? *(uint16_t *)&old[0]
-                                        : *(uint32_t *)&old[0]),
+  DS2LOG(Debug, "reset instruction 0x%s at %#lx", ToHex(old).c_str(),
          (unsigned long)site.address.value());
 
   _insns.erase(site.address);

@@ -19,7 +19,7 @@ namespace ARM {
 
 class SoftwareBreakpointManager : public BreakpointManager {
 private:
-  std::map<uint64_t, std::string> _insns;
+  std::map<uint64_t, ByteVector> _insns;
 
 public:
   SoftwareBreakpointManager(Target::ProcessBase *process);
@@ -44,7 +44,7 @@ public:
   virtual int hit(Target::Thread *thread, Site &site) override;
 
 protected:
-  virtual void getOpcode(uint32_t type, std::string &opcode) const;
+  virtual void getOpcode(uint32_t type, ByteVector &opcode) const;
 
 protected:
   virtual ErrorCode enableLocation(Site const &site) override;
