@@ -216,11 +216,6 @@ set(GDBREMOTE_SOURCES
     )
 
 set(SUPPORT_COMMON_SOURCES
-    Sources/BreakpointManager.cpp
-    Sources/CPUTypes.cpp
-    Sources/ErrorCodes.cpp
-    Sources/MessageQueue.cpp
-    Sources/SessionThread.cpp
     Sources/Utils/Backtrace.cpp
     Sources/Utils/Log.cpp
     Sources/Utils/OptParse.cpp
@@ -257,6 +252,14 @@ set(SUPPORT_Windows_SOURCES
     Sources/Utils/Windows/Stringify.cpp
     )
 
+set(CORE_SOURCES
+    Sources/Core/BreakpointManager.cpp
+    Sources/Core/CPUTypes.cpp
+    Sources/Core/ErrorCodes.cpp
+    Sources/Core/MessageQueue.cpp
+    Sources/Core/SessionThread.cpp
+    )
+
 set(HOST_SOURCES ${HOST_COMMON_SOURCES} ${HOST_${OS_NAME}_SOURCES})
 set(TARGET_SOURCES ${TARGET_COMMON_SOURCES} ${TARGET_${OS_NAME}_SOURCES})
 set(ARCHITECTURE_SOURCES ${ARCHITECTURE_COMMON_SOURCES} ${ARCHITECTURE_${ARCH_NAME}_SOURCES})
@@ -269,6 +272,7 @@ set(DEBUGSERVER2_SOURCES
     ${SUPPORT_SOURCES}
     ${GDB_SOURCES}
     ${GDBREMOTE_SOURCES}
+    ${CORE_SOURCES}
     )
 
 if (LIBRARY)
