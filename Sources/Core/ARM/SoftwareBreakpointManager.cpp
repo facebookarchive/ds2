@@ -10,11 +10,10 @@
 
 #define __DS2_LOG_CLASS_NAME__ "SoftwareBreakpointManager"
 
-#include "DebugServer2/Architecture/ARM/SoftwareBreakpointManager.h"
+#include "DebugServer2/Core/SoftwareBreakpointManager.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Target/Thread.h"
-#include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <algorithm>
@@ -23,19 +22,6 @@
 #define super ds2::BreakpointManager
 
 namespace ds2 {
-namespace Architecture {
-namespace ARM {
-
-SoftwareBreakpointManager::SoftwareBreakpointManager(
-    Target::ProcessBase *process)
-    : super(process) {}
-
-SoftwareBreakpointManager::~SoftwareBreakpointManager() { clear(); }
-
-void SoftwareBreakpointManager::clear() {
-  super::clear();
-  _insns.clear();
-}
 
 ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
                                          size_t size, Mode mode) {
@@ -63,8 +49,8 @@ ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
       //
       uint32_t insn;
       CHK(_process->readMemory(address.value() & ~1ULL, &insn, sizeof(insn)));
-      auto inst_size = GetThumbInstSize(insn);
-      size = inst_size == ThumbInstSize::TwoByteInst ? 2 : 3;
+      auto inst_size = Architecture::ARM::GetThumbInstSize(insn);
+      size = inst_size == Architecture::ARM::ThumbInstSize::TwoByteInst ? 2 : 3;
     } else {
       size = 4;
     }
@@ -131,6 +117,8 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
   }
 #endif
 
+  opcode.clear();
+
   // TODO: We shouldn't have preprocessor checks for ARCH_ARM vs ARCH_ARM64
   // because we might be an ARM64 binary debugging an ARM inferior.
   switch (type) {
@@ -178,64 +166,11 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
 #endif
 }
 
-ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
-  ByteVector opcode;
-  ByteVector old;
-  ErrorCode error;
-
-  getOpcode(site.size, opcode);
-  old.resize(opcode.size());
-  error = _process->readMemory(site.address, old.data(), old.size());
-  if (error != kSuccess) {
-    DS2LOG(Error, "cannot enable breakpoint at %" PRI_PTR ", readMemory failed",
-           PRI_PTR_CAST(site.address.value()));
-    return error;
-  }
-
-  error = _process->writeMemory(site.address, opcode.data(), opcode.size());
-  if (error != kSuccess) {
-    DS2LOG(Error,
-           "cannot enable breakpoint at %" PRI_PTR ", writeMemory failed",
-           PRI_PTR_CAST(site.address.value()));
-    return error;
-  }
-
-  DS2LOG(Debug,
-         "set breakpoint instruction 0x%s at %" PRI_PTR " (saved insn 0x%s)",
-         ToHex(opcode).c_str(), PRI_PTR_CAST(site.address.value()),
-         ToHex(old).c_str());
-
-  _insns[site.address] = old;
-
-  return kSuccess;
-}
-
-ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site) {
-  ErrorCode error;
-  ByteVector old = _insns[site.address];
-
-  error = _process->writeMemory(site.address, old.data(), old.size());
-  if (error != kSuccess) {
-    DS2LOG(Error, "cannot restore instruction at %" PRI_PTR,
-           PRI_PTR_CAST(site.address.value()));
-    return error;
-  }
-
-  DS2LOG(Debug, "reset instruction 0x%s at %" PRI_PTR, ToHex(old).c_str(),
-         PRI_PTR_CAST(site.address.value()));
-
-  _insns.erase(site.address);
-
-  return kSuccess;
-}
-
 ErrorCode SoftwareBreakpointManager::isValid(Address const &address,
                                              size_t size, Mode mode) const {
   DS2ASSERT(mode == kModeExec);
   DS2ASSERT((size >= 2) && (size <= 4));
 
   return super::isValid(address, size, mode);
-}
-}
 }
 }

@@ -8,15 +8,12 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Architecture_ARM_SoftwareBreakpointManager_h
-#define __DebugServer2_Architecture_ARM_SoftwareBreakpointManager_h
+#ifndef __DebugServer2_SoftwareBreakpointManager_h
+#define __DebugServer2_SoftwareBreakpointManager_h
 
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Core/BreakpointManager.h"
 
 namespace ds2 {
-namespace Architecture {
-namespace ARM {
-
 class SoftwareBreakpointManager : public BreakpointManager {
 private:
   std::map<uint64_t, ByteVector> _insns;
@@ -27,18 +24,6 @@ public:
 
 public:
   virtual void clear() override;
-
-public:
-  virtual ErrorCode add(Address const &address, Type type, size_t size,
-                        Mode mode) override;
-  virtual ErrorCode remove(Address const &address) override;
-
-public:
-  virtual bool has(Address const &address) const override;
-
-public:
-  virtual void
-  enumerate(std::function<void(Site const &)> const &cb) const override;
 
 public:
   virtual int hit(Target::Thread *thread, Site &site) override;
@@ -53,9 +38,21 @@ protected:
 protected:
   ErrorCode isValid(Address const &address, size_t size,
                     Mode mode) const override;
+
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
+public:
+  virtual void
+  enumerate(std::function<void(Site const &)> const &cb) const override;
+
+public:
+  virtual ErrorCode add(Address const &address, Type type, size_t size,
+                        Mode mode) override;
+  virtual ErrorCode remove(Address const &address) override;
+
+public:
+  virtual bool has(Address const &address) const override;
+#endif
 };
 }
-}
-}
 
-#endif // !__DebugServer2_Architecture_ARM_SoftwareBreakpointManager_h
+#endif // !__DebugServer2_SoftwareBreakpointManager_h

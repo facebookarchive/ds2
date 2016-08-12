@@ -11,8 +11,8 @@
 #ifndef __DebugServer2_Target_ProcessBase_h
 #define __DebugServer2_Target_ProcessBase_h
 
-#include "DebugServer2/HardwareBreakpointManager.h"
-#include "DebugServer2/SoftwareBreakpointManager.h"
+#include "DebugServer2/Core/HardwareBreakpointManager.h"
+#include "DebugServer2/Core/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/ProcessDecl.h"
 #include "DebugServer2/Target/ThreadBase.h"
 

@@ -12,7 +12,7 @@
 
 #include "DebugServer2/Target/ProcessBase.h"
 #include "DebugServer2/Architecture/CPUState.h"
-#include "DebugServer2/SoftwareBreakpointManager.h"
+#include "DebugServer2/Core/SoftwareBreakpointManager.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/Stringify.h"
@@ -323,13 +323,8 @@ ErrorCode ProcessBase::afterResume() {
 
 SoftwareBreakpointManager *ProcessBase::softwareBreakpointManager() const {
   if (!_softwareBreakpointManager) {
-#if defined(ARCH_ARM) || defined(ARCH_ARM64)
-    typedef Architecture::ARM::SoftwareBreakpointManager SWBPMType;
-#elif defined(ARCH_X86) || defined(ARCH_X86_64)
-    typedef Architecture::X86::SoftwareBreakpointManager SWBPMType;
-#endif
-    _softwareBreakpointManager =
-        ds2::make_unique<SWBPMType>(const_cast<ProcessBase *>(this));
+    _softwareBreakpointManager = ds2::make_unique<SoftwareBreakpointManager>(
+        const_cast<ProcessBase *>(this));
   }
 
   return _softwareBreakpointManager.get();
@@ -342,13 +337,8 @@ HardwareBreakpointManager *ProcessBase::hardwareBreakpointManager() const {
 #endif
 
   if (!_hardwareBreakpointManager) {
-#if defined(ARCH_ARM) || defined(ARCH_ARM64)
-    typedef Architecture::ARM::HardwareBreakpointManager HWBPMType;
-#elif defined(ARCH_X86) || defined(ARCH_X86_64)
-    typedef Architecture::X86::HardwareBreakpointManager HWBPMType;
-#endif
-    _hardwareBreakpointManager =
-        ds2::make_unique<HWBPMType>(const_cast<ProcessBase *>(this));
+    _hardwareBreakpointManager = ds2::make_unique<HardwareBreakpointManager>(
+        const_cast<ProcessBase *>(this));
   }
 
   return _hardwareBreakpointManager.get();

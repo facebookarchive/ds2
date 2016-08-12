@@ -8,7 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#include "DebugServer2/BreakpointManager.h"
+#include "DebugServer2/Core/BreakpointManager.h"
 #include "DebugServer2/Utils/Log.h"
 
 namespace ds2 {

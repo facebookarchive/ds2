@@ -11,8 +11,8 @@
 #ifndef __DebugServer2_Host_QueueChannel_h
 #define __DebugServer2_Host_QueueChannel_h
 
+#include "DebugServer2/Core/MessageQueue.h"
 #include "DebugServer2/Host/Channel.h"
-#include "DebugServer2/MessageQueue.h"
 #include "DebugServer2/Types.h"
 
 #include <string>

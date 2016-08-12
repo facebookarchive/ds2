@@ -8,16 +8,12 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Architecture_X86_HardwareBreakpointManager_h
-#define __DebugServer2_Architecture_X86_HardwareBreakpointManager_h
+#ifndef __DebugServer2_HardwareBreakpointManager_h
+#define __DebugServer2_HardwareBreakpointManager_h
 
-#include "DebugServer2/BreakpointManager.h"
-
-#include <vector>
+#include "DebugServer2/Core/BreakpointManager.h"
 
 namespace ds2 {
-namespace Architecture {
-namespace X86 {
 
 class HardwareBreakpointManager : public BreakpointManager {
 public:
@@ -40,25 +36,25 @@ protected:
   virtual ErrorCode disableLocation(int idx, Target::Thread *thread);
 
 public:
-  virtual int maxWatchpoints();
-
-protected:
-  virtual int getAvailableLocation();
-
-protected:
-  virtual ErrorCode disableDebugCtrlReg(uint32_t &ctrlReg, int idx);
-  virtual ErrorCode enableDebugCtrlReg(uint32_t &ctrlReg, int idx, Mode mode,
-                                       int size);
+  virtual size_t maxWatchpoints();
 
 protected:
   ErrorCode isValid(Address const &address, size_t size,
                     Mode mode) const override;
 
 protected:
+  virtual int getAvailableLocation();
+
+protected:
   std::vector<uint64_t> _locations;
+
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
+protected:
+  virtual ErrorCode disableDebugCtrlReg(uint32_t &ctrlReg, int idx);
+  virtual ErrorCode enableDebugCtrlReg(uint32_t &ctrlReg, int idx, Mode mode,
+                                       int size);
+#endif
 };
 }
-}
-}
 
-#endif // !__DebugServer2_Architecture_X86_HardwareBreakpointManager_h
+#endif // !__DebugServer2_HardwareBreakpointManager_h
