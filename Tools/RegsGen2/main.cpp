@@ -1016,11 +1016,7 @@ static void GenerateEnums(FILE *fp, Context const &ctx) {
 }
 
 static void GenerateHeaderProlog(FILE *fp, Context const &ctx) {
-  fprintf(fp, "#ifndef __DebugServer2_Architecture_%s_RegisterDescriptors_h\n",
-          ctx.Namespace.c_str());
-  fprintf(fp,
-          "#define __DebugServer2_Architecture_%s_RegisterDescriptors_h\n\n",
-          ctx.Namespace.c_str());
+  fprintf(fp, "#pragma once\n\n");
 
   for (auto include : ctx.Includes) {
     fprintf(fp, "#include \"%s\"\n", include.c_str());
@@ -1034,10 +1030,7 @@ static void GenerateHeaderProlog(FILE *fp, Context const &ctx) {
 }
 
 static void GenerateHeaderEpilog(FILE *fp, Context const &ctx) {
-  fprintf(fp, "} } }\n\n");
-  fprintf(fp,
-          "#endif  // !__DebugServer2_Architecture_%s_RegisterDescriptors_h\n",
-          ctx.Namespace.c_str());
+  fprintf(fp, "} } }\n");
 }
 
 static void GenerateExterns(FILE *fp, Context const &ctx) {
