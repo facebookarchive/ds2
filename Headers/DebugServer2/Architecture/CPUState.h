@@ -13,6 +13,8 @@
 
 #include "DebugServer2/Types.h"
 
+#define CPUSTATE_H_INTERNAL
+
 #if defined(ARCH_ARM)
 #include "DebugServer2/Architecture/ARM/CPUState.h"
 #elif defined(ARCH_ARM64)
@@ -26,6 +28,8 @@
 #else
 #error "Architecture not supported."
 #endif
+
+#undef CPUSTATE_H_INTERNAL
 
 namespace ds2 {
 namespace Architecture {

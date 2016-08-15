@@ -11,7 +11,7 @@
 #ifndef __DebugServer2_Architecture_ARM64_CPUState_h
 #define __DebugServer2_Architecture_ARM64_CPUState_h
 
-#ifndef __DebugServer2_Architecture_CPUState_h
+#if !defined(CPUSTATE_H_INTERNAL)
 #error "You shall not include this file directly."
 #endif
 
