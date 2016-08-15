@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_BreakpointManager_h
-#define __DebugServer2_BreakpointManager_h
+#pragma once
 
 #include "DebugServer2/Target/ProcessDecl.h"
 
@@ -102,5 +101,3 @@ protected:
   virtual ErrorCode disableLocation(Site const &site) = 0;
 };
 }
-
-#endif // !__DebugServer2_BreakpointManager_h

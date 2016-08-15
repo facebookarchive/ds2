@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_Linux_ARM_HwCaps_h
-#define __DebugServer2_Host_Linux_ARM_HwCaps_h
+#pragma once
 
 namespace ds2 {
 namespace Host {
@@ -44,5 +43,3 @@ enum /* HwCaps */ {
 }
 }
 }
-
-#endif // !__DebugServer2_Host_Linux_ARM_HwCaps_h

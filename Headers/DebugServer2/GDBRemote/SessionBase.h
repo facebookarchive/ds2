@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_SessionBase_h
-#define __DebugServer2_GDBRemote_SessionBase_h
+#pragma once
 
 #include "DebugServer2/GDBRemote/PacketProcessor.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
@@ -127,5 +126,3 @@ protected:
 };
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_Session_h

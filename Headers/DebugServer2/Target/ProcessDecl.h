@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Target_ProcessDecl_h
-#define __DebugServer2_Target_ProcessDecl_h
+#pragma once
 
 #include "DebugServer2/Types.h"
 
@@ -43,5 +42,3 @@ __FORWARD_DECLARE(Darwin, Thread);
 }
 
 #undef __FORWARD_DECLARE
-
-#endif // !__DebugServer2_Target_ProcessDecl_h

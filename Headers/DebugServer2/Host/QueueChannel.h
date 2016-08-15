@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_QueueChannel_h
-#define __DebugServer2_Host_QueueChannel_h
+#pragma once
 
 #include "DebugServer2/Host/Channel.h"
 #include "DebugServer2/MessageQueue.h"
@@ -55,5 +54,3 @@ public:
 };
 }
 }
-
-#endif // !__DebugServer2_Host_QueueChannel_h

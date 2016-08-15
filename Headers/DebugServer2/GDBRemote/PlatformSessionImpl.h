@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_PlatformSessionImpl_h
-#define __DebugServer2_GDBRemote_PlatformSessionImpl_h
+#pragma once
 
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
@@ -57,5 +56,3 @@ using PlatformSessionImpl =
                       ProcessLaunchMixin>;
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_PlatformSessionImpl_h

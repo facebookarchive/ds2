@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Target_Thread_h
-#define __DebugServer2_Target_Thread_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 
@@ -41,5 +40,3 @@ using Darwin::Thread;
 #endif
 }
 }
-
-#endif // !__DebugServer2_Target_Thread_h

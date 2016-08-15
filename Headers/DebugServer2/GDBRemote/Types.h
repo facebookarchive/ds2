@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_Types_h
-#define __DebugServer2_GDBRemote_Types_h
+#pragma once
 
 #include "DebugServer2/Architecture/RegisterLayout.h"
 #include "DebugServer2/GDBRemote/Base.h"
@@ -225,5 +224,3 @@ template <class T> struct IterationState {
 };
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_Types_h

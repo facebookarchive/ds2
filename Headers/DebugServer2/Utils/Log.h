@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_Log_h
-#define __DebugServer2_Utils_Log_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Utils/CompilerSupport.h"
@@ -93,5 +92,3 @@ void Log(int level, char const *classname, char const *funcname,
 #error "Compiler not supported."
 #endif
 }
-
-#endif // !__DebugServer2_Utils_Log_h

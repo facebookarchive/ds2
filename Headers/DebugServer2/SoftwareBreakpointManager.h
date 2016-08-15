@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_SoftwareBreakpointManager_h
-#define __DebugServer2_SoftwareBreakpointManager_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 
@@ -30,5 +29,3 @@ using Architecture::X86::SoftwareBreakpointManager;
 #error "Architecture not supported."
 #endif
 }
-
-#endif // !__DebugServer2_SoftwareBreakpointManager_h

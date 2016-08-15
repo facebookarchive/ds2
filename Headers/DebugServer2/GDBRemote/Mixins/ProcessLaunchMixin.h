@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_Mixins_ProcessLaunchMixin_h
-#define __DebugServer2_GDBRemote_Mixins_ProcessLaunchMixin_h
+#pragma once
 
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/Host/File.h"
@@ -63,5 +62,3 @@ public:
 }
 
 #include "../Sources/GDBRemote/Mixins/ProcessLaunchMixin.hpp"
-
-#endif // !__DebugServer2_GDBRemote_Mixins_ProcessLaunchMixin_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_Channel_h
-#define __DebugServer2_Host_Channel_h
+#pragma once
 
 #include "DebugServer2/Types.h"
 
@@ -39,5 +38,3 @@ public:
 };
 }
 }
-
-#endif // !__DebugServer2_Host_Channel_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_DummySessionDelegateImpl_h
-#define __DebugServer2_GDBRemote_DummySessionDelegateImpl_h
+#pragma once
 
 #include "DebugServer2/GDBRemote/SessionDelegate.h"
 
@@ -272,5 +271,3 @@ protected: // System Session
 };
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_DummySessionDelegateImpl_h

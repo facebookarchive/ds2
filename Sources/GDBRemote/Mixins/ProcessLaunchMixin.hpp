@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_Mixins_ProcessLaunchMixin_hpp
-#define __DebugServer2_GDBRemote_Mixins_ProcessLaunchMixin_hpp
+#pragma once
 
 #include "DebugServer2/GDBRemote/Mixins/ProcessLaunchMixin.h"
 
@@ -102,5 +101,3 @@ ErrorCode ProcessLaunchMixin<T>::onQueryLaunchSuccess(Session &,
 }
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_Mixins_ProcessLaunchMixin_hpp

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Base_h
-#define __DebugServer2_Base_h
+#pragma once
 
 #if defined(_WIN32)
 // clang-format off
@@ -140,5 +139,3 @@ template <typename T> struct make_unique_enabler {
   }
 };
 }
-
-#endif // !__DebugServer2_Base_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDB_ByteCodeInterpeter_h
-#define __DebugServer2_GDB_ByteCodeInterpeter_h
+#pragma once
 
 #include "DebugServer2/Types.h"
 
@@ -86,5 +85,3 @@ struct ByteCodeVMDelegate {
 };
 }
 }
-
-#endif // !__DebugServer2_GDB_ByteCodeInterpeter_h

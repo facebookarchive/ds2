@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_Windows_ProcessSpawner_h
-#define __DebugServer2_Host_Windows_ProcessSpawner_h
+#pragma once
 
 #include "DebugServer2/Types.h"
 
@@ -106,5 +105,3 @@ private:
 };
 }
 }
-
-#endif // !__DebugServer2_Host_Windows_ProcessSpawner_h

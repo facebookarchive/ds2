@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_Utils_String_h
-#define __DebugServer2_Utils_Utils_String_h
+#pragma once
 
 #include "DebugServer2/Utils/CompilerSupport.h"
 
@@ -74,5 +73,3 @@ static inline int SNPrintf(char *str, size_t size, char const *format, ...) {
 #endif
 }
 }
-
-#endif // !__DebugServer2_Utils_Utils_String_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Target_ProcessBase_h
-#define __DebugServer2_Target_ProcessBase_h
+#pragma once
 
 #include "DebugServer2/HardwareBreakpointManager.h"
 #include "DebugServer2/SoftwareBreakpointManager.h"
@@ -160,5 +159,3 @@ protected:
 };
 }
 }
-
-#endif // !__DebugServer2_Target_ProcessBase_h

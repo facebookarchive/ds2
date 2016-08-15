@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_CPUTypes_h
-#define __DebugServer2_CPUTypes_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Constants.h"
@@ -241,5 +240,3 @@ char const *GetCPUTypeName(CPUType type);
 char const *GetArchName(CPUType type, CPUSubType subtype);
 char const *GetArchName(CPUType type, CPUSubType subtype, Endian endian);
 }
-
-#endif // !__DebugServer2_CPUTypes_h

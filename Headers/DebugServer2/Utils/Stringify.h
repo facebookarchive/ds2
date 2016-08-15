@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_Stringify_h
-#define __DebugServer2_Utils_Stringify_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Constants.h"
@@ -69,5 +68,3 @@ public:
       return tmp;                                                              \
     } while (0);
 #endif
-
-#endif // !__DebugServer2_Utils_Stringify_h

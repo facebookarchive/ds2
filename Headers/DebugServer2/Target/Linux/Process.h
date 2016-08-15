@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Target_Linux_Process_h
-#define __DebugServer2_Target_Linux_Process_h
+#pragma once
 
 #include "DebugServer2/Host/Linux/PTrace.h"
 #include "DebugServer2/Target/POSIX/ELFProcess.h"
@@ -74,5 +73,3 @@ protected:
 }
 }
 }
-
-#endif // !__DebugServer2_Target_Linux_Process_h

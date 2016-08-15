@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_Socket_h
-#define __DebugServer2_Host_Socket_h
+#pragma once
 
 #include "DebugServer2/Host/Channel.h"
 
@@ -88,5 +87,3 @@ public:
 };
 }
 }
-
-#endif // !__DebugServer2_Host_Socket_h

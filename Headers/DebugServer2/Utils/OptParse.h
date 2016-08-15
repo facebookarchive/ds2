@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_OptParse_h
-#define __DebugServer2_Utils_OptParse_h
+#pragma once
 
 #include <map>
 #include <string>
@@ -61,5 +60,3 @@ private:
   OptionStorage const &get(std::string const &name, OptionType type);
 };
 }
-
-#endif // !__DebugServer2_Utils_OptParse_h

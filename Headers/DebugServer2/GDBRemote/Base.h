@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_Base_h
-#define __DebugServer2_GDBRemote_Base_h
+#pragma once
 
 #include "DebugServer2/Types.h"
 
@@ -37,5 +36,3 @@ enum BreakpointType : unsigned {
 };
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_Base_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_HexValues_h
-#define __DebugServer2_Utils_HexValues_h
+#pragma once
 
 #include "DebugServer2/Utils/CompilerSupport.h"
 #include "DebugServer2/Utils/Log.h"
@@ -66,5 +65,3 @@ static inline std::string HexToString(std::string const &str) {
   return result;
 }
 }
-
-#endif // !__DebugServer2_Utils_HexValues_h

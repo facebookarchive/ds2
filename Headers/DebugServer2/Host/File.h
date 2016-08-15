@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_File_h
-#define __DebugServer2_Host_File_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Constants.h"
@@ -68,5 +67,3 @@ protected:
 };
 }
 }
-
-#endif // !__DebugServer2_Host_File_h

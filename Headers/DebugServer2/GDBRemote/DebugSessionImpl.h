@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_DebugSessionImpl_h
-#define __DebugServer2_GDBRemote_DebugSessionImpl_h
+#pragma once
 
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
@@ -189,5 +188,3 @@ using DebugSessionImpl =
     Utils::MixinApply<DebugSessionImplBase, FileOperationsMixin>;
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_DebugSessionImpl_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Target_POSIX_Process_h
-#define __DebugServer2_Target_POSIX_Process_h
+#pragma once
 
 #include "DebugServer2/Host/POSIX/PTrace.h"
 #include "DebugServer2/Host/ProcessSpawner.h"
@@ -58,5 +57,3 @@ public:
 }
 }
 }
-
-#endif // !__DebugServer2_Target_POSIX_Process_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_Paths_h
-#define __DebugServer2_Utils_Paths_h
+#pragma once
 
 #include <string>
 
@@ -19,5 +18,3 @@ namespace Utils {
 std::string Basename(std::string const &path);
 }
 }
-
-#endif // !__DebugServer2_Utils_Paths_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_CompilerSupport_h
-#define __DebugServer2_Utils_CompilerSupport_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 
@@ -77,5 +76,3 @@
 #include <cstdlib>
 #define DS2_UNREACHABLE() abort()
 #endif
-
-#endif // !__DebugServer2_Utils_CompilerSupport_h

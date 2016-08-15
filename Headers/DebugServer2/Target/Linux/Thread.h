@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Target_Linux_Thread_h
-#define __DebugServer2_Target_Linux_Thread_h
+#pragma once
 
 #include "DebugServer2/Target/POSIX/Thread.h"
 
@@ -40,5 +39,3 @@ protected:
 }
 }
 }
-
-#endif // !__DebugServer2_Target_Linux_Thread_h

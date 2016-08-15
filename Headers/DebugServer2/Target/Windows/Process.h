@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Target_Windows_Process_h
-#define __DebugServer2_Target_Windows_Process_h
+#pragma once
 
 #include "DebugServer2/Host/ProcessSpawner.h"
 #include "DebugServer2/Target/ProcessBase.h"
@@ -80,5 +79,3 @@ public:
 }
 }
 }
-
-#endif // !__DebugServer2_Target_Windows_Process_h

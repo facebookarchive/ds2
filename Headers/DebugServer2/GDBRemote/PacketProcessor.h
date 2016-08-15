@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_PacketProcessor_h
-#define __DebugServer2_GDBRemote_PacketProcessor_h
+#pragma once
 
 #include "DebugServer2/Types.h"
 
@@ -52,5 +51,3 @@ struct PacketProcessorDelegate {
 };
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_PacketProcessor_h

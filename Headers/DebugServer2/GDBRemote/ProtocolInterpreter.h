@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_ProtocolInterpreter_h
-#define __DebugServer2_GDBRemote_ProtocolInterpreter_h
+#pragma once
 
 #include "DebugServer2/GDBRemote/PacketProcessor.h"
 
@@ -83,5 +82,3 @@ public:
 struct ProtocolHandler {};
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_ProtocolInterpreter_h

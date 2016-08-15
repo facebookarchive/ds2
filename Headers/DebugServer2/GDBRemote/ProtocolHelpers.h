@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_ProtocolHelpers_h
-#define __DebugServer2_GDBRemote_ProtocolHelpers_h
+#pragma once
 
 #include "DebugServer2/Types.h"
 #include "DebugServer2/Utils/Log.h"
@@ -71,5 +70,3 @@ template <typename T> std::string Unescape(T const &data) {
 }
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_ProtocolHelpers_h

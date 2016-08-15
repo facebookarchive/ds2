@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_Windows_ExtraWrappers_h
-#define __DebugServer2_Host_Windows_ExtraWrappers_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 
@@ -464,5 +463,3 @@ auto CallK32Proc(char const *name, ArgTypes... args)
 #define Thread32Next(...) DO_K32_CALL(Thread32Next, __VA_ARGS__)
 
 #endif
-
-#endif // !__DebugServer2_Host_Windows_ExtraWrappers_h

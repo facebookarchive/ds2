@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Architecture_ARM_Branching_h
-#define __DebugServer2_Architecture_ARM_Branching_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 
@@ -142,5 +141,3 @@ ThumbInstSize GetThumbInstSize(uint32_t insn);
 }
 }
 }
-
-#endif // !__DebugServer2_Architecture_ARM_Branching_h

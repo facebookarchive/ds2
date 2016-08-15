@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_Bits_h
-#define __DebugServer2_Utils_Bits_h
+#pragma once
 
 #include "DebugServer2/Utils/CompilerSupport.h"
 
@@ -107,5 +106,3 @@ static inline void Align(T &number, unsigned int alignment) {
 }
 }
 }
-
-#endif // !__DebugServer2_Utils_Bits_h

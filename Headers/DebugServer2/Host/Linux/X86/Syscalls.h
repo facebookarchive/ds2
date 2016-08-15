@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_Linux_X86_Syscalls_h
-#define __DebugServer2_Host_Linux_X86_Syscalls_h
+#pragma once
 
 #include <sys/mman.h>
 
@@ -66,5 +65,3 @@ static inline void PrepareMunmapCode(uint32_t address, size_t size,
 }
 }
 }
-
-#endif // !__DebugServer2_Host_Linux_X86_Syscalls_h

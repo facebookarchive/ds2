@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_SlaveSessionImpl_h
-#define __DebugServer2_GDBRemote_SlaveSessionImpl_h
+#pragma once
 
 #include "DebugServer2/GDBRemote/DebugSessionImpl.h"
 
@@ -22,5 +21,3 @@ public:
 };
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_SlaveSessionImpl_h

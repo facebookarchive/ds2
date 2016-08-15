@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Architecture_CPUState_h
-#define __DebugServer2_Architecture_CPUState_h
+#pragma once
 
 #include "DebugServer2/Types.h"
 
@@ -46,5 +45,3 @@ using X86_64::CPUState;
 #endif
 }
 }
-
-#endif // !__DebugServer2_Architecture_CPUState_h

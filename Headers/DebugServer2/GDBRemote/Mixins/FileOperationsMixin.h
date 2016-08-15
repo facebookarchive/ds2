@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_Mixins_FileOperationsMixin_h
-#define __DebugServer2_GDBRemote_Mixins_FileOperationsMixin_h
+#pragma once
 
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/Host/File.h"
@@ -74,5 +73,3 @@ protected:
 }
 
 #include "../Sources/GDBRemote/Mixins/FileOperationsMixin.hpp"
-
-#endif // !__DebugServer2_GDBRemote_Mixins_FileOperationsMixin_h

@@ -10,8 +10,7 @@
 
 // Yes, I just decided to write macro vomit.
 
-#ifndef __DebugServer2_Architecture_X86_RegisterCopy_h
-#define __DebugServer2_Architecture_X86_RegisterCopy_h
+#pragma once
 
 #include "DebugServer2/Architecture/CPUState.h"
 
@@ -163,5 +162,3 @@ static inline void state64_to_user(UserStructType &user,
 }
 }
 }
-
-#endif // !__DebugServer2_Architecture_X86_RegisterCopy_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_Linux_ExtraWrappers_h
-#define __DebugServer2_Host_Linux_ExtraWrappers_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Utils/CompilerSupport.h"
@@ -129,5 +128,3 @@ static inline int personality(unsigned long persona) {
 #endif
 
 #endif // !DOXYGEN
-
-#endif // !__DebugServer2_Host_Linux_ExtraWrappers_h

@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Architecture_ARM_SoftwareSingleStep_h
-#define __DebugServer2_Architecture_ARM_SoftwareSingleStep_h
+#pragma once
 
 #include "DebugServer2/Architecture/CPUState.h"
 #include "DebugServer2/BreakpointManager.h"
@@ -39,5 +38,3 @@ ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
 }
 }
 }
-
-#endif // !__DebugServer2_Architecture_ARM_SoftwareSingleStep_h

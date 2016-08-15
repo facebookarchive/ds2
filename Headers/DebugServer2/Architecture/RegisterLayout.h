@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Architecture_RegisterLayout_h
-#define __DebugServer2_Architecture_RegisterLayout_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/Types.h"
@@ -208,5 +207,3 @@ bool LLDBGetRegisterInfo(LLDBDescriptor const &desc, std::string const &name,
                          LLDBRegisterInfo &info);
 }
 }
-
-#endif // !__DebugServer2_Architecture_RegisterLayout_h

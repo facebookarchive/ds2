@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_GDBRemote_Mixins_FileOperationsMixin_hpp
-#define __DebugServer2_GDBRemote_Mixins_FileOperationsMixin_hpp
+#pragma once
 
 #include "DebugServer2/GDBRemote/Mixins/FileOperationsMixin.h"
 #include "DebugServer2/Host/Platform.h"
@@ -97,5 +96,3 @@ ErrorCode FileOperationsMixin<T>::onFileSetPermissions(Session &session,
 }
 }
 }
-
-#endif // !__DebugServer2_GDBRemote_Mixins_FileOperationsMixin_hpp

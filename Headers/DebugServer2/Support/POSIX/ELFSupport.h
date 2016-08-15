@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Support_POSIX_ELFSupport_h
-#define __DebugServer2_Support_POSIX_ELFSupport_h
+#pragma once
 
 #include "DebugServer2/Types.h"
 
@@ -29,5 +28,3 @@ public:
 };
 }
 }
-
-#endif // !__DebugServer2_Support_POSIX_ELFSupport_h

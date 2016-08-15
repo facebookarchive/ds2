@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Types_h
-#define __DebugServer2_Types_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 #include "DebugServer2/CPUTypes.h"
@@ -339,5 +338,3 @@ struct MappedFileInfo {
   uint64_t size;
 };
 }
-
-#endif // !__DebugServer2_Types_h

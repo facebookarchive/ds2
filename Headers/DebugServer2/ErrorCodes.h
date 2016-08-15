@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_ErrorCodes_h
-#define __DebugServer2_ErrorCodes_h
+#pragma once
 
 #include <type_traits>
 
@@ -58,5 +57,3 @@ char const *GetErrorCodeString(ErrorCode err);
 }
 
 #define CHK(C) CHK_ACTION(C, return CHK_error)
-
-#endif // !__DebugServer2_ErrorCodes_h

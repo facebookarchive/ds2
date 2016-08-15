@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Architecture_Registers_h
-#define __DebugServer2_Architecture_Registers_h
+#pragma once
 
 #include "DebugServer2/Base.h"
 
@@ -26,5 +25,3 @@
 #else
 #error "Architecture not supported."
 #endif
-
-#endif // !__DebugServer2_Architecture_Registers_h

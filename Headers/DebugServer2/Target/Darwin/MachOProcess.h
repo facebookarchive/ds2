@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Target_Darwin_MachOProcess_h
-#define __DebugServer2_Target_Darwin_MachOProcess_h
+#pragma once
 
 #include "DebugServer2/Host/Darwin/Mach.h"
 #include "DebugServer2/Target/POSIX/Process.h"
@@ -43,5 +42,3 @@ protected:
 }
 }
 }
-
-#endif // !__DebugServer2_Target_POSIX_Process_h

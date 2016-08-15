@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_Backtrace_h
-#define __DebugServer2_Utils_Backtrace_h
+#pragma once
 
 namespace ds2 {
 namespace Utils {
@@ -17,5 +16,3 @@ namespace Utils {
 void PrintBacktrace();
 }
 }
-
-#endif // !__DebugServer2_Utils_Backtrace_h

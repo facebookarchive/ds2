@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Architecture_ARM_HardwareBreakpointManager_h
-#define __DebugServer2_Architecture_ARM_HardwareBreakpointManager_h
+#pragma once
 
 #include "DebugServer2/BreakpointManager.h"
 
@@ -51,5 +50,3 @@ private:
 }
 }
 }
-
-#endif // !__DebugServer2_Architecture_ARM_HardwareBreakpointManager_h

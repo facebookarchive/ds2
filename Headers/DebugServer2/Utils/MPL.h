@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Utils_MPL_h
-#define __DebugServer2_Utils_MPL_h
+#pragma once
 
 namespace ds2 {
 namespace Utils {
@@ -34,5 +33,3 @@ public:
 };
 }
 }
-
-#endif // !__DebugServer2_Utils_MPL_h

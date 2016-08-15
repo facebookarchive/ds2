@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Constants_h
-#define __DebugServer2_Constants_h
+#pragma once
 
 namespace ds2 {
 
@@ -61,5 +60,3 @@ enum OpenFlags {
   kOpenFlagCloseOnExec = (1 << 8)
 };
 }
-
-#endif // !__DebugServer2_Constants_h

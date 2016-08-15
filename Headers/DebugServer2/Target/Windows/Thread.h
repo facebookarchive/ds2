@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Target_Windows_Thread_h
-#define __DebugServer2_Target_Windows_Thread_h
+#pragma once
 
 #include "DebugServer2/Target/ThreadBase.h"
 
@@ -51,5 +50,3 @@ protected:
 }
 }
 }
-
-#endif // !__DebugServer2_Target_Windows_Thread_h

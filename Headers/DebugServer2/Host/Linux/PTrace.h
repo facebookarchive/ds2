@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Host_Linux_PTrace_h
-#define __DebugServer2_Host_Linux_PTrace_h
+#pragma once
 
 #include "DebugServer2/Architecture/CPUState.h"
 #include "DebugServer2/Host/POSIX/PTrace.h"
@@ -120,5 +119,3 @@ protected:
 }
 }
 }
-
-#endif // !__DebugServer2_Host_Linux_PTrace_h

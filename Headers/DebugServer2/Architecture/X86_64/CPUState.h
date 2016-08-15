@@ -8,8 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#ifndef __DebugServer2_Architecture_X86_64_CPUState_h
-#define __DebugServer2_Architecture_X86_64_CPUState_h
+#pragma once
 
 #if !defined(CPUSTATE_H_INTERNAL)
 #error "You shall not include this file directly."
@@ -651,5 +650,3 @@ public:
 }
 }
 }
-
-#endif // !__DebugServer2_Architecture_X86_64_CPUState_h
