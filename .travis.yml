@@ -87,4 +87,4 @@ matrix:
 before_install: travis_retry ./Support/Testing/Travis/before-install.py
 install:        travis_retry ./Support/Testing/Travis/install.py
 script:         ./Support/Testing/Travis/script.sh
-after_success:  ./Support/Testing/Travis/after_success.sh
+after_success:  ./Support/Testing/Travis/after-success.sh

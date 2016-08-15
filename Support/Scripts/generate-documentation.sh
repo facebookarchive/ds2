@@ -16,7 +16,7 @@ source "$(dirname "$0")/common.sh"
 
 SOURCE_BRANCH="master"
 TARGET_BRANCH="gh-pages"
-DEPLOY_KEY="Support/Testing/Travis/deploy_key.enc"
+DEPLOY_KEY="Support/Testing/Travis/deploy-key.enc"
 TARGET_DIRECTORY="html"
 
 do_nothing() {
@@ -64,7 +64,7 @@ ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
 ENCRYPTED_IV_VAR="encrypted_${ENCRYPTION_LABEL}_iv"
 ENCRYPTED_KEY="${!ENCRYPTED_KEY_VAR}"
 ENCRYPTED_IV="${!ENCRYPTED_IV_VAR}"
-KEY="$(umask 077; mktemp /tmp/deploy_key-XXXXXX)"
+KEY="$(umask 077; mktemp /tmp/deploy-key-XXXXXX)"
 openssl aes-256-cbc -K "$ENCRYPTED_KEY" -iv "$ENCRYPTED_IV" -in "../$DEPLOY_KEY" -out "$KEY" -d
 eval $(ssh-agent)
 ssh-add "$KEY"
