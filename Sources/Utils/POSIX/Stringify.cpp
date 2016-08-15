@@ -8,7 +8,7 @@
 // PATENTS file in the same directory.
 //
 
-#define __DebugServer2_Utils_Stringify_h_Private
+#define STRINGIFY_H_INTERNAL
 #include "DebugServer2/Utils/Stringify.h"
 #if defined(OS_LINUX)
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"

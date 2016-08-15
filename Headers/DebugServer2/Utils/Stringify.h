@@ -40,7 +40,7 @@ public:
 }
 
 // Private stuff used by implementation functions.
-#if defined(__DebugServer2_Utils_Stringify_h_Private)
+#if defined(STRINGIFY_H_INTERNAL)
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
 
