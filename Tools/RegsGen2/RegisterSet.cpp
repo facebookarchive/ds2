@@ -53,7 +53,7 @@ bool RegisterSet::parse(Context &ctx, std::string const &name,
     //
     reg->ReferencingSets.insert(_name);
 
-    _regs.push_back(std::move(Register::shared_ptr(reg)));
+    _regs.push_back(Register::shared_ptr(reg));
     _map[rname] = _regs.back();
   }
 

@@ -62,7 +62,7 @@ static bool ProcessFlagSets(Context &ctx, JSDictionary const *d) {
       return false;
     }
 
-    ctx.FlagSets[name] = std::move(FlagSet::shared_ptr(flagset));
+    ctx.FlagSets[name] = FlagSet::shared_ptr(flagset);
   }
 
   return true;
