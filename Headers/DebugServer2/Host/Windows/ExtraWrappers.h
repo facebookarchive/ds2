@@ -382,6 +382,13 @@ WINBASEAPI BOOL WINAPI VirtualFreeEx(
   _In_ DWORD  dwFreeType
 );
 
+WINBASEAPI SIZE_T WINAPI VirtualQueryEx(
+  _In_     HANDLE                    hProcess,
+  _In_opt_ LPCVOID                   lpAddress,
+  _Out_    PMEMORY_BASIC_INFORMATION lpBuffer,
+  _In_     SIZE_T                    dwLength
+);
+
 typedef struct tagTHREADENTRY32 {
   DWORD dwSize;
   DWORD cntUsage;
