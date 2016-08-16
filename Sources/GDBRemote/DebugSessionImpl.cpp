@@ -981,6 +981,7 @@ DebugSessionImplBase::onResume(Session &session,
 #endif
 
       case StopInfo::kReasonThreadEntry:
+        CHK(_process->currentThread()->beforeResume());
         CHK(_process->currentThread()->resume());
         break;
 
