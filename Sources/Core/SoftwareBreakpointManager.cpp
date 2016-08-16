@@ -24,7 +24,7 @@ namespace ds2 {
 
 SoftwareBreakpointManager::SoftwareBreakpointManager(
     Target::ProcessBase *process)
-    : super(process) {}
+    : super(process), _enabled(false) {}
 
 SoftwareBreakpointManager::~SoftwareBreakpointManager() { clear(); }
 
@@ -33,10 +33,15 @@ void SoftwareBreakpointManager::clear() {
   _insns.clear();
 }
 
-ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
+ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site,
+                                                    Target::Thread *thread) {
   ByteVector opcode;
   ByteVector old;
   ErrorCode error;
+
+  if (thread != nullptr) {
+    DS2LOG(Warning, "thread-specific software breakpoints are unsupported");
+  }
 
   getOpcode(site.size, opcode);
   old.resize(opcode.size());
@@ -65,9 +70,14 @@ ErrorCode SoftwareBreakpointManager::enableLocation(Site const &site) {
   return kSuccess;
 }
 
-ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site) {
+ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site,
+                                                     Target::Thread *thread) {
   ErrorCode error;
   ByteVector old = _insns[site.address];
+
+  if (thread != nullptr) {
+    DS2LOG(Warning, "thread-specific software breakpoints are unsupported");
+  }
 
   error = _process->writeMemory(site.address, old.data(), old.size());
   if (error != kSuccess) {
@@ -82,5 +92,25 @@ ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site) {
   _insns.erase(site.address);
 
   return kSuccess;
+}
+
+void SoftwareBreakpointManager::enable(Target::Thread *thread) {
+  super::enable(thread);
+
+  _enabled = true;
+}
+
+void SoftwareBreakpointManager::disable(Target::Thread *thread) {
+  super::disable(thread);
+
+  _enabled = false;
+}
+
+bool SoftwareBreakpointManager::enabled(Target::Thread *thread) const {
+  if (thread != nullptr) {
+    DS2LOG(Warning, "thread-specific software breakpoints are unsupported");
+  }
+
+  return _enabled;
 }
 }

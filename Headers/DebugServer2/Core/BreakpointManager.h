@@ -54,7 +54,6 @@ public:
 
 protected:
   SiteMap _sites;
-  bool _enabled;
 
 protected:
   Target::ProcessBase *_process;
@@ -94,10 +93,15 @@ public:
   // If not hit, returns a negative integer
   virtual int hit(Target::Thread *thread, Site &site) = 0;
 
+public:
+  virtual void enable(Target::Thread *thread = nullptr);
+  virtual void disable(Target::Thread *thread = nullptr);
+
 protected:
-  virtual void enable();
-  virtual void disable();
-  virtual ErrorCode enableLocation(Site const &site) = 0;
-  virtual ErrorCode disableLocation(Site const &site) = 0;
+  virtual ErrorCode enableLocation(Site const &site,
+                                   Target::Thread *thread = nullptr) = 0;
+  virtual ErrorCode disableLocation(Site const &site,
+                                    Target::Thread *thread = nullptr) = 0;
+  virtual bool enabled(Target::Thread *thread = nullptr) const = 0;
 };
 }
