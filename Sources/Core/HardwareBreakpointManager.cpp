@@ -48,7 +48,9 @@ ErrorCode HardwareBreakpointManager::remove(Address const &address) {
   return super::remove(address);
 }
 
-ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
+ErrorCode HardwareBreakpointManager::enableLocation(Site const &site,
+                                                    Target::Thread *thread) {
+  ErrorCode error;
   int idx;
 
   auto loc = std::find(_locations.begin(), _locations.end(), site.address);
@@ -61,40 +63,35 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
     idx = loc - _locations.begin();
   }
 
-  std::set<Target::Thread *> threads;
-  _process->enumerateThreads([&](Target::Thread *thread) {
-    if (thread->state() == Target::Thread::kStopped) {
-      threads.insert(thread);
+  enumerateThreads(thread, [&](Target::Thread *t) {
+    if (t->state() == Target::Thread::kStopped && !enabled(t)) {
+      error = enableLocation(site, idx, t);
     }
   });
 
-  for (auto thread : threads) {
-    CHK(enableLocation(site, idx, thread));
+  if (error == kSuccess) {
+    _locations[idx] = site.address;
   }
-
-  _locations[idx] = site.address;
-  return kSuccess;
+  return error;
 }
 
-ErrorCode HardwareBreakpointManager::disableLocation(Site const &site) {
+ErrorCode HardwareBreakpointManager::disableLocation(Site const &site,
+                                                     Target::Thread *thread) {
+  ErrorCode error;
+
   auto loc = std::find(_locations.begin(), _locations.end(), site.address);
   if (loc == _locations.end()) {
     return kErrorInvalidArgument;
   }
   int idx = loc - _locations.begin();
 
-  std::set<Target::Thread *> threads;
-  _process->enumerateThreads([&](Target::Thread *thread) {
-    if (thread->state() == Target::Thread::kStopped) {
-      threads.insert(thread);
+  enumerateThreads(thread, [&](Target::Thread *t) {
+    if (t->state() == Target::Thread::kStopped && enabled(t)) {
+      error = disableLocation(idx, t);
     }
   });
 
-  for (auto thread : threads) {
-    CHK(disableLocation(idx, thread));
-  }
-
-  return kSuccess;
+  return error;
 }
 
 int HardwareBreakpointManager::getAvailableLocation() {
@@ -107,5 +104,47 @@ int HardwareBreakpointManager::getAvailableLocation() {
   DS2ASSERT(it != _locations.end());
 
   return (it - _locations.begin());
+}
+
+void HardwareBreakpointManager::enumerateThreads(
+    Target::Thread *thread,
+    std::function<void(Target::Thread *)> const &cb) const {
+  std::set<Target::Thread *> threads;
+
+  if (thread != nullptr) {
+    threads.insert(thread);
+  } else {
+    _process->enumerateThreads([&](Target::Thread *t) { threads.insert(t); });
+  }
+
+  for (auto t : threads) {
+    cb(t);
+  }
+}
+
+void HardwareBreakpointManager::enable(Target::Thread *thread) {
+  super::enable(thread);
+
+  enumerateThreads(thread,
+                   [this](Target::Thread *t) { _enabled.insert(t->tid()); });
+}
+
+void HardwareBreakpointManager::disable(Target::Thread *thread) {
+  super::disable(thread);
+
+  enumerateThreads(thread,
+                   [this](Target::Thread *t) { _enabled.erase(t->tid()); });
+}
+
+bool HardwareBreakpointManager::enabled(Target::Thread *thread) const {
+  bool isEnabled = true;
+
+  enumerateThreads(thread, [this, &isEnabled](Target::Thread *t) {
+    if (_enabled.count(t->tid()) == 0) {
+      isEnabled = false;
+    }
+  });
+
+  return isEnabled;
 }
 }

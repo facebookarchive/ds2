@@ -12,6 +12,8 @@
 
 #include "DebugServer2/Core/BreakpointManager.h"
 
+#include <unordered_set>
+
 namespace ds2 {
 
 class HardwareBreakpointManager : public BreakpointManager {
@@ -28,14 +30,23 @@ public:
   int hit(Target::Thread *thread, Site &site) override;
 
 protected:
-  ErrorCode enableLocation(Site const &site) override;
+  ErrorCode enableLocation(Site const &site,
+                           Target::Thread *thread = nullptr) override;
   virtual ErrorCode enableLocation(Site const &site, int idx,
                                    Target::Thread *thread);
-  ErrorCode disableLocation(Site const &site) override;
+  ErrorCode disableLocation(Site const &site,
+                            Target::Thread *thread = nullptr) override;
   virtual ErrorCode disableLocation(int idx, Target::Thread *thread);
+
+protected:
+  bool enabled(Target::Thread *thread = nullptr) const override;
 
 public:
   virtual size_t maxWatchpoints();
+
+public:
+  void enable(Target::Thread *thread = nullptr) override;
+  void disable(Target::Thread *thread = nullptr) override;
 
 protected:
   ErrorCode isValid(Address const &address, size_t size,
@@ -45,7 +56,13 @@ protected:
   virtual int getAvailableLocation();
 
 protected:
+  virtual void
+  enumerateThreads(Target::Thread *thread,
+                   std::function<void(Target::Thread *t)> const &cb) const;
+
+protected:
   std::vector<uint64_t> _locations;
+  std::unordered_set<ThreadId> _enabled;
 
 #if defined(ARCH_X86) || defined(ARCH_X86_64)
 protected:

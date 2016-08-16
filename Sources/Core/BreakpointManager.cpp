@@ -14,7 +14,7 @@
 namespace ds2 {
 
 BreakpointManager::BreakpointManager(Target::ProcessBase *process)
-    : _enabled(false), _process(process) {}
+    : _process(process) {}
 
 BreakpointManager::~BreakpointManager() {
   // cannot call clear() here
@@ -47,7 +47,7 @@ ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
 
     // If the breakpoint manager is already in enabled state, enable
     // the newly added breakpoint too.
-    if (_enabled) {
+    if (enabled()) {
       return enableLocation(site);
     }
   }
@@ -91,9 +91,10 @@ do_remove:
   // the newly removed breakpoint too.
   //
   ErrorCode error = kSuccess;
-  if (_enabled) {
+  if (enabled()) {
     error = disableLocation(it->second);
   }
+
   _sites.erase(it);
   return error;
 }
@@ -112,24 +113,25 @@ void BreakpointManager::enumerate(
   }
 }
 
-void BreakpointManager::enable() {
+void BreakpointManager::enable(Target::Thread *thread) {
   //
   // Both callbacks should be installed by child class before
   // enabling the breakpoint manager.
   //
-  if (_enabled)
+  if (enabled(thread)) {
     DS2LOG(Warning, "double-enabling breakpoints");
-  _enabled = true;
+  }
 
-  enumerate([this](Site const &site) { enableLocation(site); });
+  enumerate([this, thread](Site const &site) { enableLocation(site, thread); });
 }
 
-void BreakpointManager::disable() {
-  if (!_enabled)
+void BreakpointManager::disable(Target::Thread *thread) {
+  if (!enabled(thread)) {
     DS2LOG(Warning, "double-disabling breakpoints");
-  _enabled = false;
+  }
 
-  enumerate([this](Site const &site) { disableLocation(site); });
+  enumerate(
+      [this, thread](Site const &site) { disableLocation(site, thread); });
 
   //
   // Remove temporary breakpoints.
