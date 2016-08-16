@@ -1,6 +1,0 @@
-<map id="ds2::Architecture::X86::SoftwareBreakpointManager" name="ds2::Architecture::X86::SoftwareBreakpointManager">
-<area shape="rect" id="node2" href="$classds2_1_1_breakpoint_manager.html" title="ds2::BreakpointManager" alt="" coords="79,200,241,227"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="73,109,247,136"/>
-<area shape="rect" id="node4" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,104,32"/>
-<area shape="rect" id="node6" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="222,5,343,32"/>
-</map>

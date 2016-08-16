@@ -1,11 +1,12 @@
 <map id="Headers/DebugServer2" name="Headers/DebugServer2">
-<area shape="rect" id="node2" href="dir_a4816a28826914852a63da8264c2f899.html" title="Architecture" alt="" coords="641,63,732,111"/>
-<area shape="rect" id="node3" href="dir_f55a053331831536f96f8485e52dd739.html" title="GDB" alt="" coords="544,63,616,111"/>
-<area shape="rect" id="node4" href="dir_f797c3a46e00d30489c8de3a6eb4c0d8.html" title="GDBRemote" alt="" coords="422,63,519,111"/>
-<area shape="rect" id="node5" href="dir_dab054297024725664babbbbd19692a3.html" title="Host" alt="" coords="325,63,397,111"/>
-<area shape="rect" id="node6" href="dir_89e617c3b38453c59e3a1508db4c0180.html" title="Support" alt="" coords="229,63,301,111"/>
-<area shape="rect" id="node7" href="dir_6e824648fd6c2e8144e1c9021bacf354.html" title="Target" alt="" coords="133,63,205,111"/>
-<area shape="rect" id="node8" href="dir_e95b867aa31ba02480ddc9e8dbd4838c.html" title="Utils" alt="" coords="37,63,109,111"/>
-<area shape="rect" id="clust2" href="dir_e58804265081369204162dd5373c2b1a.html" alt="" coords="27,52,872,121"/>
-<area shape="rect" id="clust1" href="dir_692516b589a32b3bfce781ca9f6d1534.html" title="Headers" alt="" coords="16,16,883,132"/>
+<area shape="rect" id="node2" href="dir_a4816a28826914852a63da8264c2f899.html" title="Architecture" alt="" coords="737,63,828,111"/>
+<area shape="rect" id="node3" href="dir_2d8ecd26650f205d4fa3d3a177a0946e.html" title="Core" alt="" coords="640,63,712,111"/>
+<area shape="rect" id="node4" href="dir_f55a053331831536f96f8485e52dd739.html" title="GDB" alt="" coords="544,63,616,111"/>
+<area shape="rect" id="node5" href="dir_f797c3a46e00d30489c8de3a6eb4c0d8.html" title="GDBRemote" alt="" coords="422,63,519,111"/>
+<area shape="rect" id="node6" href="dir_dab054297024725664babbbbd19692a3.html" title="Host" alt="" coords="325,63,397,111"/>
+<area shape="rect" id="node7" href="dir_89e617c3b38453c59e3a1508db4c0180.html" title="Support" alt="" coords="229,63,301,111"/>
+<area shape="rect" id="node8" href="dir_6e824648fd6c2e8144e1c9021bacf354.html" title="Target" alt="" coords="133,63,205,111"/>
+<area shape="rect" id="node9" href="dir_e95b867aa31ba02480ddc9e8dbd4838c.html" title="Utils" alt="" coords="37,63,109,111"/>
+<area shape="rect" id="clust2" href="dir_e58804265081369204162dd5373c2b1a.html" alt="" coords="27,52,968,121"/>
+<area shape="rect" id="clust1" href="dir_692516b589a32b3bfce781ca9f6d1534.html" title="Headers" alt="" coords="16,16,979,132"/>
 </map>
