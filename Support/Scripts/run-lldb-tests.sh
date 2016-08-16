@@ -41,11 +41,6 @@ cherry_pick_patches() {
     done
   fi
 
-  # Watchpoint tests are each in their own directory, so are tough to disable
-  # Will be re-enabled soon anyway, so hack the deletion for now.
-  rm -fr "$lldb_path/packages/Python/lldbsuite/test/functionalities/watchpoint"
-  rm -fr "$lldb_path/packages/Python/lldbsuite/test/python_api/watchpoint"
-
   cd "$OLDPWD"
 }
 
