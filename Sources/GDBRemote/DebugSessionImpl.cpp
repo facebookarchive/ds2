@@ -197,9 +197,7 @@ ErrorCode DebugSessionImplBase::queryStopInfo(Session &session, Thread *thread,
     stop.threadName = Platform::GetThreadName(stop.ptid.pid, stop.ptid.tid);
 
     Architecture::CPUState state;
-    ErrorCode error = thread->readCPUState(state);
-    if (error != kSuccess)
-      return error;
+    CHK(thread->readCPUState(state));
     state.getStopGPState(stop.registers,
                          session.mode() == kCompatibilityModeLLDB);
   } break;
@@ -534,9 +532,7 @@ ErrorCode DebugSessionImplBase::onXferRead(Session &session,
       }
     }
   } else if (object == "auxv") {
-    ErrorCode error = _process->getAuxiliaryVector(buffer);
-    if (error != kSuccess)
-      return error;
+    CHK(_process->getAuxiliaryVector(buffer));
 
     buffer = buffer.substr(offset);
   } else if (object == "threads") {
@@ -656,9 +652,7 @@ ErrorCode DebugSessionImplBase::onReadGeneralRegisters(
     return kErrorProcessNotFound;
 
   Architecture::CPUState state;
-  ErrorCode error = thread->readCPUState(state);
-  if (error != kSuccess)
-    return error;
+  CHK(thread->readCPUState(state));
 
   state.getGPState(regs);
 
@@ -672,9 +666,7 @@ ErrorCode DebugSessionImplBase::onWriteGeneralRegisters(
     return kErrorProcessNotFound;
 
   Architecture::CPUState state;
-  ErrorCode error = thread->readCPUState(state);
-  if (error != kSuccess)
-    return error;
+  CHK(thread->readCPUState(state));
 
   state.setGPState(regs);
 
@@ -691,9 +683,7 @@ ErrorCode DebugSessionImplBase::onSaveRegisters(Session &session,
     return kErrorProcessNotFound;
 
   Architecture::CPUState state;
-  ErrorCode error = thread->readCPUState(state);
-  if (error != kSuccess)
-    return error;
+  CHK(thread->readCPUState(state));
 
   _savedRegisters[counter] = state;
   id = counter++;
@@ -711,9 +701,7 @@ ErrorCode DebugSessionImplBase::onRestoreRegisters(Session &session,
   if (it == _savedRegisters.end())
     return kErrorNotFound;
 
-  ErrorCode error = thread->writeCPUState(it->second);
-  if (error != kSuccess)
-    return error;
+  CHK(thread->writeCPUState(it->second));
 
   _savedRegisters.erase(it);
 
@@ -729,9 +717,7 @@ ErrorCode DebugSessionImplBase::onReadRegisterValue(Session &session,
     return kErrorProcessNotFound;
 
   Architecture::CPUState state;
-  ErrorCode error = thread->readCPUState(state);
-  if (error != kSuccess)
-    return error;
+  CHK(thread->readCPUState(state));
 
   void *ptr;
   size_t length;
@@ -760,9 +746,7 @@ ErrorCode DebugSessionImplBase::onWriteRegisterValue(
     return kErrorProcessNotFound;
 
   Architecture::CPUState state;
-  ErrorCode error = thread->readCPUState(state);
-  if (error != kSuccess)
-    return error;
+  CHK(thread->readCPUState(state));
 
   void *ptr;
   size_t length;
@@ -820,9 +804,7 @@ ErrorCode DebugSessionImplBase::onDeallocateMemory(Session &,
   if (i == _allocations.end())
     return kErrorInvalidArgument;
 
-  ErrorCode error = _process->deallocateMemory(address, i->second);
-  if (error != kSuccess)
-    return error;
+  CHK(_process->deallocateMemory(address, i->second));
 
   _allocations.erase(i);
   return kSuccess;
@@ -996,18 +978,12 @@ DebugSessionImplBase::onResume(Session &session,
       case StopInfo::kReasonDebugOutput: {
         appendOutput(thread->stopInfo().debugString.c_str(),
                      thread->stopInfo().debugString.size());
-        error = _process->resume();
-        if (error != kSuccess) {
-          return error;
-        }
+        CHK(_process->resume());
       } break;
 #endif
 
       case StopInfo::kReasonThreadEntry:
-        error = _process->currentThread()->resume();
-        if (error != kSuccess) {
-          return error;
-        }
+        CHK(_process->currentThread()->resume());
         break;
 
       default:
@@ -1044,9 +1020,7 @@ ErrorCode DebugSessionImplBase::onDetach(Session &, ProcessId, bool stopped) {
   }
 
   if (stopped) {
-    error = _process->suspend();
-    if (error != kSuccess)
-      return error;
+    CHK(_process->suspend());
   }
 
   return _process->detach();
@@ -1221,11 +1195,7 @@ ErrorCode DebugSessionImplBase::onSendInput(Session &session,
 
 ErrorCode DebugSessionImplBase::fetchStopInfoForAllThreads(
     Session &session, std::vector<StopInfo> &stops, StopInfo &processStop) {
-  ErrorCode error =
-      onQueryThreadStopInfo(session, ProcessThreadId(), processStop);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(onQueryThreadStopInfo(session, ProcessThreadId(), processStop));
 
   for (auto const &tid : processStop.threads) {
     StopInfo stop;
@@ -1241,10 +1211,7 @@ DebugSessionImplBase::createThreadsStopInfo(Session &session,
                                             JSArray &threadsStopInfo) {
   StopInfo processStop;
   std::vector<StopInfo> stops;
-  ErrorCode error = fetchStopInfoForAllThreads(session, stops, processStop);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(fetchStopInfoForAllThreads(session, stops, processStop));
 
   for (auto const &stop : stops) {
     threadsStopInfo.append(stop.encodeBriefJson());
