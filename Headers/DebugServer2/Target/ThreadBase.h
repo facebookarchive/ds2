@@ -56,6 +56,9 @@ public:
                            Address const &address = Address()) = 0;
 
 public:
+  virtual ErrorCode beforeResume();
+
+public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state) = 0;
   virtual ErrorCode writeCPUState(Architecture::CPUState const &state) = 0;
   virtual ErrorCode modifyRegisters(

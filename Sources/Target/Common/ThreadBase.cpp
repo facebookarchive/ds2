@@ -30,5 +30,14 @@ ErrorCode ThreadBase::modifyRegisters(
   action(state);
   return writeCPUState(state);
 }
+
+ErrorCode ThreadBase::beforeResume() {
+  BreakpointManager *bpm = _process->hardwareBreakpointManager();
+  if (bpm != nullptr) {
+    bpm->enable((Target::Thread *)this);
+  }
+
+  return kSuccess;
+}
 }
 }

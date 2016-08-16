@@ -285,14 +285,14 @@ ErrorCode ProcessBase::beforeResume() {
     return kErrorProcessNotFound;
 
   //
-  // Enable breakpoints.
+  // Enable software breakpoints.
   //
-  for (auto bpm : std::list<BreakpointManager *>{softwareBreakpointManager(),
-                                                 hardwareBreakpointManager()}) {
-    if (bpm != nullptr) {
-      bpm->enable();
-    }
+  BreakpointManager *bpm = softwareBreakpointManager();
+  if (bpm != nullptr) {
+    bpm->enable();
   }
+
+  enumerateThreads([&](Thread *thread) { thread->beforeResume(); });
 
   return kSuccess;
 }
