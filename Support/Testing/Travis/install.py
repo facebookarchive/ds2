@@ -38,7 +38,7 @@ elif target in linux_packages:
     if "CentOS Linux" in platform.linux_distribution():
         dist_packages.append('gcc')
     else:
-        # Install gcc even when using clang, so we can run llgs tests.
+        # Install gcc even when using clang, so we can run lldb tests.
         dist_packages.append(linux_packages[target])
 elif target == 'MinGW-X86':
     dist_packages.append('g++-mingw-w64-i686')
