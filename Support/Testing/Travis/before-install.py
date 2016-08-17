@@ -22,8 +22,21 @@ elif host == 'Linux':
     repositories = []
     keys = []
 
-    if target in [ 'Style', 'Registers', 'Linux-X86', 'Linux-X86_64', 'Tizen-X86' ]:
+    def add_toolchain_test_repo():
         repositories.append('ppa:ubuntu-toolchain-r/test')
+
+    def add_llvm_repo():
+        add_toolchain_test_repo()
+        keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
+        repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.8 main')
+
+    if target in [ 'Style', 'Registers' ]:
+        add_llvm_repo()
+    elif target in [ 'Linux-X86', 'Linux-X86_64', 'Tizen-X86' ]:
+        add_toolchain_test_repo()
+
+    if os.getenv('CLANG') != None or os.getenv('LLDB_TESTS') != None:
+        add_llvm_repo()
 
     for r in repositories:
         check_call('sudo add-apt-repository -y "%s"' % r, shell=True)

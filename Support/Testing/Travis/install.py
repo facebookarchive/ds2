@@ -13,7 +13,6 @@ import os, platform
 from subprocess import check_call
 
 dist_packages = []
-local_packages = []
 pip_packages = []
 
 linux_packages = { 'Linux-ARM':     'g++-4.8-arm-linux-gnueabihf',
@@ -30,8 +29,8 @@ tizen_packages = { 'Tizen-ARM': linux_packages['Linux-ARM'],
 
 target = os.getenv('TARGET')
 
-if target == 'Registers':
-    dist_packages.append('g++-5')
+if target == 'Style' or target == 'Registers':
+    dist_packages.append('clang-format-3.8')
 elif target == 'Documentation':
     dist_packages.append('doxygen')
     dist_packages.append('graphviz')
@@ -76,21 +75,10 @@ if os.getenv('LLDB_TESTS') != None or os.getenv('GDB_TESTS') != None:
         dist_packages.append('ncurses-devel')
         dist_packages.append('python-devel')
     else:
-        # The order of packages here is important, since they're being installed manually
-        local_packages.append('libllvm3.8')
-        local_packages.append('llvm-3.8-runtime')
-        local_packages.append('llvm-3.8')
-        local_packages.append('llvm-3.8-dev')
         if os.getenv('LLDB_TESTS') != None:
-            local_packages.append('liblldb-3.8')
-            local_packages.append('lldb-3.8')
-            local_packages.append('liblldb-3.8-dev')
-            local_packages.append('python-lldb-3.8')
+            dist_packages.append('lldb-3.8')
         if os.getenv('CLANG') == '1':
-            dist_packages.append('libobjc-4.8-dev')
-            local_packages.append('libclang1-3.8')
-            local_packages.append('libclang-common-3.8-dev')
-            local_packages.append('clang-3.8')
+            dist_packages.append('clang-3.8')
 
 if os.getenv('GDB_TESTS') != None:
     dist_packages.append('dejagnu')
@@ -111,16 +99,6 @@ if len(dist_packages) > 0:
         check_call('sudo yum install -y "%s"' % '" "'.join(dist_packages), shell=True)
     else:
         check_call('sudo apt-get install -y "%s"' % '" "'.join(dist_packages), shell=True)
-
-if len(local_packages) > 0:
-    if 'Darwin' in target:
-        # brew upgrade/install might die if one pkg is already install
-        check_call('brew install "%s" || true' % '" "'.join(local_packages), shell=True)
-        check_call('brew upgrade "%s" || true' % '" "'.join(local_packages), shell=True)
-    else:
-        # These need to be installed individually to properly satisfy dependencies
-        for package in local_packages:
-            check_call('sudo dpkg -i ./Support/Testing/Travis/Packages/' + package + '.deb', shell=True)
 
 if len(pip_packages) > 0:
     check_call('sudo pip install --upgrade pip', shell=True)

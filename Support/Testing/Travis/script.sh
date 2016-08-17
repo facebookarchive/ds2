@@ -11,9 +11,9 @@
 
 set -eu
 
+cformat="clang-format-3.8"
 cmake_package="cmake-3.4.0-Linux-x86_64"
 top="$(git rev-parse --show-toplevel)"
-cformat="$top/Support/clang-format-3.8"
 
 source "$top/Support/Scripts/common.sh"
 
@@ -84,7 +84,7 @@ if [[ "$TARGET" = "Style" ]]; then
 fi
 
 if [[ "$TARGET" = "Registers" ]]; then
-  CLANG_FORMAT="$cformat" CC="gcc-5" CXX="g++-5" ./Support/Scripts/generate-register-descriptors.sh
+  CLANG_FORMAT="$cformat" ./Support/Scripts/generate-register-descriptors.sh
   check_dirty "Generated sources up to date." "Generated sources out of date."
 fi
 
