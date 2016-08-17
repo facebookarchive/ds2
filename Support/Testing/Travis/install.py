@@ -27,41 +27,42 @@ android_toolchains = { 'Android-ARM':       'arm',
 tizen_packages = { 'Tizen-ARM': linux_packages['Linux-ARM'],
                    'Tizen-X86': linux_packages['Linux-X86'] }
 
+host = os.uname()[0]
 target = os.getenv('TARGET')
 
-if target == 'Style' or target == 'Registers':
-    dist_packages.append('clang-format-3.8')
-elif target == 'Documentation':
-    dist_packages.append('doxygen')
-    dist_packages.append('graphviz')
-elif target in linux_packages:
-    if "CentOS Linux" in platform.linux_distribution():
+dist_packages.append('flex')
+dist_packages.append('bison')
+
+if host == 'Darwin':
+    dist_packages.append('cmake')
+    if os.getenv('CLANG') != '1':
         dist_packages.append('gcc')
-    else:
-        # Install gcc even when using clang, so we can run lldb tests.
-        dist_packages.append(linux_packages[target])
-elif target == 'MinGW-X86':
-    dist_packages.append('g++-mingw-w64-i686')
-elif target in android_toolchains:
+elif host == 'Linux':
+    if target == 'Style' or target == 'Registers':
+        dist_packages.append('clang-format-3.8')
+    elif target == 'Documentation':
+        dist_packages.append('doxygen')
+        dist_packages.append('graphviz')
+    elif target in linux_packages:
+        if "CentOS Linux" in platform.linux_distribution():
+            dist_packages.append('gcc')
+        else:
+            # Install gcc even when using clang, so we can run lldb tests.
+            dist_packages.append(linux_packages[target])
+    elif target == 'MinGW-X86':
+        dist_packages.append('g++-mingw-w64-i686')
+    elif target in tizen_packages:
+        dist_packages.append(tizen_packages[target])
+
+if target in android_toolchains:
     # Android builds get the toolchain from AOSP and use platform 21 by default.
     android_platform = os.getenv('ANDROID_PLATFORM', "21")
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s" "%s"' %
                (android_toolchains[target], android_platform), shell=True)
-elif target in tizen_packages:
-    dist_packages.append(tizen_packages[target])
 
-if 'Darwin' in target:
-    dist_packages.append('cmake')
-    if os.getenv('CLANG') == '0':
-        dist_packages.append('gcc')
-
-if 'Android' in target:
-    dist_packages.append('openjdk-7-jdk')
-    dist_packages.append('android-tools-adb')
-
-if target != 'Style':
-    dist_packages.append('flex')
-    dist_packages.append('bison')
+    if os.getenv('LLDB_TESTS') != None:
+        dist_packages.append('openjdk-7-jdk')
+        dist_packages.append('android-tools-adb')
 
 # Running LLDB tests requires an install of lldb (for the tests to be able to
 # use the lldb python library without us building it).
@@ -91,14 +92,15 @@ if os.getenv('COVERAGE') == '1':
     pip_packages.append('cpp-coveralls')
 
 if len(dist_packages) > 0:
-    if 'Darwin' in target:
+    if host == 'Darwin':
         # brew upgrade/install might die if one pkg is already install
         check_call('brew install "%s" || true' % '" "'.join(dist_packages), shell=True)
         check_call('brew upgrade "%s" || true' % '" "'.join(dist_packages), shell=True)
-    elif "CentOS Linux" in platform.linux_distribution():
-        check_call('sudo yum install -y "%s"' % '" "'.join(dist_packages), shell=True)
     else:
-        check_call('sudo apt-get install -y "%s"' % '" "'.join(dist_packages), shell=True)
+        if "CentOS Linux" in platform.linux_distribution():
+            check_call('sudo yum install -y "%s"' % '" "'.join(dist_packages), shell=True)
+        else:
+            check_call('sudo apt-get install -y "%s"' % '" "'.join(dist_packages), shell=True)
 
 if len(pip_packages) > 0:
     check_call('sudo pip install --upgrade pip', shell=True)
