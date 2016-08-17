@@ -1012,8 +1012,6 @@ ret:
 }
 
 ErrorCode DebugSessionImplBase::onDetach(Session &, ProcessId, bool stopped) {
-  ErrorCode error;
-
   SoftwareBreakpointManager *bpm = _process->softwareBreakpointManager();
   if (bpm != nullptr) {
     bpm->clear();
