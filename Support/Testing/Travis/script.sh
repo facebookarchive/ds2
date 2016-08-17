@@ -11,11 +11,10 @@
 
 set -eu
 
-cformat="clang-format-3.8"
-cmake_package="cmake-3.4.0-Linux-x86_64"
 top="$(git rev-parse --show-toplevel)"
-
 source "$top/Support/Scripts/common.sh"
+
+cformat="clang-format-3.8"
 
 # If we're at the root of the repository, create a build directory and go
 # there; otherwise, assume that we're already in the build directory the user
@@ -25,23 +24,24 @@ if same_dir "$PWD" "$top"; then
 fi
 
 # Get a recent cmake from cmake.org; packages for Ubuntu are too old.
+cmake_version="3.6"
+cmake_package="cmake-${cmake_version}.0-Linux-x86_64"
 if grep -q "Ubuntu" "/etc/issue" && [ ! -d "/tmp/$cmake_package/bin" ]; then
   cd /tmp
 
   if [ ! -e "$cmake_package.tar.gz" ] ; then
-    wget --no-check-certificate "https://cmake.org/files/v3.4/$cmake_package.tar.gz"
+    wget "https://cmake.org/files/v${cmake_version}/${cmake_package}.tar.gz"
   fi
 
-  tar -xf "$cmake_package.tar.gz"
+  tar -xf "${cmake_package}.tar.gz"
 
   cd "$OLDPWD"
 fi
-
 export PATH="/tmp/$cmake_package/bin:$PATH"
 
+# Get a build of Ninja.
 ninja_version="v1.6.0"
 ninja_dir="ninja-$ninja_version"
-
 if [ -s "/etc/centos-release" ] && [ ! -d "/tmp/$ninja_dir" ]; then
   cd /tmp
 
@@ -55,7 +55,6 @@ if [ -s "/etc/centos-release" ] && [ ! -d "/tmp/$ninja_dir" ]; then
 
   cd "$OLDPWD"
 fi
-
 export PATH="/tmp/$ninja_dir:$PATH"
 
 # Go to the root of the repo to check style and register files.
