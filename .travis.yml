@@ -35,6 +35,8 @@ matrix:
     - os: linux
       env: TARGET="Android-X86"
     - os: linux
+      env: TARGET="Android-X86" ANDROID_PLATFORM="16"
+    - os: linux
       env: TARGET="Android-X86_64"
     - os: linux
       env: TARGET="MinGW-X86"
