@@ -1,0 +1,12 @@
+diff --git a/packages/Python/lldbsuite/test/functionalities/data-formatter/data-formatter-stl/libstdcpp/string/TestDataFormatterStdString.py b/packages/Python/lldbsuite/test/functionalities/data-formatter/data-formatter-stl/libstdcpp/string/TestDataFormatterStdString.py
+index 2d6af24..1de858e 100644
+--- a/packages/Python/lldbsuite/test/functionalities/data-formatter/data-formatter-stl/libstdcpp/string/TestDataFormatterStdString.py
++++ b/packages/Python/lldbsuite/test/functionalities/data-formatter/data-formatter-stl/libstdcpp/string/TestDataFormatterStdString.py
+@@ -23,6 +23,7 @@ class StdStringDataFormatterTestCase(TestBase):
+         self.line = line_number('main.cpp', '// Set break point at this line.')
+ 
+     @skipIfWindows # libstdcpp not ported to Windows
++    @expectedFailureAndroid(archs=['arm'])
+     def test_with_run_command(self):
+         """Test that that file and class static variables display correctly."""
+         self.build()
