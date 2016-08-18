@@ -26,6 +26,11 @@
 
 #if !defined(DOXYGEN)
 
+#if defined(ARCH_ARM) && !defined(ARM_VFPREGS_SIZE)
+#define ARM_VFPREGS_SIZE (32 * 8 + 4)
+#endif // ARCH_ARM && !ARM_VFPREGS_SIZE
+
+#if defined(ARCH_X86) || defined(ARCH_X86_64)
 // Required structs for PTrace GETREGSET with NT_X86_STATE
 // These structs are not made available by the system headers
 struct YMMHighVector {
@@ -38,11 +43,29 @@ struct xstate_hdr {
   uint64_t reserved2[5];
 } DS2_ATTRIBUTE_PACKED;
 
-#if defined(ARCH_ARM)
-#if !defined(ARM_VFPREGS_SIZE)
-#define ARM_VFPREGS_SIZE (32 * 8 + 4)
-#endif // !ARM_VFPREGS_SIZE
-#elif defined(ARCH_X86)
+#if !defined(NT_X86_XSTATE)
+#define NT_X86_XSTATE 0x202
+#endif // !NT_X86_XSTATE
+
+#if !defined(HAVE_STRUCT_USER_FPXREGS_STRUCT)
+struct user_fpxregs_struct {
+  unsigned short cwd;
+  unsigned short swd;
+  unsigned short twd;
+  unsigned short fop;
+  long fip;
+  long fcs;
+  long foo;
+  long fos;
+  long mxcsr;
+  long reserved;
+  long st_space[32];
+  long xmm_space[32];
+  long padding[56];
+};
+#endif // !HAVE_STRUCT_USER_FPXREGS_STRUCT
+
+#if defined(ARCH_X86)
 struct xfpregs_struct {
   user_fpxregs_struct fpregs;
   xstate_hdr header;
@@ -55,6 +78,7 @@ struct xfpregs_struct {
   YMMHighVector ymmh[16];
 } DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
 #endif
+#endif // ARCH_X86 || ARCH_X86_64
 
 #if !defined(HAVE_POSIX_OPENPT)
 // Older android sysroots don't have `posix_openpt` but they all use the
