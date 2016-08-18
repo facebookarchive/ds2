@@ -27,7 +27,7 @@ matrix:
       env: TARGET="Documentation" ENCRYPTION_LABEL="c06a05533acc"
     # Cross-compiled targets
     - os: linux
-      env: TARGET="Android-ARM"
+      env: TARGET="Android-ARM" LLDB_TESTS="all" CLANG="0" PLATFORM="1"
     - os: linux
       env: TARGET="Android-ARM" ANDROID_PLATFORM="16"
     - os: linux

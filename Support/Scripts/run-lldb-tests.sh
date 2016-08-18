@@ -32,6 +32,15 @@ cherry_pick_patches() {
     done
   fi
 
+  if [[ "${TARGET-}" = Android* ]]; then
+    # Platform tests
+    local testingPath="$top/Support/Testing"
+    for p in "$testingPath"/Patches/lldb-android/*.patch; do
+      echo "Applying $p"
+      patch -d "$lldb_path" -p1 <"$p"
+    done
+  fi
+
   # Watchpoint tests are each in their own directory, so are tough to disable
   # Will be re-enabled soon anyway, so hack the deletion for now.
   rm -fr "$lldb_path/packages/Python/lldbsuite/test/functionalities/watchpoint"
@@ -64,6 +73,12 @@ for o in "$@"; do
   esac
 done
 
+if [[ "${TARGET-}" = Android* ]]; then
+  platform_name="android"
+else
+  platform_name="linux"
+fi
+
 if [ -s "/etc/centos-release" ]; then
   llvm_path="$build_dir/llvm"
   llvm_build="$llvm_path/build"
@@ -86,7 +101,11 @@ if [ -s "/etc/centos-release" ]; then
 elif grep -q "Ubuntu" "/etc/issue"; then
   lldb_path="$build_dir/lldb"
   lldb_exe="$(which lldb-3.8)"
-  cc_exe="$(which gcc-5)"
+  if [[ "$platform_name" = "linux" ]]; then
+    cc_exe="$(which gcc-5)"
+  elif [[ "$platform_name" = "android" ]]; then
+    cc_exe="/tmp/aosp-toolchain/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-gcc"
+  fi
   python_base="$build_dir/lib"
   export LD_LIBRARY_PATH=$python_base
   export PYTHONPATH="$python_base/python2.7/site-packages"
@@ -122,6 +141,8 @@ if [ -n "${TARGET-}" ]; then
     args+=("--arch=x86_64")
   elif [[ "${TARGET}" = "Linux-X86" ]]; then
     args+=("--arch=i386")
+  elif [[ "${TARGET}" = "Android-ARM" ]]; then
+    args+=("--arch=arm")
   fi
 else
   # If this is a developer run (not running on Travis with a $TARGET), run all
@@ -147,19 +168,36 @@ else
 fi
 
 if [[ "${PLATFORM-}" = "1" ]]; then
-  args+=("--platform-name=remote-linux" "--platform-url=connect://localhost:12345" "--platform-working-dir=$build_dir" "--no-multiprocess")
+  if [[ "$platform_name" = "linux" ]]; then
+    working_dir="$build_dir"
+  elif [[ "$platform_name" = "android" ]]; then
+    working_dir="/data/local/tmp"
+  fi
+
+  args+=("--platform-name=remote-$platform_name" "--platform-url=connect://localhost:12345" "--platform-working-dir=$working_dir" "--no-multiprocess")
   ds2_args=("p")
 
   if $opt_log; then
-    ds2_args+=("--remote-debug" "--log-file=$build_dir/ds2.log")
+    ds2_args+=("--remote-debug" "--log-file=$working_dir/ds2.log")
   fi
 
   # These tests are not currently supported on Platform mode, because of deficiencies in the 
   # lldb platform python API
   rm -fr "$lldb_path/packages/Python/lldbsuite/test/tools/lldb-server"
 
-  "$ds2_path" "${ds2_args[@]}" &
-  add_exit_handler kill -9 $!
+  if [[ "$platform_name" = "linux" ]]; then
+    "$ds2_path" "${ds2_args[@]}" &
+    add_exit_handler kill -9 $!
+  elif [[ "$platform_name" = "android" ]]; then
+    debug_libdir="/tmp/debug-data/"
+    mkdir -p "$debug_libdir"
+    debug_libs=("/system/bin/linker" "/system/lib/libc.so" "/system/lib/libm.so" "/system/lib/libstdc++.so")
+    for lib in "${debug_libs[@]}" ; do
+      adb pull "$lib" "$debug_libdir"
+    done
+    adb push "$ds2_path" "$working_dir"
+    adb shell "$working_dir/ds2" "${ds2_args[@]}" &
+  fi
   sleep 3
 else
   if $opt_log; then
