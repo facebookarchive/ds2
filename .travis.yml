@@ -88,5 +88,6 @@ matrix:
 # Use travis_retry during install to reduce the impact of network failures.
 before_install: travis_retry ./Support/Testing/Travis/before-install.py
 install:        travis_retry ./Support/Testing/Travis/install.py
+before_script:  ./Support/Testing/Travis/before-script.sh
 script:         ./Support/Testing/Travis/script.sh
 after_success:  ./Support/Testing/Travis/after-success.sh
