@@ -1,0 +1,12 @@
+diff --git a/packages/Python/lldbsuite/test/functionalities/inline-stepping/TestInlineStepping.py b/packages/Python/lldbsuite/test/functionalities/inline-stepping/TestInlineStepping.py
+index 023f6f3..0703c8a 100644
+--- a/packages/Python/lldbsuite/test/functionalities/inline-stepping/TestInlineStepping.py
++++ b/packages/Python/lldbsuite/test/functionalities/inline-stepping/TestInlineStepping.py
+@@ -30,6 +29,7 @@ class TestInlineStepping(TestBase):
+         self.inline_stepping_step_over()
+     
+     @add_test_categories(['pyapi'])
++    @expectedFailureAndroid(archs=['arm'])
+     def test_step_in_template_with_python_api(self):
+         """Test stepping in to templated functions."""
+         self.build()
