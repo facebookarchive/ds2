@@ -19,32 +19,41 @@ case "$(uname)" in
   *)        die "This script works only on Linux and Mac OS X.";;
 esac
 
-if [ $# -eq 0 ]; then
-  for arch in aarch64 arm x86; do
-    "$0" "$arch"
-  done
-  exit 0
-fi
+target_arch="${1-arm}"
+api_level="${2-21}"
 
-case "${1}" in
-  "aarch64")  toolchain_arch="aarch64"; toolchain_triple="aarch64-linux-android";;
-  "arm")      toolchain_arch="arm";     toolchain_triple="arm-linux-androideabi";;
-  "x86")      toolchain_arch="x86_64";  toolchain_triple="x86_64-linux-android";;
-  *)          die "Unknown architecture '${1}'." ;;
+case "${target_arch}" in
+  arm)
+    toolchain_triple="arm-linux-androideabi"
+    ;;
+
+  i[3-6]86|x86)
+    # API levels 21 and up have a dual-arch x86 toolchain. Just use that.
+    if [ "${api_level}" -ge 21 ]; then
+      exec "$0" x86_64 "${api_level}"
+    fi
+    target_arch="x86"
+    toolchain_triple="x86_64-linux-android"
+    ;;
+
+  arm64|aarch64)
+    [ "${api_level}" -ge 21 ] || die "Minimum supported api level for ${target_arch} is 21."
+    target_arch="arm64"
+    toolchain_triple="aarch64-linux-android"
+    ;;
+
+  amd64|x86_64)
+    [ "${api_level}" -ge 21 ] || die "Minimum supported api level for ${target_arch} is 21."
+    target_arch="x86_64"
+    toolchain_triple="x86_64-linux-android"
+    ;;
+
+  *) die "Unknown architecture '${target_arch}'.";;
 esac
 
-if [ $# -lt 2 ]; then
-  aosp_platform="android-21"
-else
-  if [ "${2}" -lt 16 ]; then
-    die "Minimum supported android platform is 16."
-  fi
-  if [ "${2}" -lt 21 ] && [ "${1}" != "arm" ]; then
-    die "Minimum supported android platform for \`${1}' target is 21."
-  fi
-  aosp_platform="android-${2}"
-fi
+[ "${api_level}" -ge 16 ] || die "Minimum supported api level is 16."
 
+aosp_platform="android-${api_level}"
 toolchain_version="4.9"
 toolchain_path="/tmp/aosp-toolchain/${toolchain_triple}-${toolchain_version}"
 aosp_ndk_path="/tmp/aosp-toolchain/aosp-ndk"
@@ -54,34 +63,27 @@ aosp_prebuilt_clone() {
 }
 
 clobber_dir() {
-  if [ -e "$2" ]; then
-    rm -rf "$2"
-  fi
-
+  rm -rf "$2"
   mkdir -p "$(dirname "$2")"
-  cp -R "$1" "$2"
+  cp -R "$(realpath "$1")" "$2"
 }
 
 mkdir -p "$(dirname "${toolchain_path}")"
 
-aosp_prebuilt_clone "gcc/${host}/$1/${toolchain_triple}-${toolchain_version}" "${toolchain_path}"
+case "${target_arch}" in
+  x86_64) aosp_prebuilt_clone "gcc/${host}/x86/${toolchain_triple}-${toolchain_version}" "${toolchain_path}";;
+  arm64)  aosp_prebuilt_clone "gcc/${host}/aarch64/${toolchain_triple}-${toolchain_version}" "${toolchain_path}";;
+  *)      aosp_prebuilt_clone "gcc/${host}/${target_arch}/${toolchain_triple}-${toolchain_version}" "${toolchain_path}";;
+esac
 aosp_prebuilt_clone "ndk" "${aosp_ndk_path}"
 
 # Copy sysroot.
-case "$1" in
-  "aarch64")
-    # For aarch64, the sysroot is in `arch-arm64`, not `arch-aarch64`.
-    clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-arm64" "${toolchain_path}/sysroot"
-    ;;
-  "arm")
-    clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
-    ;;
-  "x86")
-    # For x86_64, libraries are in `usr/lib64/`; we need to copy 32-bit versions of these libraries to `usr/lib/`.
-    clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-${toolchain_arch}" "${toolchain_path}/sysroot"
-    clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-x86/usr/lib" "${toolchain_path}/sysroot/usr/lib"
-    ;;
-esac
+clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-${target_arch}" "${toolchain_path}/sysroot"
+if [ "${target_arch}" == "x86_64" ]; then
+  # For x86_64, libraries are in `usr/lib64/`; we need to copy 32-bit versions
+  # of these libraries to `usr/lib/`.
+  clobber_dir "${aosp_ndk_path}/current/platforms/${aosp_platform}/arch-x86/usr/lib" "${toolchain_path}/sysroot/usr/lib"
+fi
 
 # gcc version isn't guaranteed to match toolchain version - for example, 4.9 vs 4.9.x
 gcc_version="$( "${toolchain_path}/bin/${toolchain_triple}-gcc" --version | awk 'NR==1{print $3}' )"
@@ -96,16 +98,16 @@ copy_cpp_binaries() {
 copy_cpp_bits() {
   clobber_dir "${aosp_ndk_path}/current/sources/cxx-stl/gnu-libstdc++/${toolchain_version}/libs/$1/include/bits" "${toolchain_path}/include/c++/${gcc_version}/${toolchain_triple}/$2"
 }
-case "$1" in
-  "aarch64")
-    copy_cpp_binaries "arm64-v8a" "lib"
-    copy_cpp_bits "arm64-v8a" "bits"
-    ;;
-  "arm")
+case "${target_arch}" in
+  arm)
     copy_cpp_binaries "armeabi" "lib"
     copy_cpp_bits "armeabi" "bits"
     ;;
-  "x86")
+  arm64)
+    copy_cpp_binaries "arm64-v8a" "lib"
+    copy_cpp_bits "arm64-v8a" "bits"
+    ;;
+  x86|x86_64)
     copy_cpp_binaries "x86_64" "lib64"; copy_cpp_binaries "x86" "lib"
     copy_cpp_bits "x86_64" "bits";      copy_cpp_bits "x86" "32/bits"
     ;;
