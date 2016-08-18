@@ -59,7 +59,6 @@ if target in android_toolchains:
     android_platform = os.getenv('ANDROID_PLATFORM', "21")
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s" "%s"' %
                (android_toolchains[target], android_platform), shell=True)
-
     if os.getenv('LLDB_TESTS') != None:
         dist_packages.append('openjdk-7-jdk')
         dist_packages.append('android-tools-adb')
@@ -106,3 +105,8 @@ if len(pip_packages) > 0:
     check_call('sudo pip install --upgrade pip', shell=True)
     for package in pip_packages:
         check_call('pip install --user ' + package, shell=True)
+
+# This step must happen after package installation, as it requires java be installed.
+if target in android_toolchains and os.getenv('LLDB_TESTS') != None:
+    check_call('./Support/Scripts/install-android-emulator.sh', shell=True)
+
