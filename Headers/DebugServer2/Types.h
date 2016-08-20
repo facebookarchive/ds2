@@ -308,11 +308,12 @@ struct MemoryRegionInfo {
 #endif
 
   MemoryRegionInfo() { clear(); }
-  MemoryRegionInfo(Address const &start, uint64_t length, uint64_t protection) {
+  MemoryRegionInfo(Address const &start_, uint64_t length_,
+                   uint64_t protection_) {
     clear();
-    this->start = start;
-    this->length = length;
-    this->protection = protection;
+    start = start_;
+    length = length_;
+    protection = protection_;
   }
 
   inline void clear() {
