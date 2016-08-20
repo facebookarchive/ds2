@@ -396,50 +396,51 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;  <a class="code" href="structds2_1_1_memory_region_info.html">MemoryRegionInfo</a>() { clear(); }</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;  <a class="code" href="structds2_1_1_memory_region_info.html">MemoryRegionInfo</a>(<a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;start, uint64_t length, uint64_t protection) {</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    clear();</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    this-&gt;start = start;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    this-&gt;length = length;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    this-&gt;protection = protection;</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;  }</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> clear() {</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    start.clear();</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    length = 0;</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    protection = 0;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;<span class="preprocessor">#if defined(OS_LINUX)</span></div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;<span class="preprocessor"></span>    backingFile.clear();</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    backingFileOffset = 0;</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    backingFileInode = 0;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;<span class="preprocessor"></span>  }</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;};</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;</div>
-<div class="line"><a name="l00330"></a><span class="lineno"><a class="line" href="structds2_1_1_shared_library_info.html">  330</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structds2_1_1_shared_library_info.html">SharedLibraryInfo</a> {</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;  std::string path;</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;  <span class="keywordtype">bool</span> main;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;  <span class="keyword">struct </span>{</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    uint64_t mapAddress;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    uint64_t baseAddress;</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    uint64_t ldAddress;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;  } svr4;</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;  std::vector&lt;uint64_t&gt; sections;</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;};</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;</div>
-<div class="line"><a name="l00341"></a><span class="lineno"><a class="line" href="structds2_1_1_mapped_file_info.html">  341</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structds2_1_1_mapped_file_info.html">MappedFileInfo</a> {</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;  std::string path;</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  uint64_t baseAddress;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;  uint64_t size;</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;};</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;}</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;  <a class="code" href="structds2_1_1_memory_region_info.html">MemoryRegionInfo</a>(<a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;start_, uint64_t length_,</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                   uint64_t protection_) {</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    clear();</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    start = start_;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    length = length_;</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    protection = protection_;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;  }</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> clear() {</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    start.clear();</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    length = 0;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    protection = 0;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;<span class="preprocessor">#if defined(OS_LINUX)</span></div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;<span class="preprocessor"></span>    backingFile.clear();</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    backingFileOffset = 0;</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    backingFileInode = 0;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;<span class="preprocessor"></span>  }</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;};</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;</div>
+<div class="line"><a name="l00331"></a><span class="lineno"><a class="line" href="structds2_1_1_shared_library_info.html">  331</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structds2_1_1_shared_library_info.html">SharedLibraryInfo</a> {</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;  std::string path;</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;  <span class="keywordtype">bool</span> main;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;  <span class="keyword">struct </span>{</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    uint64_t mapAddress;</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    uint64_t baseAddress;</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    uint64_t ldAddress;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;  } svr4;</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;  std::vector&lt;uint64_t&gt; sections;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;};</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;</div>
+<div class="line"><a name="l00342"></a><span class="lineno"><a class="line" href="structds2_1_1_mapped_file_info.html">  342</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structds2_1_1_mapped_file_info.html">MappedFileInfo</a> {</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  std::string path;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;  uint64_t baseAddress;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;  uint64_t size;</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;};</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;}</div>
 <div class="ttc" id="structds2_1_1_process_thread_id_html"><div class="ttname"><a href="structds2_1_1_process_thread_id.html">ds2::ProcessThreadId</a></div><div class="ttdef"><b>Definition:</b> Types.h:57</div></div>
 <div class="ttc" id="classds2_1_1_address_html"><div class="ttname"><a href="classds2_1_1_address.html">ds2::Address</a></div><div class="ttdef"><b>Definition:</b> Types.h:152</div></div>
 <div class="ttc" id="structds2_1_1_process_info_html"><div class="ttname"><a href="structds2_1_1_process_info.html">ds2::ProcessInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:227</div></div>
 <div class="ttc" id="structds2_1_1_host_info_html"><div class="ttname"><a href="structds2_1_1_host_info.html">ds2::HostInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:196</div></div>
 <div class="ttc" id="structds2_1_1_stop_info_html"><div class="ttname"><a href="structds2_1_1_stop_info.html">ds2::StopInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:93</div></div>
-<div class="ttc" id="structds2_1_1_shared_library_info_html"><div class="ttname"><a href="structds2_1_1_shared_library_info.html">ds2::SharedLibraryInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:330</div></div>
+<div class="ttc" id="structds2_1_1_shared_library_info_html"><div class="ttname"><a href="structds2_1_1_shared_library_info.html">ds2::SharedLibraryInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:331</div></div>
 <div class="ttc" id="structds2_1_1_memory_region_info_html"><div class="ttname"><a href="structds2_1_1_memory_region_info.html">ds2::MemoryRegionInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:298</div></div>
-<div class="ttc" id="structds2_1_1_mapped_file_info_html"><div class="ttname"><a href="structds2_1_1_mapped_file_info.html">ds2::MappedFileInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:341</div></div>
+<div class="ttc" id="structds2_1_1_mapped_file_info_html"><div class="ttname"><a href="structds2_1_1_mapped_file_info.html">ds2::MappedFileInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:342</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
