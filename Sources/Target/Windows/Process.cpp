@@ -16,6 +16,7 @@
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Types.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/ScopedJanitor.h"
 #include "DebugServer2/Utils/Stringify.h"
 
 #include <psapi.h>
@@ -437,7 +438,11 @@ error:
 ErrorCode Process::writeMemory(Address const &address, void const *data,
                                size_t length, size_t *nwritten) {
   std::vector<MemoryRegionInfo> modifiedRegions;
+
   CHK(makeMemoryWritable(address, length, modifiedRegions));
+  auto janitor = Utils::MakeJanitor([this, &modifiedRegions]() {
+    this->restoreRegionsProtection(modifiedRegions);
+  });
 
   SIZE_T bytesWritten;
   BOOL result =
@@ -448,11 +453,10 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
     *nwritten = static_cast<size_t>(bytesWritten);
   }
 
-  ErrorCode error = kSuccess;
   if (!result) {
-    auto winError = GetLastError();
-    if (winError != ERROR_PARTIAL_COPY || bytesWritten == 0) {
-      error = Host::Platform::TranslateError(winError);
+    auto error = GetLastError();
+    if (error != ERROR_PARTIAL_COPY || bytesWritten == 0) {
+      return Host::Platform::TranslateError(error);
     }
   }
 
@@ -461,8 +465,7 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
     DS2LOG(Warning, "unable to flush instruction cache");
   }
 
-  CHK(restoreRegionsProtection(modifiedRegions));
-  return error;
+  return kSuccess;
 }
 
 ErrorCode Process::updateInfo() {
