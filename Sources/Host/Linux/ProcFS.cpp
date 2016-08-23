@@ -334,12 +334,9 @@ bool ProcFS::ReadStat(pid_t pid, pid_t tid, Stat &stat) {
   if (fp == nullptr)
     return false;
 
-  //
-  // The complicated logic about the comm field is brought
-  // to you to the insane way of Linux to `encode' that field,
-  // an evil executable may contains ')' in its name and
-  // break the parsing.
-  //
+  // The complicated logic about the comm field is brought to you by the insane
+  // way Linux "encodes" that field.  An evil executable might contain ')' in
+  // its name and break the parsing.
   std::string comm;
   size_t field_index = STAT_F_PID;
   bool may_end_comm = false;
