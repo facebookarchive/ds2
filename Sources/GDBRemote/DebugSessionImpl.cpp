@@ -1136,7 +1136,7 @@ ErrorCode DebugSessionImplBase::onRemoveBreakpoint(Session &session,
 ErrorCode DebugSessionImplBase::spawnProcess(StringCollection const &args,
                                              EnvironmentBlock const &env) {
   if (GetLogLevel() >= kLogLevelInfo) {
-    DS2LOG(Info, "spawning process `%s`", args[0].c_str());
+    DS2LOG(Info, "spawning process '%s'", args[0].c_str());
   } else {
     DS2LOG(Debug, "spawning process with args:");
     for (auto const &arg : args)
