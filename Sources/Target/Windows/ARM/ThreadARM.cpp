@@ -35,18 +35,12 @@ ErrorCode Thread::step(int signal, Address const &address) {
 
   // Prepare a software (arch-dependent) single step and resume execution.
   Architecture::CPUState state;
-  ErrorCode error = readCPUState(state);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(readCPUState(state));
+  CHK(PrepareSoftwareSingleStep(
+      process(), process()->softwareBreakpointManager(), state, address));
+  CHK(resume(signal, address));
 
-  error = PrepareSoftwareSingleStep(
-      process(), process()->softwareBreakpointManager(), state, address);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  return resume(signal, address);
+  return kSuccess;
 }
 
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {

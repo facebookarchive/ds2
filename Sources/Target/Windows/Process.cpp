@@ -57,18 +57,17 @@ Process::~Process() {
   // debugged winphone process might stay alive in an unclosable state. If
   // detached, the winphone process dies gracefully.
   detach();
-  CloseHandle(_handle);
+  ::CloseHandle(_handle);
 }
 
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   // The first call to `wait()` will receive a CREATE_PROCESS_DEBUG_EVENT event
   // which will fill in `_handle` and create the main thread for this process.
-  ErrorCode error = wait();
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(wait());
 
-  error = super::initialize(pid, flags);
+  // Can't use `CHK()` here because of a bug in GCC. See
+  // http://stackoverflow.com/a/12086873/5731788
+  ErrorCode error = super::initialize(pid, flags);
   if (error != kSuccess) {
     return error;
   }
@@ -81,14 +80,8 @@ ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   // `DbgBreakPoint`, which is called by the remote thread `DebugActiveProcess`
   // creates.
   do {
-    error = resume();
-    if (error != kSuccess) {
-      return error;
-    }
-    error = wait();
-    if (error != kSuccess) {
-      return error;
-    }
+    CHK(resume());
+    CHK(wait());
   } while (currentThread()->stopInfo().event != StopInfo::kEventStop ||
            currentThread()->stopInfo().reason != StopInfo::kReasonBreakpoint);
 
@@ -143,26 +136,16 @@ ErrorCode Process::writeDebugBreakCode(uint64_t address) {
       reinterpret_cast<uint32_t>(exitThreadAddress);
 
   size_t written;
-  ErrorCode error =
-      writeMemory(Address(address), &codestr[0], codestr.size(), &written);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(writeMemory(Address(address), &codestr[0], codestr.size(), &written));
   return kSuccess;
 }
 
 ErrorCode Process::interrupt() {
   uint64_t address;
-  ErrorCode error = allocateMemory(
-      Platform::GetPageSize(), kProtectionExecute | kProtectionWrite, &address);
-  if (error != kSuccess) {
-    return error;
-  }
 
-  error = writeDebugBreakCode(address);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(allocateMemory(Platform::GetPageSize(),
+                     kProtectionExecute | kProtectionWrite, &address));
+  CHK(writeDebugBreakCode(address));
 
   DWORD threadId;
 #if defined(ARCH_ARM)
@@ -171,9 +154,9 @@ ErrorCode Process::interrupt() {
 #else
   auto remoteAddress = address;
 #endif
-  if (CreateRemoteThread(_handle, NULL, 0,
-                         (LPTHREAD_START_ROUTINE)remoteAddress, NULL, 0,
-                         &threadId) == NULL) {
+  if (::CreateRemoteThread(_handle, NULL, 0,
+                           (LPTHREAD_START_ROUTINE)remoteAddress, NULL, 0,
+                           &threadId) == NULL) {
     return Platform::TranslateError();
   }
 
@@ -181,9 +164,10 @@ ErrorCode Process::interrupt() {
 }
 
 ErrorCode Process::terminate() {
-  BOOL result = TerminateProcess(_handle, 0);
-  if (!result)
+  BOOL result = ::TerminateProcess(_handle, 0);
+  if (!result) {
     return Platform::TranslateError();
+  }
 
   _terminated = true;
   return kSuccess;
@@ -211,7 +195,7 @@ ErrorCode Process::wait() {
     _currentThread = nullptr;
 
     DEBUG_EVENT de;
-    BOOL result = WaitForDebugEvent(&de, INFINITE);
+    BOOL result = ::WaitForDebugEvent(&de, INFINITE);
     if (!result)
       return Platform::TranslateError();
 
@@ -224,7 +208,7 @@ ErrorCode Process::wait() {
       DS2ASSERT(de.u.CreateProcessInfo.hProcess != NULL);
       DS2ASSERT(de.u.CreateProcessInfo.hThread != NULL);
       if (de.u.CreateProcessInfo.hFile != NULL) {
-        CloseHandle(de.u.CreateProcessInfo.hFile);
+        ::CloseHandle(de.u.CreateProcessInfo.hFile);
       }
 
       _handle = de.u.CreateProcessInfo.hProcess;
@@ -243,7 +227,7 @@ ErrorCode Process::wait() {
       _currentThread->_state = Thread::kTerminated;
 
       DWORD exitCode;
-      BOOL result = GetExitCodeProcess(_handle, &exitCode);
+      BOOL result = ::GetExitCodeProcess(_handle, &exitCode);
       if (!result) {
         return Platform::TranslateError();
       }
@@ -256,20 +240,14 @@ ErrorCode Process::wait() {
     case CREATE_THREAD_DEBUG_EVENT: {
       _currentThread =
           new Thread(this, de.dwThreadId, de.u.CreateThread.hThread);
-      ErrorCode error = _currentThread->resume();
-      if (error != kSuccess) {
-        return error;
-      }
+      CHK(_currentThread->resume());
       continue;
     }
 
     case EXIT_THREAD_DEBUG_EVENT: {
       _currentThread = findThread(_threads, de.dwThreadId);
       _currentThread->updateState(de);
-      ErrorCode error = _currentThread->resume();
-      if (error != kSuccess) {
-        return error;
-      }
+      CHK(_currentThread->resume());
       removeThread(_currentThread->tid());
       continue;
     }
@@ -280,12 +258,7 @@ ErrorCode Process::wait() {
     case OUTPUT_DEBUG_STRING_EVENT: {
       _currentThread = findThread(_threads, de.dwThreadId);
       _currentThread->updateState(de);
-
-      ErrorCode error = suspend();
-      if (error != kSuccess) {
-        return error;
-      }
-
+      CHK(suspend());
       return kSuccess;
     }
 
@@ -300,10 +273,7 @@ ErrorCode Process::readString(Address const &address, std::string &str,
                               size_t length, size_t *nread) {
   for (size_t i = 0; i < length; ++i) {
     char c;
-    ErrorCode error = readMemory(address + i, &c, sizeof(c), nullptr);
-    if (error != kSuccess) {
-      return error;
-    }
+    CHK(readMemory(address + i, &c, sizeof(c), nullptr));
     if (c == '\0') {
       return kSuccess;
     }

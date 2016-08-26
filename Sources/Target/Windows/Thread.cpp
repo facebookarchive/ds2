@@ -31,10 +31,10 @@ namespace Windows {
 Thread::Thread(Process *process, ThreadId tid, HANDLE handle)
     : super(process, tid), _handle(handle) {}
 
-Thread::~Thread() { CloseHandle(_handle); }
+Thread::~Thread() { ::CloseHandle(_handle); }
 
 ErrorCode Thread::terminate() {
-  BOOL result = TerminateThread(_handle, 0);
+  BOOL result = ::TerminateThread(_handle, 0);
   if (!result) {
     return Platform::TranslateError();
   }
@@ -61,11 +61,8 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   DS2ASSERT(signal == 0);
 
   if (address.valid()) {
-    ErrorCode error = modifyRegisters(
-        [&address](Architecture::CPUState &state) { state.setPC(address); });
-    if (error != kSuccess) {
-      return error;
-    }
+    CHK(modifyRegisters(
+        [&address](Architecture::CPUState &state) { state.setPC(address); }));
   }
 
   switch (_state) {
@@ -82,12 +79,12 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   case kStepped: {
     if (_stopInfo.event == StopInfo::kEventStop &&
         _stopInfo.reason == StopInfo::kReasonNone) {
-      DWORD result = ResumeThread(_handle);
+      DWORD result = ::ResumeThread(_handle);
       if (result == (DWORD)-1) {
         return Platform::TranslateError();
       }
     } else {
-      BOOL result = ContinueDebugEvent(_process->pid(), _tid, DBG_CONTINUE);
+      BOOL result = ::ContinueDebugEvent(_process->pid(), _tid, DBG_CONTINUE);
       if (!result) {
         return Platform::TranslateError();
       }
@@ -180,29 +177,28 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     break;
 
   case LOAD_DLL_DEBUG_EVENT: {
-    ErrorCode error;
+#define CHK_SKIP(C) CHK_ACTION(C, goto skip_name)
+
     std::wstring name = L"<unknown>";
 
     ProcessInfo pi;
-    error = process()->getInfo(pi);
-    if (error != kSuccess)
-      goto skip_name;
+    CHK_SKIP(process()->getInfo(pi));
 
-    if (de.u.LoadDll.lpImageName == nullptr)
+    if (de.u.LoadDll.lpImageName == nullptr) {
       goto skip_name;
+    }
 
     uint64_t ptr;
     // ptr needs to be set to 0 or `if (ptr != 0)` might be true even if the
     // pointer is null, on 32-bit targets.
     ptr = 0;
-    error = process()->readMemory(
+    CHK_SKIP(process()->readMemory(
         reinterpret_cast<uint64_t>(de.u.LoadDll.lpImageName), &ptr,
-        pi.pointerSize);
-    if (error != kSuccess)
-      goto skip_name;
+        pi.pointerSize));
 
-    if (ptr == 0)
+    if (ptr == 0) {
       goto skip_name;
+    }
 
     // It seems like all strings passed by the kernel here are guaranteed to be
     // unicode.
@@ -211,9 +207,9 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     name.clear();
     wchar_t c;
     do {
-      error = process()->readMemory(ptr, &c, sizeof(c));
-      if (error != kSuccess)
+      if (process()->readMemory(ptr, &c, sizeof(c)) != kSuccess) {
         break;
+      }
       name.append(1, c);
 
       ptr += sizeof(c);
@@ -224,8 +220,9 @@ void Thread::updateState(DEBUG_EVENT const &de) {
            Host::Platform::WideToNarrowString(name).c_str(),
            PRI_PTR_CAST(de.u.LoadDll.lpBaseOfDll));
 
-    if (de.u.LoadDll.hFile != NULL)
-      CloseHandle(de.u.LoadDll.hFile);
+    if (de.u.LoadDll.hFile != NULL) {
+      ::CloseHandle(de.u.LoadDll.hFile);
+    }
 
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
@@ -254,13 +251,10 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     DS2ASSERT(dsInfo.fUnicode == 0);
 
     _stopInfo.debugString.resize(dsInfo.nDebugStringLength - 1);
-    ErrorCode error = process()->readMemory(
+    CHKV(process()->readMemory(
         reinterpret_cast<uint64_t>(dsInfo.lpDebugStringData),
         const_cast<char *>(_stopInfo.debugString.c_str()),
-        dsInfo.nDebugStringLength - 1);
-    if (error != kSuccess) {
-      return;
-    }
+        dsInfo.nDebugStringLength - 1));
 
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
