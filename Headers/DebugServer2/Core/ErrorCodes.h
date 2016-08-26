@@ -57,3 +57,4 @@ char const *GetErrorCodeString(ErrorCode err);
 }
 
 #define CHK(C) CHK_ACTION(C, return CHK_error)
+#define CHKV(C) CHK_ACTION(C, return )
