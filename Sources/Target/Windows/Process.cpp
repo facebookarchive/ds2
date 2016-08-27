@@ -388,28 +388,32 @@ Process::makeMemoryWritable(Address const &address, size_t length,
   Address startAddress = address;
   Address endAddress = startAddress + length;
 
+  DS2ASSERT(modifiedRegions.empty());
+  auto janitor = Utils::MakeJanitor([this, &modifiedRegions]() {
+    this->restoreRegionsProtection(modifiedRegions);
+    modifiedRegions.clear();
+  });
+
   while (startAddress < endAddress) {
     MemoryRegionInfo region;
-    CHK_ACTION(getMemoryRegionInfoInternal(address, region), goto error);
+    CHK(getMemoryRegionInfoInternal(address, region));
 
     if (region.protection == kProtectionRead || !region.protection) {
-      LPVOID allocError = VirtualAllocEx(
+      LPVOID allocError = ::VirtualAllocEx(
           _handle, reinterpret_cast<LPVOID>(region.start.value()),
           region.length, MEM_COMMIT, PAGE_READWRITE);
-      // Even in case of a failure, we consider the current region to be
-      // modified because it could have been modified
+
+      // The region could have been modified even if `VirtualAllocEx` failed.
       modifiedRegions.push_back(region);
       if (allocError == NULL) {
-        goto error;
+        return Platform::TranslateError();
       }
     }
     startAddress = region.start + region.length;
   }
+
+  janitor.disable();
   return kSuccess;
-error:
-  auto error = GetLastError();
-  CHK(restoreRegionsProtection(modifiedRegions));
-  return Platform::TranslateError(error);
 }
 
 ErrorCode Process::writeMemory(Address const &address, void const *data,
