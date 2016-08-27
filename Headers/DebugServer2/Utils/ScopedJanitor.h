@@ -18,16 +18,23 @@ namespace Utils {
 
 template <typename Callable> class ScopedJanitor {
 public:
-  ScopedJanitor(Callable &&c) : _c(std::forward<Callable>(c)) {}
-  ~ScopedJanitor() { _c(); }
+  ScopedJanitor(Callable &&c) : _enabled(true), _c(std::forward<Callable>(c)) {}
+  ~ScopedJanitor() {
+    if (_enabled) {
+      _c();
+    }
+  }
 
-  ScopedJanitor(ScopedJanitor &&rhs) : _c(std::move(rhs._c)) {}
+  ScopedJanitor(ScopedJanitor &&rhs) : _c(std::move(rhs._c)) { rhs.disable(); }
+
+  void disable() { _enabled = false; }
 
   ScopedJanitor(ScopedJanitor const &rhs) = delete;
   ScopedJanitor &operator=(ScopedJanitor const &rhs) = delete;
   ScopedJanitor &operator=(ScopedJanitor &&rhs) = delete;
 
 protected:
+  bool _enabled;
   Callable _c;
 };
 
