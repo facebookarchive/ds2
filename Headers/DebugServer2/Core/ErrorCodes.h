@@ -50,7 +50,7 @@ char const *GetErrorCodeString(ErrorCode err);
     auto __CHK_expr_lambda = [&]() { return C; };                              \
     static_assert(                                                             \
         std::is_same<decltype(__CHK_expr_lambda()), ErrorCode>::value,         \
-        #C "does not return an ErrorCode");                                    \
+        #C " is not an expression of type ErrorCode");                         \
     ErrorCode CHK_error = (C);                                                 \
     if (CHK_error != kSuccess) {                                               \
       A;                                                                       \
