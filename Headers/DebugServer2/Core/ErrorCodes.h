@@ -47,8 +47,10 @@ char const *GetErrorCodeString(ErrorCode err);
 
 #define CHK_ACTION(C, A)                                                       \
   do {                                                                         \
-    static_assert(std::is_same<decltype(C), ErrorCode>::value,                 \
-                  #C "does not return an ErrorCode");                          \
+    auto __CHK_expr_lambda = [&]() { return C; };                              \
+    static_assert(                                                             \
+        std::is_same<decltype(__CHK_expr_lambda()), ErrorCode>::value,         \
+        #C "does not return an ErrorCode");                                    \
     ErrorCode CHK_error = (C);                                                 \
     if (CHK_error != kSuccess) {                                               \
       A;                                                                       \
