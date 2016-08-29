@@ -471,14 +471,12 @@ ErrorCode DebugSessionImplBase::onQueryFileLoadAddress(
     return kErrorProcessNotFound;
   }
 
-  ErrorCode error =
-      _process->enumerateMappedFiles([&](MappedFileInfo const &file) {
-        if (file.path == file_path ||
-            ds2::Utils::Basename(file.path) == file_path) {
-          address = Address(file.baseAddress);
-        }
-      });
-  CHK(error);
+  CHK(_process->enumerateMappedFiles([&](MappedFileInfo const &file) {
+    if (file.path == file_path ||
+        ds2::Utils::Basename(file.path) == file_path) {
+      address = Address(file.baseAddress);
+    }
+  }));
   if (!address.valid()) {
     return kErrorNotFound;
   }
