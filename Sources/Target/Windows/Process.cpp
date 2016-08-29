@@ -51,7 +51,14 @@ namespace Windows {
 
 Process::Process() : super(), _handle(nullptr) {}
 
-Process::~Process() { CloseHandle(_handle); }
+Process::~Process() {
+  // On winphone we are unable to use DebugSetProcessKillOnExit to detach on
+  // exit, so we detach at this point. This is required because otherwise the
+  // debugged winphone process might stay alive in an unclosable state. If
+  // detached, the winphone process dies gracefully.
+  detach();
+  CloseHandle(_handle);
+}
 
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
   // The first call to `wait()` will receive a CREATE_PROCESS_DEBUG_EVENT event
