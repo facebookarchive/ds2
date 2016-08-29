@@ -28,26 +28,22 @@ Thread::Thread(ds2::Target::Process *process, ThreadId tid)
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   // TODO cache CPU state
   ProcessInfo info;
-  ErrorCode error;
 
-  error = _process->getInfo(info);
-  if (error != kSuccess)
-    return error;
+  CHK(_process->getInfo(info));
+  CHK(process()->ptrace().readCPUState(ProcessThreadId(process()->pid(), tid()),
+                                       info, state));
 
-  return process()->ptrace().readCPUState(
-      ProcessThreadId(process()->pid(), tid()), info, state);
+  return kSuccess;
 }
 
 ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
   ProcessInfo info;
-  ErrorCode error;
 
-  error = _process->getInfo(info);
-  if (error != kSuccess)
-    return error;
+  CHK(_process->getInfo(info));
+  CHK(process()->ptrace().writeCPUState(
+      ProcessThreadId(process()->pid(), tid()), info, state));
 
-  return process()->ptrace().writeCPUState(
-      ProcessThreadId(process()->pid(), tid()), info, state);
+  return kSuccess;
 }
 
 ErrorCode Thread::terminate() {
@@ -56,16 +52,12 @@ ErrorCode Thread::terminate() {
 }
 
 ErrorCode Thread::suspend() {
-  ErrorCode error = kSuccess;
   if (_state == kRunning) {
-    error =
-        process()->ptrace().suspend(ProcessThreadId(process()->pid(), tid()));
-    if (error != kSuccess)
-      return error;
+    CHK(process()->ptrace().suspend(ProcessThreadId(process()->pid(), tid())));
 
     int status;
-    error = process()->ptrace().wait(ProcessThreadId(process()->pid(), tid()),
-                                     &status);
+    ErrorCode error = process()->ptrace().wait(
+        ProcessThreadId(process()->pid(), tid()), &status);
     if (error != kSuccess) {
       DS2LOG(Error, "failed to wait for tid %d, error=%s\n", tid(),
              strerror(errno));
@@ -76,10 +68,10 @@ ErrorCode Thread::suspend() {
   }
 
   if (_state == kTerminated) {
-    error = kErrorProcessNotFound;
+    return kErrorProcessNotFound;
   }
 
-  return error;
+  return kSuccess;
 }
 
 #if defined(ARCH_ARM)
@@ -119,26 +111,19 @@ ErrorCode Thread::step(int signal, Address const &address) {
 #endif
 
 ErrorCode Thread::resume(int signal, Address const &address) {
-  ErrorCode error = kSuccess;
-
   if (_state == kStopped || _state == kStepped) {
     ProcessInfo info;
 
-    error = process()->getInfo(info);
-    if (error != kSuccess)
-      return error;
-
-    error = process()->ptrace().resume(ProcessThreadId(process()->pid(), tid()),
-                                       info, signal, address);
-    if (error == kSuccess) {
-      _state = kRunning;
-      _stopInfo.signal = 0;
-    }
+    CHK(process()->getInfo(info));
+    CHK(process()->ptrace().resume(ProcessThreadId(process()->pid(), tid()),
+                                   info, signal, address));
+    _state = kRunning;
+    _stopInfo.signal = 0;
   } else if (_state == kTerminated) {
-    error = kErrorProcessNotFound;
+    return kErrorProcessNotFound;
   }
 
-  return error;
+  return kSuccess;
 }
 
 ErrorCode Thread::updateStopInfo(int waitStatus) {

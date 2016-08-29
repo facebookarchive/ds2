@@ -258,21 +258,18 @@ static void ARMPrepareMunmapCode(uint32_t address, size_t size,
 
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
                                   uint64_t *address) {
-  if (address == nullptr)
+  if (address == nullptr) {
     return kErrorInvalidArgument;
+  }
 
   ProcessInfo info;
-  ErrorCode error = getInfo(info);
-  if (error != kSuccess)
-    return error;
+  CHK(getInfo(info));
 
   //
   // We need to know if the process is running in Thumb or ARM mode.
   //
   Architecture::CPUState state;
-  error = ptrace().readCPUState(_currentThread->tid(), info, state);
-  if (error != kSuccess)
-    return error;
+  CHK(ptrace().readCPUState(_currentThread->tid(), info, state));
 
   ByteVector codestr;
   if (state.isThumb()) {
@@ -286,33 +283,28 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
     ARMPrepareMmapCode(size, protection, codestr);
   }
 
-  //
   // Code inject and execute
-  //
-  error = ptrace().execute(_currentThread->tid(), info, &codestr[0],
-                           codestr.size(), *address);
-  if (error != kSuccess)
-    return error;
+  CHK(ptrace().execute(_currentThread->tid(), info, &codestr[0], codestr.size(),
+                       *address));
 
-  return checkMemoryErrorCode(*address);
+  CHK(checkMemoryErrorCode(*address));
+
+  return kSuccess;
 }
 
 ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
-  if (size == 0)
+  if (size == 0) {
     return kErrorInvalidArgument;
+  }
 
   ProcessInfo info;
-  ErrorCode error = getInfo(info);
-  if (error != kSuccess)
-    return error;
+  CHK(getInfo(info));
 
   //
   // We need to know if the process is running in Thumb or ARM mode.
   //
   Architecture::CPUState state;
-  error = ptrace().readCPUState(_currentThread->tid(), info, state);
-  if (error != kSuccess)
-    return error;
+  CHK(ptrace().readCPUState(_currentThread->tid(), info, state));
 
   ByteVector codestr;
   if (state.isThumb()) {
@@ -330,10 +322,8 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   // Code inject and execute
   //
   uint64_t result = 0;
-  error = ptrace().execute(_currentThread->tid(), info, &codestr[0],
-                           codestr.size(), result);
-  if (error != kSuccess)
-    return error;
+  CHK(ptrace().execute(_currentThread->tid(), info, &codestr[0], codestr.size(),
+                       result));
 
   if ((int)result < 0) {
     int error = -result;

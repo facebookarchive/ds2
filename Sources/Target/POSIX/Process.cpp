@@ -30,26 +30,21 @@ namespace Target {
 namespace POSIX {
 
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
-  ErrorCode error;
-
   // Wait the main thread.
   int status;
-  error = ptrace().wait(pid, &status);
+  CHK(ptrace().wait(pid, &status));
+  CHK(ptrace().traceThat(pid));
+
+  // Can't use `CHK()` here because of a bug in GCC. See
+  // http://stackoverflow.com/a/12086873/5731788
+  ErrorCode error = super::initialize(pid, flags);
   if (error != kSuccess) {
     return error;
   }
 
-  error = ptrace().traceThat(pid);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(attach(status));
 
-  error = super::initialize(pid, flags);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  return attach(status);
+  return kSuccess;
 }
 
 ErrorCode Process::detach() {

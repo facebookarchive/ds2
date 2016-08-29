@@ -53,62 +53,53 @@ inline ErrorCode GetELFSharedLibraryInfoAddress(ELFProcess *process,
   PHDR ph;
   DYNSYM dynsym;
 
-  ErrorCode error = process->readMemory(process->loadBase(), &eh, sizeof(eh));
-  if (error != ds2::kSuccess)
-    return error;
+  CHK(process->readMemory(process->loadBase(), &eh, sizeof(eh)));
 
-  if (eh.e_phnum == 0)
-    return ds2::kErrorUnsupported;
+  if (eh.e_phnum == 0) {
+    return kErrorUnsupported;
+  }
 
-  //
   // 1. Find PT_DYNAMIC (.dynamic) program header, and the
   //    expected load base of this ELF.
-  //
   uint64_t elfLoadBase = 0;
   bool foundElfLoadBase = false;
   uint64_t phdrAddress = process->loadBase() + eh.e_phoff;
   for (size_t n = 0; n < eh.e_phnum; n++) {
-    error = process->readMemory(phdrAddress, &ph, sizeof(ph));
-    if (error != ds2::kSuccess)
-      return error;
+    CHK(process->readMemory(phdrAddress, &ph, sizeof(ph)));
 
     if (!foundElfLoadBase && ph.p_type == PT_LOAD) {
       elfLoadBase = ph.p_paddr;
       foundElfLoadBase = true;
     }
 
-    if (ph.p_type == PT_DYNAMIC)
+    if (ph.p_type == PT_DYNAMIC) {
       break;
+    }
 
     phdrAddress += eh.e_phentsize;
   }
 
-  if (ph.p_type != PT_DYNAMIC)
-    return ds2::kErrorUnsupported;
+  if (ph.p_type != PT_DYNAMIC) {
+    return kErrorUnsupported;
+  }
 
-  //
   // 2. Find DT_DEBUG in .dynamic section
-  //
   uint64_t dynsymAddress = process->loadBase() + ph.p_paddr - elfLoadBase;
   size_t entriesCount = ph.p_memsz / sizeof(dynsym);
   for (size_t n = 0; n < entriesCount; n++) {
-    error = process->readMemory(dynsymAddress, &dynsym, sizeof(dynsym));
-    if (error != ds2::kSuccess)
-      return error;
+    CHK(process->readMemory(dynsymAddress, &dynsym, sizeof(dynsym)));
 
-    //
     // 3. Return &DT_DEBUG->d_ptr, which is filled by the dynamic linker
     //    pointing to the link_map.
-    //
     if (dynsym.d_tag == DT_DEBUG) {
       address = dynsymAddress + sizeof(dynsym.d_tag);
-      return ds2::kSuccess;
+      return kSuccess;
     }
 
     dynsymAddress += sizeof(dynsym);
   }
 
-  return ds2::kErrorUnsupported;
+  return kErrorUnsupported;
 }
 
 //
@@ -173,10 +164,7 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
   T address;
   T linkMapAddress;
 
-  ErrorCode error =
-      process->readMemory(addressToDPtr, &address, sizeof(address));
-  if (error != ds2::kSuccess)
-    return error;
+  CHK(process->readMemory(addressToDPtr, &address, sizeof(address)));
 
   // If the address is 0, it means the dynamic linker hasn't filled
   // DT_DEBUG->d_ptr and the link map is not available yet.
@@ -184,27 +172,21 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
     return kErrorBusy;
   }
 
-  error = ReadELFDebug(process, address, debug);
-  if (error != ds2::kSuccess)
-    return error;
+  CHK(ReadELFDebug(process, address, debug));
 
 // Android doesn't have a definition for LAV_CURRENT, so we skip this check.
 #if !defined(PLATFORM_ANDROID) && !defined(OS_FREEBSD)
-  if (debug.version != LAV_CURRENT)
-    return ds2::kErrorUnsupported;
+  if (debug.version != LAV_CURRENT) {
+    return kErrorUnsupported;
+  }
 #endif
 
   linkMapAddress = debug.mapAddress;
   while (linkMapAddress != 0) {
-    error = ReadELFLinkMap(process, linkMapAddress, linkMap);
-    if (error != ds2::kSuccess)
-      return error;
-
     SharedLibraryInfo shlib;
 
-    error = process->readString(linkMap.nameAddress, shlib.path, PATH_MAX);
-    if (error != ds2::kSuccess)
-      return error;
+    CHK(ReadELFLinkMap(process, linkMapAddress, linkMap));
+    CHK(process->readString(linkMap.nameAddress, shlib.path, PATH_MAX));
 
     shlib.svr4.mapAddress = linkMapAddress;
     shlib.svr4.baseAddress = linkMap.baseAddress;
@@ -229,7 +211,7 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
     linkMapAddress = linkMap.nextAddress;
   }
 
-  return ds2::kSuccess;
+  return kSuccess;
 }
 }
 
@@ -267,10 +249,9 @@ uint64_t ELFProcess::getAuxiliaryVectorValue(uint64_t type) {
 // successful.
 //
 ErrorCode ELFProcess::updateInfo() {
-  if (_info.pid == _pid)
+  if (_info.pid == _pid) {
     return kErrorAlreadyExist;
-
-  ErrorCode error;
+  }
 
   // This is tricky, we don't know the load base, and to
   // do so we need to update the auxiliary vector, but
@@ -279,9 +260,10 @@ ErrorCode ELFProcess::updateInfo() {
   // we don't have idea of what is our target platform,
   // so we'll do an empirical test.
   if (!_loadBase.valid() || !_entryPoint.valid()) {
-    error = updateAuxiliaryVector();
-    if (error != kSuccess && error != kErrorAlreadyExist)
+    ErrorCode error = updateAuxiliaryVector();
+    if (error != kSuccess && error != kErrorAlreadyExist) {
       return error;
+    }
 
     // Hack to use enumerateAuxiliaryVector before information is set.
     _info.pid = _pid;
@@ -310,8 +292,9 @@ ErrorCode ELFProcess::updateInfo() {
     MemoryRegionInfo prevMri;
 #endif
     error = getMemoryRegionInfo(_entryPoint, mri);
-    if (error != kSuccess)
+    if (error != kSuccess) {
       goto mri_error;
+    }
 
 #if defined(OS_LINUX)
     // For some reason, on Android 5.1 and up some ELF segments get loaded in
@@ -325,8 +308,9 @@ ErrorCode ELFProcess::updateInfo() {
     do {
       prevMri = mri;
       error = getMemoryRegionInfo(mri.start - 1, mri);
-      if (error != kSuccess)
+      if (error != kSuccess) {
         goto mri_error;
+      }
     } while (mri.backingFile == prevMri.backingFile &&
              mri.backingFileInode == prevMri.backingFileInode &&
              mri.protection == prevMri.protection &&
@@ -353,14 +337,12 @@ ErrorCode ELFProcess::updateInfo() {
     Elf64_Ehdr e64;
   } eh;
 
-  error = readMemory(loadBase(), &eh, sizeof(eh));
-  if (error != kSuccess)
-    return error;
+  CHK(readMemory(loadBase(), &eh, sizeof(eh)));
 
   if (eh.e32.e_ident[EI_MAG0] != ELFMAG0 ||
       eh.e32.e_ident[EI_MAG1] != ELFMAG1 ||
       eh.e32.e_ident[EI_MAG2] != ELFMAG2 || eh.e32.e_ident[EI_MAG3] != ELFMAG3)
-    return ds2::kErrorUnsupported;
+    return kErrorUnsupported;
 
   //
   // Obtain the ELF machine type, which is the native CPU type.
@@ -384,7 +366,7 @@ ErrorCode ELFProcess::updateInfo() {
   //
   if (machineType == kInvalidCPUType ||
       (dataEndian != ELFDATA2LSB && dataEndian != ELFDATA2MSB))
-    return ds2::kErrorUnsupported;
+    return kErrorUnsupported;
 
   //
   // Now obtain the DebugServer CPU type out of the ELF machine type,
@@ -393,7 +375,7 @@ ErrorCode ELFProcess::updateInfo() {
   //
   if (!ELFSupport::MachineTypeToCPUType(machineType, is64Bit, _info.cpuType,
                                         _info.cpuSubType))
-    return ds2::kErrorUnsupported;
+    return kErrorUnsupported;
 
   //
   // Save the native CPU type.
@@ -467,11 +449,13 @@ ErrorCode ELFProcess::enumerateAuxiliaryVector(
   ErrorCode error;
 
   error = updateAuxiliaryVector();
-  if (error != kSuccess && error != kErrorAlreadyExist)
+  if (error != kSuccess && error != kErrorAlreadyExist) {
     return error;
+  }
 
-  if (_auxiliaryVector.empty())
+  if (_auxiliaryVector.empty()) {
     return kSuccess;
+  }
 
   if (CPUTypeIs64Bit(_info.cpuType)) {
     EnumerateELFAuxiliaryVector<Elf64_auxv_t>(_auxiliaryVector, cb);
@@ -518,9 +502,7 @@ ErrorCode ELFProcess::getSharedLibraryInfoAddress(Address &address) {
 ErrorCode ELFProcess::enumerateSharedLibraries(
     std::function<void(SharedLibraryInfo const &)> const &cb) {
   Address address;
-  ErrorCode error = getSharedLibraryInfoAddress(address);
-  if (error != kSuccess)
-    return error;
+  CHK(getSharedLibraryInfoAddress(address));
 
   if (CPUTypeIs64Bit(_info.cpuType)) {
     return EnumerateLinkMap<uint64_t>(this, address, cb);

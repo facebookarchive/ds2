@@ -56,8 +56,6 @@ ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
 }
 
 ErrorCode BreakpointManager::remove(Address const &address) {
-  ErrorCode error = kSuccess;
-
   if (!address.valid())
     return kErrorInvalidArgument;
 
@@ -92,8 +90,10 @@ do_remove:
   // If the breakpoint manager is already in enabled state, disable
   // the newly removed breakpoint too.
   //
-  if (_enabled)
+  ErrorCode error = kSuccess;
+  if (_enabled) {
     error = disableLocation(it->second);
+  }
   _sites.erase(it);
   return error;
 }

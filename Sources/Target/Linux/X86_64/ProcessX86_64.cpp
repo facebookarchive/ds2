@@ -25,10 +25,7 @@ static bool is32BitProcess(Process *process) {
   DS2ASSERT(process->currentThread() != nullptr);
 
   Architecture::CPUState state;
-  ErrorCode error = process->currentThread()->readCPUState(state);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(process->currentThread()->readCPUState(state));
 
   return state.is32;
 }
@@ -49,10 +46,7 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   }
 
   uint64_t result;
-  ErrorCode error = executeCode(codestr, result);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(executeCode(codestr, result));
 
   // MAP_FAILED is -1.
   if ((is32 && static_cast<int64_t>(result) == -1LL) ||
@@ -77,10 +71,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   }
 
   uint64_t result;
-  ErrorCode error = executeCode(codestr, result);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(executeCode(codestr, result));
 
   // Negative values returned by the kernel indicate failure.
   if (static_cast<int32_t>(result) < 0) {

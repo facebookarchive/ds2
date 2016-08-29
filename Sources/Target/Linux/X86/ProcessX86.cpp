@@ -28,10 +28,7 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   X86Sys::PrepareMmapCode(size, protection, codestr);
 
   uint64_t result;
-  ErrorCode error = executeCode(codestr, result);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(executeCode(codestr, result));
 
   // MAP_FAILED is -1.
   if (static_cast<int32_t>(result) == -1) {
@@ -51,10 +48,7 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   X86Sys::PrepareMunmapCode(address, size, codestr);
 
   uint64_t result;
-  ErrorCode error = executeCode(codestr, result);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(executeCode(codestr, result));
 
   // Negative values returned by the kernel indicate failure.
   if (static_cast<int32_t>(result) < 0) {

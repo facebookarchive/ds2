@@ -43,15 +43,9 @@ namespace Linux {
 
 ErrorCode Process::attach(int waitStatus) {
   if (waitStatus <= 0) {
-    ErrorCode error = ptrace().attach(_pid);
-    if (error != kSuccess)
-      return error;
-
+    CHK(ptrace().attach(_pid));
     _flags |= kFlagAttachedProcess;
-
-    error = ptrace().wait(_pid, &waitStatus);
-    if (error != kSuccess)
-      return error;
+    CHK(ptrace().wait(_pid, &waitStatus));
     ptrace().traceThat(_pid);
   }
 
@@ -299,16 +293,18 @@ ErrorCode Process::updateInfo() {
   // Call super::updateInfo, in turn it will call updateAuxiliaryVector.
   //
   ErrorCode error = super::updateInfo();
-  if (error != kSuccess && error != kErrorAlreadyExist)
+  if (error != kSuccess && error != kErrorAlreadyExist) {
     return error;
+  }
 
   return kSuccess;
 }
 
 ErrorCode Process::getMemoryRegionInfo(Address const &address,
                                        MemoryRegionInfo &info) {
-  if (!address.valid())
+  if (!address.valid()) {
     return kErrorInvalidArgument;
+  }
 
   info.clear();
 
@@ -381,8 +377,9 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
     // we need to know if it's 64-bit.
     //
     ErrorCode error = updateInfo();
-    if (error != kSuccess && error != kErrorAlreadyExist)
+    if (error != kSuccess && error != kErrorAlreadyExist) {
       return error;
+    }
 
     if (CPUTypeIs64Bit(_info.cpuType)) {
       info.length = std::numeric_limits<uint64_t>::max() - info.start;
@@ -395,19 +392,11 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
 }
 
 ErrorCode Process::executeCode(ByteVector const &codestr, uint64_t &result) {
-  ErrorCode error;
-
   ProcessInfo info;
-  error = getInfo(info);
-  if (error != kSuccess) {
-    return error;
-  }
 
-  error = ptrace().execute(_currentThread->tid(), info, &codestr[0],
-                           codestr.size(), result);
-  if (error != kSuccess) {
-    return error;
-  }
+  CHK(getInfo(info));
+  CHK(ptrace().execute(_currentThread->tid(), info, &codestr[0], codestr.size(),
+                       result));
 
   return kSuccess;
 }

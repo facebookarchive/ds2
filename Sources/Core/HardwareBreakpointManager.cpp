@@ -69,10 +69,7 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site) {
   });
 
   for (auto thread : threads) {
-    ErrorCode error = enableLocation(site, idx, thread);
-    if (error != kSuccess) {
-      return error;
-    }
+    CHK(enableLocation(site, idx, thread));
   }
 
   _locations[idx] = site.address;
@@ -94,10 +91,7 @@ ErrorCode HardwareBreakpointManager::disableLocation(Site const &site) {
   });
 
   for (auto thread : threads) {
-    ErrorCode error = disableLocation(idx, thread);
-    if (error != kSuccess) {
-      return error;
-    }
+    CHK(disableLocation(idx, thread));
   }
 
   return kSuccess;

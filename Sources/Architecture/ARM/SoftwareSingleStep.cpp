@@ -25,12 +25,9 @@ ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
                                          uint32_t &nextPC, uint32_t &nextPCSize,
                                          uint32_t &branchPC,
                                          uint32_t &branchPCSize) {
-  ErrorCode error;
   uint32_t insns[2];
 
-  error = process->readMemory(pc, insns, sizeof(insns));
-  if (error != ds2::kSuccess)
-    return error;
+  CHK(process->readMemory(pc, insns, sizeof(insns)));
 
   ds2::Architecture::ARM::BranchInfo info;
   if (!ds2::Architecture::ARM::GetThumbBranchInfo(insns, info)) {
@@ -40,7 +37,7 @@ ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
     // with a 2-byte breakpoint because we won't ever jump over that
     // instruction.
     nextPCSize = 2;
-    return ds2::kSuccess;
+    return kSuccess;
   }
 
   DS2LOG(Debug, "Thumb branch/IT found at %#x (it=%s[%u])", pc,
@@ -57,9 +54,7 @@ ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
     //
     uint16_t itinsns[4 * 2]; // At most 4 instructions in the IT block.
 
-    error = process->readMemory(nextPC, itinsns, sizeof(itinsns));
-    if (error != ds2::kSuccess)
-      return error;
+    CHK(process->readMemory(nextPC, itinsns, sizeof(itinsns)));
 
     size_t skip = 0;
     for (size_t n = 0; n < info.itCount; n++) {
@@ -137,17 +132,13 @@ ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
       address += info.disp;
     }
 
-    error = process->readMemory(address, &branchPC, sizeof(branchPC));
-    if (error != ds2::kSuccess)
-      return error;
+    CHK(process->readMemory(address, &branchPC, sizeof(branchPC)));
     break;
 
   case ds2::Architecture::ARM::kBranchTypeLDM_pc:
   case ds2::Architecture::ARM::kBranchTypePOP_pc:
     address = state.gp.regs[info.reg1] + info.disp;
-    error = process->readMemory(address, &branchPC, sizeof(branchPC));
-    if (error != ds2::kSuccess)
-      return error;
+    CHK(process->readMemory(address, &branchPC, sizeof(branchPC)));
     break;
 
   //
@@ -173,17 +164,15 @@ ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
       address += 4;
     address += state.gp.regs[info.reg2] << info.disp;
     offset = 0;
-    error = process->readMemory(
+    CHK(process->readMemory(
         address, &offset,
-        info.type == ds2::Architecture::ARM::kBranchTypeTBB ? 1 : 2);
-    if (error != ds2::kSuccess)
-      return error;
+        info.type == ds2::Architecture::ARM::kBranchTypeTBB ? 1 : 2));
     branchPC = pc + 4 + offset * 2;
     branchPCSize = 2;
     break;
 
   default:
-    return ds2::kErrorUnsupported;
+    return kErrorUnsupported;
   }
 
   //
@@ -197,7 +186,7 @@ ErrorCode PrepareThumbSoftwareSingleStep(Process *process, uint32_t pc,
     branchPC &= ~1ULL;
   }
 
-  return ds2::kSuccess;
+  return kSuccess;
 }
 
 ErrorCode PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
@@ -205,19 +194,16 @@ ErrorCode PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
                                        uint32_t &nextPC, uint32_t &nextPCSize,
                                        uint32_t &branchPC,
                                        uint32_t &branchPCSize) {
-  ErrorCode error;
   uint32_t insn;
 
-  error = process->readMemory(pc, &insn, sizeof(insn));
-  if (error != ds2::kSuccess)
-    return error;
+  CHK(process->readMemory(pc, &insn, sizeof(insn)));
 
-  ds2::Architecture::ARM::BranchInfo info;
-  if (!ds2::Architecture::ARM::GetARMBranchInfo(insn, info)) {
+  Architecture::ARM::BranchInfo info;
+  if (!Architecture::ARM::GetARMBranchInfo(insn, info)) {
     // We couldn't find a branch, the next instruction is standard ARM.
     nextPC = pc + 4;
     nextPCSize = 4;
-    return ds2::kSuccess;
+    return kSuccess;
   }
 
   uint32_t address;
@@ -263,7 +249,7 @@ ErrorCode PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
       break;
 
     default:
-      return ds2::kErrorUnsupported;
+      return kErrorUnsupported;
     }
     break;
 
@@ -283,20 +269,16 @@ ErrorCode PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
       address += info.disp;
       break;
     default:
-      return ds2::kErrorUnsupported;
+      return kErrorUnsupported;
     }
 
-    error = process->readMemory(address, &branchPC, sizeof(branchPC));
-    if (error != ds2::kSuccess)
-      return error;
+    CHK(process->readMemory(address, &branchPC, sizeof(branchPC)));
     break;
 
   case ds2::Architecture::ARM::kBranchTypeLDM_pc:
   case ds2::Architecture::ARM::kBranchTypePOP_pc:
     address = state.gp.regs[info.reg1] + info.disp;
-    error = process->readMemory(address, &branchPC, sizeof(branchPC));
-    if (error != ds2::kSuccess)
-      return error;
+    CHK(process->readMemory(address, &branchPC, sizeof(branchPC)));
     break;
 
   //
@@ -316,7 +298,7 @@ ErrorCode PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
     break;
 
   default:
-    return ds2::kErrorUnsupported;
+    return kErrorUnsupported;
   }
 
   //
@@ -328,14 +310,13 @@ ErrorCode PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
     branchPC &= ~1ULL;
   }
 
-  return ds2::kSuccess;
+  return kSuccess;
 }
 
 ErrorCode PrepareSoftwareSingleStep(Process *process,
                                     BreakpointManager *manager,
                                     CPUState const &state,
                                     Address const &address) {
-  ErrorCode error;
   bool link = false;
   uint32_t pc = address.valid() ? address.value() : state.pc();
   uint32_t nextPC = static_cast<uint32_t>(-1);
@@ -344,15 +325,11 @@ ErrorCode PrepareSoftwareSingleStep(Process *process,
   uint32_t branchPCSize = 0;
 
   if (state.isThumb()) {
-    error = PrepareThumbSoftwareSingleStep(process, pc, state, link, nextPC,
-                                           nextPCSize, branchPC, branchPCSize);
+    CHK(PrepareThumbSoftwareSingleStep(process, pc, state, link, nextPC,
+                                       nextPCSize, branchPC, branchPCSize));
   } else {
-    error = PrepareARMSoftwareSingleStep(process, pc, state, link, nextPC,
-                                         nextPCSize, branchPC, branchPCSize);
-  }
-
-  if (error != kSuccess) {
-    return error;
+    CHK(PrepareARMSoftwareSingleStep(process, pc, state, link, nextPC,
+                                     nextPCSize, branchPC, branchPCSize));
   }
 
   DS2LOG(Debug, "PC=%#x, branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]",
@@ -361,20 +338,14 @@ ErrorCode PrepareSoftwareSingleStep(Process *process,
 
   if (branchPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(branchPCSize != 0);
-    error = manager->add(branchPC, BreakpointManager::kTypeTemporaryOneShot,
-                         branchPCSize, BreakpointManager::kModeExec);
-    if (error != kSuccess) {
-      return error;
-    }
+    CHK(manager->add(branchPC, BreakpointManager::kTypeTemporaryOneShot,
+                     branchPCSize, BreakpointManager::kModeExec));
   }
 
   if (nextPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(nextPCSize != 0);
-    error = manager->add(nextPC, BreakpointManager::kTypeTemporaryOneShot,
-                         nextPCSize, BreakpointManager::kModeExec);
-    if (error != kSuccess) {
-      return error;
-    }
+    CHK(manager->add(nextPC, BreakpointManager::kTypeTemporaryOneShot,
+                     nextPCSize, BreakpointManager::kModeExec));
   }
 
   return kSuccess;
