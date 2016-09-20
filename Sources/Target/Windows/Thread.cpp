@@ -131,6 +131,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     case STATUS_ARRAY_BOUNDS_EXCEEDED:
     case STATUS_IN_PAGE_ERROR:
     case STATUS_STACK_OVERFLOW:
+    case STATUS_STACK_BUFFER_OVERRUN:
       _stopInfo.event = StopInfo::kEventStop;
       _stopInfo.reason = StopInfo::kReasonMemoryError;
       break;
