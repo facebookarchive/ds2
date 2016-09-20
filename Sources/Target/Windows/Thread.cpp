@@ -121,46 +121,46 @@ void Thread::updateState(DEBUG_EVENT const &de) {
         PRI_PTR_CAST(de.u.Exception.ExceptionRecord.ExceptionAddress));
 
     switch (de.u.Exception.ExceptionRecord.ExceptionCode) {
-    case EXCEPTION_BREAKPOINT:
-    case EXCEPTION_SINGLE_STEP:
+    case STATUS_BREAKPOINT:
+    case STATUS_SINGLE_STEP:
       _stopInfo.event = StopInfo::kEventStop;
       _stopInfo.reason = StopInfo::kReasonBreakpoint;
       break;
 
-    case EXCEPTION_ACCESS_VIOLATION:
-    case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
-    case EXCEPTION_IN_PAGE_ERROR:
-    case EXCEPTION_STACK_OVERFLOW:
+    case STATUS_ACCESS_VIOLATION:
+    case STATUS_ARRAY_BOUNDS_EXCEEDED:
+    case STATUS_IN_PAGE_ERROR:
+    case STATUS_STACK_OVERFLOW:
       _stopInfo.event = StopInfo::kEventStop;
       _stopInfo.reason = StopInfo::kReasonMemoryError;
       break;
 
-    case EXCEPTION_DATATYPE_MISALIGNMENT:
+    case STATUS_DATATYPE_MISALIGNMENT:
       _stopInfo.event = StopInfo::kEventStop;
       _stopInfo.reason = StopInfo::kReasonMemoryAlignment;
       break;
 
-    case EXCEPTION_FLT_DENORMAL_OPERAND:
-    case EXCEPTION_FLT_DIVIDE_BY_ZERO:
-    case EXCEPTION_FLT_INEXACT_RESULT:
-    case EXCEPTION_FLT_INVALID_OPERATION:
-    case EXCEPTION_FLT_OVERFLOW:
-    case EXCEPTION_FLT_STACK_CHECK:
-    case EXCEPTION_FLT_UNDERFLOW:
-    case EXCEPTION_INT_DIVIDE_BY_ZERO:
-    case EXCEPTION_INT_OVERFLOW:
+    case STATUS_FLOAT_DENORMAL_OPERAND:
+    case STATUS_FLOAT_DIVIDE_BY_ZERO:
+    case STATUS_FLOAT_INEXACT_RESULT:
+    case STATUS_FLOAT_INVALID_OPERATION:
+    case STATUS_FLOAT_OVERFLOW:
+    case STATUS_FLOAT_STACK_CHECK:
+    case STATUS_FLOAT_UNDERFLOW:
+    case STATUS_INTEGER_DIVIDE_BY_ZERO:
+    case STATUS_INTEGER_OVERFLOW:
       _stopInfo.event = StopInfo::kEventStop;
       _stopInfo.reason = StopInfo::kReasonMathError;
       break;
 
-    case EXCEPTION_ILLEGAL_INSTRUCTION:
-    case EXCEPTION_PRIV_INSTRUCTION:
+    case STATUS_ILLEGAL_INSTRUCTION:
+    case STATUS_PRIVILEGED_INSTRUCTION:
       _stopInfo.event = StopInfo::kEventStop;
       _stopInfo.reason = StopInfo::kReasonInstructionError;
       break;
 
-    case EXCEPTION_INVALID_DISPOSITION:
-    case EXCEPTION_NONCONTINUABLE_EXCEPTION:
+    case STATUS_INVALID_DISPOSITION:
+    case STATUS_NONCONTINUABLE_EXCEPTION:
     case DS2_EXCEPTION_UNCAUGHT_COM:
     case DS2_EXCEPTION_UNCAUGHT_USER:
     case DS2_EXCEPTION_UNCAUGHT_WINRT:
