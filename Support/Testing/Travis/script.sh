@@ -26,7 +26,8 @@ fi
 # Get a recent cmake from cmake.org; packages for Ubuntu are too old.
 cmake_version="3.6"
 cmake_package="cmake-${cmake_version}.0-Linux-x86_64"
-if grep -q "Ubuntu" "/etc/issue" && [ ! -d "/tmp/$cmake_package/bin" ]; then
+if [ -r /etc/issue ] && grep -q "Ubuntu" "/etc/issue" &&
+   [ ! -d "/tmp/$cmake_package/bin" ]; then
   cd /tmp
 
   if [ ! -e "$cmake_package.tar.gz" ] ; then

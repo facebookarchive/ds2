@@ -98,7 +98,7 @@ if [ -s "/etc/centos-release" ]; then
     cmake .. -G Ninja -DLLVM_LIBDIR_SUFFIX=64
     ninja
   fi
-elif grep -q "Ubuntu" "/etc/issue"; then
+elif [ -r "/etc/issue" ] &&  grep -q "Ubuntu" "/etc/issue"; then
   lldb_path="$build_dir/lldb"
   lldb_exe="$(which lldb-3.8)"
   if [[ "$platform_name" = "linux" ]]; then
