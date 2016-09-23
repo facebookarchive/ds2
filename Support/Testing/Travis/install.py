@@ -114,5 +114,4 @@ if len(pip_packages) > 0:
 
 # This step must happen after package installation, as it requires java be installed.
 if target in android_toolchains and os.getenv('LLDB_TESTS') != None:
-    check_call('./Support/Scripts/install-android-emulator.sh', shell=True)
-
+    check_call('./Support/Scripts/install-android-emulator.sh %s' % android_toolchains[target], shell=True)

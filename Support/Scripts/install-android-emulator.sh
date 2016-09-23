@@ -37,7 +37,7 @@ if [ ! -f "$android_script" ]; then
   case "${package_extension}" in
     "zip") unzip -d /tmp "/tmp/${android_sdk_package}";;
     "tgz") tar -C /tmp -xvf "/tmp/${android_sdk_package}";;
-    *) die "Unknown archive extension."
+    *) die "Unknown archive extension '${package_extension}'."
   esac
 fi
 
