@@ -37,24 +37,6 @@ if [ "$(linux_distribution)" == "ubuntu" ] && [ ! -d "/tmp/$cmake_package/bin" ]
 fi
 export PATH="/tmp/$cmake_package/bin:$PATH"
 
-# Get a build of Ninja.
-ninja_version="v1.6.0"
-ninja_dir="ninja-$ninja_version"
-if [ "$(linux_distribution)" == "centos" ] && [ ! -d "/tmp/$ninja_dir" ]; then
-  cd /tmp
-
-  mkdir -p "$ninja_dir"
-
-  if [ ! -e "ninja-linux.zip" ]; then
-    wget https://github.com/ninja-build/ninja/releases/download/$ninja_version/ninja-linux.zip
-  fi
-
-  unzip ninja-linux.zip -d "$ninja_dir"
-
-  cd "$OLDPWD"
-fi
-export PATH="/tmp/$ninja_dir:$PATH"
-
 # Go to the root of the repo to check style and register files.
 cd "$top"
 
