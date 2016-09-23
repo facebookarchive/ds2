@@ -9,8 +9,6 @@
 ## PATENTS file in the same directory.
 ##
 
-set -eu
-
 top="$(git rev-parse --show-toplevel)"
 source "$top/Support/Scripts/common.sh"
 

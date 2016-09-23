@@ -16,7 +16,7 @@ source "$(dirname "$0")/common.sh"
 case "$(uname)" in
   "Linux")  host="linux-x86";;
   "Darwin") host="darwin-x86";;
-  *)        die "This script works only on Linux and Mac OS X.";;
+  *)        die "This script works only on Linux and macOS.";;
 esac
 
 target_arch="${1-arm}"

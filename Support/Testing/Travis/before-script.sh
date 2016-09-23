@@ -9,10 +9,16 @@
 ## PATENTS file in the same directory.
 ##
 
-set -eu
+top="$(git rev-parse --show-toplevel)"
+source "$top/Support/Scripts/common.sh"
 
 if [[ "$TARGET" = "Android-ARM" && -n "${LLDB_TESTS-}" ]]; then
-  /tmp/android-sdk-linux/tools/emulator64-arm -avd test -no-skin -no-audio -no-window &
+  case "$(uname)" in
+    "Linux")  platform_name="linux";;
+    "Darwin") platform_name="macosx";;
+  esac
+  emulator="/tmp/android-sdk-${platform_name}/tools/emulator64-arm"
 
+  "$emulator" -avd test -no-skin -no-audio -no-window &
   adb wait-for-device
 fi
