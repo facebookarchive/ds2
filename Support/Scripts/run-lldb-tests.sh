@@ -13,6 +13,36 @@
 # against ds2. It requires a few hacks in the testing infra to disable
 # broken unit tests.
 
+REPO_BASE="https://github.com/llvm-mirror"
+UPSTREAM_BRANCH="release_38"
+
+top="$(git rev-parse --show-toplevel)"
+build_dir="$PWD"
+
+source "$top/Support/Scripts/common.sh"
+
+[ "$(uname)" == "Linux" ] || die "The lldb test suite requires a Linux host environment."
+[ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
+
+opt_fast=false
+opt_log=false
+opt_strace=false
+
+for o in "$@"; do
+  case "$o" in
+    --fast) opt_fast=true;;
+    --log) opt_log=true;;
+    --strace) opt_strace=true;;
+    *) die "Unknown option \`$o'.";;
+  esac
+done
+
+if [[ "${TARGET-}" = Android* ]]; then
+  platform_name="android"
+else
+  platform_name="linux"
+fi
+
 cherry_pick_patches() {
   cd "$1"
 
@@ -43,36 +73,6 @@ cherry_pick_patches() {
 
   cd "$OLDPWD"
 }
-
-REPO_BASE="https://github.com/llvm-mirror"
-UPSTREAM_BRANCH="release_38"
-
-top="$(git rev-parse --show-toplevel)"
-build_dir="$PWD"
-
-source "$top/Support/Scripts/common.sh"
-
-[ "$(uname)" == "Linux" ] || die "The lldb test suite requires a Linux host environment."
-[ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
-
-opt_fast=false
-opt_log=false
-opt_strace=false
-
-for o in "$@"; do
-  case "$o" in
-    --fast) opt_fast=true;;
-    --log) opt_log=true;;
-    --strace) opt_strace=true;;
-    *) die "Unknown option \`$o'.";;
-  esac
-done
-
-if [[ "${TARGET-}" = Android* ]]; then
-  platform_name="android"
-else
-  platform_name="linux"
-fi
 
 if [ -s "/etc/centos-release" ]; then
   llvm_path="$build_dir/llvm"
