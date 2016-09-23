@@ -37,7 +37,7 @@ for o in "$@"; do
   esac
 done
 
-if [[ "${TARGET-}" = Android* ]]; then
+if [[ "${TARGET-}" = Android-* ]]; then
   platform_name="android"
 else
   platform_name="linux"
@@ -62,7 +62,7 @@ cherry_pick_patches() {
     done
   fi
 
-  if [[ "${TARGET-}" = Android* ]]; then
+  if [[ "${TARGET-}" = Android-* ]]; then
     # Platform tests
     local testingPath="$top/Support/Testing"
     for p in "$testingPath"/Patches/lldb-android/*.patch; do
@@ -96,11 +96,13 @@ if [ "$(linux_distribution)" == "centos" ]; then
 elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_path="$build_dir/lldb"
   lldb_exe="$(which lldb-3.8)"
-  if [[ "$platform_name" = "linux" ]]; then
-    cc_exe="$(which gcc-5)"
-  elif [[ "$platform_name" = "android" ]]; then
-    cc_exe="/tmp/aosp-toolchain/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-gcc"
-  fi
+
+  case "${TARGET}" in
+    "Android-ARM") cc_exe="/tmp/aosp-toolchain/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-gcc";;
+    "Android-X86") cc_exe="/tmp/aosp-toolchain/x86_64-linux-android-4.9/bin/x86_64-linux-android-gcc";;
+    *)             cc_exe="$(which gcc-5)"
+  esac
+
   python_base="$build_dir/lib"
   export LD_LIBRARY_PATH=$python_base
   export PYTHONPATH="$python_base/python2.7/site-packages"
@@ -132,11 +134,11 @@ cd "$lldb_path/test"
 args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v)
 
 if [ -n "${TARGET-}" ]; then
-  if [[ "${TARGET}" = "Linux-X86_64" ]]; then
+  if [[ "${TARGET}" == "Linux-X86_64" ]]; then
     args+=("--arch=x86_64")
-  elif [[ "${TARGET}" = "Linux-X86" ]]; then
+  elif [[ "${TARGET}" == "Linux-X86" || "${TARGET}" == "Android-X86" ]]; then
     args+=("--arch=i386")
-  elif [[ "${TARGET}" = "Android-ARM" ]]; then
+  elif [[ "${TARGET}" == "Android-ARM" ]]; then
     args+=("--arch=arm")
   fi
 else

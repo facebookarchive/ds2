@@ -12,12 +12,19 @@
 top="$(git rev-parse --show-toplevel)"
 source "$top/Support/Scripts/common.sh"
 
-if [[ "$TARGET" = "Android-ARM" && -n "${LLDB_TESTS-}" ]]; then
+if [[ "$TARGET" == Android-* && -n "${LLDB_TESTS-}" ]]; then
   case "$(uname)" in
     "Linux")  platform_name="linux";;
     "Darwin") platform_name="macosx";;
   esac
-  emulator="/tmp/android-sdk-${platform_name}/tools/emulator64-arm"
+
+  case "${TARGET}" in
+    "Android-ARM") emulator_arch="arm";;
+    "Android-X86") emulator_arch="x86";;
+    *)             die "Unknown target '${TARGET}'.";;
+  esac
+
+  emulator="/tmp/android-sdk-${platform_name}/tools/emulator64-${emulator_arch}"
 
   "$emulator" -avd test -no-skin -no-audio -no-window &
   adb wait-for-device
