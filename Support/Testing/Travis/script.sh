@@ -24,8 +24,7 @@ fi
 # Get a recent cmake from cmake.org; packages for Ubuntu are too old.
 cmake_version="3.6"
 cmake_package="cmake-${cmake_version}.0-Linux-x86_64"
-if [ -r /etc/issue ] && grep -q "Ubuntu" "/etc/issue" &&
-   [ ! -d "/tmp/$cmake_package/bin" ]; then
+if [ "$(linux_distribution)" == "ubuntu" ] && [ ! -d "/tmp/$cmake_package/bin" ]; then
   cd /tmp
 
   if [ ! -e "$cmake_package.tar.gz" ] ; then
@@ -41,7 +40,7 @@ export PATH="/tmp/$cmake_package/bin:$PATH"
 # Get a build of Ninja.
 ninja_version="v1.6.0"
 ninja_dir="ninja-$ninja_version"
-if [ -s "/etc/centos-release" ] && [ ! -d "/tmp/$ninja_dir" ]; then
+if [ "$(linux_distribution)" == "centos" ] && [ ! -d "/tmp/$ninja_dir" ]; then
   cd /tmp
 
   mkdir -p "$ninja_dir"
@@ -97,7 +96,7 @@ cd "$OLDPWD"
 # CentOS uses different compiler names than Ubuntu, so we can only use the
 # toolchain files on Ubuntu In addition, clang-3.8 is also not available for
 # CentOS
-if [ ! -s "/etc/centos-release" ]; then
+if [ "$(linux_distribution)" != "centos" ]; then
   if [[ "${CLANG-}" = "1" ]]; then
     cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${TARGET}-Clang.cmake")
   else

@@ -74,7 +74,7 @@ cherry_pick_patches() {
   cd "$OLDPWD"
 }
 
-if [ -s "/etc/centos-release" ]; then
+if [ "$(linux_distribution)" == "centos" ]; then
   llvm_path="$build_dir/llvm"
   llvm_build="$llvm_path/build"
   lldb_path="$llvm_path/tools/lldb"
@@ -93,7 +93,7 @@ if [ -s "/etc/centos-release" ]; then
     cmake -G Ninja -DLLVM_LIBDIR_SUFFIX=64 ..
     ninja
   fi
-elif [ -r "/etc/issue" ] &&  grep -q "Ubuntu" "/etc/issue"; then
+elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_path="$build_dir/lldb"
   lldb_exe="$(which lldb-3.8)"
   if [[ "$platform_name" = "linux" ]]; then

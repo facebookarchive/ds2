@@ -59,3 +59,13 @@ exit_handlers="exit"
 exit_handler() { set +e; eval "$exit_handlers"; }
 trap exit_handler EXIT
 add_exit_handler() { exit_handlers="$*; $exit_handlers"; }
+
+linux_distribution() {
+  if [ -r /etc/issue ] && grep -q "Ubuntu" "/etc/issue"; then
+    echo "ubuntu"
+  elif [ -s /etc/centos-release ]; then
+    echo "centos"
+  else
+    echo "unknown"
+  fi
+}
