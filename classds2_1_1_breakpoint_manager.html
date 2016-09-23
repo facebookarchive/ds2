@@ -151,6 +151,12 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enumerate</b>
 <tr class="memitem:adf541341791ac8fd87d96c3063722689"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf541341791ac8fd87d96c3063722689"></a>
 virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (Target::Thread *thread, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site)=0</td></tr>
 <tr class="separator:adf541341791ac8fd87d96c3063722689"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8934552efca441f0a30ad4ed12c12b4a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8934552efca441f0a30ad4ed12c12b4a"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> (Target::Thread *thread=nullptr)</td></tr>
+<tr class="separator:a8934552efca441f0a30ad4ed12c12b4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a947a8dc63f9cffc105d10c5f1b340bd2"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a947a8dc63f9cffc105d10c5f1b340bd2"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>disable</b> (Target::Thread *thread=nullptr)</td></tr>
+<tr class="separator:a947a8dc63f9cffc105d10c5f1b340bd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -163,27 +169,21 @@ virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>isValid<
 <tr class="memitem:ab04108b1e7e01ff84a5306c2924d318c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab04108b1e7e01ff84a5306c2924d318c"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site)</td></tr>
 <tr class="separator:ab04108b1e7e01ff84a5306c2924d318c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a03f301e0fdc194c037fd8e4cb2e934"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3a03f301e0fdc194c037fd8e4cb2e934"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> ()</td></tr>
-<tr class="separator:a3a03f301e0fdc194c037fd8e4cb2e934"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3fb8d26911124a9ef7760b83ee3de0a5"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3fb8d26911124a9ef7760b83ee3de0a5"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>disable</b> ()</td></tr>
-<tr class="separator:a3fb8d26911124a9ef7760b83ee3de0a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a982e7eead7e796e1538a1a8f81806732"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a982e7eead7e796e1538a1a8f81806732"></a>
-virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>enableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site)=0</td></tr>
-<tr class="separator:a982e7eead7e796e1538a1a8f81806732"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefafcfca806b06809640d001b5bb264c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aefafcfca806b06809640d001b5bb264c"></a>
-virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>disableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site)=0</td></tr>
-<tr class="separator:aefafcfca806b06809640d001b5bb264c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86ff544d9cd84ceecc9d71e9c0e7a798"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a86ff544d9cd84ceecc9d71e9c0e7a798"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>enableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site, Target::Thread *thread=nullptr)=0</td></tr>
+<tr class="separator:a86ff544d9cd84ceecc9d71e9c0e7a798"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e424b7399715a0f55ce92aabfacb3ba"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0e424b7399715a0f55ce92aabfacb3ba"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>disableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site, Target::Thread *thread=nullptr)=0</td></tr>
+<tr class="separator:a0e424b7399715a0f55ce92aabfacb3ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada6da2f7992dba08957566a17c3f959c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ada6da2f7992dba08957566a17c3f959c"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>enabled</b> (Target::Thread *thread=nullptr) const =0</td></tr>
+<tr class="separator:ada6da2f7992dba08957566a17c3f959c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a09727b8cc33767ae1f7ba0e0d2e38e5e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a09727b8cc33767ae1f7ba0e0d2e38e5e"></a>
 SiteMap&#160;</td><td class="memItemRight" valign="bottom"><b>_sites</b></td></tr>
 <tr class="separator:a09727b8cc33767ae1f7ba0e0d2e38e5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fef3ee057a6e05cdc3e155b45dd0a62"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2fef3ee057a6e05cdc3e155b45dd0a62"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_enabled</b></td></tr>
-<tr class="separator:a2fef3ee057a6e05cdc3e155b45dd0a62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab2a6b16b9880150e394a772d6077cd6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aab2a6b16b9880150e394a772d6077cd6"></a>
 <a class="el" href="classds2_1_1_target_1_1_process_base.html">Target::ProcessBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>_process</b></td></tr>
 <tr class="separator:aab2a6b16b9880150e394a772d6077cd6"><td class="memSeparator" colspan="2">&#160;</td></tr>

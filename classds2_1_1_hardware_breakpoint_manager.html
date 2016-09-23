@@ -125,6 +125,12 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (Target::Threa
 <tr class="memitem:a397fd0bdfa4d21c07483c3f693737002"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a397fd0bdfa4d21c07483c3f693737002"></a>
 virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>maxWatchpoints</b> ()</td></tr>
 <tr class="separator:a397fd0bdfa4d21c07483c3f693737002"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad9d1bc8ea10b7e380d75c782fa05baf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aad9d1bc8ea10b7e380d75c782fa05baf"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> (Target::Thread *thread=nullptr) override</td></tr>
+<tr class="separator:aad9d1bc8ea10b7e380d75c782fa05baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0379c05feb74278d9453a66180487987"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0379c05feb74278d9453a66180487987"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>disable</b> (Target::Thread *thread=nullptr) override</td></tr>
+<tr class="separator:a0379c05feb74278d9453a66180487987"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classds2_1_1_breakpoint_manager"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classds2_1_1_breakpoint_manager')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classds2_1_1_breakpoint_manager.html">ds2::BreakpointManager</a></td></tr>
 <tr class="memitem:af81e4dd222cd6d6cb57e5e07a78cfbca inherit pub_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af81e4dd222cd6d6cb57e5e07a78cfbca"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()</td></tr>
@@ -138,24 +144,30 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enumerate</b>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:ac9223aef7762eb1c16f8c6bc5f5e44d7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac9223aef7762eb1c16f8c6bc5f5e44d7"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>enableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site) override</td></tr>
-<tr class="separator:ac9223aef7762eb1c16f8c6bc5f5e44d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9cade8204bc6e794ecaa2533e68c72d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac9cade8204bc6e794ecaa2533e68c72d"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>enableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site, Target::Thread *thread=nullptr) override</td></tr>
+<tr class="separator:ac9cade8204bc6e794ecaa2533e68c72d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32549704540760d5cc43b2d453e9e8b0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32549704540760d5cc43b2d453e9e8b0"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>enableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site, int idx, Target::Thread *thread)</td></tr>
 <tr class="separator:a32549704540760d5cc43b2d453e9e8b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2379d48cccd0f4ef74b021da31f2235"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac2379d48cccd0f4ef74b021da31f2235"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>disableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site) override</td></tr>
-<tr class="separator:ac2379d48cccd0f4ef74b021da31f2235"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accb40882c5cf913092e3a8c3f4cb506a"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="accb40882c5cf913092e3a8c3f4cb506a"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>disableLocation</b> (<a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> const &amp;site, Target::Thread *thread=nullptr) override</td></tr>
+<tr class="separator:accb40882c5cf913092e3a8c3f4cb506a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36426c4858dd3d1b2fe185b36cdaff1f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a36426c4858dd3d1b2fe185b36cdaff1f"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>disableLocation</b> (int idx, Target::Thread *thread)</td></tr>
 <tr class="separator:a36426c4858dd3d1b2fe185b36cdaff1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b45fe1db4d99cb67e8e2acc506fdc1f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5b45fe1db4d99cb67e8e2acc506fdc1f"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>enabled</b> (Target::Thread *thread=nullptr) const override</td></tr>
+<tr class="separator:a5b45fe1db4d99cb67e8e2acc506fdc1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd80de928108afbdc4b0f0edf5480b2e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abd80de928108afbdc4b0f0edf5480b2e"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>isValid</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, size_t size, Mode mode) const override</td></tr>
 <tr class="separator:abd80de928108afbdc4b0f0edf5480b2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72df3863c6e111fa16cb284555aa6dae"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a72df3863c6e111fa16cb284555aa6dae"></a>
 virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getAvailableLocation</b> ()</td></tr>
 <tr class="separator:a72df3863c6e111fa16cb284555aa6dae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9241faecf0340b0ced283af966bce446"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9241faecf0340b0ced283af966bce446"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enumerateThreads</b> (Target::Thread *thread, std::function&lt; void(Target::Thread *t)&gt; const &amp;cb) const </td></tr>
+<tr class="separator:a9241faecf0340b0ced283af966bce446"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classds2_1_1_breakpoint_manager"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classds2_1_1_breakpoint_manager')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classds2_1_1_breakpoint_manager.html">ds2::BreakpointManager</a></td></tr>
 <tr class="memitem:a395905f5d438102cbbbd66383cad0ffd inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a395905f5d438102cbbbd66383cad0ffd"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>BreakpointManager</b> (<a class="el" href="classds2_1_1_target_1_1_process_base.html">Target::ProcessBase</a> *process)</td></tr>
@@ -163,25 +175,19 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getAvailableLo
 <tr class="memitem:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab04108b1e7e01ff84a5306c2924d318c"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, <a class="el" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> &amp;site)</td></tr>
 <tr class="separator:ab04108b1e7e01ff84a5306c2924d318c inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a03f301e0fdc194c037fd8e4cb2e934 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3a03f301e0fdc194c037fd8e4cb2e934"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enable</b> ()</td></tr>
-<tr class="separator:a3a03f301e0fdc194c037fd8e4cb2e934 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3fb8d26911124a9ef7760b83ee3de0a5 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3fb8d26911124a9ef7760b83ee3de0a5"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>disable</b> ()</td></tr>
-<tr class="separator:a3fb8d26911124a9ef7760b83ee3de0a5 inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a2109f9e1817da1877490d305305dca47"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2109f9e1817da1877490d305305dca47"></a>
 std::vector&lt; uint64_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_locations</b></td></tr>
 <tr class="separator:a2109f9e1817da1877490d305305dca47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7af3e9af12b501562cf038cbc8dcfb36"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7af3e9af12b501562cf038cbc8dcfb36"></a>
+std::unordered_set&lt; ThreadId &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_enabled</b></td></tr>
+<tr class="separator:a7af3e9af12b501562cf038cbc8dcfb36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classds2_1_1_breakpoint_manager"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classds2_1_1_breakpoint_manager')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classds2_1_1_breakpoint_manager.html">ds2::BreakpointManager</a></td></tr>
 <tr class="memitem:a09727b8cc33767ae1f7ba0e0d2e38e5e inherit pro_attribs_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a09727b8cc33767ae1f7ba0e0d2e38e5e"></a>
 SiteMap&#160;</td><td class="memItemRight" valign="bottom"><b>_sites</b></td></tr>
 <tr class="separator:a09727b8cc33767ae1f7ba0e0d2e38e5e inherit pro_attribs_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fef3ee057a6e05cdc3e155b45dd0a62 inherit pro_attribs_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2fef3ee057a6e05cdc3e155b45dd0a62"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>_enabled</b></td></tr>
-<tr class="separator:a2fef3ee057a6e05cdc3e155b45dd0a62 inherit pro_attribs_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab2a6b16b9880150e394a772d6077cd6 inherit pro_attribs_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aab2a6b16b9880150e394a772d6077cd6"></a>
 <a class="el" href="classds2_1_1_target_1_1_process_base.html">Target::ProcessBase</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>_process</b></td></tr>
 <tr class="separator:aab2a6b16b9880150e394a772d6077cd6 inherit pro_attribs_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
