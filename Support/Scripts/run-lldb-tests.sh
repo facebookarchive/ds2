@@ -90,7 +90,7 @@ if [ -s "/etc/centos-release" ]; then
 
     mkdir -p "$llvm_build"
     cd "$llvm_build"
-    cmake .. -G Ninja -DLLVM_LIBDIR_SUFFIX=64
+    cmake -G Ninja -DLLVM_LIBDIR_SUFFIX=64 ..
     ninja
   fi
 elif [ -r "/etc/issue" ] &&  grep -q "Ubuntu" "/etc/issue"; then
