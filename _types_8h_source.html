@@ -175,94 +175,94 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">typedef</span> std::map&lt;std::string, std::string&gt; EnvironmentBlock;</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">// Repesents the stop information of a process.</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">// Represents an address</span></div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">//</span></div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;</div>
-<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="structds2_1_1_stop_info.html">   93</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structds2_1_1_stop_info.html">StopInfo</a> {</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keyword">enum</span> Event {</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    kEventNone,</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    kEventStop,</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    kEventExit,</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    kEventKill,</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  };</div>
+<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="classds2_1_1_address.html">   93</a></span>&#160;<span class="keyword">class </span><a class="code" href="classds2_1_1_address.html">Address</a> {</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  uint64_t _value;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="keywordtype">bool</span> _unset;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <a class="code" href="classds2_1_1_address.html">Address</a>() : _value(0), _unset(<span class="keyword">true</span>) {}</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <span class="keyword">enum</span> Reason {</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    kReasonNone,</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    kReasonWriteWatchpoint,</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    kReasonReadWatchpoint,</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    kReasonAccessWatchpoint,</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    kReasonBreakpoint,</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    kReasonTrace,</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    kReasonSignalStop, <span class="comment">// TODO better name</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    kReasonTrap,</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    kReasonThreadSpawn,</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    kReasonThreadEntry,</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    kReasonThreadExit,</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">#if defined(OS_WIN32)</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor"></span>    kReasonMemoryError,</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    kReasonMemoryAlignment,</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    kReasonMathError,</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    kReasonInstructionError,</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    kReasonLibraryEvent,</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    kReasonDebugOutput,</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor"></span>  };</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  Event event;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  Reason reason;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="comment">// TODO: status and signal should be an union.</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="keywordtype">int</span> status;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="keywordtype">int</span> signal;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="preprocessor">#if defined(OS_WIN32)</span></div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="preprocessor"></span>  std::string debugString;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="keywordtype">int</span> core;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <a class="code" href="structds2_1_1_stop_info.html">StopInfo</a>() { clear(); }</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> clear() {</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keyword">event</span> = kEventNone;</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    reason = kReasonNone;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    status = 0;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    signal = 0;</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;<span class="preprocessor">#if defined(OS_WIN32)</span></div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="preprocessor"></span>    debugString.clear();</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="preprocessor"></span>    core = -1;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;  }</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;};</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="comment">// Represents an address</span></div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment">//</span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;</div>
-<div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="classds2_1_1_address.html">  152</a></span>&#160;<span class="keyword">class </span><a class="code" href="classds2_1_1_address.html">Address</a> {</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;  uint64_t _value;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;  <span class="keywordtype">bool</span> _unset;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;  <a class="code" href="classds2_1_1_address.html">Address</a>() : _value(0), _unset(<span class="keyword">true</span>) {}</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;  <a class="code" href="classds2_1_1_address.html">Address</a>(uint64_t address) : _value(address), _unset(<span class="keyword">false</span>) {}</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="keyword">inline</span> <span class="keyword">operator</span> uint64_t()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _value; }</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keyword">inline</span> <a class="code" href="classds2_1_1_address.html">Address</a> &amp;operator=(uint64_t address) {</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    _unset = <span class="keyword">false</span>, _value = address;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  }</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">bool</span> valid()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> !_unset; }</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  <span class="keyword">inline</span> uint64_t value()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _value; }</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> unset() { _unset = <span class="keyword">true</span>, _value = 0; }</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> clear() { unset(); }</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <a class="code" href="classds2_1_1_address.html">Address</a>(uint64_t address) : _value(address), _unset(<span class="keyword">false</span>) {}</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="keyword">inline</span> <span class="keyword">operator</span> uint64_t()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _value; }</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="keyword">inline</span> <a class="code" href="classds2_1_1_address.html">Address</a> &amp;operator=(uint64_t address) {</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    _unset = <span class="keyword">false</span>, _value = address;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  }</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">bool</span> valid()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> !_unset; }</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  <span class="keyword">inline</span> uint64_t value()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> _value; }</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> unset() { _unset = <span class="keyword">true</span>, _value = 0; }</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> clear() { unset(); }</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;};</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment">// Repesents the stop information of a process.</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment">//</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;</div>
+<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="structds2_1_1_stop_info.html">  125</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structds2_1_1_stop_info.html">StopInfo</a> {</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="keyword">enum</span> Event {</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    kEventNone,</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    kEventStop,</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    kEventExit,</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    kEventKill,</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  };</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  <span class="keyword">enum</span> Reason {</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    kReasonNone,</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    kReasonWriteWatchpoint,</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    kReasonReadWatchpoint,</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    kReasonAccessWatchpoint,</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    kReasonBreakpoint,</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    kReasonTrace,</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    kReasonSignalStop, <span class="comment">// TODO better name</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    kReasonTrap,</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    kReasonThreadSpawn,</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    kReasonThreadEntry,</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    kReasonThreadExit,</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="preprocessor">#if defined(OS_WIN32)</span></div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="preprocessor"></span>    kReasonMemoryError,</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    kReasonMemoryAlignment,</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    kReasonMathError,</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    kReasonInstructionError,</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    kReasonLibraryEvent,</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    kReasonDebugOutput,</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="preprocessor"></span>  };</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;  Event event;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  Reason reason;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  <span class="comment">// TODO: status and signal should be an union.</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;  <span class="keywordtype">int</span> status;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;  <span class="keywordtype">int</span> signal;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="preprocessor">#if defined(OS_WIN32)</span></div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="preprocessor"></span>  std::string debugString;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keywordtype">int</span> core;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <a class="code" href="structds2_1_1_stop_info.html">StopInfo</a>() { clear(); }</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> clear() {</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keyword">event</span> = kEventNone;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    reason = kReasonNone;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    status = 0;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    signal = 0;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;<span class="preprocessor">#if defined(OS_WIN32)</span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;<span class="preprocessor"></span>    debugString.clear();</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="preprocessor"></span>    core = -1;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  }</div>
 <div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;};</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="comment">//</span></div>
@@ -434,10 +434,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;};</div>
 <div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;}</div>
 <div class="ttc" id="structds2_1_1_process_thread_id_html"><div class="ttname"><a href="structds2_1_1_process_thread_id.html">ds2::ProcessThreadId</a></div><div class="ttdef"><b>Definition:</b> Types.h:57</div></div>
-<div class="ttc" id="classds2_1_1_address_html"><div class="ttname"><a href="classds2_1_1_address.html">ds2::Address</a></div><div class="ttdef"><b>Definition:</b> Types.h:152</div></div>
+<div class="ttc" id="classds2_1_1_address_html"><div class="ttname"><a href="classds2_1_1_address.html">ds2::Address</a></div><div class="ttdef"><b>Definition:</b> Types.h:93</div></div>
 <div class="ttc" id="structds2_1_1_process_info_html"><div class="ttname"><a href="structds2_1_1_process_info.html">ds2::ProcessInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:227</div></div>
 <div class="ttc" id="structds2_1_1_host_info_html"><div class="ttname"><a href="structds2_1_1_host_info.html">ds2::HostInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:196</div></div>
-<div class="ttc" id="structds2_1_1_stop_info_html"><div class="ttname"><a href="structds2_1_1_stop_info.html">ds2::StopInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:93</div></div>
+<div class="ttc" id="structds2_1_1_stop_info_html"><div class="ttname"><a href="structds2_1_1_stop_info.html">ds2::StopInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:125</div></div>
 <div class="ttc" id="structds2_1_1_shared_library_info_html"><div class="ttname"><a href="structds2_1_1_shared_library_info.html">ds2::SharedLibraryInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:331</div></div>
 <div class="ttc" id="structds2_1_1_memory_region_info_html"><div class="ttname"><a href="structds2_1_1_memory_region_info.html">ds2::MemoryRegionInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:298</div></div>
 <div class="ttc" id="structds2_1_1_mapped_file_info_html"><div class="ttname"><a href="structds2_1_1_mapped_file_info.html">ds2::MappedFileInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:342</div></div>
