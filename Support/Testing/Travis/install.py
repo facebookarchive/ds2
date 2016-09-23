@@ -34,10 +34,16 @@ dist_packages.append('flex')
 dist_packages.append('bison')
 
 if host == 'Darwin':
+    dist_packages.append('ninja')
     dist_packages.append('cmake')
     if os.getenv('CLANG') != '1':
         dist_packages.append('gcc')
 elif host == 'Linux':
+    if "Ubuntu" in platform.linux_distribution():
+        dist_packages.append('ninja-build')
+    else:
+        dist_packages.append('ninja')
+
     if target == 'Style' or target == 'Registers':
         dist_packages.append('clang-format-3.8')
     elif target == 'Documentation':

@@ -75,6 +75,8 @@ fi
 # Go back to the build tree where we started.
 cd "$OLDPWD"
 
+cmake_options=(-G Ninja)
+
 # Except for the Android toolchain that we install ourselves, CentOS uses
 # different compiler names than Ubuntu, so we can only use the toolchain files
 # on Ubuntu. In addition, clang-3.8 is also not available for CentOS
@@ -85,7 +87,7 @@ if [ "$(linux_distribution)" != "centos" ] || [[ "$TARGET" == Android-* ]]; then
     target_name="${target_name}-Clang"
   fi
 
-  cmake_options=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${target_name}.cmake")
+  cmake_options+=(-DCMAKE_TOOLCHAIN_FILE="../Support/CMake/Toolchain-${target_name}.cmake")
 fi
 
 if [[ "${RELEASE-}" = "1" ]]; then
@@ -103,7 +105,7 @@ if [[ "${CLANG-}" = "1" ]] && [[ "$TARGET" = "Linux-X86_64" ]]; then
 fi
 
 cmake "${cmake_options[@]}" "$top"
-make -j$(num_cpus)
+ninja
 
 if [[ -n "${LLDB_TESTS-}" ]]; then
   "$top/Support/Scripts/run-lldb-tests.sh"
