@@ -28,7 +28,7 @@ case "${target_arch}" in
   *)     die "Unknown architecture '${target_arch}'.";;
 esac
 
-android_sdk_version="r24.4.1"
+android_sdk_version="r23"
 android_script="/tmp/android-sdk-${platform_name}/tools/android"
 
 if [ ! -f "$android_script" ]; then
