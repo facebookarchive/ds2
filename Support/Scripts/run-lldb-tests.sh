@@ -14,7 +14,7 @@
 # broken unit tests.
 
 REPO_BASE="https://github.com/llvm-mirror"
-UPSTREAM_BRANCH="release_38"
+UPSTREAM_BRANCH="release_39"
 
 top="$(git rev-parse --show-toplevel)"
 build_dir="$PWD"
@@ -48,27 +48,11 @@ cherry_pick_patches() {
 
   # Disabled and enabled tests
   local testingPath="$top/Support/Testing"
-  for p in "$testingPath"/Patches/lldb-{disable,enable}/*.patch; do
-    echo "Applying $p"
-    patch -d "$lldb_path" -p1 <"$p"
-  done
+  patch -d "$lldb_path" -p1 <"$testingPath/Patches/lldb-test-blacklist.patch"
+  patch -d "$lldb_path" -p1 <"$testingPath/Patches/lldb-blacklist-update.patch"
 
-  if [[ "${PLATFORM-}" = "1" ]]; then
-    # Platform tests
-    local testingPath="$top/Support/Testing"
-    for p in "$testingPath"/Patches/lldb-platform/*.patch; do
-      echo "Applying $p"
-      patch -d "$lldb_path" -p1 <"$p"
-    done
-  fi
-
-  if [[ "${TARGET-}" = Android-* ]]; then
-    # Platform tests
-    local testingPath="$top/Support/Testing"
-    for p in "$testingPath"/Patches/lldb-android/*.patch; do
-      echo "Applying $p"
-      patch -d "$lldb_path" -p1 <"$p"
-    done
+  if [[ "$platform_name" = "android" ]]; then
+    patch -d "$lldb_path" -p1 <"$testingPath/Patches/android-search-paths.patch"
   fi
 
   cd "$OLDPWD"
@@ -131,7 +115,8 @@ fi
 
 cd "$lldb_path/test"
 
-args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v)
+blacklist_dir="$top/Support/Testing/Blacklists"
+args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v --exclude "$blacklist_dir/general.blacklist")
 
 if [ -n "${TARGET-}" ]; then
   if [[ "${TARGET}" == "Linux-X86_64" ]]; then
@@ -169,18 +154,16 @@ if [[ "${PLATFORM-}" = "1" ]]; then
     working_dir="$build_dir"
   elif [[ "$platform_name" = "android" ]]; then
     working_dir="/data/local/tmp"
+    args+=(--exclude "$blacklist_dir/android.blacklist")
   fi
 
-  args+=("--platform-name=remote-$platform_name" "--platform-url=connect://localhost:12345" "--platform-working-dir=$working_dir" "--no-multiprocess")
+  args+=("--platform-name=remote-$platform_name" "--platform-url=connect://localhost:12345" "--platform-working-dir=$working_dir"
+         "--no-multiprocess" --exclude "$blacklist_dir/platform.blacklist")
   ds2_args=("p")
 
   if $opt_log; then
     ds2_args+=("--remote-debug" "--log-file=$working_dir/ds2.log")
   fi
-
-  # These tests are not currently supported on Platform mode, because of deficiencies in the 
-  # lldb platform python API
-  rm -fr "$lldb_path/packages/Python/lldbsuite/test/tools/lldb-server"
 
   if [[ "$platform_name" = "linux" ]]; then
     "$ds2_path" "${ds2_args[@]}" &

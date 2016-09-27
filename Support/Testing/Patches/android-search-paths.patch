@@ -1,13 +1,13 @@
 diff --git a/packages/Python/lldbsuite/test/dotest.py b/packages/Python/lldbsuite/test/dotest.py
-index 8a5e521..50a2791 100644
+index 702e57e..a63c080 100644
 --- a/packages/Python/lldbsuite/test/dotest.py
 +++ b/packages/Python/lldbsuite/test/dotest.py
-@@ -938,6 +938,8 @@ def run_suite():
- 
+@@ -961,6 +1003,8 @@ def run_suite():
+
      target_platform = lldb.DBG.GetSelectedPlatform().GetTriple().split('-')[2]
- 
+
 +    lldb.DBG.HandleCommand("settings set target.exec-search-paths /tmp/debug-data")
 +
      # Don't do debugserver tests on everything except OS X.
      configuration.dont_do_debugserver_test = "linux" in target_platform or "freebsd" in target_platform or "windows" in target_platform
- 
+
