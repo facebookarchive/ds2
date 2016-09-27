@@ -6,7 +6,7 @@ index 023f6f3..0703c8a 100644
          self.inline_stepping_step_over()
      
      @add_test_categories(['pyapi'])
-+    @expectedFailureAndroid(archs=['arm'])
++    @expectedFailureAndroid
      def test_step_in_template_with_python_api(self):
          """Test stepping in to templated functions."""
          self.build()
