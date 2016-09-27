@@ -1,0 +1,134 @@
+diff --git a/packages/Python/lldbsuite/test/configuration.py b/packages/Python/lldbsuite/test/configuration.py
+index 37fa875..a0553a7 100644
+--- a/packages/Python/lldbsuite/test/configuration.py
++++ b/packages/Python/lldbsuite/test/configuration.py
+@@ -102,10 +102,8 @@ parsable = False
+ regexp = None
+
+ # Sets of tests which are excluded at runtime
+-skip_files = None
+-skip_methods = None
+-xfail_files = None
+-xfail_methods = None
++skip_tests = None
++xfail_tests = None
+
+ # By default, recorded session info for errored/failed test are dumped into its
+ # own file under a session directory named after the timestamp of the test suite
+diff --git a/packages/Python/lldbsuite/test/dotest.py b/packages/Python/lldbsuite/test/dotest.py
+index a37fff5..9991a33 100644
+--- a/packages/Python/lldbsuite/test/dotest.py
++++ b/packages/Python/lldbsuite/test/dotest.py
+@@ -216,33 +216,24 @@ def parseExclusion(exclusion_file):
+        <method name>
+     """
+     excl_type = None
+-    case_type = None
+
+     with open(exclusion_file) as f:
+         for line in f:
++            line = line.strip()
+             if not excl_type:
+-                [excl_type, case_type] = line.split()
++                excl_type = line
+                 continue
+
+-            line = line.strip()
+             if not line:
+                 excl_type = None
+-            elif excl_type == 'skip' and case_type == 'files':
+-                if not configuration.skip_files:
+-                    configuration.skip_files = []
+-                configuration.skip_files.append(line)
+-            elif excl_type == 'skip' and case_type == 'methods':
+-                if not configuration.skip_methods:
+-                    configuration.skip_methods = []
+-                configuration.skip_methods.append(line)
+-            elif excl_type == 'xfail' and case_type == 'files':
+-                if not configuration.xfail_files:
+-                    configuration.xfail_files = []
+-                configuration.xfail_files.append(line)
+-            elif excl_type == 'xfail' and case_type == 'methods':
+-                if not configuration.xfail_methods:
+-                    configuration.xfail_methods = []
+-                configuration.xfail_methods.append(line)
++            elif excl_type == 'skip':
++                if not configuration.skip_tests:
++                    configuration.skip_tests = []
++                configuration.skip_tests.append(line)
++            elif excl_type == 'xfail':
++                if not configuration.xfail_tests:
++                    configuration.xfail_tests = []
++                configuration.xfail_tests.append(line)
+
+
+ def parseOptionsAndInitTestdirs():
+@@ -375,7 +366,8 @@ def parseOptionsAndInitTestdirs():
+         lldbtest_config.lldbExec = os.path.realpath(args.executable)
+
+     if args.excluded:
+-        parseExclusion(args.excluded)
++        for excl_file in args.excluded:
++            parseExclusion(excl_file)
+
+     if args.p:
+         if args.p.startswith('-'):
+@@ -799,8 +791,8 @@ def visit_file(dir, name):
+             # We didn't match the regex, we're done.
+             return
+
+-    if configuration.skip_files:
+-        for file_regexp in configuration.skip_files:
++    if configuration.skip_tests:
++        for file_regexp in configuration.skip_tests:
+             if re.search(file_regexp, name):
+                 return
+
+diff --git a/packages/Python/lldbsuite/test/test_result.py b/packages/Python/lldbsuite/test/test_result.py
+index 75e5fb8..7bfe970 100644
+--- a/packages/Python/lldbsuite/test/test_result.py
++++ b/packages/Python/lldbsuite/test/test_result.py
+@@ -18,8 +18,6 @@ import os
+ # Third-party modules
+ import unittest2
+
+-from unittest2.util import strclass
+-
+ # LLDB Modules
+ from . import configuration
+ from lldbsuite.test_event.event_builder import EventBuilder
+@@ -139,8 +137,7 @@ class LLDBTestResult(unittest2.TextTestResult):
+                 self.getCategoriesForTest(test)):
+             self.hardMarkAsSkipped(test)
+         if self.checkExclusion(
+-                configuration.skip_methods,
+-                test._testMethodName):
++                configuration.skip_tests, test.id()):
+             self.hardMarkAsSkipped(test)
+
+         configuration.setCrashInfoHook(
+@@ -161,11 +158,7 @@ class LLDBTestResult(unittest2.TextTestResult):
+
+     def addSuccess(self, test):
+         if self.checkExclusion(
+-                configuration.xfail_files,
+-                strclass(
+-                    test.__class__)) or self.checkExclusion(
+-                configuration.xfail_methods,
+-                test._testMethodName):
++                configuration.xfail_tests, test.id()):
+             self.addUnexpectedSuccess(test, None)
+             return
+
+@@ -239,11 +232,7 @@ class LLDBTestResult(unittest2.TextTestResult):
+
+     def addFailure(self, test, err):
+         if self.checkExclusion(
+-                configuration.xfail_files,
+-                strclass(
+-                    test.__class__)) or self.checkExclusion(
+-                configuration.xfail_methods,
+-                test._testMethodName):
++                configuration.xfail_tests, test.id()):
+             self.addExpectedFailure(test, err, None)
+             return
