@@ -6,7 +6,7 @@ index a602afc..ae4bb04 100644
      @expectedFlakeyFreeBSD("llvm.org/pr19605")
      @expectedFlakeyLinux("llvm.org/pr20275")
      @expectedFailureWindows("llvm.org/pr21765")
-+    @expectedFailureAndroid(archs=['arm'])
++    @expectedFailureAndroid
      def test(self):
          """Test calling std::String member function."""
          self.build()

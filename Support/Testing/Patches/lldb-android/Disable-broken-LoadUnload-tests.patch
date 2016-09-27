@@ -6,7 +6,7 @@ index 481e7c8..7b7de1d 100644
      @skipIfFreeBSD # llvm.org/pr14424 - missing FreeBSD Makefiles/testcase support
      @skipUnlessListedRemote(['android'])
      @skipIfWindows # Windows doesn't have dlopen and friends, dynamic libraries work differently
-+    @expectedFailureAndroid(archs=['arm'])
++    @expectedFailureAndroid
      def test_lldb_process_load_and_unload_commands(self):
          """Test that lldb process load/unload command work correctly."""
  
