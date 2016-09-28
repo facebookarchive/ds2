@@ -303,20 +303,21 @@ ErrorCode ProcessBase::afterResume() {
     return kSuccess;
   }
 
-  // Disable breakpoints and try to hit the breakpoint.
-  for (auto bpm : std::list<BreakpointManager *>{softwareBreakpointManager(),
-                                                 hardwareBreakpointManager()}) {
-    if (bpm == nullptr) {
-      continue;
-    }
-
+  // Disable breakpoints and try to hit software breakpoints.
+  BreakpointManager *swBpm = softwareBreakpointManager();
+  if (swBpm != nullptr) {
     for (auto it : _threads) {
       BreakpointManager::Site site;
-      if (bpm->hit(it.second, site) >= 0) {
+      if (swBpm->hit(it.second, site) >= 0) {
         DS2LOG(Debug, "hit breakpoint for tid %" PRI_PID, it.second->tid());
       }
     }
-    bpm->disable();
+    swBpm->disable();
+  }
+
+  BreakpointManager *hwBpm = hardwareBreakpointManager();
+  if (hwBpm != nullptr) {
+    hwBpm->disable();
   }
 
   return kSuccess;
