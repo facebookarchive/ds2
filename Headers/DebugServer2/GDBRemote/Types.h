@@ -47,8 +47,6 @@ public:
   std::string threadName;
   Architecture::GPRegisterStopMap registers;
   std::set<ThreadId> threads;
-  Address watchpointAddress;
-  int watchpointIndex;
 
 public:
   std::string encode(CompatibilityMode mode, bool listThreads) const;
@@ -73,8 +71,6 @@ public:
     registers.clear();
     threads.clear();
     ds2::StopInfo::clear();
-    watchpointAddress = 0;
-    watchpointIndex = -1;
   }
 };
 

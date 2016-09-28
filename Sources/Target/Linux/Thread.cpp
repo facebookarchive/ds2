@@ -41,7 +41,11 @@ void Thread::fillWatchpointData() {
   if (hwBpm) {
     BreakpointManager::Site site;
 
-    if (hwBpm->hit(this, site) >= 0) {
+    int bpIdx = hwBpm->hit(this, site);
+    if (bpIdx >= 0) {
+      _stopInfo.watchpointIndex = bpIdx;
+      _stopInfo.watchpointAddress = site.address;
+
       switch (static_cast<int>(site.mode)) {
       case BreakpointManager::kModeExec:
         _stopInfo.reason = StopInfo::kReasonBreakpoint;
