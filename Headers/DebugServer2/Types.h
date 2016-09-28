@@ -163,6 +163,9 @@ struct StopInfo {
 
   int core;
 
+  Address watchpointAddress;
+  int watchpointIndex;
+
   StopInfo() { clear(); }
 
   inline void clear() {
@@ -174,6 +177,8 @@ struct StopInfo {
     debugString.clear();
 #endif
     core = -1;
+    watchpointAddress = 0;
+    watchpointIndex = -1;
   }
 };
 
