@@ -99,6 +99,15 @@ template <typename T> static inline void DisableBit(T &number, int idx) {
   number &= ~(static_cast<typename std::make_unsigned<T>::type>(1) << idx);
 }
 
+// Zeros bits from startIdx through (endIdx - 1) in number
+template <typename T>
+static inline void DisableBits(T &number, int startIdx, int endIdx) {
+  auto mask = (static_cast<typename std::make_unsigned<T>::type>(1)
+               << (endIdx - startIdx)) -
+              1;
+  number &= ~(mask << startIdx);
+}
+
 template <typename T>
 static inline void Align(T &number, unsigned int alignment) {
   unsigned int clear = alignment - 1;
