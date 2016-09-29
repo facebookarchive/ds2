@@ -26,6 +26,7 @@ namespace ds2 {
 
 static const int kStatusRegIdx = 6;
 static const int kCtrlRegIdx = 7;
+static const int kNumDebugRegisters = 8;
 
 size_t HardwareBreakpointManager::maxWatchpoints() {
   return 4; // dr0, dr1, dr2, dr3
@@ -217,5 +218,30 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
   }
 
   return super::isValid(address, size, mode);
+}
+
+ErrorCode HardwareBreakpointManager::readDebugRegisters(
+    Target::Thread *thread, std::vector<uint64_t> &regs) const {
+  Architecture::CPUState state;
+
+  CHK(thread->readCPUState(state));
+
+#if defined(ARCH_X86)
+  for (int i = 0; i < kNumDebugRegisters; ++i) {
+    regs[i] = (i == 4 || i == 5) ? 0 : state.dr.dr[i];
+  }
+#elif defined(ARCH_X86_64)
+  for (int i = 0; i < kNumDebugRegisters; ++i) {
+    if (state.is32) {
+      regs[i] = (i == 4 || i == 5) ? 0 : state.state32.dr.dr[i];
+    } else {
+      regs[i] = (i == 4 || i == 5) ? 0 : state.state64.dr.dr[i];
+    }
+  }
+#else
+#error "Architecture not supported."
+#endif
+
+  return kSuccess;
 }
 } // namespace ds2
