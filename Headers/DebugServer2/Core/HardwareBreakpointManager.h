@@ -63,6 +63,8 @@ protected:
 protected:
   ErrorCode readDebugRegisters(Target::Thread *thread,
                                std::vector<uint64_t> &regs) const;
+  ErrorCode writeDebugRegisters(Target::Thread *thread,
+                                std::vector<uint64_t> &regs) const;
 
 protected:
   std::vector<uint64_t> _locations;

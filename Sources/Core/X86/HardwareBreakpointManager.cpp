@@ -46,27 +46,15 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site, int idx,
   debugRegs[idx] = site.address;
   debugRegs[kStatusRegIdx] = 0;
 
-  error = thread->writeDebugReg(idx, debugRegs[idx]);
-  if (error != kSuccess) {
-    DS2LOG(Error, "failed to write to debug address register");
-    return error;
-  }
-
   error = enableDebugCtrlReg(debugRegs[kCtrlRegIdx], idx, site.mode, site.size);
   if (error != kSuccess) {
     DS2LOG(Error, "failed to enable debug control register");
     return error;
   }
 
-  error = thread->writeDebugReg(kCtrlRegIdx, debugRegs[kCtrlRegIdx]);
+  error = writeDebugRegisters(thread, debugRegs);
   if (error != kSuccess) {
-    DS2LOG(Error, "failed to write to debug control register");
-    return error;
-  }
-
-  error = thread->writeDebugReg(kStatusRegIdx, debugRegs[kStatusRegIdx]);
-  if (error != kSuccess) {
-    DS2LOG(Error, "failed to clear debug status register");
+    DS2LOG(Error, "failed to write CPU state on hw stoppoint enable");
     return error;
   }
 
@@ -91,15 +79,9 @@ ErrorCode HardwareBreakpointManager::disableLocation(int idx,
     return error;
   }
 
-  error = thread->writeDebugReg(idx, debugRegs[idx]);
+  error = writeDebugRegisters(thread, debugRegs);
   if (error != kSuccess) {
-    DS2LOG(Error, "failed to clear debug address register: dr%d", idx);
-    return error;
-  }
-
-  error = thread->writeDebugReg(kCtrlRegIdx, debugRegs[kCtrlRegIdx]);
-  if (error != kSuccess) {
-    DS2LOG(Error, "failed to write to debug control register");
+    DS2LOG(Error, "failed to write CPU state on hw stoppoint enable");
     return error;
   }
 
@@ -256,5 +238,30 @@ ErrorCode HardwareBreakpointManager::readDebugRegisters(
 #endif
 
   return kSuccess;
+}
+
+ErrorCode HardwareBreakpointManager::writeDebugRegisters(
+    Target::Thread *thread, std::vector<uint64_t> &regs) const {
+  Architecture::CPUState state;
+
+  CHK(thread->readCPUState(state));
+
+#if defined(ARCH_X86)
+  for (int i = 0; i < kNumDebugRegisters; ++i) {
+    state.dr.dr[i] = (i == 4 || i == 5) ? 0 : regs[i];
+  }
+#elif defined(ARCH_X86_64)
+  for (int i = 0; i < kNumDebugRegisters; ++i) {
+    if (state.is32) {
+      state.state32.dr.dr[i] = (i == 4 || i == 5) ? 0 : regs[i];
+    } else {
+      state.state64.dr.dr[i] = (i == 4 || i == 5) ? 0 : regs[i];
+    }
+  }
+#else
+#error "Architecture not supported."
+#endif
+
+  return thread->writeCPUState(state);
 }
 } // namespace ds2

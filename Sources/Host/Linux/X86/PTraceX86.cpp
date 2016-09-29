@@ -194,6 +194,21 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
 
   wrapPtrace(PTRACE_SETREGSET, pid, NT_X86_XSTATE, &fpregs_iovec);
 
+  // Write the debug registers
+  size_t debugRegOffset = offsetof(struct user, u_debugreg);
+  size_t debugRegSize = sizeof(((struct user *)nullptr)->u_debugreg[0]);
+  for (size_t i = 0; i < array_sizeof(state.dr.dr); ++i) {
+    // dr4 and dr5 are reserved and not used
+    if (i == 4 || i == 5) {
+      continue;
+    }
+
+    if (wrapPtrace(PTRACE_POKEUSER, pid, debugRegOffset + i * debugRegSize,
+                   state.dr.dr[i]) < 0) {
+      return Platform::TranslateError();
+    }
+  }
+
   return kSuccess;
 }
 } // namespace Linux
