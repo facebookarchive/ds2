@@ -106,7 +106,6 @@ public:
                                     uint32_t ctrl, size_t idx) override;
 #elif defined(ARCH_X86) || defined(ARCH_X86_64)
 public:
-  uintptr_t readDebugReg(ProcessThreadId const &ptid, size_t idx) override;
   ErrorCode writeDebugReg(ProcessThreadId const &ptid, size_t idx,
                           uintptr_t val) override;
 #endif

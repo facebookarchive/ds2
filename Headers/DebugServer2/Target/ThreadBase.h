@@ -66,10 +66,6 @@ public:
 
 #if defined(ARCH_X86) || defined(ARCH_X86_64)
 public:
-  virtual uintptr_t readDebugReg(size_t idx) const {
-    DS2BUG("debug register operations unsupported on this platform");
-  }
-
   virtual ErrorCode writeDebugReg(size_t idx, uintptr_t val) const {
     DS2BUG("debug register operations unsupported on this platform");
   }

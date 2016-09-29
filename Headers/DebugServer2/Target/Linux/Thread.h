@@ -25,7 +25,6 @@ protected:
 
 #if defined(ARCH_X86) || defined(ARCH_X86_64)
 public:
-  uintptr_t readDebugReg(size_t idx) const override;
   ErrorCode writeDebugReg(size_t idx, uintptr_t val) const override;
 #endif
 

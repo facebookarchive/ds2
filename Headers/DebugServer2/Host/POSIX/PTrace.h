@@ -104,7 +104,6 @@ public:
                                             size_t idx) = 0;
 #elif defined(ARCH_X86) || defined(ARCH_X86_64)
 public:
-  virtual uintptr_t readDebugReg(ProcessThreadId const &ptid, size_t idx) = 0;
   virtual ErrorCode writeDebugReg(ProcessThreadId const &ptid, size_t idx,
                                   uintptr_t val) = 0;
 #endif // ARCH
