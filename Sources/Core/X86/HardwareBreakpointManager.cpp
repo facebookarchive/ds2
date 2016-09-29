@@ -142,7 +142,6 @@ ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint64_t &ctrlReg,
       EnableBit(ctrlReg, infoIdx + 3);
       break;
     case 8:
-      DS2LOG(Warning, "8-byte hw breakpoints not supported on all devices");
       DisableBit(ctrlReg, infoIdx + 2);
       EnableBit(ctrlReg, infoIdx + 3);
       break;
