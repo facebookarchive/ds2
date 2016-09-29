@@ -322,34 +322,6 @@ ErrorCode PTrace::writeRegisterSet(ProcessThreadId const &ptid, int regSetCode,
 
   return kSuccess;
 }
-
-#if defined(ARCH_X86) || defined(ARCH_X86_64)
-static size_t computeDebugRegOffset(int idx) {
-  size_t debugOffset = offsetof(struct user, u_debugreg);
-  size_t regSize = sizeof(((struct user *)0)->u_debugreg[idx]);
-
-  return debugOffset + (regSize * idx);
-}
-
-ErrorCode PTrace::writeUserData(ProcessThreadId const &ptid, uint64_t offset,
-                                uintptr_t val) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
-  if (wrapPtrace(PTRACE_POKEUSER, pid, offset, val) < 0)
-    return Platform::TranslateError();
-
-  return kSuccess;
-}
-
-ErrorCode PTrace::writeDebugReg(ProcessThreadId const &ptid, size_t idx,
-                                uintptr_t val) {
-  return writeUserData(ptid, computeDebugRegOffset(idx), val);
-}
-#endif
 } // namespace Linux
 } // namespace Host
 } // namespace ds2

@@ -64,13 +64,6 @@ public:
   virtual ErrorCode modifyRegisters(
       std::function<void(Architecture::CPUState &state)> action) final;
 
-#if defined(ARCH_X86) || defined(ARCH_X86_64)
-public:
-  virtual ErrorCode writeDebugReg(size_t idx, uintptr_t val) const {
-    DS2BUG("debug register operations unsupported on this platform");
-  }
-#endif
-
 public:
   inline uint32_t core() const { return _stopInfo.core; }
 

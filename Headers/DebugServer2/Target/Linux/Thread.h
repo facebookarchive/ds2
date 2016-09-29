@@ -23,11 +23,6 @@ protected:
   friend class Process;
   Thread(Process *process, ThreadId tid);
 
-#if defined(ARCH_X86) || defined(ARCH_X86_64)
-public:
-  ErrorCode writeDebugReg(size_t idx, uintptr_t val) const override;
-#endif
-
 protected:
   void fillWatchpointData();
 

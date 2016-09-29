@@ -212,12 +212,6 @@ void Thread::updateState() {
     updateStopInfo(status);
   }
 }
-
-#if defined(ARCH_X86) || defined(ARCH_X86_64)
-ErrorCode Thread::writeDebugReg(size_t idx, uintptr_t val) const {
-  return process()->ptrace().writeDebugReg(tid(), idx, val);
-}
-#endif
 } // namespace Linux
 } // namespace Target
 } // namespace ds2
