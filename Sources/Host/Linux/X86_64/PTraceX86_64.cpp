@@ -13,6 +13,7 @@
 #include "DebugServer2/Host/Linux/ExtraWrappers.h"
 #include "DebugServer2/Host/Platform.h"
 
+#include <cstddef>
 #include <elf.h>
 #include <sys/ptrace.h>
 #include <sys/uio.h>
@@ -253,6 +254,29 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
       user_to_state32(state.state32, xfpregs);
     } else {
       user_to_state64(state.state64, xfpregs);
+    }
+  }
+
+  // Read the debug registers
+  size_t debugRegOffset = offsetof(struct user, u_debugreg);
+  size_t debugRegSize = sizeof(((struct user *)0)->u_debugreg[0]);
+  for (size_t i = 0; i < array_sizeof(state.state64.dr.dr); ++i) {
+    // dr4 and dr5 are reserved and not used
+    if (i == 4 || i == 5) {
+      continue;
+    }
+
+    errno = 0;
+    long val = wrapPtrace(PTRACE_PEEKUSER, pid,
+                          debugRegOffset + i * debugRegSize, nullptr);
+    if (errno != 0) {
+      return Platform::TranslateError();
+    }
+
+    if (state.is32) {
+      state.state32.dr.dr[i] = val;
+    } else {
+      state.state64.dr.dr[i] = val;
     }
   }
 
