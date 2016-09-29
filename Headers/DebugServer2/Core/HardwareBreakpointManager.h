@@ -61,6 +61,10 @@ protected:
                    std::function<void(Target::Thread *t)> const &cb) const;
 
 protected:
+  ErrorCode readDebugRegisters(Target::Thread *thread,
+                               std::vector<uint64_t> &regs) const;
+
+protected:
   std::vector<uint64_t> _locations;
   std::unordered_set<ThreadId> _enabled;
 
