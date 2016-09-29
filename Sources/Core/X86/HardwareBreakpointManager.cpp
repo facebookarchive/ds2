@@ -175,15 +175,19 @@ int HardwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
     return -1;
   }
 
+  int regIdx = -1;
   for (size_t i = 0; i < maxWatchpoints(); ++i) {
     if (debugRegs[kStatusRegIdx] & (1 << i)) {
       DS2ASSERT(_locations[i] != 0);
       site = _sites.find(_locations[i])->second;
-      return i;
+      regIdx = i;
+      break;
     }
   }
 
-  return -1;
+  debugRegs[kStatusRegIdx] = 0;
+  writeDebugRegisters(thread, debugRegs);
+  return regIdx;
 }
 
 ErrorCode HardwareBreakpointManager::isValid(Address const &address,
