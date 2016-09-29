@@ -104,10 +104,6 @@ public:
                                     uint32_t ctrl, size_t idx) override;
   ErrorCode writeHardwareWatchpoint(ProcessThreadId const &ptid, uint32_t addr,
                                     uint32_t ctrl, size_t idx) override;
-#elif defined(ARCH_X86) || defined(ARCH_X86_64)
-public:
-  ErrorCode writeDebugReg(ProcessThreadId const &ptid, size_t idx,
-                          uintptr_t val) override;
 #endif
 
 #if defined(ARCH_ARM64)

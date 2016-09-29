@@ -102,10 +102,6 @@ public:
   virtual ErrorCode writeHardwareWatchpoint(ProcessThreadId const &ptid,
                                             uint32_t addr, uint32_t ctrl,
                                             size_t idx) = 0;
-#elif defined(ARCH_X86) || defined(ARCH_X86_64)
-public:
-  virtual ErrorCode writeDebugReg(ProcessThreadId const &ptid, size_t idx,
-                                  uintptr_t val) = 0;
 #endif // ARCH
 #endif // OS_LINUX
 
