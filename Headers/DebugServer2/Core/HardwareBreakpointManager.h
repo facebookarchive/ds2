@@ -66,8 +66,8 @@ protected:
 
 #if defined(ARCH_X86) || defined(ARCH_X86_64)
 protected:
-  virtual ErrorCode disableDebugCtrlReg(uint32_t &ctrlReg, int idx);
-  virtual ErrorCode enableDebugCtrlReg(uint32_t &ctrlReg, int idx, Mode mode,
+  virtual ErrorCode disableDebugCtrlReg(uint64_t &ctrlReg, int idx);
+  virtual ErrorCode enableDebugCtrlReg(uint64_t &ctrlReg, int idx, Mode mode,
                                        int size);
 #endif
 };

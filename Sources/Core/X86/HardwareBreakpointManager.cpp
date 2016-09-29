@@ -20,6 +20,7 @@
 
 using ds2::Utils::EnableBit;
 using ds2::Utils::DisableBit;
+using ds2::Utils::DisableBits;
 
 namespace ds2 {
 
@@ -40,7 +41,7 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site, int idx,
     return error;
   }
 
-  uint32_t ctrlReg = thread->readDebugReg(kCtrlRegIdx);
+  uint64_t ctrlReg = thread->readDebugReg(kCtrlRegIdx);
 
   error = enableDebugCtrlReg(ctrlReg, idx, site.mode, site.size);
   if (error != kSuccess) {
@@ -78,7 +79,7 @@ ErrorCode HardwareBreakpointManager::disableLocation(int idx,
     return error;
   }
 
-  uint32_t ctrlReg = thread->readDebugReg(kCtrlRegIdx);
+  uint64_t ctrlReg = thread->readDebugReg(kCtrlRegIdx);
 
   error = disableDebugCtrlReg(ctrlReg, idx);
   if (error != kSuccess) {
@@ -94,7 +95,7 @@ ErrorCode HardwareBreakpointManager::disableLocation(int idx,
   return kSuccess;
 }
 
-ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint32_t &ctrlReg,
+ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint64_t &ctrlReg,
                                                         int idx, Mode mode,
                                                         int size) {
   int enableIdx = 1 + (idx * 2);
@@ -151,13 +152,19 @@ ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint32_t &ctrlReg,
     }
   }
 
+  // Make sure to clear top half of the register
+  DisableBits(ctrlReg, 32, 64);
+
   return kSuccess;
 }
 
-ErrorCode HardwareBreakpointManager::disableDebugCtrlReg(uint32_t &ctrlReg,
+ErrorCode HardwareBreakpointManager::disableDebugCtrlReg(uint64_t &ctrlReg,
                                                          int idx) {
   // Unset G<idx> flag
   DisableBit(ctrlReg, 1 + (idx * 2));
+
+  // Make sure to clear top half of the register
+  DisableBits(ctrlReg, 32, 64);
 
   return kSuccess;
 }
