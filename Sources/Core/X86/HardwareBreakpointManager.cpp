@@ -35,27 +35,36 @@ size_t HardwareBreakpointManager::maxWatchpoints() {
 ErrorCode HardwareBreakpointManager::enableLocation(Site const &site, int idx,
                                                     Target::Thread *thread) {
   ErrorCode error;
+  std::vector<uint64_t> debugRegs(kNumDebugRegisters, 0);
 
-  error = thread->writeDebugReg(idx, site.address);
+  error = readDebugRegisters(thread, debugRegs);
+  if (error != kSuccess) {
+    DS2LOG(Error, "failed to read CPU state on hw stoppoint enable");
+    return error;
+  }
+
+  debugRegs[idx] = site.address;
+  debugRegs[kStatusRegIdx] = 0;
+
+  error = thread->writeDebugReg(idx, debugRegs[idx]);
   if (error != kSuccess) {
     DS2LOG(Error, "failed to write to debug address register");
     return error;
   }
 
-  uint64_t ctrlReg = thread->readDebugReg(kCtrlRegIdx);
-
-  error = enableDebugCtrlReg(ctrlReg, idx, site.mode, site.size);
+  error = enableDebugCtrlReg(debugRegs[kCtrlRegIdx], idx, site.mode, site.size);
   if (error != kSuccess) {
+    DS2LOG(Error, "failed to enable debug control register");
     return error;
   }
 
-  error = thread->writeDebugReg(kCtrlRegIdx, ctrlReg);
+  error = thread->writeDebugReg(kCtrlRegIdx, debugRegs[kCtrlRegIdx]);
   if (error != kSuccess) {
     DS2LOG(Error, "failed to write to debug control register");
     return error;
   }
 
-  error = thread->writeDebugReg(kStatusRegIdx, 0);
+  error = thread->writeDebugReg(kStatusRegIdx, debugRegs[kStatusRegIdx]);
   if (error != kSuccess) {
     DS2LOG(Error, "failed to clear debug status register");
     return error;
@@ -67,27 +76,28 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site, int idx,
 ErrorCode HardwareBreakpointManager::disableLocation(int idx,
                                                      Target::Thread *thread) {
   ErrorCode error;
+  std::vector<uint64_t> debugRegs(kNumDebugRegisters, 0);
 
-  error = thread->writeDebugReg(idx, 0);
+  error = readDebugRegisters(thread, debugRegs);
+  if (error != kSuccess) {
+    DS2LOG(Error, "failed to read CPU state on hw stoppoint disable");
+    return error;
+  }
+
+  debugRegs[idx] = 0;
+  error = disableDebugCtrlReg(debugRegs[kCtrlRegIdx], idx);
+  if (error != kSuccess) {
+    DS2LOG(Error, "failed to disable debug control register");
+    return error;
+  }
+
+  error = thread->writeDebugReg(idx, debugRegs[idx]);
   if (error != kSuccess) {
     DS2LOG(Error, "failed to clear debug address register: dr%d", idx);
     return error;
   }
 
-  error = thread->writeDebugReg(idx, 0);
-  if (error != kSuccess) {
-    DS2LOG(Error, "failed to clear addresss register");
-    return error;
-  }
-
-  uint64_t ctrlReg = thread->readDebugReg(kCtrlRegIdx);
-
-  error = disableDebugCtrlReg(ctrlReg, idx);
-  if (error != kSuccess) {
-    return error;
-  }
-
-  error = thread->writeDebugReg(kCtrlRegIdx, ctrlReg);
+  error = thread->writeDebugReg(kCtrlRegIdx, debugRegs[kCtrlRegIdx]);
   if (error != kSuccess) {
     DS2LOG(Error, "failed to write to debug control register");
     return error;
@@ -178,10 +188,13 @@ int HardwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
     return -1;
   }
 
-  uint32_t status_reg = thread->readDebugReg(kStatusRegIdx);
+  std::vector<uint64_t> debugRegs(kNumDebugRegisters, 0);
+  if (readDebugRegisters(thread, debugRegs) != kSuccess) {
+    return -1;
+  }
 
   for (size_t i = 0; i < maxWatchpoints(); ++i) {
-    if (status_reg & (1 << i)) {
+    if (debugRegs[kStatusRegIdx] & (1 << i)) {
       DS2ASSERT(_locations[i] != 0);
       site = _sites.find(_locations[i])->second;
       return i;
