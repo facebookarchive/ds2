@@ -98,9 +98,7 @@ if os.getenv('COVERAGE') == '1':
 
 if len(dist_packages) > 0:
     if host == 'Darwin':
-        # brew upgrade/install might die if one pkg is already install
-        check_call('brew install "%s" || true' % '" "'.join(dist_packages), shell=True)
-        check_call('brew upgrade "%s" || true' % '" "'.join(dist_packages), shell=True)
+        check_call('brew reinstall "%s"' % '" "'.join(dist_packages), shell=True)
     else:
         if "CentOS Linux" in platform.linux_distribution():
             check_call('sudo yum install -y "%s"' % '" "'.join(dist_packages), shell=True)
