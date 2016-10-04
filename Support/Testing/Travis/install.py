@@ -66,7 +66,7 @@ if target in android_toolchains:
     check_call('./Support/Scripts/prepare-android-toolchain.sh "%s" "%s"' %
                (android_toolchains[target], android_platform), shell=True)
     if os.getenv('LLDB_TESTS') != None:
-        dist_packages.append('openjdk-7-jdk')
+        dist_packages.append('default-jdk')
         dist_packages.append('android-tools-adb')
 
 # Running LLDB tests requires an install of lldb (for the tests to be able to
