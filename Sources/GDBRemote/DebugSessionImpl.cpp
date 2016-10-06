@@ -840,7 +840,7 @@ ErrorCode DebugSessionImplBase::onAttach(Session &session, ProcessId pid,
   if (mode != kAttachNow)
     return kErrorInvalidArgument;
 
-  DS2LOG(Info, "attaching to pid %" PRIu64, (uint64_t)pid);
+  DS2LOG(Debug, "attaching to pid %" PRIu64, (uint64_t)pid);
   _process = Target::Process::Attach(pid);
   if (_process == nullptr) {
     return kErrorProcessNotFound;
@@ -1134,21 +1134,22 @@ ErrorCode DebugSessionImplBase::onRemoveBreakpoint(Session &session,
 
 ErrorCode DebugSessionImplBase::spawnProcess(StringCollection const &args,
                                              EnvironmentBlock const &env) {
-  if (GetLogLevel() >= kLogLevelInfo) {
-    DS2LOG(Info, "spawning process '%s'", args[0].c_str());
-  } else {
-    DS2LOG(Debug, "spawning process with args:");
-    for (auto const &arg : args)
-      DS2LOG(Debug, "  %s", arg.c_str());
+  bool displayArgs = args.size() > 1;
+  auto it = args.begin();
+  DS2LOG(Debug, "spawning process '%s'%s", (it++)->c_str(),
+         displayArgs ? " with args:" : "");
+  while (it != args.end()) {
+    DS2LOG(Debug, "  %s", (it++)->c_str());
   }
 
   _spawner.setExecutable(args[0]);
   _spawner.setArguments(StringCollection(args.begin() + 1, args.end()));
 
   if (!env.empty()) {
-    DS2LOG(Debug, "and with environment:");
-    for (auto const &val : env)
+    DS2LOG(Debug, "%swith environment:", displayArgs ? "and " : "");
+    for (auto const &val : env) {
       DS2LOG(Debug, "  %s=%s", val.first.c_str(), val.second.c_str());
+    }
 
     _spawner.setEnvironment(env);
   }
