@@ -160,6 +160,10 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       _stopInfo.reason = StopInfo::kReasonInstructionError;
       break;
 
+    default:
+      DS2LOG(Warning, "unsupported exception code: %lx",
+             de.u.Exception.ExceptionRecord.ExceptionCode);
+
     case STATUS_INVALID_DISPOSITION:
     case STATUS_NONCONTINUABLE_EXCEPTION:
     case DS2_EXCEPTION_UNCAUGHT_COM:
@@ -168,11 +172,6 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       _stopInfo.event = StopInfo::kEventStop;
       _stopInfo.reason = StopInfo::kReasonInstructionError;
       break;
-
-    default:
-      DS2BUG("unsupported exception code: %s",
-             Stringify::ExceptionCode(
-                 de.u.Exception.ExceptionRecord.ExceptionCode));
     }
 
     break;
