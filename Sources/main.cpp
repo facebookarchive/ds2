@@ -61,7 +61,7 @@ CreateSocket(std::string const &host, std::string const &port, bool reverse) {
       DS2LOG(Fatal, "cannot connect to [%s:%s]: %s", host.c_str(), port.c_str(),
              socket->error().c_str());
     } else {
-      DS2LOG(Info, "connected to [%s:%s]", socket->address().c_str(),
+      DS2LOG(Debug, "connected to [%s:%s]", socket->address().c_str(),
              socket->port().c_str());
     }
   } else {
@@ -74,7 +74,7 @@ CreateSocket(std::string const &host, std::string const &port, bool reverse) {
         fprintf(stderr, "Listening on port %s\n", socket->port().c_str());
       }
 
-      DS2LOG(Info, "listening on [%s:%s]", socket->address().c_str(),
+      DS2LOG(Debug, "listening on [%s:%s]", socket->address().c_str(),
              socket->port().c_str());
     }
   }
