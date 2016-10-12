@@ -72,10 +72,12 @@ if [ "$(linux_distribution)" == "centos" ]; then
 
     cherry_pick_patches "$llvm_path/tools/lldb"
 
-    mkdir -p "$llvm_build"
-    cd "$llvm_build"
-    cmake -G Ninja -DLLVM_LIBDIR_SUFFIX=64 ..
-    ninja
+    if [ -z "${LLDB_EXE-}" ] ; then
+      mkdir -p "$llvm_build"
+      cd "$llvm_build"
+      cmake -G Ninja -DLLVM_LIBDIR_SUFFIX=64 ..
+      ninja lldb
+    fi
   fi
 elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_path="$build_dir/lldb"
@@ -111,6 +113,10 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
   fi
 else
   die "Testing is only supported on CentOS and Ubuntu."
+fi
+
+if [ -n "${LLDB_EXE-}" ] ; then
+  lldb_exe=${LLDB_EXE}
 fi
 
 cd "$lldb_path/test"
