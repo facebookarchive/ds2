@@ -16,5 +16,6 @@ if [[ "${TARGET-}" == Darwin-* ]]; then
 fi
 
 if [[ "${COVERAGE-}" = "1" ]]; then
-  PATH=$PATH:"~/.local/bin" coveralls --exclude lib --exclude usr --exclude sys --exclude lldb --gcov-options '\-lp'
+  top="$(git rev-parse --show-toplevel)"
+  PATH=$PATH:"~/.local/bin" coveralls --exclude lib --exclude include --exclude sys --exclude lldb --exclude deps -r "$top" -b "$top/build"
 fi
