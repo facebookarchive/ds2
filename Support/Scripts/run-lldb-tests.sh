@@ -81,7 +81,7 @@ if [ "$(linux_distribution)" == "centos" ]; then
   fi
 elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_path="$build_dir/lldb"
-  lldb_exe="$(which lldb-3.8)"
+  lldb_exe="$(which lldb-3.9)"
 
   case "${TARGET}" in
     "Android-ARM") cc_exe="/tmp/aosp-toolchain/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-gcc";;
@@ -100,8 +100,8 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
 
     # Sync lldb libs to local build dir
     rsync -a /usr/lib/x86_64-linux-gnu/       "$python_base"
-    rsync -a /usr/lib/llvm-3.8/lib/python2.7/ "$python_base/python2.7"
-    rsync -a "$python_base/liblldb-3.8.so"    "$python_base/liblldb.so"
+    rsync -a /usr/lib/llvm-3.9/lib/python2.7/ "$python_base/python2.7"
+    rsync -a "$python_base/liblldb-3.9.so"    "$python_base/liblldb.so"
 
     # Fix broken python lldb symlinks
     cd "$PYTHONPATH/lldb"

@@ -3,6 +3,7 @@ CreateAfterAttachTestCase.test_create_after_attach_with_popen
 CreateDuringStepTestCase.test_step_inst_with
 TestQuoting
 TestRegistersIterator.RegistersIteratorTestCase.test_iter_registers_dwarf
+TestStopHook
 
 xfail
 TestDataFormatterStdString.StdStringDataFormatterTestCase.test_with_run_command_dwarf
