@@ -45,7 +45,7 @@ elif host == 'Linux':
         dist_packages.append('ninja')
 
     if target == 'Style' or target == 'Registers':
-        dist_packages.append('clang-format-3.8')
+        dist_packages.append('clang-format-3.9')
     elif target == 'Documentation':
         dist_packages.append('doxygen')
         dist_packages.append('graphviz')
@@ -82,9 +82,10 @@ if os.getenv('LLDB_TESTS') != None or os.getenv('GDB_TESTS') != None:
         dist_packages.append('python-devel')
     else:
         if os.getenv('LLDB_TESTS') != None:
-            dist_packages.append('lldb-3.8')
+            dist_packages.append('lldb-3.9')
+            dist_packages.append('python-lldb-3.9')
         if os.getenv('CLANG') == '1':
-            dist_packages.append('clang-3.8')
+            dist_packages.append('clang-3.9')
 
 if os.getenv('GDB_TESTS') != None:
     dist_packages.append('dejagnu')

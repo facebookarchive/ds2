@@ -28,7 +28,7 @@ elif host == 'Linux':
     def add_llvm_repo():
         add_toolchain_test_repo()
         keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
-        repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.8 main')
+        repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.9 main')
 
     if target in [ 'Style', 'Registers' ]:
         add_llvm_repo()

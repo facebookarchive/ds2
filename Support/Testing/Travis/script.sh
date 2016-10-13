@@ -12,7 +12,7 @@
 top="$(git rev-parse --show-toplevel)"
 source "$top/Support/Scripts/common.sh"
 
-cformat="clang-format-3.8"
+cformat="clang-format-3.9"
 
 # If we're at the root of the repository, create a build directory and go
 # there; otherwise, assume that we're already in the build directory the user
@@ -79,7 +79,7 @@ cmake_options=(-G Ninja)
 
 # Except for the Android toolchain that we install ourselves, CentOS uses
 # different compiler names than Ubuntu, so we can only use the toolchain files
-# on Ubuntu. In addition, clang-3.8 is also not available for CentOS
+# on Ubuntu. In addition, clang-3.9 is also not available for CentOS
 if [ "$(linux_distribution)" != "centos" ] || [[ "$TARGET" == Android-* ]]; then
   target_name="${TARGET}"
 
