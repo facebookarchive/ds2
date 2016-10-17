@@ -57,7 +57,7 @@ check_dirty() {
 
 if [[ "$TARGET" = "Style" ]]; then
   for d in Sources Headers; do
-    find "$d" -type f -exec "$cformat" -i -sort-includes -style=LLVM {} \;
+    find "$d" -type f -exec "$cformat" -i -style=file {} \;
   done
   check_dirty "Coding style correct." "Coding style errors."
 fi
