@@ -33,6 +33,19 @@ elseif (ARCH_NAME MATCHES "AMD64")
   set(ARCH_NAME "X86_64")
 endif ()
 
+if ("${OS_NAME}" MATCHES "Linux")
+  include(CheckIncludeFile)
+  CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
+
+  include(CheckFunctionExists)
+  CHECK_FUNCTION_EXISTS(posix_openpt HAVE_POSIX_OPENPT)
+
+  include(CheckTypeSize)
+  set(CMAKE_EXTRA_INCLUDE_FILES sys/user.h)
+  CHECK_TYPE_SIZE("struct user_fpxregs_struct" STRUCT_USER_FPXREGS_STRUCT)
+  set(CMAKE_EXTRA_INCLUDE_FILES)
+endif ()
+
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # Global options (these apply for other subprojects like JSObjects) and must
   # be set before we include subdirectories.
@@ -300,22 +313,14 @@ if ("${OS_NAME}" MATCHES "Windows")
 endif ()
 
 if ("${OS_NAME}" MATCHES "Linux")
-  include(CheckIncludeFile)
-  CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
   if (HAVE_SYS_PERSONALITY_H)
     target_compile_definitions(ds2 PRIVATE HAVE_SYS_PERSONALITY_H)
   endif ()
 
-  include(CheckFunctionExists)
-  CHECK_FUNCTION_EXISTS(posix_openpt HAVE_POSIX_OPENPT)
   if (HAVE_POSIX_OPENPT)
     target_compile_definitions(ds2 PRIVATE HAVE_POSIX_OPENPT)
   endif ()
 
-  include(CheckTypeSize)
-  set(CMAKE_EXTRA_INCLUDE_FILES sys/user.h)
-  CHECK_TYPE_SIZE("struct user_fpxregs_struct" STRUCT_USER_FPXREGS_STRUCT)
-  set(CMAKE_EXTRA_INCLUDE_FILES)
   if (HAVE_STRUCT_USER_FPXREGS_STRUCT)
     target_compile_definitions(ds2 PRIVATE HAVE_STRUCT_USER_FPXREGS_STRUCT)
   endif ()
