@@ -94,6 +94,7 @@ if os.getenv('GDB_TESTS') != None:
 if os.getenv('COVERAGE') == '1':
     dist_packages.append('python-pip')
     dist_packages.append('python-yaml')
+    dist_packages.append('ggcov')
     pip_packages.append('pyyaml')
     pip_packages.append('cpp-coveralls')
 

@@ -17,5 +17,12 @@ fi
 
 if [[ "${COVERAGE-}" = "1" ]]; then
   top="$(git rev-parse --show-toplevel)"
-  PATH=$PATH:"~/.local/bin" coveralls --exclude lib --exclude include --exclude sys --exclude lldb --exclude deps -r "$top" -b "$top/build"
+  coveralls_args=("-E" ".*/lib/.*" "-E" ".*/include/.*" "-E" ".*/sys/.*" "-E" ".*/lldb/.*"
+                  "-E" ".*/deps/.*" "-r" "$top" "-b" "$top/build")
+  if [[ "${CLANG-}" = "1" ]]; then
+    coveralls_args+=("--gcov" "llvm-cov-3.9" "--gcov-options" "gcov")
+  else
+    coveralls_args+=("--gcov" "gcov-5")
+  fi
+  PATH=$PATH:"~/.local/bin" coveralls "${coveralls_args[@]}"
 fi
