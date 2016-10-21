@@ -22,7 +22,6 @@ class ProtocolInterpreter : public PacketProcessorDelegate {
 public:
   struct Handler {
     typedef std::vector<Handler> Collection;
-
     typedef void (ProtocolHandler::*Callback)(Handler const &handler,
                                               std::string const &data);
 
@@ -60,8 +59,8 @@ public:
   inline bool
   registerHandler(Handler::Mode const &mode, std::string const &command,
                   ProtocolHandler *handler, CallbackType const &callback) {
-    Handler hndlr = {mode, command, handler, (Handler::Callback)callback};
-    return registerHandler(hndlr);
+    Handler _handler = {mode, command, handler, (Handler::Callback)callback};
+    return registerHandler(_handler);
   }
 
 private:
