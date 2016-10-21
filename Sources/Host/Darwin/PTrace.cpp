@@ -28,15 +28,17 @@ namespace Host {
 namespace Darwin {
 
 ErrorCode PTrace::traceThat(ProcessId pid) {
-  if (pid <= 0)
+  if (pid <= 0) {
     return kErrorInvalidArgument;
+  }
 
   return kSuccess; // kErrorUnsupported;
 }
 
 ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {
-  if (!ptid.valid())
+  if (!ptid.valid()) {
     return kErrorInvalidArgument;
+  }
 
   int rc;
   if (!(ptid.tid <= kAnyThreadId)) {
@@ -45,8 +47,9 @@ ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {
     rc = ::kill(ptid.pid, signal);
   }
 
-  if (rc < 0)
+  if (rc < 0) {
     return Platform::TranslateError();
+  }
 
   return kSuccess;
 }
