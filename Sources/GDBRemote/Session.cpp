@@ -38,16 +38,22 @@ namespace GDBRemote {
 
 Session::Session(CompatibilityMode mode)
     : SessionBase(mode), _threadsInStopReply(false) {
+#define REGISTER_HANDLER(MODE, MESSAGE, HANDLER)                               \
+  do {                                                                         \
+    bool REGISTER_HANDLER_result = interpreter().registerHandler(              \
+        MODE, MESSAGE, this, &Session::Handle_##HANDLER);                      \
+    DS2ASSERT(REGISTER_HANDLER_result);                                        \
+  } while (0)
+
 #define REGISTER_HANDLER_EQUALS_2(MESSAGE, HANDLER)                            \
-  interpreter().registerHandler(ProtocolInterpreter::Handler::kModeEquals,     \
-                                MESSAGE, this, &Session::Handle_##HANDLER)
+  REGISTER_HANDLER(ProtocolInterpreter::Handler::kModeEquals, MESSAGE, HANDLER)
 
 #define REGISTER_HANDLER_EQUALS_1(HANDLER)                                     \
   REGISTER_HANDLER_EQUALS_2(#HANDLER, HANDLER)
 
 #define REGISTER_HANDLER_STARTS_WITH_2(MESSAGE, HANDLER)                       \
-  interpreter().registerHandler(ProtocolInterpreter::Handler::kModeStartsWith, \
-                                MESSAGE, this, &Session::Handle_##HANDLER)
+  REGISTER_HANDLER(ProtocolInterpreter::Handler::kModeStartsWith, MESSAGE,     \
+                   HANDLER)
 
 #define REGISTER_HANDLER_STARTS_WITH_1(HANDLER)                                \
   REGISTER_HANDLER_STARTS_WITH_2(#HANDLER, HANDLER)
