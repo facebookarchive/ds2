@@ -45,7 +45,6 @@ private:
   void Handle_c(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_D(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_d(ProtocolInterpreter::Handler const &, std::string const &);
-  void Handle_F(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_G(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_g(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_H(ProtocolInterpreter::Handler const &, std::string const &);
