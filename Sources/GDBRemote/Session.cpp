@@ -40,13 +40,15 @@ Session::Session(CompatibilityMode mode)
     : SessionBase(mode), _threadsInStopReply(false) {
 #define REGISTER_HANDLER_EQUALS_2(MESSAGE, HANDLER)                            \
   interpreter().registerHandler(ProtocolInterpreter::Handler::kModeEquals,     \
-                                MESSAGE, this, &Session::Handle_##HANDLER);
+                                MESSAGE, this, &Session::Handle_##HANDLER)
+
 #define REGISTER_HANDLER_EQUALS_1(HANDLER)                                     \
   REGISTER_HANDLER_EQUALS_2(#HANDLER, HANDLER)
 
 #define REGISTER_HANDLER_STARTS_WITH_2(MESSAGE, HANDLER)                       \
   interpreter().registerHandler(ProtocolInterpreter::Handler::kModeStartsWith, \
-                                MESSAGE, this, &Session::Handle_##HANDLER);
+                                MESSAGE, this, &Session::Handle_##HANDLER)
+
 #define REGISTER_HANDLER_STARTS_WITH_1(HANDLER)                                \
   REGISTER_HANDLER_STARTS_WITH_2(#HANDLER, HANDLER)
 
