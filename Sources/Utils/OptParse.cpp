@@ -200,7 +200,7 @@ void OptParse::usageDie(std::string const &message) {
     print("%s\n", e.second.help.c_str());
   }
 
-  exit(EXIT_FAILURE);
+  ::exit(EXIT_FAILURE);
 }
 
 OptParse::OptionStorage const &OptParse::get(std::string const &name,

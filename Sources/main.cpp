@@ -238,7 +238,7 @@ static int SlaveMain() {
                ds2::GetArchName(info.cpuType, info.cpuSubType), path.c_str());
       });
 
-  exit(EXIT_SUCCESS);
+  ::exit(EXIT_SUCCESS);
 }
 
 #if defined(OS_WIN32)
