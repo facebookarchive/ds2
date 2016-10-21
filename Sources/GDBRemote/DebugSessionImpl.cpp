@@ -1054,7 +1054,7 @@ ErrorCode DebugSessionImplBase::onExitServer(Session &session) {
   }
 
   DS2LOG(Debug, "exiting ds2");
-  exit((error == kSuccess) ? EXIT_SUCCESS : EXIT_FAILURE);
+  ::exit((error == kSuccess) ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
 // For LLDB we need to support breakpoints through the breakpoint manager
