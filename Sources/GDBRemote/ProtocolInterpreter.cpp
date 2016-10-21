@@ -184,12 +184,6 @@ void ProtocolInterpreter::onCommand(std::string const &command,
     DS2LOG(Packet, "args='%.*s'", static_cast<int>(extra.length()), &extra[0]);
   }
 
-#if 0
-    DS2LOG(Packet, "command='%s' arguments='%s'\n",
-            command.substr(0, commandLength).c_str(),
-            extra.c_str());
-#endif
-
   (handler->handler->*handler->callback)(*handler, extra);
 }
 
