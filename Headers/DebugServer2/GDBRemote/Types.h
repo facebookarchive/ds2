@@ -55,7 +55,6 @@ public:
   std::string encodeWithAllThreads(CompatibilityMode mode,
                                    const JSArray &threadsStopInfo) const;
   JSDictionary *encodeJson() const;
-  JSDictionary *encodeBriefJson() const;
 
 private:
   void getWatchpointInfo(std::string &key, std::string &val,

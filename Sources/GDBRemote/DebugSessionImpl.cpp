@@ -1212,7 +1212,7 @@ DebugSessionImplBase::createThreadsStopInfo(Session &session,
   CHK(fetchStopInfoForAllThreads(session, stops, processStop));
 
   for (auto const &stop : stops) {
-    threadsStopInfo.append(stop.encodeBriefJson());
+    threadsStopInfo.append(stop.encodeJson());
   }
   return kSuccess;
 }

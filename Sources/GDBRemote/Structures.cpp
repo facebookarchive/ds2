@@ -424,7 +424,15 @@ StopInfo::encodeWithAllThreads(CompatibilityMode mode,
 }
 
 JSDictionary *StopInfo::encodeJson() const {
-  auto threadObj = encodeBriefJson();
+  auto threadObj = JSDictionary::New();
+
+  threadObj->set("tid", JSInteger::New(ptid.tid));
+
+  std::string key, val;
+  reasonToString(key, val, kCompatibilityModeLLDB);
+  if (!key.empty() && !val.empty()) {
+    threadObj->set(key, JSString::New(val));
+  }
 
   if (!threadName.empty())
     threadObj->set("name", JSString::New(threadName));
@@ -447,20 +455,6 @@ JSDictionary *StopInfo::encodeJson() const {
   }
 
   threadObj->set("registers", regSet);
-
-  return threadObj;
-}
-
-JSDictionary *StopInfo::encodeBriefJson() const {
-  auto threadObj = JSDictionary::New();
-
-  threadObj->set("tid", JSInteger::New(ptid.tid));
-
-  std::string key, val;
-  reasonToString(key, val, kCompatibilityModeLLDB);
-  if (!key.empty() && !val.empty()) {
-    threadObj->set(key, JSString::New(val));
-  }
 
   return threadObj;
 }
