@@ -143,6 +143,8 @@ ErrorCode Platform::TranslateError(int error) {
     return ds2::kErrorProcessNotFound;
   case EBADF:
     return ds2::kErrorInvalidHandle;
+  case EACCES:
+    return ds2::kErrorAccessDenied;
   case EFAULT:
   case EIO:
     return ds2::kErrorInvalidAddress;
