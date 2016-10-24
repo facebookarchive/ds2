@@ -76,12 +76,16 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_STRINGIFY(StopInfo::kReasonTrace)
     DO_STRINGIFY(StopInfo::kReasonSignalStop)
     DO_STRINGIFY(StopInfo::kReasonTrap)
+    DO_STRINGIFY(StopInfo::kReasonThreadSpawn)
+    DO_STRINGIFY(StopInfo::kReasonThreadEntry)
+    DO_STRINGIFY(StopInfo::kReasonThreadExit)
 #if defined(OS_WIN32)
     DO_STRINGIFY(StopInfo::kReasonMemoryError)
     DO_STRINGIFY(StopInfo::kReasonMemoryAlignment)
     DO_STRINGIFY(StopInfo::kReasonMathError)
     DO_STRINGIFY(StopInfo::kReasonInstructionError)
     DO_STRINGIFY(StopInfo::kReasonLibraryEvent)
+    DO_STRINGIFY(StopInfo::kReasonDebugOutput)
 #endif
     DO_DEFAULT("unknown StopInfo reason", reason)
   }
