@@ -19,6 +19,7 @@
 // clang-format off
 #include <sys/types.h>
 #include <sys/ptrace.h>
+#include <sys/wait.h>
 #if defined(OS_LINUX)
 #include <asm/ptrace.h>
 #endif
@@ -168,6 +169,31 @@ char const *Stringify::Errno(int error) {
 #endif // OS_LINUX
     DO_DEFAULT("unknown error", error)
   }
+}
+
+char const *Stringify::WaitStatus(int status) {
+#define DO_WAIT_MSG(MESSAGE, VALUE)                                            \
+  do {                                                                         \
+    static ATT_TLS char tmp[30];                                               \
+    ds2::Utils::SNPrintf(tmp, sizeof(tmp), "%s: %s", MESSAGE, VALUE);          \
+    return tmp;                                                                \
+  } while (0)
+
+  if (WIFEXITED(status)) {
+    DO_WAIT_MSG("WEXITED", ToString(WEXITSTATUS(status)).c_str());
+  } else if (WIFSIGNALED(status)) {
+    DO_WAIT_MSG("WSIGNALED", Stringify::Signal(WTERMSIG(status)));
+  } else if (WIFSTOPPED(status)) {
+    DO_WAIT_MSG("WSTOPPED", Stringify::Signal(WSTOPSIG(status)));
+#if defined(WIFCONTINUED)
+  } else if (WIFCONTINUED(status)) {
+    return "WCONTINUED";
+#endif
+  } else {
+    DS2BUG("unknown wait status");
+  }
+
+#undef DO_WAIT_MSG
 }
 
 char const *Stringify::Signal(int signal) {

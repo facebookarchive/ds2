@@ -125,11 +125,11 @@ ErrorCode Process::wait() {
 
   while (!_threads.empty()) {
     tid = blocking_waitpid(-1, &status, __WALL);
-    DS2LOG(Debug, "wait tid=%d status=%#x", tid, status);
-
     if (tid <= 0) {
       return kErrorProcessNotFound;
     }
+
+    DS2LOG(Debug, "tid %" PRI_PID " %s", tid, Stringify::WaitStatus(status));
 
     auto threadIt = _threads.find(tid);
 

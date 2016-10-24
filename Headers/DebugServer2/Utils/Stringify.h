@@ -27,6 +27,7 @@ public:
 
 #if defined(OS_POSIX)
   static char const *Errno(int error);
+  static char const *WaitStatus(int status);
   static char const *Signal(int signal);
   static char const *SignalCode(int signal, int code);
   static char const *PTraceCommand(int code);
