@@ -27,101 +27,6 @@
 namespace ds2 {
 namespace Utils {
 
-char const *Stringify::Signal(int signal) {
-#if defined(SIGRTMIN)
-  // SIGRTMIN can expand to a glibc call (not usable in a switch statement), so
-  // check for it first.
-  if (signal == SIGRTMIN)
-    return "SIGRTMIN";
-#endif
-
-  switch (signal) {
-    DO_STRINGIFY(SIGABRT)
-    DO_STRINGIFY(SIGALRM)
-    DO_STRINGIFY(SIGBUS)
-    DO_STRINGIFY(SIGCHLD)
-    DO_STRINGIFY(SIGCONT)
-    DO_STRINGIFY(SIGFPE)
-    DO_STRINGIFY(SIGHUP)
-    DO_STRINGIFY(SIGILL)
-    DO_STRINGIFY(SIGINT)
-    DO_STRINGIFY(SIGIO)
-    DO_STRINGIFY(SIGKILL)
-    DO_STRINGIFY(SIGPIPE)
-    DO_STRINGIFY(SIGPROF)
-    DO_STRINGIFY(SIGQUIT)
-    DO_STRINGIFY(SIGSEGV)
-    DO_STRINGIFY(SIGSTOP)
-    DO_STRINGIFY(SIGSYS)
-    DO_STRINGIFY(SIGTERM)
-    DO_STRINGIFY(SIGTRAP)
-    DO_STRINGIFY(SIGTSTP)
-    DO_STRINGIFY(SIGTTIN)
-    DO_STRINGIFY(SIGTTOU)
-    DO_STRINGIFY(SIGURG)
-    DO_STRINGIFY(SIGUSR1)
-    DO_STRINGIFY(SIGUSR2)
-    DO_STRINGIFY(SIGVTALRM)
-    DO_STRINGIFY(SIGWINCH)
-    DO_STRINGIFY(SIGXCPU)
-    DO_STRINGIFY(SIGXFSZ)
-#if defined(OS_LINUX)
-    DO_STRINGIFY(SIGPWR)
-    DO_STRINGIFY(SIGSTKFLT)
-#endif
-    DO_DEFAULT("unknown signal", signal)
-  }
-}
-
-char const *Stringify::SignalCode(int signal, int code) {
-  switch (code) {
-    DO_STRINGIFY(SI_USER)
-    DO_STRINGIFY(SI_QUEUE)
-    DO_STRINGIFY(SI_TIMER)
-    DO_STRINGIFY(SI_MESGQ)
-    DO_STRINGIFY(SI_ASYNCIO)
-#if defined(OS_LINUX)
-    DO_STRINGIFY(SI_KERNEL)
-    DO_STRINGIFY(SI_SIGIO)
-    DO_STRINGIFY(SI_TKILL)
-#endif
-  default:
-    break;
-  }
-
-  switch (signal) {
-  case SIGILL:
-    switch (code) {
-      DO_STRINGIFY(ILL_ILLOPC)
-      DO_STRINGIFY(ILL_ILLOPN)
-      DO_STRINGIFY(ILL_ILLADR)
-      DO_STRINGIFY(ILL_ILLTRP)
-      DO_STRINGIFY(ILL_PRVOPC)
-      DO_STRINGIFY(ILL_PRVREG)
-      DO_STRINGIFY(ILL_COPROC)
-      DO_STRINGIFY(ILL_BADSTK)
-      DO_DEFAULT("unknown code", code)
-    };
-
-  case SIGBUS:
-    switch (code) {
-      DO_STRINGIFY(BUS_ADRALN)
-      DO_STRINGIFY(BUS_ADRERR)
-      DO_STRINGIFY(BUS_OBJERR)
-      DO_DEFAULT("unknown code", code)
-    };
-
-  case SIGSEGV:
-    switch (code) {
-      DO_STRINGIFY(SEGV_MAPERR)
-      DO_STRINGIFY(SEGV_ACCERR)
-      DO_DEFAULT("unknown code", code)
-    };
-
-    DO_DEFAULT("unknown signal", signal)
-  }
-}
-
 char const *Stringify::Errno(int error) {
   switch (error) {
     DO_STRINGIFY(E2BIG)
@@ -265,7 +170,102 @@ char const *Stringify::Errno(int error) {
   }
 }
 
-char const *Stringify::Ptrace(int code) {
+char const *Stringify::Signal(int signal) {
+#if defined(SIGRTMIN)
+  // SIGRTMIN can expand to a glibc call (not usable in a switch statement), so
+  // check for it first.
+  if (signal == SIGRTMIN)
+    return "SIGRTMIN";
+#endif
+
+  switch (signal) {
+    DO_STRINGIFY(SIGABRT)
+    DO_STRINGIFY(SIGALRM)
+    DO_STRINGIFY(SIGBUS)
+    DO_STRINGIFY(SIGCHLD)
+    DO_STRINGIFY(SIGCONT)
+    DO_STRINGIFY(SIGFPE)
+    DO_STRINGIFY(SIGHUP)
+    DO_STRINGIFY(SIGILL)
+    DO_STRINGIFY(SIGINT)
+    DO_STRINGIFY(SIGIO)
+    DO_STRINGIFY(SIGKILL)
+    DO_STRINGIFY(SIGPIPE)
+    DO_STRINGIFY(SIGPROF)
+    DO_STRINGIFY(SIGQUIT)
+    DO_STRINGIFY(SIGSEGV)
+    DO_STRINGIFY(SIGSTOP)
+    DO_STRINGIFY(SIGSYS)
+    DO_STRINGIFY(SIGTERM)
+    DO_STRINGIFY(SIGTRAP)
+    DO_STRINGIFY(SIGTSTP)
+    DO_STRINGIFY(SIGTTIN)
+    DO_STRINGIFY(SIGTTOU)
+    DO_STRINGIFY(SIGURG)
+    DO_STRINGIFY(SIGUSR1)
+    DO_STRINGIFY(SIGUSR2)
+    DO_STRINGIFY(SIGVTALRM)
+    DO_STRINGIFY(SIGWINCH)
+    DO_STRINGIFY(SIGXCPU)
+    DO_STRINGIFY(SIGXFSZ)
+#if defined(OS_LINUX)
+    DO_STRINGIFY(SIGPWR)
+    DO_STRINGIFY(SIGSTKFLT)
+#endif
+    DO_DEFAULT("unknown signal", signal)
+  }
+}
+
+char const *Stringify::SignalCode(int signal, int code) {
+  switch (code) {
+    DO_STRINGIFY(SI_USER)
+    DO_STRINGIFY(SI_QUEUE)
+    DO_STRINGIFY(SI_TIMER)
+    DO_STRINGIFY(SI_MESGQ)
+    DO_STRINGIFY(SI_ASYNCIO)
+#if defined(OS_LINUX)
+    DO_STRINGIFY(SI_KERNEL)
+    DO_STRINGIFY(SI_SIGIO)
+    DO_STRINGIFY(SI_TKILL)
+#endif
+  default:
+    break;
+  }
+
+  switch (signal) {
+  case SIGILL:
+    switch (code) {
+      DO_STRINGIFY(ILL_ILLOPC)
+      DO_STRINGIFY(ILL_ILLOPN)
+      DO_STRINGIFY(ILL_ILLADR)
+      DO_STRINGIFY(ILL_ILLTRP)
+      DO_STRINGIFY(ILL_PRVOPC)
+      DO_STRINGIFY(ILL_PRVREG)
+      DO_STRINGIFY(ILL_COPROC)
+      DO_STRINGIFY(ILL_BADSTK)
+      DO_DEFAULT("unknown code", code)
+    };
+
+  case SIGBUS:
+    switch (code) {
+      DO_STRINGIFY(BUS_ADRALN)
+      DO_STRINGIFY(BUS_ADRERR)
+      DO_STRINGIFY(BUS_OBJERR)
+      DO_DEFAULT("unknown code", code)
+    };
+
+  case SIGSEGV:
+    switch (code) {
+      DO_STRINGIFY(SEGV_MAPERR)
+      DO_STRINGIFY(SEGV_ACCERR)
+      DO_DEFAULT("unknown code", code)
+    };
+
+    DO_DEFAULT("unknown signal", signal)
+  }
+}
+
+char const *Stringify::PTraceCommand(int code) {
   switch (code) {
 #if defined(OS_LINUX)
     DO_STRINGIFY(PTRACE_ATTACH)

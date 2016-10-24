@@ -26,10 +26,10 @@ public:
   static char const *StopReason(StopInfo::Reason reason);
 
 #if defined(OS_POSIX)
+  static char const *Errno(int error);
   static char const *Signal(int signal);
   static char const *SignalCode(int signal, int code);
-  static char const *Errno(int error);
-  static char const *Ptrace(int code);
+  static char const *PTraceCommand(int code);
 #elif defined(OS_WIN32)
   static char const *DebugEvent(DWORD event);
   static char const *ExceptionCode(DWORD code);
