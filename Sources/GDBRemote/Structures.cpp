@@ -261,6 +261,10 @@ std::string StopInfo::encodeInfo(CompatibilityMode mode,
     ss << ';' << key << ':' << val;
   }
 
+  if (reason == StopInfo::kReasonSignalStop) {
+    ss << ';' << "signal:" << signal;
+  }
+
   if (listThreads) {
     ss << ';' << "threads:";
     if (threads.empty()) {
@@ -444,6 +448,10 @@ JSDictionary *StopInfo::encodeJson() const {
     std::string key, val;
     getWatchpointInfo(key, val, kCompatibilityModeLLDB, false);
     threadObj->set(key, JSString::New(val));
+  }
+
+  if (reason == StopInfo::kReasonSignalStop) {
+    threadObj->set("signal", JSInteger::New(signal));
   }
 
   auto regSet = JSDictionary::New();
