@@ -105,8 +105,8 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
     ProcessThreadId ptid(process()->pid(), tid());
     ErrorCode error = process()->ptrace().getSigInfo(ptid, si);
     if (error != kSuccess) {
-      DS2LOG(Warning, "unable to get siginfo_t for tid %d, error=%s", tid(),
-             strerror(errno));
+      DS2LOG(Warning, "unable to get siginfo_t for tid %d, errno=%s", tid(),
+             Stringify::Errno(errno));
       return error;
     }
 
