@@ -144,6 +144,16 @@ bool Socket::listen(std::string const &address, std::string const &port) {
            SOCK_ERRNO_STRINGIFY(SOCK_ERRNO));
   }
 
+  // Enable SO_REUSEADDR so we don't crash when trying to reuse a port after a
+  // previous instance of ds2 exits.
+  int enabled = 1;
+  if (::setsockopt(_handle, SOL_SOCKET, SO_REUSEADDR,
+                   reinterpret_cast<char *>(&enabled), sizeof(enabled)) == -1) {
+    DS2LOG(Warning,
+           "unable to enable SO_REUSEADDR on the server socket, errno=%s",
+           SOCK_ERRNO_STRINGIFY(SOCK_ERRNO));
+  }
+
   res = ::bind(_handle, result->ai_addr, result->ai_addrlen);
   freeaddrinfo(result);
   if (res < 0) {
