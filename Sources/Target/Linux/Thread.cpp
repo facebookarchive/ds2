@@ -22,6 +22,7 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
+#include <sys/wait.h>
 
 using ds2::Host::Linux::ProcFS;
 using ds2::Utils::Stringify;
@@ -172,6 +173,8 @@ void Thread::updateState() {
 
   _stopInfo.core = stat.task_cpu;
 
+  State oldState = _state;
+
   switch (stat.state) {
   case Host::Linux::kProcStateZombie:
   case Host::Linux::kProcStateDead:
@@ -189,10 +192,20 @@ void Thread::updateState() {
   case Host::Linux::kProcStateStopped:
     _state = kStopped;
     break;
-
   default:
     _state = kInvalid;
     break;
+  }
+
+  // If the thread state has gone from running to a non-running state,
+  // update the stop info, to maintain consistentency between
+  // the state and the stop info.
+  if (oldState == kRunning && _state != kRunning) {
+    int status;
+    int ret = ::waitpid(tid(), &status, __WALL | WNOHANG);
+    DS2ASSERT(ret >= 0);
+
+    updateStopInfo(status);
   }
 }
 
