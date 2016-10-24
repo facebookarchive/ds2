@@ -11,6 +11,7 @@
 #include "DebugServer2/Host/Socket.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
+#include "DebugServer2/Utils/Stringify.h"
 #if defined(OS_WIN32)
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #endif
@@ -20,6 +21,7 @@
 #include <ws2tcpip.h>
 #define SOCK_ERRNO WSAGetLastError()
 #define SOCK_WOULDBLOCK WSAEWOULDBLOCK
+#define SOCK_ERRNO_STRINGIFY Stringify::WSAError
 #elif defined(OS_POSIX)
 #include <arpa/inet.h>
 #include <cerrno>
@@ -30,10 +32,13 @@
 #include <unistd.h>
 #define SOCK_ERRNO errno
 #define SOCK_WOULDBLOCK EAGAIN
+#define SOCK_ERRNO_STRINGIFY Stringify::Errno
 #endif
 
 #include <algorithm>
 #include <cstring>
+
+using ds2::Utils::Stringify;
 
 namespace ds2 {
 namespace Host {
@@ -99,13 +104,6 @@ bool Socket::listen(std::string const &address, std::string const &port) {
   if (listening() || connected())
     return false;
 
-  // Disable socket lingering so the process can die quickly when we exit.
-  struct linger linger;
-  linger.l_onoff = 0;
-  linger.l_linger = 0;
-  ::setsockopt(_handle, SOL_SOCKET, SO_LINGER,
-               reinterpret_cast<char *>(&linger), sizeof(linger));
-
   struct addrinfo hints, *result;
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;
@@ -133,6 +131,17 @@ bool Socket::listen(std::string const &address, std::string const &port) {
 
   if (!create(result->ai_family)) {
     return false;
+  }
+
+  // Disable socket lingering so the process can die quickly when we exit.
+  struct linger linger;
+  linger.l_onoff = 0;
+  linger.l_linger = 0;
+  if (::setsockopt(_handle, SOL_SOCKET, SO_LINGER,
+                   reinterpret_cast<char *>(&linger), sizeof(linger)) == -1) {
+    DS2LOG(Warning,
+           "unable to disable SO_LINGER on the server socket, errno=%s",
+           SOCK_ERRNO_STRINGIFY(SOCK_ERRNO));
   }
 
   res = ::bind(_handle, result->ai_addr, result->ai_addrlen);
