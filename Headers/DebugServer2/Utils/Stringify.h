@@ -31,6 +31,7 @@ public:
   static char const *SignalCode(int signal, int code);
   static char const *PTraceCommand(int code);
 #elif defined(OS_WIN32)
+  static char const *WSAError(DWORD error);
   static char const *DebugEvent(DWORD event);
   static char const *ExceptionCode(DWORD code);
 #endif
