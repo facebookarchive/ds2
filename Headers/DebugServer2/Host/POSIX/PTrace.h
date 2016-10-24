@@ -131,12 +131,13 @@ protected:
     // ptrace return types vary across systems. Avoid truncating data.
     decltype(ptrace((PTraceRequestType)0, 0, 0, 0)) ret = 0;
 
+    using ds2::Utils::Stringify;
+
     do {
       if (ret < 0) {
         retries--;
         DS2LOG(Warning, "ptrace command %s on pid %d returned %s, retrying",
-               ds2::Utils::Stringify::Ptrace(request), pid,
-               ds2::Utils::Stringify::Errno(errno));
+               Stringify::Ptrace(request), pid, Stringify::Errno(errno));
       }
 
       // Clear errno so we can check it afterwards. Just checking the return
@@ -151,8 +152,7 @@ protected:
 
     if (errno != 0) {
       DS2LOG(Debug, "ran ptrace command %s on pid %d, returned %s",
-             ds2::Utils::Stringify::Ptrace(request), pid,
-             ds2::Utils::Stringify::Errno(errno));
+             Stringify::Ptrace(request), pid, Stringify::Errno(errno));
     }
 
     return ret;
