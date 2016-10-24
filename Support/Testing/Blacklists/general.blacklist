@@ -27,7 +27,6 @@ UnwindFromExpressionTest.test_unwind_expression_dwarf
 skip
 _dwo$
 EnumTypesTestCase
-TestConcurrentEvents
 TestLLVM.TestHomeDirectory.test_tilde_home_directory
 TestLambdas
 TestLldbGdbServer.LldbGdbServerTestCase.test_Hc_then_Csignal_signals_correct_thread_launch_llgs
