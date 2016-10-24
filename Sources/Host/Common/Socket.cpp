@@ -99,8 +99,9 @@ bool Socket::listen(std::string const &address, std::string const &port) {
   if (listening() || connected())
     return false;
 
+  // Disable socket lingering so the process can die quickly when we exit.
   struct linger linger;
-  linger.l_onoff = 1;
+  linger.l_onoff = 0;
   linger.l_linger = 0;
   ::setsockopt(_handle, SOL_SOCKET, SO_LINGER,
                reinterpret_cast<char *>(&linger), sizeof(linger));
