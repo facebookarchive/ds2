@@ -327,13 +327,19 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
     uint64_t inode;
     int nread;
 
-    if (std::fgets(buf, sizeof(buf), fp) == nullptr)
-      break;
+    if (::fgets(buf, sizeof(buf), fp) == nullptr) {
+      if (::feof(fp)) {
+        break;
+      } else {
+        DS2ASSERT(errno != 0);
+        return Platform::TranslateError();
+      }
+    }
 
-    if (std::sscanf(buf, "%" PRIx64 "-%" PRIx64 " %c%c%c%c %" PRIx64
-                         " %x:%x %" PRIu64 " %n",
-                    &start, &end, &r, &w, &x, &p, &offset, &devMinor, &devMajor,
-                    &inode, &nread) != 10) {
+    if (::sscanf(buf, "%" PRIx64 "-%" PRIx64 " %c%c%c%c %" PRIx64
+                      " %x:%x %" PRIu64 " %n",
+                 &start, &end, &r, &w, &x, &p, &offset, &devMinor, &devMajor,
+                 &inode, &nread) != 10) {
       continue;
     }
 
