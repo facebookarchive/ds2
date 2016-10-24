@@ -137,7 +137,7 @@ protected:
       if (ret < 0) {
         retries--;
         DS2LOG(Warning, "ptrace command %s on pid %d returned %s, retrying",
-               Stringify::Ptrace(request), pid, Stringify::Errno(errno));
+               Stringify::PTraceCommand(request), pid, Stringify::Errno(errno));
       }
 
       // Clear errno so we can check it afterwards. Just checking the return
@@ -152,7 +152,7 @@ protected:
 
     if (errno != 0) {
       DS2LOG(Debug, "ran ptrace command %s on pid %d, returned %s",
-             Stringify::Ptrace(request), pid, Stringify::Errno(errno));
+             Stringify::PTraceCommand(request), pid, Stringify::Errno(errno));
     }
 
     return ret;
