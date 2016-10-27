@@ -89,7 +89,9 @@ ErrorCode Thread::step(int signal, Address const &address) {
   CHK(readCPUState(state));
   CHK(PrepareSoftwareSingleStep(
       process(), process()->softwareBreakpointManager(), state, address));
-  return resume(signal, address);
+  CHK(resume(signal, address));
+  _state = kStepped;
+  return kSuccess;
 }
 #else
 ErrorCode Thread::step(int signal, Address const &address) {
