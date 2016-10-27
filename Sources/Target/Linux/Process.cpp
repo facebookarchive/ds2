@@ -116,6 +116,7 @@ ErrorCode Process::checkMemoryErrorCode(uint64_t address) {
 
 ErrorCode Process::wait() {
   int status, signal;
+  bool stepping;
   ProcessInfo info;
   ThreadId tid;
 
@@ -149,11 +150,23 @@ ErrorCode Process::wait() {
       _currentThread = threadIt->second;
     }
 
+    stepping = _currentThread->_state == Thread::kStepped;
     _currentThread->updateStopInfo(status);
 
     switch (_currentThread->_stopInfo.event) {
     case StopInfo::kEventNone:
-      _currentThread->resume();
+      // If the thread is stopped for no reason, it means the debugger (ds2)
+      // sent a SIGSTOP to it while it was already stopped for another reason,
+      // the SIGSTOP was queued, and now we're getting this notification. We
+      // have to ignore this and just let the thread continue.
+      // If `stepping` is true, it means the thread was actually being
+      // single-stepped before stopping, so instead of doing a `resume()`, we
+      // have to do a new `step()`.
+      if (stepping) {
+        _currentThread->step();
+      } else {
+        _currentThread->resume();
+      }
       goto continue_waiting;
 
     case StopInfo::kEventExit:
