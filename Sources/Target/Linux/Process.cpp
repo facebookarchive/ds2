@@ -127,8 +127,9 @@ ErrorCode Process::wait() {
     tid = blocking_waitpid(-1, &status, __WALL);
     DS2LOG(Debug, "wait tid=%d status=%#x", tid, status);
 
-    if (tid <= 0)
+    if (tid <= 0) {
       return kErrorProcessNotFound;
+    }
 
     auto threadIt = _threads.find(tid);
 
