@@ -195,7 +195,7 @@ ErrorCode Process::wait() {
     _currentThread = nullptr;
 
     DEBUG_EVENT de;
-    BOOL result = ::WaitForDebugEvent(&de, INFINITE);
+    BOOL result = ::WaitForDebugEventEx(&de, INFINITE);
     if (!result)
       return Platform::TranslateError();
 
