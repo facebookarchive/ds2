@@ -247,14 +247,22 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     auto const &dsInfo = de.u.DebugString;
     DS2LOG(Debug, "inferior output a debug string: %" PRI_PTR "[%d]",
            PRI_PTR_CAST(dsInfo.lpDebugStringData), dsInfo.nDebugStringLength);
-    // TODO: We need to use WaitForDebugEventEx to get unicode strings.
-    DS2ASSERT(dsInfo.fUnicode == 0);
 
-    _stopInfo.debugString.resize(dsInfo.nDebugStringLength - 1);
+    // The length includes terminating null character.
+    DS2ASSERT(dsInfo.nDebugStringLength >= 1);
+    std::string buffer((dsInfo.fUnicode ? sizeof(WCHAR) : 1) *
+                           (dsInfo.nDebugStringLength - 1),
+                       0);
+
     CHKV(process()->readMemory(
         reinterpret_cast<uint64_t>(dsInfo.lpDebugStringData),
-        const_cast<char *>(_stopInfo.debugString.c_str()),
-        dsInfo.nDebugStringLength - 1));
+        const_cast<char *>(buffer.c_str()), buffer.size()));
+
+    _stopInfo.debugString =
+        dsInfo.fUnicode ? Platform::WideToNarrowString(std::wstring(
+                              reinterpret_cast<const wchar_t *>(buffer.c_str()),
+                              dsInfo.nDebugStringLength - 1))
+                        : std::move(buffer);
 
     _state = kStopped;
     _stopInfo.event = StopInfo::kEventStop;
