@@ -76,6 +76,14 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   state.gp.pc = context.Pc;
   state.gp.cpsr = context.Cpsr;
 
+  // Floating point registers.
+  static_assert(sizeof(context.D) == sizeof(state.vfp.dbl),
+                "floating point register count mismatch");
+  for (size_t i = 0; i < array_sizeof(context.D); ++i) {
+    state.vfp.dbl[i].value = context.D[i];
+  }
+  state.vfp.fpscr = context.Fpscr;
+
   if (state.isThumb()) {
     if (state.gp.pc & 1ULL) {
       DS2LOG(Debug, "removing thumb bit from pc and lr");
@@ -86,7 +94,7 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
     }
   }
 
-  // TODO(sas): Handle floating point and debug registers.
+  // TODO(sas): Handle debug registers.
 
   return kSuccess;
 }
@@ -95,9 +103,10 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
   CONTEXT context;
 
   memset(&context, 0, sizeof(context));
-  // TODO(sas): Handle floats and debug registers.
-  context.ContextFlags = CONTEXT_INTEGER | // GP registers.
-                         CONTEXT_CONTROL;  // Some more GP + CPSR.
+  // TODO(sas): Handle debug registers.
+  context.ContextFlags = CONTEXT_INTEGER |       // GP registers.
+                         CONTEXT_CONTROL |       // Some more GP + CPSR.
+                         CONTEXT_FLOATING_POINT; // FP registers.
 
   // GP registers + CPSR.
   context.R0 = state.gp.r0;
@@ -117,6 +126,12 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
   context.Lr = state.gp.lr;
   context.Pc = state.gp.pc;
   context.Cpsr = state.gp.cpsr;
+
+  // Floating point registers.
+  for (size_t i = 0; i < array_sizeof(context.D); ++i) {
+    context.D[i] = state.vfp.dbl[i].value;
+  }
+  context.Fpscr = state.vfp.fpscr;
 
   if (state.isThumb()) {
     DS2ASSERT(!(state.gp.pc & 1ULL));
