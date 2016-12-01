@@ -130,7 +130,7 @@ toolchain file can then be used to generate the build system.
 
 `Support/Scripts/prepare-android-toolchain.sh` will download a working version
 of the NDK, extract it, and install the toolchain to
-`/tmp/android-ndk-arm-toolchain` which can then be used for the build.
+`/tmp/aosp-toolchain` which can then be used for the build.
 
 ```sh
 cd ds2
@@ -149,7 +149,7 @@ older devices. The other build steps are the same.
 
 ```
 cd ds2
-./Support/Scripts/prepare-android-toolchain.sh arm 16
+./Support/Scripts/prepare-android-toolchain.sh arm:16
 mkdir build && cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
 make
