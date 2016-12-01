@@ -11,8 +11,8 @@
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR ARM64)
 
-set(CMAKE_C_COMPILER /tmp/aosp-toolchain/aarch64-linux-android-4.9/bin/aarch64-linux-android-gcc)
-set(CMAKE_CXX_COMPILER /tmp/aosp-toolchain/aarch64-linux-android-4.9/bin/aarch64-linux-android-g++)
+set(CMAKE_C_COMPILER /tmp/aosp-toolchain/arm64/bin/aarch64-linux-android-gcc)
+set(CMAKE_CXX_COMPILER /tmp/aosp-toolchain/arm64/bin/aarch64-linux-android-g++)
 
 set(ANDROID 1)
 set(PIE 1)
