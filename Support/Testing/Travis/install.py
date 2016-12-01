@@ -20,9 +20,9 @@ linux_packages = { 'Linux-ARM':     'g++-4.8-arm-linux-gnueabihf',
                    'Linux-X86_64':  'g++-5' }
 
 android_toolchains = { 'Android-ARM':       'arm',
-                       'Android-ARM64':     'aarch64',
+                       'Android-ARM64':     'arm64',
                        'Android-X86':       'x86',
-                       'Android-X86_64':    'x86' }
+                       'Android-X86_64':    'x86_64' }
 
 tizen_packages = { 'Tizen-ARM': linux_packages['Linux-ARM'],
                    'Tizen-X86': linux_packages['Linux-X86'] }
@@ -63,7 +63,7 @@ elif host == 'Linux':
 if target in android_toolchains:
     # Android builds get the toolchain from AOSP and use platform 21 by default.
     android_platform = os.getenv('ANDROID_PLATFORM', "21")
-    check_call('./Support/Scripts/prepare-android-toolchain.sh "%s" "%s"' %
+    check_call('./Support/Scripts/prepare-android-toolchain.sh "%s:%s"' %
                (android_toolchains[target], android_platform), shell=True)
     if os.getenv('LLDB_TESTS') != None:
         dist_packages.append('default-jdk')
