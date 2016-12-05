@@ -31,3 +31,4 @@ TestRedefinitionsInInlines.test_with
 TestSBValueConstAddrOf.test_with
 TestStringPrinter.test_with
 TestStructTypes.test_with
+TestValueOfVectorVariable.TestValueOfVectorVariableTestCase
