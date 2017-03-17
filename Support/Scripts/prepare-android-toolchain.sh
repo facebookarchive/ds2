@@ -11,8 +11,6 @@
 
 source "$(dirname "$0")/common.sh"
 
-[ $# -ge 1 ] || die "usage: $0 ARCH[:API_LEVEL]..."
-
 ndk_release="r13b"
 install_dir="/tmp/aosp-toolchain"
 
@@ -22,14 +20,30 @@ case "$(uname)" in
   *)        die "This script works only on Linux and macOS.";;
 esac
 
-tmpdir="$(mktemp -d)"
-cd "${tmpdir}"
+while [ $# -ge 1 ] && [[ "$1" =~ --.* ]]; do
+  case "$1" in
+    --ndk-path)
+      shift
+      ndk_path="$1"
+      ;;
+  esac
+  shift
+done
 
-ndk_package_base="android-ndk-${ndk_release}"
-ndk_package_archive="${ndk_package_base}-${host}.zip"
+[ $# -ge 1 ] || die "usage: $0 ARCH[:API_LEVEL]..."
 
-wget "https://dl.google.com/android/repository/${ndk_package_archive}"
-unzip -q "${ndk_package_archive}"
+if [ -z "${ndk_path-}" ]; then
+  tmpdir="$(mktemp -d)"
+  cd "${tmpdir}"
+
+  ndk_package_base="android-ndk-${ndk_release}"
+  ndk_package_archive="${ndk_package_base}-${host}.zip"
+
+  wget "https://dl.google.com/android/repository/${ndk_package_archive}"
+  unzip -q "${ndk_package_archive}"
+
+  ndk_path="$(realpath "$ndk_package_base")"
+fi
 
 for arg in "$@"; do
   if [[ "$arg" == *:* ]]; then
@@ -42,8 +56,9 @@ for arg in "$@"; do
 
   toolchain_install_dir="${install_dir}/${target_arch}-${api_level}"
 
-  "${ndk_package_base}/build/tools/make_standalone_toolchain.py" \
-      --arch "${target_arch}" --api "${api_level}" \
+  "${ndk_path}/build/tools/make_standalone_toolchain.py" \
+      --arch "${target_arch}" \
+      --api "${api_level}"    \
       --install-dir "${toolchain_install_dir}"
 
   rm -f "${install_dir}/${target_arch}"
