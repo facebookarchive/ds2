@@ -11,6 +11,7 @@
 
 import os
 import sys
+import platform
 from subprocess import check_call
 
 host = os.uname()[0]
@@ -27,8 +28,11 @@ elif host == 'Linux':
 
     def add_llvm_repo():
         add_toolchain_test_repo()
+        (dist,version,name) = platform.linux_distribution()
         keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
-        repositories.append('deb http://llvm.org/apt/trusty/ llvm-toolchain-trusty-3.9 main')
+        llvm_url = 'http://llvm.org/apt/' + name + '/'
+        repo_name = 'llvm-toolchain-' + name + '-3.9'
+        repositories.append('deb ' + llvm_url + ' ' + repo_name + ' main')
 
     if target in [ 'Style', 'Registers' ]:
         add_llvm_repo()
