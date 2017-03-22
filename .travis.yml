@@ -27,13 +27,13 @@ matrix:
       env: TARGET="Documentation" ENCRYPTION_LABEL="c06a05533acc"
     # Cross-compiled targets
     - os: linux
-      env: TARGET="Android-ARM" LLDB_TESTS="all" PLATFORM="1" COVERAGE="1"
+      env: TARGET="Android-ARM" LLDB_TESTS="TestStructTypes" PLATFORM="1" COVERAGE="1"
     - os: linux
       env: TARGET="Android-ARM" ANDROID_PLATFORM="16"
     - os: linux
       env: TARGET="Android-ARM64"
     - os: linux
-      env: TARGET="Android-X86" LLDB_TESTS="all" PLATFORM="1" COVERAGE="1"
+      env: TARGET="Android-X86" LLDB_TESTS="TestStructTypes" PLATFORM="1" COVERAGE="1"
     - os: linux
       env: TARGET="Android-X86" ANDROID_PLATFORM="16"
     - os: linux
@@ -46,22 +46,22 @@ matrix:
       env: TARGET="Tizen-X86"
     # Linux-X86 (with LLDB tests)
     - os: linux
-      env: TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="0" COVERAGE="1" PLATFORM="1"
+      env: TARGET="Linux-X86"      LLDB_TESTS="TestStructTypes"  CLANG="0" COVERAGE="1" PLATFORM="1"
     - os: linux
-      env: TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="0" COVERAGE="1"  RELEASE="1"
+      env: TARGET="Linux-X86"      LLDB_TESTS="TestStructTypes"  CLANG="0" COVERAGE="1"  RELEASE="1"
     - os: linux
-      env: TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="1"
+      env: TARGET="Linux-X86"      LLDB_TESTS="TestStructTypes"  CLANG="1"
     - os: linux
-      env: TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="1" RELEASE="1" PLATFORM="1"
+      env: TARGET="Linux-X86"      LLDB_TESTS="TestStructTypes"  CLANG="1" RELEASE="1" PLATFORM="1"
     # Linux-X86_64 (with LLDB tests)
     - os: linux
-      env: TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="0" COVERAGE="1"
+      env: TARGET="Linux-X86_64"   LLDB_TESTS="TestStructTypes"  CLANG="0" COVERAGE="1"
     - os: linux
-      env: TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="0" COVERAGE="1"  RELEASE="1" PLATFORM="1"
+      env: TARGET="Linux-X86_64"   LLDB_TESTS="TestStructTypes"  CLANG="0" COVERAGE="1"  RELEASE="1" PLATFORM="1"
     - os: linux
-      env: TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="1" COVERAGE="1" PLATFORM="1"
+      env: TARGET="Linux-X86_64"   LLDB_TESTS="TestStructTypes"  CLANG="1" COVERAGE="1" PLATFORM="1"
     - os: linux
-      env: TARGET="Linux-X86_64"   LLDB_TESTS="all"  CLANG="1" COVERAGE="1"  RELEASE="1"
+      env: TARGET="Linux-X86_64"   LLDB_TESTS="TestStructTypes"  CLANG="1" COVERAGE="1"  RELEASE="1"
     # Linux-X86_64 (with GDB tests)
     - os: linux
       env: TARGET="Linux-X86_64"   GDB_TESTS="gdb.base/break;gdb.base/printcmds;gdb.base/step-bt" CLANG="0" COVERAGE="1"
@@ -91,3 +91,4 @@ install:        travis_retry ./Support/Testing/Travis/install.py
 before_script:  ./Support/Testing/Travis/before-script.sh
 script:         ./Support/Testing/Travis/script.sh
 after_success:  ./Support/Testing/Travis/after-success.sh
+after_failure: cat build/ds2.log
