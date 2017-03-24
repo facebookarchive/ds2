@@ -86,21 +86,26 @@ struct xfpregs_struct {
 static inline int posix_openpt(int flags) { return ::open("/dev/ptmx", flags); }
 #endif // !HAVE_POSIX_OPENPT
 
-#if !defined(PLATFORM_ANDROID)
+// Do not use PLATFORM_ANDROID here. We want to test if we're using the Android
+// toolchain, not if we're building for the Android target. In some cases, we
+// build Tizen binaries with the Android toolchain.
+#if !defined(HAVE_GETTID)
 // Android headers do have a wrapper for `gettid`, unlike glibc.
 static inline pid_t gettid() { return ::syscall(SYS_gettid); }
-#endif // !PLATFORM_ANDROID
+#endif // !HAVE_GETTID
 
-#if defined(PLATFORM_ANDROID) && !defined(SYS_tgkill)
+#if !defined(SYS_tkill)
+#define SYS_tkill __NR_tkill
+#endif // !SYS_tkill
+
+#if !defined(SYS_tgkill)
 #define SYS_tgkill __NR_tgkill
-#endif // PLATFORM_ANDROID && !SYS_tgkill
+#endif // !SYS_tgkill
+
 static inline int tgkill(pid_t pid, pid_t tid, int signo) {
   return ::syscall(SYS_tgkill, pid, tid, signo);
 }
 
-#if defined(PLATFORM_ANDROID) && !defined(SYS_tkill)
-#define SYS_tkill __NR_tkill
-#endif // PLATFORM_ANDROID && !SYS_tkill
 static inline int tkill(pid_t tid, int signo) {
   return ::syscall(SYS_tkill, tid, signo);
 }
@@ -108,7 +113,7 @@ static inline int tkill(pid_t tid, int signo) {
 #if !defined(HAVE_SYS_PERSONALITY_H)
 #if !defined(SYS_personality)
 #define SYS_personality __NR_personality
-#endif // !SYS_personality)
+#endif // !SYS_personality
 
 #if !defined(ADDR_NO_RANDOMIZE)
 #define ADDR_NO_RANDOMIZE 0x0040000
