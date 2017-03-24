@@ -84,8 +84,8 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_exe="$(which lldb-3.9)"
 
   case "${TARGET}" in
-    "Android-ARM") cc_exe="/tmp/aosp-toolchain/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-gcc";;
-    "Android-X86") cc_exe="/tmp/aosp-toolchain/x86_64-linux-android-4.9/bin/x86_64-linux-android-gcc";;
+    "Android-ARM") cc_exe="/tmp/aosp-toolchain/arm/bin/arm-linux-androideabi-gcc";;
+    "Android-X86") cc_exe="/tmp/aosp-toolchain/x86/bin/i686-linux-android-gcc";;
     *)             cc_exe="$(which gcc-5)"
   esac
 
