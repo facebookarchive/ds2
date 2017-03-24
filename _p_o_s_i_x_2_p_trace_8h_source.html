@@ -204,10 +204,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                  <span class="keywordtype">int</span> retries = 3) {</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">#if defined(OS_LINUX)</span></div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor"></span><span class="comment">// The android toolchain declares ptrace() with an int command.</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">#if defined(PLATFORM_ANDROID)</span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor"></span>    <span class="keyword">typedef</span> <span class="keywordtype">int</span> PTraceRequestType;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="preprocessor">#if defined(HAVE_ENUM_PTRACE_REQUEST)</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor"></span>    <span class="keyword">typedef</span> <span class="keyword">enum</span> __ptrace_request PTraceRequestType;</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor"></span>    <span class="keyword">typedef</span> <span class="keyword">enum</span> __ptrace_request PTraceRequestType;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor"></span>    <span class="keyword">typedef</span> <span class="keywordtype">int</span> PTraceRequestType;</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="preprocessor"></span>    <span class="keyword">typedef</span> <span class="keywordtype">void</span> *PTraceAddrType;</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keyword">typedef</span> <span class="keywordtype">void</span> *PTraceDataType;</div>
