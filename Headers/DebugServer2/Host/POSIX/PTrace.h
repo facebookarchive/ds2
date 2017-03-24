@@ -116,10 +116,10 @@ protected:
                   int retries = 3) {
 #if defined(OS_LINUX)
 // The android toolchain declares ptrace() with an int command.
-#if defined(PLATFORM_ANDROID)
-    typedef int PTraceRequestType;
-#else
+#if defined(HAVE_ENUM_PTRACE_REQUEST)
     typedef enum __ptrace_request PTraceRequestType;
+#else
+    typedef int PTraceRequestType;
 #endif
     typedef void *PTraceAddrType;
     typedef void *PTraceDataType;

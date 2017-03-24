@@ -34,15 +34,19 @@ elseif (ARCH_NAME MATCHES "AMD64")
 endif ()
 
 if ("${OS_NAME}" MATCHES "Linux")
+  set(CMAKE_EXTRA_INCLUDE_FILES unistd.h sys/ptrace.h sys/user.h)
+
   include(CheckIncludeFile)
   CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
 
   include(CheckFunctionExists)
   CHECK_FUNCTION_EXISTS(posix_openpt HAVE_POSIX_OPENPT)
+  CHECK_FUNCTION_EXISTS(gettid HAVE_GETTID)
 
   include(CheckTypeSize)
-  set(CMAKE_EXTRA_INCLUDE_FILES sys/user.h)
   CHECK_TYPE_SIZE("struct user_fpxregs_struct" STRUCT_USER_FPXREGS_STRUCT)
+  CHECK_TYPE_SIZE("enum __ptrace_request" ENUM_PTRACE_REQUEST)
+
   set(CMAKE_EXTRA_INCLUDE_FILES)
 endif ()
 
@@ -313,17 +317,11 @@ if ("${OS_NAME}" MATCHES "Windows")
 endif ()
 
 if ("${OS_NAME}" MATCHES "Linux")
-  if (HAVE_SYS_PERSONALITY_H)
-    target_compile_definitions(ds2 PRIVATE HAVE_SYS_PERSONALITY_H)
-  endif ()
-
-  if (HAVE_POSIX_OPENPT)
-    target_compile_definitions(ds2 PRIVATE HAVE_POSIX_OPENPT)
-  endif ()
-
-  if (HAVE_STRUCT_USER_FPXREGS_STRUCT)
-    target_compile_definitions(ds2 PRIVATE HAVE_STRUCT_USER_FPXREGS_STRUCT)
-  endif ()
+  foreach (CHECK SYS_PERSONALITY_H GETTID POSIX_OPENPT STRUCT_USER_FPXREGS_STRUCT ENUM_PTRACE_REQUEST)
+    if (HAVE_${CHECK})
+      target_compile_definitions(ds2 PRIVATE HAVE_${CHECK})
+    endif ()
+  endforeach ()
 endif ()
 
 if (TIZEN)

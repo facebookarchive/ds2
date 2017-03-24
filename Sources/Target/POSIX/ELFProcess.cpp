@@ -174,8 +174,9 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
 
   CHK(ReadELFDebug(process, address, debug));
 
-// Android doesn't have a definition for LAV_CURRENT, so we skip this check.
-#if !defined(PLATFORM_ANDROID) && !defined(OS_FREEBSD)
+// Android and FreeBSD don't have a definition for LAV_CURRENT so we skip this
+// check.
+#if defined(LAV_CURRENT)
   if (debug.version != LAV_CURRENT) {
     return kErrorUnsupported;
   }
