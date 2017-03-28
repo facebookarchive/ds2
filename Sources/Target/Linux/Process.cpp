@@ -357,7 +357,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
       continue;
     }
 
-    if (address >= last && address <= start) {
+    if (address >= last && address < start) {
       //
       // A hole.
       //
