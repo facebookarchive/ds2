@@ -301,6 +301,7 @@ struct MemoryRegionInfo {
   Address start;
   uint64_t length;
   uint32_t protection;
+  std::string name;
 #if defined(OS_LINUX)
   std::string backingFile;
   uint64_t backingFileOffset;
@@ -309,17 +310,19 @@ struct MemoryRegionInfo {
 
   MemoryRegionInfo() { clear(); }
   MemoryRegionInfo(Address const &start_, uint64_t length_,
-                   uint64_t protection_) {
+                   uint64_t protection_, std::string name_) {
     clear();
     start = start_;
     length = length_;
     protection = protection_;
+    name = name_;
   }
 
   inline void clear() {
     start.clear();
     length = 0;
     protection = 0;
+    name.clear();
 #if defined(OS_LINUX)
     backingFile.clear();
     backingFileOffset = 0;

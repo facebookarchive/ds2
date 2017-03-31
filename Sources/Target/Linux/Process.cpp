@@ -18,6 +18,7 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Target/Thread.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/String.h"
 #include "DebugServer2/Utils/Stringify.h"
 
 #include <cerrno>
@@ -339,6 +340,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
     uint64_t offset;
     unsigned int devMinor, devMajor;
     uint64_t inode;
+    char name[PATH_MAX + 1];
     int nread;
 
     if (::fgets(buf, sizeof(buf), fp) == nullptr) {
@@ -351,9 +353,9 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
     }
 
     if (::sscanf(buf, "%" PRIx64 "-%" PRIx64 " %c%c%c%c %" PRIx64
-                      " %x:%x %" PRIu64 " %n",
+                      " %x:%x %" PRIu64 " %" STR(PATH_MAX) "s%n",
                  &start, &end, &r, &w, &x, &p, &offset, &devMinor, &devMajor,
-                 &inode, &nread) != 10) {
+                 &inode, name, &nread) != 11) {
       continue;
     }
 
@@ -363,6 +365,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
       //
       info.start = last;
       info.length = start - last;
+      info.name = name;
       found = true;
     } else if (address >= start && address < end) {
       //
@@ -379,6 +382,7 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
         info.protection |= ds2::kProtectionExecute;
       while (buf[nread] != '\0' && std::isspace(buf[nread]))
         ++nread;
+      info.name = name;
       info.backingFile = buf + nread;
       info.backingFileOffset = offset;
       info.backingFileInode = inode;
