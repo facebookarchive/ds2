@@ -368,14 +368,15 @@ ErrorCode Process::getMemoryRegionInfoInternal(Address const &address,
       _handle, reinterpret_cast<LPVOID>(address.value()),
       reinterpret_cast<PMEMORY_BASIC_INFORMATION>(&mem), sizeof(mem));
 
+  // TODO: Empty string in assignment of region below is a work-around. Fix at some point.
   if (bytesQuery == sizeof(_MEMORY_BASIC_INFORMATION64)) {
     region = {Address(mem.BaseAddress), mem.RegionSize,
-              convertMemoryProtectionFromWindows(mem.AllocationProtect)};
+              convertMemoryProtectionFromWindows(mem.AllocationProtect), ""};
   } else if (bytesQuery == sizeof(_MEMORY_BASIC_INFORMATION32)) {
     MEMORY_BASIC_INFORMATION32 *mem32 =
         reinterpret_cast<_MEMORY_BASIC_INFORMATION32 *>(&mem);
     region = {Address(mem32->BaseAddress), mem32->RegionSize,
-              convertMemoryProtectionFromWindows(mem32->AllocationProtect)};
+              convertMemoryProtectionFromWindows(mem32->AllocationProtect), ""};
   } else {
     return Platform::TranslateError();
   }
