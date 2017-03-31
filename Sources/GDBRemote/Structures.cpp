@@ -785,6 +785,9 @@ std::string MemoryRegionInfo::encode() const {
       ss << 'x';
     ss << ';';
   }
+  if (!name.empty()) {
+    ss << "name:" << ToHex(name) << ';';
+  }
 
   return ss.str();
 }

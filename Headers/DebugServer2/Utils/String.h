@@ -17,6 +17,9 @@
 #include <sstream>
 #include <string>
 
+#define STR_HELPER(S) #S
+#define STR(S) STR_HELPER(S)
+
 namespace ds2 {
 namespace Utils {
 
