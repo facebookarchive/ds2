@@ -368,7 +368,8 @@ ErrorCode Process::getMemoryRegionInfoInternal(Address const &address,
       _handle, reinterpret_cast<LPVOID>(address.value()),
       reinterpret_cast<PMEMORY_BASIC_INFORMATION>(&mem), sizeof(mem));
 
-  // TODO: Empty string in assignment of region below is a work-around. Fix at some point.
+  // TODO: Empty string in assignment of region below is a work-around. Fix at
+  // some point.
   if (bytesQuery == sizeof(_MEMORY_BASIC_INFORMATION64)) {
     region = {Address(mem.BaseAddress), mem.RegionSize,
               convertMemoryProtectionFromWindows(mem.AllocationProtect), ""};
