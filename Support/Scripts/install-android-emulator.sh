@@ -28,7 +28,19 @@ case "${target_arch}" in
   *)     die "Unknown architecture '${target_arch}'.";;
 esac
 
-android_sdk_version="r23"
+package_list=()
+
+# This is required due to dependency issues in the sdk. Hopefully this can be removed in future
+# versions of the sdk.
+if [ "${api_level}" -gt 23 ]; then
+  android_sdk_version="r24"
+  package_list+=("android-23", "platform-tools", "tools")
+else
+  android_sdk_version="r23"
+fi
+
+package_list+=("android-${api_level}", "sys-img-${emulator_image_arch}-android-${api_level}")
+
 android_script="/tmp/android-sdk-${platform_name}/tools/android"
 
 if [ ! -f "$android_script" ]; then
@@ -40,8 +52,6 @@ if [ ! -f "$android_script" ]; then
     *) die "Unknown archive extension '${package_extension}'."
   esac
 fi
-
-package_list+=("android-${api_level}", "sys-img-${emulator_image_arch}-android-${api_level}")
 
 for package in "${package_list[@]}"; do
   echo "y" | "$android_script" update sdk -u -a --filter "$package"
