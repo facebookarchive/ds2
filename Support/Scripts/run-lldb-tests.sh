@@ -55,6 +55,8 @@ cherry_pick_patches() {
     patch -d "$lldb_path" -p1 <"$testingPath/Patches/android-search-paths.patch"
   fi
 
+  patch -d "$lldb_path" -p1 <"$testingPath/Patches/memory-region-info.patch"
+
   cd "$OLDPWD"
 }
 
