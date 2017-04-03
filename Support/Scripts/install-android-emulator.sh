@@ -41,7 +41,10 @@ if [ ! -f "$android_script" ]; then
   esac
 fi
 
-echo "y" | "$android_script" update sdk -u -a --filter "android-${api_level}"
+package_list+=("android-${api_level}", "sys-img-${emulator_image_arch}-android-${api_level}")
 
-echo "y" | "$android_script" update sdk -u -a --filter "sys-img-${emulator_image_arch}-android-${api_level}"
+for package in "${package_list[@]}"; do
+  echo "y" | "$android_script" update sdk -u -a --filter "$package"
+done
+
 echo "no" | "$android_script" create avd --force -n test -t "android-${api_level}" --abi "${emulator_image_arch}"
