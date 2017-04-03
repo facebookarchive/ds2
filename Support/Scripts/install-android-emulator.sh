@@ -14,7 +14,6 @@ source "$(dirname "$0")/common.sh"
 [ $# -le 2 ] || die "usage: $0 [ARCH] [PLATFORM]"
 
 target_arch="${1-arm}"
-api_level="${2-21}"
 
 case "$(uname)" in
   "Linux")  platform_name="linux"; package_extension="tgz";;
@@ -23,8 +22,9 @@ case "$(uname)" in
 esac
 
 case "${target_arch}" in
-  "arm") emulator_image_arch="armeabi-v7a";;
-  "x86") emulator_image_arch="x86";;
+  "arm")   emulator_image_arch="armeabi-v7a"; api_level="${2-21}";;
+  "arm64") emulator_image_arch="arm64-v8a"; api_level="${2-23}";;
+  "x86")   emulator_image_arch="x86"; api_level="${2-21}";;
   *)     die "Unknown architecture '${target_arch}'.";;
 esac
 
