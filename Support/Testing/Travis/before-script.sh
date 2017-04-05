@@ -20,7 +20,7 @@ if [[ "$TARGET" == Android-* && -n "${LLDB_TESTS-}" ]]; then
 
   case "${TARGET}" in
     "Android-ARM") emulator_arch="arm";;
-    "Android-ARM64") emulator_arch="aarch64";;
+    "Android-ARM64") emulator_arch="ranchu-arm64";;
     "Android-X86") emulator_arch="x86";;
     *)             die "Unknown target '${TARGET}'.";;
   esac

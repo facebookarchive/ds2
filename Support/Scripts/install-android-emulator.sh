@@ -23,7 +23,7 @@ esac
 
 case "${target_arch}" in
   "arm")   emulator_image_arch="armeabi-v7a"; api_level="${2-21}";;
-  "arm64") emulator_image_arch="arm64-v8a"; api_level="${2-23}";;
+  "arm64") emulator_image_arch="arm64-v8a"; api_level="${2-24}";;
   "x86")   emulator_image_arch="x86"; api_level="${2-21}";;
   *)     die "Unknown architecture '${target_arch}'.";;
 esac
