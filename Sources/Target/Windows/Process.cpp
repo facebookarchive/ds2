@@ -43,6 +43,14 @@ static uint8_t const gDebugBreakCode[] = {
     0xFF, 0xD0                    // 06: call eax
 };
 static const int gRtlExitUserThreadOffset = 0x02;
+#elif defined(ARCH_X86_64)
+static uint8_t const gDebugBreakCode[] = {
+    0xCC,                         // 00: int 3
+    0x48, 0xB8, 0x00, 0x00, 0x00, // 01: movabs rax, RtlExitUserThread address
+    0x00, 0x00, 0x00, 0x00, 0x00, // cont.
+    0xFF, 0xD0                    // 0b: call eax
+};
+static const int gRtlExitUserThreadOffset = 0x03;
 #endif
 
 namespace ds2 {
@@ -132,8 +140,8 @@ ErrorCode Process::writeDebugBreakCode(uint64_t address) {
 
   ByteVector codestr(&gDebugBreakCode[0],
                      &gDebugBreakCode[sizeof(gDebugBreakCode)]);
-  *reinterpret_cast<uint32_t *>(&codestr[gRtlExitUserThreadOffset]) =
-      reinterpret_cast<uint32_t>(exitThreadAddress);
+  *reinterpret_cast<uintptr_t *>(&codestr[gRtlExitUserThreadOffset]) =
+      reinterpret_cast<uintptr_t>(exitThreadAddress);
 
   size_t written;
   CHK(writeMemory(Address(address), &codestr[0], codestr.size(), &written));
