@@ -544,14 +544,16 @@ ErrorCode Process::enumerateSharedLibraries(
   DWORD bytesNeeded;
 
   rc = EnumProcessModules(_handle, modules.data(),
-                          modules.size() * sizeof(HMODULE), &bytesNeeded);
+                          static_cast<DWORD>(modules.size() * sizeof(HMODULE)),
+                          &bytesNeeded);
   if (!rc)
     return Platform::TranslateError();
 
   modules.resize(bytesNeeded / sizeof(HMODULE));
 
   rc = EnumProcessModules(_handle, modules.data(),
-                          modules.size() * sizeof(HMODULE), &bytesNeeded);
+                          static_cast<DWORD>(modules.size() * sizeof(HMODULE)),
+                          &bytesNeeded);
   if (!rc)
     return Platform::TranslateError();
 
