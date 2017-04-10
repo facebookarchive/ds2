@@ -302,7 +302,7 @@ ErrorCode Process::updateInfo() {
   //
   // Some info like parent pid, OS vendor, etc is obtained via /proc.
   //
-  ProcFS::ReadProcessInfo(_info.pid, _info);
+  ProcFS::ReadProcessInfo(_pid, _info);
 
   //
   // Call super::updateInfo, in turn it will call updateAuxiliaryVector.
