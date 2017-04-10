@@ -108,6 +108,10 @@ namespace X86 {
 #define USER_GP_REG(NAME) E##NAME
 #define USER_SS_REG(NAME) Seg##NAME
 #define USER_FLAGS_REG() EFlags
+#elif defined(OS_WIN32) && defined(ARCH_X86_64)
+#define USER_GP_REG(NAME) R##NAME
+#define USER_SS_REG(NAME) Seg##NAME
+#define USER_FLAGS_REG() EFlags
 #endif
 
 #define DO_COPY_GP_REG(NAME)                                                   \

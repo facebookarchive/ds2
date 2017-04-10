@@ -14,6 +14,7 @@
 #include "DebugServer2/Architecture/X86/RegisterCopy.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
+#include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <windows.h>
@@ -27,82 +28,67 @@ namespace Windows {
 ErrorCode Thread::step(int signal, Address const &address) {
   // Windows doesn't have a dedicated single-step call. We have to set the
   // single step flag (TF, 8th bit) in eflags and resume the thread.
-  CHK(modifyRegisters(
-      [](Architecture::CPUState &state) { state.gp.eflags |= (1 << 8); }));
+  CHK(modifyRegisters([](Architecture::CPUState &state) {
+    state.state64.gp.eflags |= (1 << 8);
+  }));
   CHK(resume(signal, address));
 
   return kSuccess;
 }
 
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
-  CONTEXT context;
+  // TODO(sas): Handle floats, SSE, AVX and debug registers.
+  DWORD flags = CONTEXT_INTEGER | // GP registers.
+                CONTEXT_CONTROL | // Some more GP + cs/ss.
+                CONTEXT_SEGMENTS; // Data segment selectors.
 
-  std::memset(&context, 0, sizeof(context));
-  // TODO(sas): Handle AVX.
-  context.ContextFlags = CONTEXT_INTEGER |            // GP registers.
-                         CONTEXT_CONTROL |            // Some more GP + cs/ss.
-                         CONTEXT_SEGMENTS |           // Data segment selectors.
-                         CONTEXT_FLOATING_POINT |     // FP registers.
-                         CONTEXT_EXTENDED_REGISTERS | // SSE registers.
-                         CONTEXT_DEBUG_REGISTERS;     // Debug registers.
+  ProcessInfo pinfo;
+  CHK(process()->getInfo(pinfo));
 
-  BOOL result = GetThreadContext(_handle, &context);
-  if (!result) {
-    return Platform::TranslateError();
-  }
+  DS2ASSERT(pinfo.pointerSize == sizeof(uint64_t));
 
-  user_to_state32(state, context);
+  // TODO(sas): Support WOW64.
+  if (pinfo.pointerSize == sizeof(uint64_t)) {
+    CONTEXT context;
 
-  // x87 state
-  state.x87.fstw = context.FloatSave.StatusWord;
-  state.x87.fctw = context.FloatSave.ControlWord;
-  state.x87.ftag = context.FloatSave.TagWord;
-  state.x87.fiseg = context.FloatSave.ErrorSelector;
-  state.x87.fioff = context.FloatSave.ErrorOffset;
-  state.x87.foseg = context.FloatSave.DataSelector;
-  state.x87.fooff = context.FloatSave.DataOffset;
-  // TODO(sas): Figure out where this is stored.
-  // state.x87.fop = ???;
+    std::memset(&context, 0, sizeof(context));
+    context.ContextFlags = flags;
 
-  uint8_t const *st_space =
-      reinterpret_cast<uint8_t const *>(context.FloatSave.RegisterArea);
-  for (size_t n = 0; n < 8; n++) {
-    static const int reg_size = sizeof(state.x87.regs[0].bytes);
-    memcpy(state.x87.regs[n].bytes, st_space + n * reg_size, reg_size);
-  }
-
-  // SSE state
-  if (IsProcessorFeaturePresent(PF_XMMI_INSTRUCTIONS_AVAILABLE)) {
-    // SSE registers are located at offset 160 and MXCSR is at offset 24 in the
-    // ExtendedRegisters block.
-    uint8_t const *xmm_space =
-        reinterpret_cast<uint8_t const *>(context.ExtendedRegisters);
-
-    memcpy(&state.sse.mxcsr, xmm_space + 24, sizeof(state.sse.mxcsr));
-    memcpy(&state.sse.mxcsrmask, xmm_space + 28, sizeof(state.sse.mxcsrmask));
-    for (size_t n = 0; n < 8; n++) {
-      static const int reg_size = sizeof(state.sse.regs[0]);
-      memcpy(&state.sse.regs[n], xmm_space + 160 + n * reg_size, reg_size);
+    BOOL result = GetThreadContext(_handle, &context);
+    if (!result) {
+      return Platform::TranslateError();
     }
+
+    state.is32 = false;
+    Architecture::X86::user_to_state64(state.state64, context);
   }
 
   return kSuccess;
 }
 
 ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
-  CONTEXT context;
-
-  std::memset(&context, 0, sizeof(context));
   // TODO(sas): Handle floats, SSE, AVX and debug registers.
-  context.ContextFlags = CONTEXT_INTEGER | // GP registers.
-                         CONTEXT_CONTROL | // Some more GP + cs/ss.
-                         CONTEXT_SEGMENTS; // Data segment selectors.
+  DWORD flags = CONTEXT_INTEGER | // GP registers.
+                CONTEXT_CONTROL | // Some more GP + cs/ss.
+                CONTEXT_SEGMENTS; // Data segment selectors.
 
-  state32_to_user(context, state);
+  ProcessInfo pinfo;
+  CHK(process()->getInfo(pinfo));
 
-  BOOL result = SetThreadContext(_handle, &context);
-  if (!result) {
-    return Platform::TranslateError();
+  DS2ASSERT(pinfo.pointerSize == sizeof(uint64_t));
+
+  // TODO(sas): Support WOW64.
+  if (pinfo.pointerSize == sizeof(uint64_t)) {
+    CONTEXT context;
+
+    std::memset(&context, 0, sizeof(context));
+    context.ContextFlags = flags;
+    Architecture::X86::state64_to_user(context, state.state64);
+
+    BOOL result = SetThreadContext(_handle, &context);
+    if (!result) {
+      return Platform::TranslateError();
+    }
   }
 
   return kSuccess;
