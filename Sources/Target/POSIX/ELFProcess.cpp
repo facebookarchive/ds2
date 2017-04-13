@@ -53,52 +53,66 @@ inline ErrorCode GetELFSharedLibraryInfoAddress(ELFProcess *process,
   PHDR ph;
   DYNSYM dynsym;
 
-  CHK(process->readMemory(process->loadBase(), &eh, sizeof(eh)));
-
-  if (eh.e_phnum == 0) {
+  // 1. Find the PHDR, number of entries, size of each entry, and the loadBase
+  //    of the binary.
+  //    Assumption: PHDR is attached to the ELF header. This isn't enforced but
+  //    it almost always occurs in practice.
+  uint64_t phdrAddress = process->getAuxiliaryVectorValue(AT_PHDR);
+  size_t phdrEntrySize = process->getAuxiliaryVectorValue(AT_PHENT);
+  size_t phdrNumEntry = process->getAuxiliaryVectorValue(AT_PHNUM);
+  uint64_t loadBase = phdrAddress - sizeof(eh);
+  if (phdrAddress == 0 || phdrEntrySize == 0 || phdrNumEntry == 0) {
+    DS2LOG(Debug, "Unable to locate PHDR info, "
+                  "Dynamic Library info will not be available.");
     return kErrorUnsupported;
   }
 
-  // 1. Find PT_DYNAMIC (.dynamic) program header, and the
-  //    expected load base of this ELF.
+  // 2. Find PT_DYNAMIC (.dynamic) program header and what the ELF believes is
+  //    the loadBase. Find the size of the dynamic section as well.
   uint64_t elfLoadBase = 0;
   bool foundElfLoadBase = false;
-  uint64_t phdrAddress = process->loadBase() + eh.e_phoff;
-  for (size_t n = 0; n < eh.e_phnum; n++) {
-    CHK(process->readMemory(phdrAddress, &ph, sizeof(ph)));
+  uint64_t dotDynamicAddress = 0;
+  bool foundDotDynamicAddress = false;
+  uint64_t dotDynamicSize = 0;
+  for (size_t n = 0; n < phdrNumEntry; n++) {
+    CHK(process->readMemory(phdrAddress + n * phdrEntrySize, &ph, sizeof(ph)));
 
-    if (!foundElfLoadBase && ph.p_type == PT_LOAD) {
-      elfLoadBase = ph.p_paddr;
+    if ((!foundElfLoadBase || ph.p_vaddr < elfLoadBase) &&
+        ph.p_type == PT_LOAD) {
+      elfLoadBase = ph.p_vaddr;
       foundElfLoadBase = true;
     }
 
     if (ph.p_type == PT_DYNAMIC) {
-      break;
+      dotDynamicAddress = ph.p_vaddr;
+      dotDynamicSize = ph.p_memsz;
+      foundDotDynamicAddress = true;
     }
-
-    phdrAddress += eh.e_phentsize;
   }
 
-  if (ph.p_type != PT_DYNAMIC) {
+  if (!foundDotDynamicAddress || !foundElfLoadBase) {
+    DS2LOG(Debug, "Unable to locate PT_DYNAMIC or any PT_LOAD, "
+                  "Dynamic Library info will not be available.");
     return kErrorUnsupported;
   }
 
-  // 2. Find DT_DEBUG in .dynamic section
-  uint64_t dynsymAddress = process->loadBase() + ph.p_paddr - elfLoadBase;
-  size_t entriesCount = ph.p_memsz / sizeof(dynsym);
+  // 3. Find DT_DEBUG in .dynamic section
+  dotDynamicAddress += (loadBase - elfLoadBase);
+  size_t entriesCount = dotDynamicSize / sizeof(dynsym);
   for (size_t n = 0; n < entriesCount; n++) {
-    CHK(process->readMemory(dynsymAddress, &dynsym, sizeof(dynsym)));
+    CHK(process->readMemory(dotDynamicAddress + n * sizeof(dynsym), &dynsym,
+                            sizeof(dynsym)));
 
-    // 3. Return &DT_DEBUG->d_ptr, which is filled by the dynamic linker
+    // 4. Return &DT_DEBUG->d_ptr, which is filled by the dynamic linker
     //    pointing to the link_map.
     if (dynsym.d_tag == DT_DEBUG) {
-      address = dynsymAddress + sizeof(dynsym.d_tag);
+      address = (dotDynamicAddress + n * sizeof(dynsym)) + sizeof(dynsym.d_tag);
       return kSuccess;
     }
-
-    dynsymAddress += sizeof(dynsym);
   }
 
+  DS2LOG(Debug, "DT_DEBUG was not found in .dynamic, "
+                "Dynamic Library info will not be available.");
   return kErrorUnsupported;
 }
 
@@ -298,26 +312,12 @@ ErrorCode ELFProcess::updateInfo() {
     }
 
 #if defined(OS_LINUX)
-    // For some reason, on Android 5.1 and up some ELF segments get loaded in
-    // memory multiple smaller contiguous regions instead of being loaded as a
-    // single big mapping.
-    // This means we can't properly identify the beginning of the segment by
-    // just looking at the start address of the mapping; we have to inspect
-    // contiguous mappings instead and see if they are contiguous in the input
-    // file and then take the start address of the first mapping of the segment
-    // we're inspecting.
-    do {
-      prevMri = mri;
-      error = getMemoryRegionInfo(mri.start - 1, mri);
-      if (error != kSuccess) {
-        goto mri_error;
-      }
-    } while (mri.backingFile == prevMri.backingFile &&
-             mri.backingFileInode == prevMri.backingFileInode &&
-             mri.protection == prevMri.protection &&
-             mri.backingFileOffset + mri.length == prevMri.backingFileOffset);
-
-    _loadBase = prevMri.start;
+    // Here, we use the interpreter's base address instead of the binary's. The
+    // interpreter has an ELF header just the same as the binary, so we can get
+    // most of the necessary info from it.
+    // If this fails for any reason, an easy fallback is to grab the PHDR and
+    // subtract the size of the ELF header. This should be good enough, though.
+    _loadBase = getAuxiliaryVectorValue(AT_BASE);
 #else
     _loadBase = mri.start;
 #endif
@@ -475,9 +475,7 @@ ErrorCode ELFProcess::getSharedLibraryInfoAddress(Address &address) {
     //
     // Force the updating of process information.
     //
-    _info.pid = -1;
-
-    ErrorCode error = updateInfo();
+    ErrorCode error = updateAuxiliaryVector();
     if (error != kSuccess && error != kErrorAlreadyExist)
       return error;
 
