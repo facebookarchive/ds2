@@ -1,0 +1,35 @@
+commit 68538012b16b7d71658963e56ed7e09b6978414e
+Author: Francis Ricci <fjricci@fb.com>
+Date:   Wed Apr 13 11:24:17 2016 -0700
+
+    Make sure to use lib instead of lib64 for LLDB_LIB_DIR
+    
+    Summary:
+    $(lldb -P)/../../ is assumed to be the lldb library directory
+    by the test suite. However, it is possible that the python
+    libs would be installed in build/lib64 instead of build/lib.
+    Since liblldb.so is always installed in lib,
+    make sure this is always used as LLDB_LIB_DIR.
+    
+    In cases where the python libs were already in build/lib, this
+    patch will not affect LLDB_LIB_DIR.
+    
+    Reviewers: zturner, vharron, emaste
+    
+    Subscribers: lldb-commits, sas
+    
+    Differential Revision: http://reviews.llvm.org/D19067
+
+diff --git a/packages/Python/lldbsuite/test/dotest.py b/packages/Python/lldbsuite/test/dotest.py
+index 198e87c..62a2009 100644
+--- a/packages/Python/lldbsuite/test/dotest.py
++++ b/packages/Python/lldbsuite/test/dotest.py
+@@ -635,7 +635,7 @@ def setupSysPath():
+             if len(lines) >= 1 and os.path.isfile(os.path.join(lines[-1], init_in_python_dir)):
+                 lldbPythonDir = lines[-1]
+                 if "freebsd" in sys.platform or "linux" in sys.platform:
+-                    os.environ['LLDB_LIB_DIR'] = os.path.join(lldbPythonDir, '..', '..')
++                    os.environ['LLDB_LIB_DIR'] = os.path.join(lldbPythonDir, '..', '..', '..', 'lib')
+         
+         if not lldbPythonDir:
+             if platform.system() == "Darwin":
