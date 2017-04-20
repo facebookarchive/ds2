@@ -11,7 +11,6 @@
 #include "DebugServer2/GDBRemote/DummySessionDelegateImpl.h"
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/Host/Platform.h"
-#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"
 
 using ds2::Host::Platform;
