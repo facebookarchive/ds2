@@ -25,7 +25,7 @@ source "$top/Support/Scripts/common.sh"
 [ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
 
 opt_fast=false
-opt_log=false
+opt_log=true
 opt_strace=false
 
 for o in "$@"; do
