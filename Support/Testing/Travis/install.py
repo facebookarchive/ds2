@@ -15,17 +15,17 @@ from subprocess import check_call
 dist_packages = []
 pip_packages = []
 
-linux_packages = { 'Linux-ARM':     'g++-4.8-arm-linux-gnueabihf',
-                   'Linux-X86':     'g++-5-multilib',
-                   'Linux-X86_64':  'g++-5' }
+gcc_package_versions = { 'Linux-ARM':     '-4.8-arm-linux-gnueabihf',
+                         'Linux-X86':     '-5-multilib',
+                         'Linux-X86_64':  '-5' }
 
 android_toolchains = { 'Android-ARM':       'arm',
                        'Android-ARM64':     'arm64',
                        'Android-X86':       'x86',
                        'Android-X86_64':    'x86_64' }
 
-tizen_packages = { 'Tizen-ARM': linux_packages['Linux-ARM'],
-                   'Tizen-X86': linux_packages['Linux-X86'] }
+tizen_packages = { 'Tizen-ARM': 'g++' + gcc_package_versions['Linux-ARM'],
+                   'Tizen-X86': 'g++' + gcc_package_versions['Linux-X86'] }
 
 host = os.uname()[0]
 target = os.getenv('TARGET')
@@ -49,12 +49,13 @@ elif host == 'Linux':
     elif target == 'Documentation':
         dist_packages.append('doxygen')
         dist_packages.append('graphviz')
-    elif target in linux_packages:
+    elif target in gcc_package_versions:
         if "CentOS Linux" in platform.linux_distribution():
             dist_packages.append('gcc')
         else:
             # Install gcc even when using clang, so we can run lldb tests.
-            dist_packages.append(linux_packages[target])
+            dist_packages.append('g++' + gcc_package_versions[target])
+            dist_packages.append('gobjc++' + gcc_package_versions[target])
     elif target == 'MinGW-X86':
         dist_packages.append('g++-mingw-w64-i686')
     elif target in tizen_packages:
