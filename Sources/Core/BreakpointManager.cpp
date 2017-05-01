@@ -49,6 +49,15 @@ ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
     // the newly added breakpoint too.
     if (enabled()) {
       return enableLocation(site);
+    } else {
+      ErrorCode isValid = enableLocation(site);
+      disableLocation(site);
+
+      if (isValid != kSuccess) {
+        remove(address);
+      }
+
+      return isValid;
     }
   }
 

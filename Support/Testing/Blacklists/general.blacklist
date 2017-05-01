@@ -1,6 +1,5 @@
 xfail
 AttachResumeTestCase.test_attach_continue_interrupt_detach
-BadAddressBreakpointTestCase.test_bad_address_breakpoints_dwarf
 CreateDuringInstructionStepTestCase.test_step_inst
 ExprCommandThatRestartsTestCase.test_dwarf
 ExprSyscallTestCase.test_setpgid
