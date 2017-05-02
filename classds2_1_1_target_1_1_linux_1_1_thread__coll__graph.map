@@ -1,5 +1,6 @@
 <map id="ds2::Target::Linux::Thread" name="ds2::Target::Linux::Thread">
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_thread.html" title="ds2::Target::POSIX\l::Thread" alt="" coords="26,174,163,215"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_thread_base.html" title="ds2::Target::ThreadBase" alt="" coords="11,96,177,123"/>
-<area shape="rect" id="node5" href="$structds2_1_1_stop_info.html" title="ds2::StopInfo" alt="" coords="99,5,199,32"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_thread.html" title="ds2::Target::POSIX\l::Thread" alt="" coords="21,265,157,306"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_thread_base.html" title="ds2::Target::ThreadBase" alt="" coords="6,187,172,213"/>
+<area shape="rect" id="node5" href="$structds2_1_1_stop_info.html" title="ds2::StopInfo" alt="" coords="99,96,199,123"/>
+<area shape="rect" id="node6" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="100,5,199,32"/>
 </map>
