@@ -152,9 +152,9 @@ if $opt_strace; then
 exec strace -o $build_dir/ds2-strace.log $build_dir/ds2 "\$@"
 EEOOFF
   chmod +x "$build_dir/ds2-strace.sh"
-  ds2_path="$build_dir/ds2-strace.sh"
+  server_path="$build_dir/ds2-strace.sh"
 else
-  ds2_path="$build_dir/ds2"
+  server_path="${DEBUGSERVER_PATH-$build_dir/ds2}"
 fi
 
 if [[ "${PLATFORM-}" = "1" ]]; then
@@ -165,16 +165,23 @@ if [[ "${PLATFORM-}" = "1" ]]; then
     args+=(--exclude "$blacklist_dir/android.blacklist")
   fi
 
-  args+=("--platform-name=remote-$platform_name" "--platform-url=connect://localhost:12345" "--platform-working-dir=$working_dir"
-         "--no-multiprocess" --exclude "$blacklist_dir/platform.blacklist")
-  ds2_args=("p")
+  server_port="12345"
+
+  args+=("--platform-name=remote-$platform_name" "--platform-url=connect://localhost:$server_port"
+         "--platform-working-dir=$working_dir" "--no-multiprocess" --exclude "$blacklist_dir/platform.blacklist")
+
+  server_args=("p")
+
+  if [[ "$server_path" = *"lldb-server"* ]] ; then
+    server_args+=("--server" "--listen" "$server_port")
+  fi
 
   if $opt_log; then
-    ds2_args+=("--remote-debug" "--log-file=$working_dir/ds2.log")
+    server_args+=("--remote-debug" "--log-file=$working_dir/$(basename "$server_path").log")
   fi
 
   if [[ "$platform_name" = "linux" ]]; then
-    "$ds2_path" "${ds2_args[@]}" &
+    "$server_path" "${server_args[@]}" &
     add_exit_handler kill -9 $!
   elif [[ "$platform_name" = "android" ]]; then
     debug_libdir="/tmp/debug-data/"
@@ -183,8 +190,8 @@ if [[ "${PLATFORM-}" = "1" ]]; then
     for lib in "${debug_libs[@]}" ; do
       adb pull "$lib" "$debug_libdir"
     done
-    adb push "$ds2_path" "$working_dir"
-    adb shell "$working_dir/ds2" "${ds2_args[@]}" &
+    adb push "$server_path" "$working_dir"
+    adb shell "$working_dir/ds2" "${server_args[@]}" &
   fi
   sleep 3
 else
@@ -193,7 +200,7 @@ else
     export LLDB_DEBUGSERVER_EXTRA_ARG_1="--remote-debug"
   fi
 
-  export LLDB_DEBUGSERVER_PATH="$ds2_path"
+  export LLDB_DEBUGSERVER_PATH="$server_path"
 fi
 
 export LLDB_TEST_TIMEOUT=8m
