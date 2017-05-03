@@ -20,7 +20,7 @@ if [[ "${COVERAGE-}" = "1" ]]; then
   coveralls_args=("-E" ".*/lib/.*" "-E" ".*/include/.*" "-E" ".*/sys/.*" "-E" ".*/lldb/.*"
                   "-E" ".*/deps/.*" "-r" "$top" "-b" "$top/build")
   if [[ "${CLANG-}" = "1" ]]; then
-    coveralls_args+=("--gcov" "llvm-cov-3.9" "--gcov-options" "gcov")
+    coveralls_args+=("--gcov" "llvm-cov-4.0" "--gcov-options" "gcov")
   else
     coveralls_args+=("--gcov" "gcov-5")
   fi
