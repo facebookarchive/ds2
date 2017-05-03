@@ -14,7 +14,7 @@
 # broken unit tests.
 
 REPO_BASE="https://github.com/llvm-mirror"
-UPSTREAM_BRANCH="release_39"
+UPSTREAM_BRANCH="release_40"
 
 top="$(git rev-parse --show-toplevel)"
 build_dir="$PWD"
@@ -50,14 +50,25 @@ cherry_pick_patches() {
 
   # Disabled and enabled tests
   local testingPath="$top/Support/Testing"
-  patch -d "$lldb_path" -p1 <"$testingPath/Patches/lldb-test-blacklist.patch"
-  patch -d "$lldb_path" -p1 <"$testingPath/Patches/lldb-blacklist-update.patch"
 
-  if [[ "$platform_name" = "android" ]]; then
-    patch -d "$lldb_path" -p1 <"$testingPath/Patches/android-search-paths.patch"
+  # This code can be removed when we move to the next toolchain release,
+  # as the patches are all contained upstream in the 5.0svn branch.
+  if [[ "$UPSTREAM_BRANCH" = "release_40" ]]; then
+    # Because one of the patches below changes a path, we need a hard clean for patches
+    # to apply.
+    git reset --hard origin/release_40 && git clean -dffx
+
+    # The order here matters - FixFlakyHostInfo fixes a flake by moving a test to a new directory,
+    # and FixHostInfo fixes a bug in the test (in the new directory). Leave untouched for clean
+    # patch application.
+    patch -d "$lldb_path" -p1 < "$testingPath/Patches/lldb-4.0-cherry-picks/FixFlakyHostInfo.patch"
+    patch -d "$lldb_path" -p1 < "$testingPath/Patches/lldb-4.0-cherry-picks/FixHostInfo.patch"
   fi
 
-  patch -d "$lldb_path" -p1 <"$testingPath/Patches/memory-region-info.patch"
+  if [[ "$platform_name" = "android" ]]; then
+    # This patch is purely to improve performance on Travis, won't ever be upstreamed.
+    patch -d "$lldb_path" -p1 < "$testingPath/Patches/android-search-paths.patch"
+  fi
 
   cd "$OLDPWD"
 }
@@ -79,13 +90,13 @@ if [ "$(linux_distribution)" == "centos" ]; then
     if [ -z "${LLDB_EXE-}" ] ; then
       mkdir -p "$llvm_build"
       cd "$llvm_build"
-      cmake -G Ninja -DLLVM_LIBDIR_SUFFIX=64 ..
+      cmake -G Ninja ..
       ninja lldb
     fi
   fi
 elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_path="$build_dir/lldb"
-  lldb_exe="$(which lldb-3.9)"
+  lldb_exe="$(which lldb-4.0)"
 
   case "${TARGET}" in
     "Android-ARM") cc_exe="/tmp/aosp-toolchain/arm/bin/arm-linux-androideabi-gcc";;
@@ -104,8 +115,8 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
 
     # Sync lldb libs to local build dir
     rsync -a /usr/lib/x86_64-linux-gnu/       "$python_base"
-    rsync -a /usr/lib/llvm-3.9/lib/python2.7/ "$python_base/python2.7"
-    rsync -a "$python_base/liblldb-3.9.so"    "$python_base/liblldb.so"
+    rsync -a /usr/lib/llvm-4.0/lib/python2.7/ "$python_base/python2.7"
+    rsync -a "$python_base/liblldb-4.0.so"    "$python_base/liblldb.so"
 
     # Fix broken python lldb symlinks
     cd "$PYTHONPATH/lldb"
