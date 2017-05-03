@@ -25,12 +25,14 @@ source "$top/Support/Scripts/common.sh"
 [ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
 
 opt_fast=false
+opt_no_ds2_blacklists=false
 opt_log=false
 opt_strace=false
 
 for o in "$@"; do
   case "$o" in
     --fast) opt_fast=true;;
+    --no-ds2-blacklists) opt_no_ds2_blacklists=true;;
     --log) opt_log=true;;
     --strace) opt_strace=true;;
     *) die "Unknown option \`$o'.";;
@@ -124,7 +126,12 @@ fi
 cd "$lldb_path/test"
 
 blacklist_dir="$top/Support/Testing/Blacklists"
-args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v --exclude "$blacklist_dir/general.blacklist")
+args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v)
+
+args+=("--exclude" "$blacklist_dir/upstream-general.blacklist")
+if ! $opt_no_ds2_blacklists; then
+  args+=("--exclude" "$blacklist_dir/ds2-general.blacklist")
+fi
 
 if [ -n "${TARGET-}" ]; then
   if [[ "${TARGET}" == "Linux-X86_64" ]]; then
@@ -162,13 +169,19 @@ if [[ "${PLATFORM-}" = "1" ]]; then
     working_dir="$build_dir"
   elif [[ "$platform_name" = "android" ]]; then
     working_dir="/data/local/tmp"
-    args+=(--exclude "$blacklist_dir/android.blacklist")
+    if ! $opt_no_ds2_blacklists; then
+      args+=("--exclude" "$blacklist_dir/ds2-android.blacklist")
+    fi
   fi
 
   server_port="12345"
 
   args+=("--platform-name=remote-$platform_name" "--platform-url=connect://localhost:$server_port"
-         "--platform-working-dir=$working_dir" "--no-multiprocess" --exclude "$blacklist_dir/platform.blacklist")
+         "--platform-working-dir=$working_dir" "--no-multiprocess")
+  args+=("--exclude" "$blacklist_dir/upstream-platform.blacklist")
+  if ! $opt_no_ds2_blacklists; then
+    args+=("--exclude" "$blacklist_dir/ds2-platform.blacklist")
+  fi
 
   server_args=("p")
 
