@@ -225,11 +225,11 @@ ProtocolInterpreter::findHandler(std::string const &command,
   return handler;
 }
 
-int ProtocolInterpreter::Handler::compare(std::string const &command) const {
-  if (this->mode == Handler::kModeEquals) {
-    return this->command.compare(command);
+int ProtocolInterpreter::Handler::compare(std::string const &command_) const {
+  if (mode == Handler::kModeEquals) {
+    return command.compare(command_);
   } else {
-    return this->command.compare(command.substr(0, this->command.length()));
+    return command.compare(command_.substr(0, command.length()));
   }
 }
 } // namespace GDBRemote
