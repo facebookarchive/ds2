@@ -329,8 +329,9 @@ if (TIZEN)
 endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(ds2 PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)
-  target_compile_options(ds2 PRIVATE -Wdeprecated -Wfloat-equal)
+  target_compile_options(ds2 PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter
+                                     -Wdeprecated -Wfloat-equal
+                                     -Wnon-virtual-dtor)
   if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(ds2 PRIVATE -Wextra-semi)
   endif ()
