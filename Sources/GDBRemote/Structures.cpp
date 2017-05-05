@@ -446,9 +446,10 @@ JSDictionary *StopInfo::encodeJson() const {
     threadObj->set("core", JSInteger::New(core));
 
   if (watchpointAddress) {
-    std::string key, val;
-    getWatchpointInfo(key, val, kCompatibilityModeLLDB, false);
-    threadObj->set(key, JSString::New(val));
+    std::string watchpointKey, watchpointVal;
+    getWatchpointInfo(watchpointKey, watchpointVal, kCompatibilityModeLLDB,
+                      false);
+    threadObj->set(watchpointKey, JSString::New(watchpointVal));
   }
 
   if (reason == StopInfo::kReasonSignalStop) {
