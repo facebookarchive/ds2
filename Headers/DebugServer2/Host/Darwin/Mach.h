@@ -61,6 +61,6 @@ private:
   task_t getMachTask(ProcessId pid);
   thread_t getMachThread(ProcessThreadId const &tid);
 };
-}
-}
-}
+} // namespace Darwin
+} // namespace Host
+} // namespace ds2

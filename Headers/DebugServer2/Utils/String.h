@@ -74,5 +74,5 @@ static inline int SNPrintf(char *str, size_t size, char const *format, ...) {
 #elif defined(COMPILER_CLANG) || defined(COMPILER_GCC)
 #pragma GCC poison sprintf snprintf vsnprintf
 #endif
-}
-}
+} // namespace Utils
+} // namespace ds2

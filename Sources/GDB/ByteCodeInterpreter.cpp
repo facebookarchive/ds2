@@ -558,5 +558,5 @@ int ByteCodeInterpreter::printf(size_t nargs, std::string const &format) {
 
   return kSuccess;
 }
-}
-}
+} // namespace GDB
+} // namespace ds2

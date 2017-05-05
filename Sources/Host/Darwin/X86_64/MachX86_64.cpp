@@ -125,6 +125,6 @@ ErrorCode Mach::writeCPUState(ProcessThreadId const &ptid,
 
   return kSuccess;
 }
-}
-}
-}
+} // namespace Darwin
+} // namespace Host
+} // namespace ds2

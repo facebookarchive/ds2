@@ -65,5 +65,5 @@ protected:
   int _fd;
   ErrorCode _lastError;
 };
-}
-}
+} // namespace Host
+} // namespace ds2

@@ -273,6 +273,6 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     DS2BUG("unknown debug event code: %lu", de.dwDebugEventCode);
   }
 }
-}
-}
-}
+} // namespace Windows
+} // namespace Target
+} // namespace ds2

@@ -3335,5 +3335,5 @@ void Session::Handle_z(ProtocolInterpreter::Handler const &,
 
   sendError(_delegate->onRemoveBreakpoint(*this, type, address, kind));
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

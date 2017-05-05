@@ -39,4 +39,4 @@ using Darwin::Thread;
 #error "Target not supported."
 #endif
 }
-}
+} // namespace ds2

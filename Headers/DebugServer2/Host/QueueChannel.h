@@ -52,5 +52,5 @@ public:
 public:
   bool receive(std::string &buffer) override;
 };
-}
-}
+} // namespace Host
+} // namespace ds2

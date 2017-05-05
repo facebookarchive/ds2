@@ -113,4 +113,4 @@ bool SoftwareBreakpointManager::enabled(Target::Thread *thread) const {
 
   return _enabled;
 }
-}
+} // namespace ds2

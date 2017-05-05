@@ -70,6 +70,6 @@ public:
 protected:
   friend class POSIX::Process;
 };
-}
-}
-}
+} // namespace Darwin
+} // namespace Target
+} // namespace ds2

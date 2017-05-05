@@ -71,4 +71,4 @@ protected:
                                        int size);
 #endif
 };
-}
+} // namespace ds2

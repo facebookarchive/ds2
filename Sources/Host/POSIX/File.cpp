@@ -154,5 +154,5 @@ ErrorCode File::createDirectory(std::string const &path, uint32_t flags) {
 
   return kSuccess;
 }
-}
-}
+} // namespace Host
+} // namespace ds2

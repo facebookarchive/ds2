@@ -40,6 +40,6 @@ protected:
   ErrorCode updateInfo() override;
   virtual ErrorCode updateAuxiliaryVector();
 };
-}
-}
-}
+} // namespace POSIX
+} // namespace Target
+} // namespace ds2

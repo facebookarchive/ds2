@@ -388,5 +388,5 @@ std::string Socket::port() const {
     DS2BUG("unknown socket family: %u", (unsigned int)ss.ss_family);
   }
 }
-}
-}
+} // namespace Host
+} // namespace ds2

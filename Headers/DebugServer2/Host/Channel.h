@@ -36,5 +36,5 @@ public:
   virtual bool send(std::string const &buffer);
   virtual bool receive(std::string &buffer);
 };
-}
-}
+} // namespace Host
+} // namespace ds2

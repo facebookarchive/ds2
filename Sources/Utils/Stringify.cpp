@@ -90,5 +90,5 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_DEFAULT("unknown StopInfo reason", reason)
   }
 }
-}
-}
+} // namespace Utils
+} // namespace ds2

@@ -117,6 +117,6 @@ void Thread::updateState(bool force) {
 
   _stopInfo.core = 0; // TODO
 }
-}
-}
-}
+} // namespace Darwin
+} // namespace Target
+} // namespace ds2

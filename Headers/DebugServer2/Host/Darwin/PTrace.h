@@ -49,6 +49,6 @@ public:
 public:
   ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) override;
 };
-}
-}
-}
+} // namespace Darwin
+} // namespace Host
+} // namespace ds2

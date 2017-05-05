@@ -818,5 +818,5 @@ std::string ProgramResult::encode() const {
      << ',' << Escape(output);
   return ss.str();
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

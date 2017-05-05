@@ -237,5 +237,5 @@ private:
                     Endian endianness) const;
   std::string formatAddress(Address const &address, Endian endianness) const;
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

@@ -151,6 +151,6 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
 
   return kSuccess;
 }
-}
-}
-}
+} // namespace POSIX
+} // namespace Target
+} // namespace ds2

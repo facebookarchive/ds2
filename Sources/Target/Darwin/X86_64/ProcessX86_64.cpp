@@ -115,6 +115,6 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
 
   return kSuccess;
 }
-}
-}
-}
+} // namespace Darwin
+} // namespace Target
+} // namespace ds2

@@ -26,6 +26,6 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
 ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
   return kErrorUnsupported;
 }
-}
-}
-}
+} // namespace Linux
+} // namespace Target
+} // namespace ds2

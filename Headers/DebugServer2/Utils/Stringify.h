@@ -37,8 +37,8 @@ public:
   static char const *ExceptionCode(DWORD code);
 #endif
 };
-}
-}
+} // namespace Utils
+} // namespace ds2
 
 // Private stuff used by implementation functions.
 #if defined(STRINGIFY_H_INTERNAL)

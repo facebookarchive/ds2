@@ -34,6 +34,6 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
                                 Architecture::CPUState const &state) {
   DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
-}
-}
-}
+} // namespace Darwin
+} // namespace Host
+} // namespace ds2

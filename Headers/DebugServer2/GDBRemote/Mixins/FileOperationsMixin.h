@@ -69,7 +69,7 @@ protected:
             int64_t offset, int whence, int64_t &newOffset);
 #endif
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2
 
 #include "../Sources/GDBRemote/Mixins/FileOperationsMixin.hpp"

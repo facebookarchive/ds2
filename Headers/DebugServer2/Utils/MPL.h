@@ -31,5 +31,5 @@ public:
       : MixinHead<MixinApply<Base, MixinTail...>>(std::forward<Args>(args)...) {
   }
 };
-}
-}
+} // namespace Utils
+} // namespace ds2

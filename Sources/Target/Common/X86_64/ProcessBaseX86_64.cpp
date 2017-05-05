@@ -29,5 +29,5 @@ LLDBDescriptor const *ProcessBase::getLLDBRegistersDescriptor() const {
   else
     return &Architecture::X86_64::LLDB;
 }
-}
-}
+} // namespace Target
+} // namespace ds2

@@ -385,6 +385,6 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
 
   return kErrorNotFound;
 }
-}
-}
-}
+} // namespace FreeBSD
+} // namespace Target
+} // namespace ds2

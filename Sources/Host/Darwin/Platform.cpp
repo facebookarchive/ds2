@@ -140,5 +140,5 @@ void Platform::EnumerateProcesses(
 std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   return Host::Darwin::LibProc::GetThreadName(ProcessThreadId(pid, tid));
 }
-}
-}
+} // namespace Host
+} // namespace ds2

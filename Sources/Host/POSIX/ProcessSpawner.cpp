@@ -650,5 +650,5 @@ void ProcessSpawner::redirectionThread() {
     }
   }
 }
-}
-}
+} // namespace Host
+} // namespace ds2

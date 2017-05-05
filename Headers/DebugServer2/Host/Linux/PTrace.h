@@ -116,6 +116,6 @@ protected:
   int getMaxStoppoints(ProcessThreadId const &ptid, int regSet);
 #endif
 };
-}
-}
-}
+} // namespace Linux
+} // namespace Host
+} // namespace ds2

@@ -317,4 +317,4 @@ DUMMY_IMPL_EMPTY(fetchStopInfoForAllThreads, Session &,
 
 DUMMY_IMPL_EMPTY(createThreadsStopInfo, Session &, JSArray &threadsStopInfo)
 }
-}
+} // namespace ds2

@@ -31,7 +31,7 @@ FILE *sOutputStream = stdout;
 #else
 FILE *sOutputStream = stderr;
 #endif
-}
+} // namespace
 
 #if defined(PLATFORM_ANDROID)
 static void androidLogcat(int level, char const *functag, char const *message) {
@@ -163,4 +163,4 @@ void Log(int level, char const *classname, char const *funcname,
   vLog(level, classname, funcname, format, ap);
   va_end(ap);
 }
-}
+} // namespace ds2

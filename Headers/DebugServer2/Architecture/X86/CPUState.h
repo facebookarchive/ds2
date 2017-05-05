@@ -399,5 +399,5 @@ public:
 
 #pragma pack(pop)
 }
-}
-}
+} // namespace Architecture
+} // namespace ds2

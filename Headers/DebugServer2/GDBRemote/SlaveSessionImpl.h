@@ -19,5 +19,5 @@ class SlaveSessionImpl : public DebugSessionImpl {
 public:
   SlaveSessionImpl();
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

@@ -147,4 +147,4 @@ bool HardwareBreakpointManager::enabled(Target::Thread *thread) const {
 
   return isEnabled;
 }
-}
+} // namespace ds2

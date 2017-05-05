@@ -59,4 +59,4 @@ private:
   OptionCollection::iterator findShortOpt(char shortOption);
   OptionStorage const &get(std::string const &name, OptionType type);
 };
-}
+} // namespace ds2

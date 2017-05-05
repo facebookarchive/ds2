@@ -188,6 +188,6 @@ public:
 };
 
 #pragma pack(pop)
-}
-}
-}
+} // namespace ARM
+} // namespace Architecture
+} // namespace ds2

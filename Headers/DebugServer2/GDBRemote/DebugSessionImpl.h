@@ -186,5 +186,5 @@ private:
 
 using DebugSessionImpl =
     Utils::MixinApply<DebugSessionImplBase, FileOperationsMixin>;
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

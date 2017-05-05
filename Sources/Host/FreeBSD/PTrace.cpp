@@ -162,6 +162,6 @@ ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   si = lwpinfo.pl_siginfo;
   return kSuccess;
 }
-}
-}
-}
+} // namespace FreeBSD
+} // namespace Host
+} // namespace ds2

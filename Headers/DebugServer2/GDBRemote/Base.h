@@ -34,5 +34,5 @@ enum BreakpointType : unsigned {
   kAccessWatchpoint = 4,
   kBreakpointTypeMax = 5
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

@@ -146,5 +146,5 @@ void PlatformSessionImplBase::updateProcesses(
 
   _processIterationState.it = _processIterationState.vals.begin();
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

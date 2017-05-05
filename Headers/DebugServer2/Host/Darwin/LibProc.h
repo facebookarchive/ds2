@@ -34,6 +34,6 @@ public:
   static std::string GetThreadName(ProcessThreadId const &ptid);
   static const char *GetExecutablePath(ProcessId pid);
 };
-}
-}
-}
+} // namespace Darwin
+} // namespace Host
+} // namespace ds2

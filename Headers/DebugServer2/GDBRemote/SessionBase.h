@@ -124,5 +124,5 @@ protected:
   virtual bool onCommandReceived(bool valid);
   virtual void onInvalidData(std::string const &data);
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

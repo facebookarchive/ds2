@@ -54,5 +54,5 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
 
   return true;
 }
-}
-}
+} // namespace Support
+} // namespace ds2

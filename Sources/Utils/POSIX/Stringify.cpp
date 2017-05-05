@@ -360,5 +360,5 @@ char const *Stringify::PTraceCommand(int code) {
     DO_DEFAULT("unknown ptrace command", code)
   }
 }
-}
-}
+} // namespace Utils
+} // namespace ds2

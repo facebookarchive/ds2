@@ -38,7 +38,7 @@ __FORWARD_DECLARE(Darwin, Thread);
 #else
 #error "Target not supported."
 #endif
-}
-}
+} // namespace Target
+} // namespace ds2
 
 #undef __FORWARD_DECLARE

@@ -54,6 +54,6 @@ public:
   static ds2::Target::Process *Create(Host::ProcessSpawner &spawner);
   static ds2::Target::Process *Attach(ProcessId pid);
 };
-}
-}
-}
+} // namespace POSIX
+} // namespace Target
+} // namespace ds2

@@ -47,6 +47,6 @@ protected:
   virtual void updateState() override;
   virtual void updateState(DEBUG_EVENT const &de);
 };
-}
-}
-}
+} // namespace Windows
+} // namespace Target
+} // namespace ds2

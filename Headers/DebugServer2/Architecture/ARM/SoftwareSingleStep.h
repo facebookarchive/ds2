@@ -35,6 +35,6 @@ ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
                                     BreakpointManager *manager,
                                     CPUState const &state,
                                     Address const &address);
-}
-}
-}
+} // namespace ARM
+} // namespace Architecture
+} // namespace ds2

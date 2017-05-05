@@ -81,6 +81,6 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
 ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   return kErrorUnsupported;
 }
-}
-}
-}
+} // namespace Darwin
+} // namespace Host
+} // namespace ds2

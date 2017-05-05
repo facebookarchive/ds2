@@ -75,7 +75,7 @@ public:
 public:
   std::string main() const;
 };
-}
+} // namespace
 
 static std::string escape(std::string const &s) {
   std::ostringstream os;
@@ -449,5 +449,5 @@ bool LLDBGetRegisterInfo(LLDBDescriptor const &desc, std::string const &name,
 
   return false;
 }
-}
-}
+} // namespace Architecture
+} // namespace ds2

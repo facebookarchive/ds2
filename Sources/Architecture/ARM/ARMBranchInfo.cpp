@@ -305,7 +305,7 @@ public:
             getLDM_pc(info));
   }
 };
-}
+} // namespace
 
 namespace ds2 {
 namespace Architecture {
@@ -314,6 +314,6 @@ namespace ARM {
 bool GetARMBranchInfo(uint32_t insn, BranchInfo &info) {
   return ARMInstruction(insn).getBranchInfo(info);
 }
-}
-}
-}
+} // namespace ARM
+} // namespace Architecture
+} // namespace ds2

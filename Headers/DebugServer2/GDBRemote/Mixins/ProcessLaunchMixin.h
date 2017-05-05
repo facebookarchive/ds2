@@ -58,7 +58,7 @@ public:
   ErrorCode onQueryLaunchSuccess(Session &session,
                                  ProcessId pid) const override;
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2
 
 #include "../Sources/GDBRemote/Mixins/ProcessLaunchMixin.hpp"

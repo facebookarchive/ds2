@@ -104,4 +104,4 @@ protected:
                                     Target::Thread *thread = nullptr) = 0;
   virtual bool enabled(Target::Thread *thread = nullptr) const = 0;
 };
-}
+} // namespace ds2

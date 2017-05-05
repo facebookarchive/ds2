@@ -399,5 +399,5 @@ std::string Platform::WideToNarrowString(std::wstring const &s) {
                       nullptr);
   return res.data();
 }
-}
-}
+} // namespace Host
+} // namespace ds2

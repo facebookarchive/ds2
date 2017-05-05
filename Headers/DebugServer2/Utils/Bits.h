@@ -113,5 +113,5 @@ static inline void Align(T &number, unsigned int alignment) {
   unsigned int clear = alignment - 1;
   number = (number + clear) & ~clear;
 }
-}
-}
+} // namespace Utils
+} // namespace ds2

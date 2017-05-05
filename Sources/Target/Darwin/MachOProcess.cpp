@@ -126,6 +126,6 @@ ErrorCode MachOProcess::enumerateSharedLibraries(
   CHK(getSharedLibraryInfoAddress(address));
   DS2BUG("not implemented");
 }
-}
-}
-}
+} // namespace Darwin
+} // namespace Target
+} // namespace ds2

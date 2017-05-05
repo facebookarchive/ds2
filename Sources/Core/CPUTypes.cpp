@@ -161,4 +161,4 @@ char const *GetArchName(CPUType type, CPUSubType subtype, Endian endian) {
   }
   return GetArchName(type, subtype);
 }
-}
+} // namespace ds2

@@ -85,5 +85,5 @@ public:
   static std::string WideToNarrowString(std::wstring const &s);
 #endif
 };
-}
-}
+} // namespace Host
+} // namespace ds2

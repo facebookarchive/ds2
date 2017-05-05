@@ -232,5 +232,5 @@ int ProtocolInterpreter::Handler::compare(std::string const &command) const {
     return this->command.compare(command.substr(0, this->command.length()));
   }
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

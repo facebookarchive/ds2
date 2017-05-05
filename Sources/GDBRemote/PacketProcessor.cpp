@@ -132,5 +132,5 @@ void PacketProcessor::parse(std::string const &data) {
     _buffer += data.substr(first);
   }
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

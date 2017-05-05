@@ -217,5 +217,5 @@ template <class T> struct IterationState {
   std::vector<T> vals;
   typename std::vector<T>::iterator it;
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

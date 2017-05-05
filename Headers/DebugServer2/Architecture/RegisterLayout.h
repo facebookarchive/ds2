@@ -205,5 +205,5 @@ bool LLDBGetRegisterInfo(LLDBDescriptor const &desc, size_t index,
 
 bool LLDBGetRegisterInfo(LLDBDescriptor const &desc, std::string const &name,
                          LLDBRegisterInfo &info);
-}
-}
+} // namespace Architecture
+} // namespace ds2

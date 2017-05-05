@@ -1208,5 +1208,5 @@ DebugSessionImplBase::createThreadsStopInfo(Session &session,
   }
   return kSuccess;
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

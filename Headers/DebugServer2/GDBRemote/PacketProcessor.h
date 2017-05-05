@@ -49,5 +49,5 @@ struct PacketProcessorDelegate {
   virtual void onPacketData(std::string const &data, bool valid) = 0;
   virtual void onInvalidData(std::string const &data) = 0;
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

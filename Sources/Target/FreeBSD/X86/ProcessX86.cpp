@@ -119,6 +119,6 @@ ErrorCode Process::deallocateMemory(uint64_t address, size_t size) {
 
   return kSuccess;
 }
-}
-}
-}
+} // namespace Linux
+} // namespace Target
+} // namespace ds2

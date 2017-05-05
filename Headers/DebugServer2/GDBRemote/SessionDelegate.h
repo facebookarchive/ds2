@@ -298,5 +298,5 @@ protected: // System Session
                                  ByteVector const &data) = 0;
   virtual ErrorCode onFlashDone(Session &session) = 0;
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

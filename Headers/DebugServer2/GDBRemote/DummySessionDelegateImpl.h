@@ -269,5 +269,5 @@ protected: // System Session
                          ByteVector const &data) override;
   ErrorCode onFlashDone(Session &session) override;
 };
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

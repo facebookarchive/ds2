@@ -219,6 +219,6 @@ public:
     }
   }
 };
-}
-}
-}
+} // namespace ARM64
+} // namespace Architecture
+} // namespace ds2

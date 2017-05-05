@@ -86,6 +86,6 @@ public:
   ErrorCode enumerateSharedLibraries(
       std::function<void(SharedLibraryInfo const &)> const &cb) override;
 };
-}
-}
-}
+} // namespace Windows
+} // namespace Target
+} // namespace ds2
