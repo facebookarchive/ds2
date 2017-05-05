@@ -36,6 +36,10 @@ public:
 
 protected:
   JSObject() {}
+  JSObject(JSObject const &rhs) = delete;
+  JSObject(JSObject &&rhs) = delete;
+  JSObject &operator=(JSObject const &rhs) = delete;
+  JSObject &operator=(JSObject &&rhs) = delete;
 
 public:
   virtual ~JSObject() {}
@@ -201,14 +205,14 @@ private:
   JSBoolean(bool value) : _value(value) {}
 
 private:
-  static void *operator new(size_t) throw() { return nullptr; }
+  static void *operator new(size_t) noexcept { return nullptr; }
 
   static void operator delete(void *) {}
 
 public:
   inline static JSBoolean *New(bool value) {
-    static JSBoolean const kTrue = true;
-    static JSBoolean const kFalse = false;
+    static JSBoolean const kTrue(true);
+    static JSBoolean const kFalse(false);
 
     return const_cast<JSBoolean *>(value ? &kTrue : &kFalse);
   }
@@ -244,7 +248,7 @@ private:
   JSNull() {}
 
 private:
-  static void *operator new(size_t) throw() { return nullptr; }
+  static void *operator new(size_t) noexcept { return nullptr; }
 
   static void operator delete(void *) {}
 
