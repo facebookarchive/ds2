@@ -2911,7 +2911,6 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     return;
   }
 
-  ErrorCode error;
   std::ostringstream ss;
 
   std::string op = args.substr(op_start, op_end);
@@ -2958,7 +2957,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     uint32_t mode = std::strtoul(eptr, nullptr, 16);
 
     int fd;
-    error = _delegate->onFileOpen(
+    ErrorCode error = _delegate->onFileOpen(
         *this, HexToString(args.substr(op_end, comma - op_end)), openFlags,
         mode, fd);
     if (error != kSuccess) {
@@ -2968,7 +2967,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
   } else if (op == "close") {
     int fd = std::strtol(&args[op_end], nullptr, base);
-    error = _delegate->onFileClose(*this, fd);
+    ErrorCode error = _delegate->onFileClose(*this, fd);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
@@ -3023,7 +3022,8 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       ss << 'F' << baseModifier << length;
     }
   } else if (op == "unlink") {
-    error = _delegate->onFileRemove(*this, HexToString(&args[op_end]));
+    ErrorCode error =
+        _delegate->onFileRemove(*this, HexToString(&args[op_end]));
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
     } else {
@@ -3031,7 +3031,7 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
   } else if (op == "readlink") {
     std::string resolved;
-    error =
+    ErrorCode error =
         _delegate->onFileReadLink(*this, HexToString(&args[op_end]), resolved);
     if (error != kSuccess) {
       ss << 'F' << -1 << ',' << std::hex << error;
@@ -3039,12 +3039,13 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
       ss << 'F' << 0 << ';' << ToHex(resolved);
     }
   } else if (op == "exists") {
-    error = _delegate->onFileExists(*this, HexToString(&args[op_end]));
+    ErrorCode error =
+        _delegate->onFileExists(*this, HexToString(&args[op_end]));
     // F,<bool>
     ss << 'F' << ',' << (error != kSuccess ? 0 : 1);
   } else if (op == "MD5") {
     uint8_t digest[16];
-    error =
+    ErrorCode error =
         _delegate->onFileComputeMD5(*this, HexToString(&args[op_end]), digest);
     ss << 'F' << ',';
     // F,<value> or F,x if not found
@@ -3057,7 +3058,8 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     }
   } else if (op == "size") {
     uint64_t size;
-    error = _delegate->onFileGetSize(*this, HexToString(&args[op_end]), size);
+    ErrorCode error =
+        _delegate->onFileGetSize(*this, HexToString(&args[op_end]), size);
     // Fsize or Exx if error.
     ss << 'F' << baseModifier << size;
   } else {
