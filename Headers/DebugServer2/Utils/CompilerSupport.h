@@ -55,9 +55,11 @@
 #if defined(COMPILER_GCC)
 #if __GNUC__ > 6
 #define DS2_FALLTHROUGH [[fallthrough]]
+#else
+#define DS2_FALLTHROUGH
 #endif
 #elif defined(COMPILER_CLANG)
-#define DS2_FALLTHROUGH [[fallthrough]]
+#define DS2_FALLTHROUGH [[clang::fallthrough]]
 #else
 #define DS2_FALLTHROUGH
 #endif
