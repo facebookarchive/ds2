@@ -341,6 +341,14 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
                                        -Wno-tautological-compare)
   endif ()
 
+
+  # -Wshadow on clang pre-4.0 is too restrictive and annoying.
+  if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND
+       NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "4.0") OR
+      ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" AND
+       NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "8.1"))
+    target_compile_options(ds2 PRIVATE -Wshadow)
+  endif ()
   # `-Wunused-but-set-parameter` seems to be buggy in gcc 6.0+ when dealing
   # with `nullptr_t`.
   if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" AND
