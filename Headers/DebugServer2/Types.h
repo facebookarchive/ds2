@@ -103,7 +103,8 @@ public:
 public:
   inline operator uint64_t() const { return _value; }
   inline Address &operator=(uint64_t address) {
-    _unset = false, _value = address;
+    _unset = false;
+    _value = address;
     return *this;
   }
 
@@ -114,7 +115,10 @@ public:
   inline uint64_t value() const { return _value; }
 
 public:
-  inline void unset() { _unset = true, _value = 0; }
+  inline void unset() {
+    _unset = true;
+    _value = 0;
+  }
   inline void clear() { unset(); }
 };
 

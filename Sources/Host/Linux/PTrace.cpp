@@ -147,7 +147,9 @@ ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
       break;
     }
 
-    length -= ncopy, nread += ncopy, words++;
+    length -= ncopy;
+    nread += ncopy;
+    words++;
   }
 
   if (count != nullptr) {
@@ -222,7 +224,9 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
     if (errno != 0)
       break;
 
-    length -= ncopy, nwritten += ncopy, words++;
+    length -= ncopy;
+    nwritten += ncopy;
+    words++;
   }
 
   if (errno != 0)

@@ -678,7 +678,8 @@ bool ProcFS::GetProcessArguments(pid_t pid, StringCollection &args) {
       break;
     }
 
-    bp = buf, end = buf + nread;
+    bp = buf;
+    end = buf + nread;
     while (bp < end) {
       while (*bp != '\0') {
         arg += *bp++;
