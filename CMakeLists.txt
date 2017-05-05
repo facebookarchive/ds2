@@ -330,7 +330,7 @@ endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(ds2 PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)
-  target_compile_options(ds2 PRIVATE -Wdeprecated)
+  target_compile_options(ds2 PRIVATE -Wdeprecated -Wfloat-equal)
   if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(ds2 PRIVATE -Wextra-semi)
   endif ()
