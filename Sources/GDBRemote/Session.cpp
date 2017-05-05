@@ -3061,7 +3061,11 @@ void Session::Handle_vFile(ProtocolInterpreter::Handler const &,
     ErrorCode error =
         _delegate->onFileGetSize(*this, HexToString(&args[op_end]), size);
     // Fsize or Exx if error.
-    ss << 'F' << baseModifier << size;
+    if (error != kSuccess) {
+      ss << 'E' << std::hex << error;
+    } else {
+      ss << 'F' << baseModifier << size;
+    }
   } else {
     sendError(kErrorUnsupported);
     return;
