@@ -59,7 +59,8 @@ for arg in "$@"; do
   "${ndk_path}/build/tools/make_standalone_toolchain.py" \
       --arch "${target_arch}" \
       --api "${api_level}"    \
-      --install-dir "${toolchain_install_dir}"
+      --install-dir "${toolchain_install_dir}" \
+      --force
 
   rm -f "${install_dir}/${target_arch}"
   ln -s "${toolchain_install_dir}" "${install_dir}/${target_arch}"
