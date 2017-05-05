@@ -428,6 +428,9 @@ bool ProcFS::ReadStat(pid_t pid, pid_t tid, Stat &stat) {
     case STAT_F_NUM_THREADS:
       stat.num_threads = std::strtoul(value, nullptr, 0);
       break;
+    case STAT_F_IT_REAL_VALUE:
+      stat.it_real_value = strtoull(value, nullptr, 0);
+      break;
     case STAT_F_START_TIME:
       stat.start_time = strtoull(value, nullptr, 0);
       break;

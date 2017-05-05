@@ -65,6 +65,7 @@ public:
     int32_t priority;
     int32_t nice;
     uint32_t num_threads;
+    uint64_t it_real_value;
     uint64_t start_time;
     uint64_t vsize;
     uint64_t rss;
