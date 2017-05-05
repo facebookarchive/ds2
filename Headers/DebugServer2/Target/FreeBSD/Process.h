@@ -62,6 +62,6 @@ protected:
 protected:
   friend class POSIX::Process;
 };
-}
-}
-}
+} // namespace FreeBSD
+} // namespace Target
+} // namespace ds2

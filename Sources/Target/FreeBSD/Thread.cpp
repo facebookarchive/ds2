@@ -112,6 +112,6 @@ void Thread::updateState(bool force) {
     break;
   }
 }
-}
-}
-}
+} // namespace FreeBSD
+} // namespace Target
+} // namespace ds2

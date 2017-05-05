@@ -64,4 +64,4 @@ static inline std::string HexToString(std::string const &str) {
   }
   return result;
 }
-}
+} // namespace ds2

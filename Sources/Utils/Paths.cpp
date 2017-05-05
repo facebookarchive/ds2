@@ -31,5 +31,5 @@ std::string Basename(std::string const &path) {
     return path.substr(begin + 1, end - begin);
   }
 }
-}
-}
+} // namespace Utils
+} // namespace ds2

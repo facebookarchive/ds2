@@ -146,6 +146,6 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
 
   return kSuccess;
 }
-}
-}
-}
+} // namespace Windows
+} // namespace Target
+} // namespace ds2

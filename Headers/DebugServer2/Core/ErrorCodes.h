@@ -56,7 +56,7 @@ char const *GetErrorCodeString(ErrorCode err);
       A;                                                                       \
     }                                                                          \
   } while (0)
-}
+} // namespace ds2
 
 #define CHK(C) CHK_ACTION(C, return CHK_error)
 #define CHKV(C) CHK_ACTION(C, return )

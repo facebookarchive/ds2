@@ -76,6 +76,6 @@ std::string LibProc::GetThreadName(ProcessThreadId const &ptid) {
 }
 
 const char *LibProc::GetExecutablePath(ProcessId pid) { return "unknown"; }
-}
-}
-}
+} // namespace Darwin
+} // namespace Host
+} // namespace ds2

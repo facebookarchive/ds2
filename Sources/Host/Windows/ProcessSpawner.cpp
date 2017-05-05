@@ -136,5 +136,5 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
 
   return kSuccess;
 }
-}
-}
+} // namespace Host
+} // namespace ds2

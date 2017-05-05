@@ -177,4 +177,4 @@ ErrorCode BreakpointManager::isValid(Address const &address, size_t size,
 
   return kSuccess;
 }
-}
+} // namespace ds2

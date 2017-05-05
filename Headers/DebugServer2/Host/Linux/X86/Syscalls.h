@@ -38,7 +38,7 @@ static uint8_t const gMunmapCode[] = {
     0xcd, 0x80,                   // 0f: int  $0x80
     0xcc                          // 10: int3
 };
-}
+} // namespace
 
 static inline void PrepareMmapCode(size_t size, uint32_t protection,
                                    ByteVector &codestr) {
@@ -60,8 +60,8 @@ static inline void PrepareMunmapCode(uint32_t address, size_t size,
   *reinterpret_cast<uint32_t *>(code + 0x06) = address;
   *reinterpret_cast<uint32_t *>(code + 0x0b) = size;
 }
-}
-}
-}
-}
-}
+} // namespace Syscalls
+} // namespace X86
+} // namespace Linux
+} // namespace Host
+} // namespace ds2

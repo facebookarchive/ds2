@@ -138,6 +138,6 @@ bool GetARMBranchInfo(uint32_t insn, BranchInfo &info);
 bool GetThumbBranchInfo(uint32_t const insn[2], BranchInfo &info);
 
 ThumbInstSize GetThumbInstSize(uint32_t insn);
-}
-}
-}
+} // namespace ARM
+} // namespace Architecture
+} // namespace ds2

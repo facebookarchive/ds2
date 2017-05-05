@@ -42,4 +42,4 @@ public:
 public:
   void clear(bool terminating);
 };
-}
+} // namespace ds2

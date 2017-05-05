@@ -218,4 +218,4 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
 
   return super::isValid(address, size, mode);
 }
-}
+} // namespace ds2

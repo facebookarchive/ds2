@@ -59,4 +59,4 @@ enum OpenFlags {
   kOpenFlagNoFollow = (1 << 7),
   kOpenFlagCloseOnExec = (1 << 8)
 };
-}
+} // namespace ds2

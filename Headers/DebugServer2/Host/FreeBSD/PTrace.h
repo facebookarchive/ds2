@@ -52,6 +52,6 @@ public:
 public:
   virtual ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si);
 };
-}
-}
-}
+} // namespace FreeBSD
+} // namespace Host
+} // namespace ds2

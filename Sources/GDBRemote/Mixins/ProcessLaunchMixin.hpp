@@ -99,5 +99,5 @@ ErrorCode ProcessLaunchMixin<T>::onQueryLaunchSuccess(Session &,
                                                       ProcessId) const {
   return kSuccess;
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

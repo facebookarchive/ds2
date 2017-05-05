@@ -462,7 +462,7 @@ public:
     return (info.it || isBranch);
   }
 };
-}
+} // namespace
 
 namespace ds2 {
 namespace Architecture {
@@ -479,6 +479,6 @@ ThumbInstSize GetThumbInstSize(uint32_t insn) {
   return ThumbInstruction::InsnIsThumb1(insn) ? ThumbInstSize::TwoByteInst
                                               : ThumbInstSize::FourByteInst;
 }
-}
-}
-}
+} // namespace ARM
+} // namespace Architecture
+} // namespace ds2

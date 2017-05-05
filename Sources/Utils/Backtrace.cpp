@@ -80,4 +80,4 @@ void PrintBacktrace() {
 void PrintBacktrace() { DS2LOG(Warning, "unable to print backtrace"); }
 #endif
 }
-}
+} // namespace ds2

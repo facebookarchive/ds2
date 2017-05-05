@@ -118,5 +118,5 @@ void Platform::EnumerateProcesses(
 std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   return Host::Linux::ProcFS::GetThreadName(pid, tid);
 }
-}
-}
+} // namespace Host
+} // namespace ds2

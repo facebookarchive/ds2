@@ -66,5 +66,5 @@ bool QueueChannel::receive(std::string &buffer) {
   buffer = _queue.get(0);
   return true;
 }
-}
-}
+} // namespace Host
+} // namespace ds2

@@ -23,5 +23,5 @@ GDBDescriptor const *ProcessBase::getGDBRegistersDescriptor() const {
 LLDBDescriptor const *ProcessBase::getLLDBRegistersDescriptor() const {
   return &Architecture::ARM::LLDB;
 }
-}
-}
+} // namespace Target
+} // namespace ds2

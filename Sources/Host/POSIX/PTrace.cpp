@@ -201,5 +201,5 @@ ErrorCode PTrace::ptidToPid(ProcessThreadId const &ptid, pid_t &pid) {
   return kSuccess;
 }
 }
-}
-}
+} // namespace Host
+} // namespace ds2

@@ -74,4 +74,4 @@ void MessageQueue::clear(bool terminating) {
     _ready.notify_one();
   }
 }
-}
+} // namespace ds2

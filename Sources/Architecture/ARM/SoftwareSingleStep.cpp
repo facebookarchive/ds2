@@ -350,6 +350,6 @@ ErrorCode PrepareSoftwareSingleStep(Process *process,
 
   return kSuccess;
 }
-}
-}
-}
+} // namespace ARM
+} // namespace Architecture
+} // namespace ds2

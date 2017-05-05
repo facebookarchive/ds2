@@ -248,6 +248,6 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
 
   return kSuccess;
 }
-}
-}
-}
+} // namespace FreeBSD
+} // namespace Host
+} // namespace ds2

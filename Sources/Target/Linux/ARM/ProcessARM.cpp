@@ -254,7 +254,7 @@ static void ARMPrepareMunmapCode(uint32_t address, size_t size,
   code[0x05] = address;
   code[0x06] = size;
 }
-}
+} // namespace
 
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
                                   uint64_t *address) {
@@ -345,6 +345,6 @@ int Process::getMaxWatchpoints() const {
 int Process::getMaxWatchpointSize() const {
   return ptrace().getMaxWatchpointSize(_pid);
 }
-}
-}
-}
+} // namespace Linux
+} // namespace Target
+} // namespace ds2

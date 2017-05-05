@@ -53,6 +53,6 @@ public:
   static std::string GetThreadName(ProcessId pid, ThreadId tid);
   static std::string GetExecutablePath(ProcessId pid);
 };
-}
-}
-}
+} // namespace FreeBSD
+} // namespace Host
+} // namespace ds2

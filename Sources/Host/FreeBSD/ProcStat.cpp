@@ -200,6 +200,6 @@ std::string ProcStat::GetThreadName(ProcessId pid, ThreadId tid) {
 }
 
 std::string ProcStat::GetExecutablePath(ProcessId pid) { return "unknown"; }
-}
-}
-}
+} // namespace FreeBSD
+} // namespace Host
+} // namespace ds2

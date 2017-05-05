@@ -218,4 +218,4 @@ OptParse::findShortOpt(char shortOption) {
         return arg.second.shortName == shortOption;
       });
 }
-}
+} // namespace ds2

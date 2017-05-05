@@ -39,5 +39,5 @@ ErrorCode ThreadBase::beforeResume() {
 
   return kSuccess;
 }
-}
-}
+} // namespace Target
+} // namespace ds2

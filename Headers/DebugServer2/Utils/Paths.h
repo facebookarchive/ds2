@@ -17,4 +17,4 @@ namespace Utils {
 
 std::string Basename(std::string const &path);
 }
-}
+} // namespace ds2

@@ -35,4 +35,4 @@ public:
 };
 
 FaultHandler instance;
-}
+} // namespace

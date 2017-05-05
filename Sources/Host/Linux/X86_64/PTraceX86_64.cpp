@@ -311,6 +311,6 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
 
   return kSuccess;
 }
-}
-}
-}
+} // namespace Linux
+} // namespace Host
+} // namespace ds2

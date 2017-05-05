@@ -83,5 +83,5 @@ struct ByteCodeVMDelegate {
   virtual bool recordTraceMemory(Address const &address, size_t size,
                                  bool untilZero) = 0;
 };
-}
-}
+} // namespace GDB
+} // namespace ds2

@@ -103,5 +103,5 @@ public:
 private:
   void redirectionThread();
 };
-}
-}
+} // namespace Host
+} // namespace ds2

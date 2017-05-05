@@ -15,4 +15,4 @@ namespace Utils {
 
 void PrintBacktrace();
 }
-}
+} // namespace ds2

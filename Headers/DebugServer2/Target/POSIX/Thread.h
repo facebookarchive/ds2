@@ -35,6 +35,6 @@ public:
 protected:
   virtual ErrorCode updateStopInfo(int waitStatus);
 };
-}
-}
-}
+} // namespace POSIX
+} // namespace Target
+} // namespace ds2

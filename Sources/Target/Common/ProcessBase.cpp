@@ -352,5 +352,5 @@ void ProcessBase::prepareForDetach() {
     bpm->clear();
   }
 }
-}
-}
+} // namespace Target
+} // namespace ds2

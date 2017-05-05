@@ -40,6 +40,6 @@ enum /* HwCaps */ {
   HWCAP_LPAE = (1 << 20)
 };
 }
-}
-}
-}
+} // namespace Linux
+} // namespace Host
+} // namespace ds2

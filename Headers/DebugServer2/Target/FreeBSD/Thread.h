@@ -33,6 +33,6 @@ protected:
 private:
   void updateState(bool force);
 };
-}
-}
-}
+} // namespace FreeBSD
+} // namespace Target
+} // namespace ds2

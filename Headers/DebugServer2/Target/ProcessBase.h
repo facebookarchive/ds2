@@ -157,5 +157,5 @@ protected:
   virtual void remove(ThreadBase *thread);
   virtual void removeThread(ThreadId tid);
 };
-}
-}
+} // namespace Target
+} // namespace ds2

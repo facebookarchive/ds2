@@ -123,5 +123,5 @@ char const *Stringify::ExceptionCode(DWORD code) {
     DO_DEFAULT("unknown exception code", code)
   }
 }
-}
-}
+} // namespace Utils
+} // namespace ds2

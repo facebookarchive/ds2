@@ -49,6 +49,6 @@ public:
 private:
   void updateState(bool force);
 };
-}
-}
-}
+} // namespace Darwin
+} // namespace Target
+} // namespace ds2

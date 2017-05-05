@@ -160,6 +160,6 @@ protected:
 
   virtual ErrorCode ptidToPid(ProcessThreadId const &ptid, pid_t &pid);
 };
-}
-}
-}
+} // namespace POSIX
+} // namespace Host
+} // namespace ds2

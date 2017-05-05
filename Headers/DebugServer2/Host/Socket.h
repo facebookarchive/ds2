@@ -85,5 +85,5 @@ public:
   ssize_t send(void const *buffer, size_t length) override;
   ssize_t receive(void *buffer, size_t length) override;
 };
-}
-}
+} // namespace Host
+} // namespace ds2

@@ -68,5 +68,5 @@ template <typename T> std::string Unescape(T const &data) {
 
   return ss.str();
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

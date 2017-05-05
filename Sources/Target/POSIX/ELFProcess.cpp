@@ -228,7 +228,7 @@ EnumerateLinkMap(ELFProcess *process, Address addressToDPtr,
 
   return kSuccess;
 }
-}
+} // namespace
 
 ErrorCode ELFProcess::getAuxiliaryVector(std::string &auxv) {
   ErrorCode error = updateAuxiliaryVector();
@@ -509,6 +509,6 @@ ErrorCode ELFProcess::enumerateSharedLibraries(
     return EnumerateLinkMap<uint32_t>(this, address, cb);
   }
 }
-}
-}
-}
+} // namespace POSIX
+} // namespace Target
+} // namespace ds2

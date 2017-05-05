@@ -41,5 +41,5 @@ bool Channel::receive(std::string &buffer) {
   buffer.resize(total);
   return !buffer.empty();
 }
-}
-}
+} // namespace Host
+} // namespace ds2

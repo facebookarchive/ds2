@@ -39,4 +39,4 @@ using Darwin::Process;
 #error "Target not supported."
 #endif
 }
-}
+} // namespace ds2

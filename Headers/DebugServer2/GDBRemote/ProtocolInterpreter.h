@@ -79,5 +79,5 @@ public:
 };
 
 struct ProtocolHandler {};
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

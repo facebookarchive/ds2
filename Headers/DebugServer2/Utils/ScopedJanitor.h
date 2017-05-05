@@ -41,5 +41,5 @@ protected:
 template <typename Callable> ScopedJanitor<Callable> MakeJanitor(Callable &&c) {
   return ScopedJanitor<Callable>(std::forward<Callable>(c));
 }
-}
-}
+} // namespace Utils
+} // namespace ds2

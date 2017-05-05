@@ -22,4 +22,4 @@ static inline uint64_t Swap64(uint64_t x) {
   return Swap32(x >> 32) |
          (static_cast<uint64_t>(Swap32(x & 0xffffffff)) << 32);
 }
-}
+} // namespace ds2

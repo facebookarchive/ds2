@@ -36,6 +36,6 @@ protected:
   ErrorCode updateStopInfo(int waitStatus) override;
   void updateState() override;
 };
-}
-}
-}
+} // namespace Linux
+} // namespace Target
+} // namespace ds2

@@ -61,4 +61,4 @@ public:
 
   virtual bool enabled(Target::Thread *thread = nullptr) const override;
 };
-}
+} // namespace ds2

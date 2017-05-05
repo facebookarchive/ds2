@@ -146,6 +146,6 @@ void Process::setSignalPass(int signo, bool set) {
     _passthruSignals.erase(signo);
   }
 }
-}
-}
-}
+} // namespace POSIX
+} // namespace Target
+} // namespace ds2

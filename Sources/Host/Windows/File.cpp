@@ -38,5 +38,5 @@ ErrorCode File::unlink(std::string const &path) { return kErrorUnsupported; }
 ErrorCode File::createDirectory(std::string const &path, uint32_t flags) {
   return kErrorUnsupported;
 }
-}
-}
+} // namespace Host
+} // namespace ds2

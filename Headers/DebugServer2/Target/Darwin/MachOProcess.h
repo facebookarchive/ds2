@@ -39,6 +39,6 @@ protected:
   ErrorCode updateInfo() override;
   virtual ErrorCode updateAuxiliaryVector();
 };
-}
-}
-}
+} // namespace Darwin
+} // namespace Target
+} // namespace ds2

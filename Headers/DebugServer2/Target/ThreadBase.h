@@ -82,5 +82,5 @@ protected:
   friend class ProcessBase;
   virtual void updateState() = 0;
 };
-}
-}
+} // namespace Target
+} // namespace ds2

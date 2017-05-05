@@ -94,5 +94,5 @@ ErrorCode FileOperationsMixin<T>::onFileSetPermissions(Session &session,
                                                        uint32_t mode) {
   return Host::File::chmod(path, mode);
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

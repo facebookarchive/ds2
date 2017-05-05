@@ -152,6 +152,6 @@ public:
                                  std::function<void(pid_t, uid_t)> const &cb);
   static bool EnumerateThreads(pid_t pid, std::function<void(pid_t)> const &cb);
 };
-}
-}
-}
+} // namespace Linux
+} // namespace Host
+} // namespace ds2

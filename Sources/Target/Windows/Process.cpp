@@ -589,6 +589,6 @@ ErrorCode Process::enumerateSharedLibraries(
 
   return kSuccess;
 }
-}
-}
-}
+} // namespace Windows
+} // namespace Target
+} // namespace ds2

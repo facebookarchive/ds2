@@ -239,4 +239,4 @@ static inline bool CPUTypeIs64Bit(CPUType type) {
 char const *GetCPUTypeName(CPUType type);
 char const *GetArchName(CPUType type, CPUSubType subtype);
 char const *GetArchName(CPUType type, CPUSubType subtype, Endian endian);
-}
+} // namespace ds2

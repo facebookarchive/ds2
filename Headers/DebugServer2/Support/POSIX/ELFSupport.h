@@ -26,5 +26,5 @@ public:
   static bool MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
                                    CPUType &type, CPUSubType &subType);
 };
-}
-}
+} // namespace Support
+} // namespace ds2

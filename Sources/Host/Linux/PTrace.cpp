@@ -359,6 +359,6 @@ ErrorCode PTrace::writeDebugReg(ProcessThreadId const &ptid, size_t idx,
   return writeUserData(ptid, computeDebugRegOffset(idx), val);
 }
 #endif
-}
-}
-}
+} // namespace Linux
+} // namespace Host
+} // namespace ds2

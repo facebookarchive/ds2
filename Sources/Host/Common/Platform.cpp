@@ -51,5 +51,5 @@ ds2::Endian Platform::GetEndian() {
 }
 
 size_t Platform::GetPointerSize() { return sizeof(void *); }
-}
-}
+} // namespace Host
+} // namespace ds2

@@ -91,4 +91,4 @@ void Log(int level, char const *classname, char const *funcname,
 #else
 #error "Compiler not supported."
 #endif
-}
+} // namespace ds2

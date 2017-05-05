@@ -165,5 +165,5 @@ ErrorCode Platform::TranslateError(int error) {
 }
 
 ErrorCode Platform::TranslateError() { return TranslateError(errno); }
-}
-}
+} // namespace Host
+} // namespace ds2

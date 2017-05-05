@@ -138,4 +138,4 @@ template <typename T> struct make_unique_enabler {
         std::forward<Args>(args)...);
   }
 };
-}
+} // namespace ds2

@@ -65,4 +65,4 @@ char const *GetErrorCodeString(ErrorCode err) {
   }
   return "unknown";
 }
-}
+} // namespace ds2

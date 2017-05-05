@@ -149,5 +149,5 @@ bool SessionBase::sendError(ErrorCode code) {
 
   return send(ss.str());
 }
-}
-}
+} // namespace GDBRemote
+} // namespace ds2

@@ -330,6 +330,6 @@ ErrorCode Process::afterResume() {
   CHK(_currentThread->afterResume());
   return super::afterResume();
 }
-}
-}
-}
+} // namespace Darwin
+} // namespace Target
+} // namespace ds2

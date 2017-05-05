@@ -39,4 +39,4 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
                                              size_t size, Mode mode) const {
   return kErrorUnsupported;
 }
-}
+} // namespace ds2

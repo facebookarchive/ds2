@@ -35,6 +35,6 @@ ErrorCode Thread::afterResume() {
     state.state64.gp.eflags &= ~(1 << 8);
   });
 }
-}
-}
-}
+} // namespace Darwin
+} // namespace Target
+} // namespace ds2

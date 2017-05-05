@@ -54,5 +54,5 @@ private:
 using PlatformSessionImpl =
     Utils::MixinApply<PlatformSessionImplBase, FileOperationsMixin,
                       ProcessLaunchMixin>;
-}
-}
+} // namespace GDBRemote
+} // namespace ds2
