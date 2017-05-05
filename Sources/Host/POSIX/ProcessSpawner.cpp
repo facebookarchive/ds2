@@ -593,7 +593,8 @@ void ProcessSpawner::redirectionThread() {
       case kRedirectDelegate:
         ppfds->fd = _descriptors[n].fd;
         ppfds->events = (n == 0) ? POLLOUT : POLLIN;
-        ppfds++, nfds++;
+        ppfds++;
+        nfds++;
         break;
 
       default:

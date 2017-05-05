@@ -350,7 +350,8 @@ int main(int argc, char **argv) {
   }
 
   idx = opts.parse(argc, argv, host, port);
-  argc -= idx, argv += idx;
+  argc -= idx;
+  argv += idx;
 
   // Logging options.
   if (!opts.getString("log-file").empty()) {

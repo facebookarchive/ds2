@@ -57,7 +57,8 @@ bool Feature::parse(std::string const &string) {
     flag = kNotSupported;
     break;
   case '=':
-    flag = kSupported, value = string.substr(pos + 1);
+    flag = kSupported;
+    value = string.substr(pos + 1);
     break;
   }
 

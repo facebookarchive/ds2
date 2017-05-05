@@ -313,7 +313,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       offset = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8;
+      offset |= bc[pc];
       if (offset >= bc.size())
         return kErrorInvalidByteCodeAddress;
       if (a != 0) {
@@ -328,7 +329,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       offset = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8;
+      offset |= bc[pc];
       if (offset >= bc.size())
         return kErrorInvalidByteCodeAddress;
       pc = offset - 1; // - 1 because the PC is incremented at beginning of loop
@@ -346,7 +348,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       data.i16 = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i16 <<= 8, data.i16 |= bc[pc];
+      data.i16 <<= 8;
+      data.i16 |= bc[pc];
       push(data.i16);
       break;
 
@@ -356,13 +359,16 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       data.i32 = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i32 <<= 8, data.i32 |= bc[pc];
+      data.i32 <<= 8;
+      data.i32 |= bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i32 <<= 8, data.i32 |= bc[pc];
+      data.i32 <<= 8;
+      data.i32 |= bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i32 <<= 8, data.i32 |= bc[pc];
+      data.i32 <<= 8;
+      data.i32 |= bc[pc];
       push(data.i32);
       break;
 
@@ -372,25 +378,32 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       data.i64 = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8;
+      data.i64 |= bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8;
+      data.i64 |= bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8;
+      data.i64 |= bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8;
+      data.i64 |= bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8;
+      data.i64 |= bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8;
+      data.i64 |= bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      data.i64 <<= 8, data.i64 |= bc[pc];
+      data.i64 <<= 8;
+      data.i64 |= bc[pc];
       push(data.i64);
       break;
 
@@ -400,7 +413,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       offset = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8;
+      offset |= bc[pc];
       if (!_delegate->readRegister(offset, data.i64))
         return kErrorInvalidRegister;
       push(data.i64);
@@ -440,7 +454,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       offset = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8;
+      offset |= bc[pc];
       if (!_delegate->readTraceStateVariable(offset, data.i64))
         return kErrorInvalidTraceVariable;
       push(data.i64);
@@ -452,7 +467,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       offset = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8;
+      offset |= bc[pc];
       TOP(a);
       if (!_delegate->writeTraceStateVariable(offset, a))
         return kErrorInvalidTraceVariable;
@@ -464,7 +480,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       offset = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8;
+      offset |= bc[pc];
       if (!_delegate->readTraceStateVariable(offset, data.i64))
         return kErrorInvalidTraceVariable;
       a = 0; // XXX: This should probably be a POP() call.
@@ -487,7 +504,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       offset = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8;
+      offset |= bc[pc];
       if (!_delegate->recordTraceMemory(a, offset, false))
         return kErrorCannotRecordTrace;
       break;
@@ -522,7 +540,8 @@ int ByteCodeInterpreter::execute(std::string const &bc) {
       offset = bc[pc];
       if (++pc >= bc.size())
         return kErrorShortByteCode;
-      offset <<= 8, offset |= bc[pc];
+      offset <<= 8;
+      offset |= bc[pc];
       pc++;
       if (pc + offset >= bc.size())
         return kErrorShortByteCode;
