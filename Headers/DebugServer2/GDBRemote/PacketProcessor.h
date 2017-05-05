@@ -18,6 +18,9 @@ namespace GDBRemote {
 struct PacketProcessorDelegate;
 
 class PacketProcessor {
+public:
+  virtual ~PacketProcessor() {}
+
 protected:
   std::string _buffer;
   size_t _nreqs;
@@ -46,6 +49,7 @@ private:
 };
 
 struct PacketProcessorDelegate {
+  virtual ~PacketProcessorDelegate() {}
   virtual void onPacketData(std::string const &data, bool valid) = 0;
   virtual void onInvalidData(std::string const &data) = 0;
 };

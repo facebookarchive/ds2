@@ -72,6 +72,7 @@ private:
 };
 
 struct ByteCodeVMDelegate {
+  virtual ~ByteCodeVMDelegate() {}
   virtual bool readMemory8(Address const &address, uint8_t &result) = 0;
   virtual bool readMemory16(Address const &address, uint16_t &result) = 0;
   virtual bool readMemory32(Address const &address, uint32_t &result) = 0;
