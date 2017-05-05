@@ -189,6 +189,7 @@ ErrorCode DebugSessionImplBase::queryStopInfo(Session &session, Thread *thread,
   case StopInfo::kEventNone:
     stop.event = StopInfo::kEventStop;
     stop.reason = StopInfo::kReasonNone;
+    DS2_FALLTHROUGH;
 
   // fall-through from kEventNone.
   case StopInfo::kEventStop: {

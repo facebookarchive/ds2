@@ -197,6 +197,8 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
     break;
   case 8:
     DS2LOG(Warning, "8-byte breakpoints not supported on all architectures");
+    DS2_FALLTHROUGH;
+
   case 2:
   case 4:
     if (mode == kModeExec)

@@ -52,6 +52,16 @@
 #define DS2_ATTRIBUTE_WEAK
 #endif
 
+#if defined(COMPILER_GCC)
+#if __GNUC__ > 6
+#define DS2_FALLTHROUGH [[fallthrough]]
+#endif
+#elif defined(COMPILER_CLANG)
+#define DS2_FALLTHROUGH [[fallthrough]]
+#else
+#define DS2_FALLTHROUGH
+#endif
+
 #if defined(COMPILER_MSVC)
 #define DS2_ATTRIBUTE_PACKED "DS2_ATTRIBUTE_PACKED not implemented on MSVC"
 #elif __has_attribute(__packed__)
