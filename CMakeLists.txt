@@ -330,6 +330,9 @@ endif ()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   target_compile_options(ds2 PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter)
+  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(ds2 PRIVATE -Wextra-semi)
+  endif ()
   if ("${OS_NAME}" MATCHES "Windows")
     target_compile_options(ds2 PRIVATE -Wno-missing-braces
                                        -Wno-missing-field-initializers

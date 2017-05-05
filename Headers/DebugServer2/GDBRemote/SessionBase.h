@@ -43,7 +43,7 @@ public:
   virtual ~SessionBase() = default;
 
 public:
-  CompatibilityMode mode() const { return _compatMode; };
+  CompatibilityMode mode() const { return _compatMode; }
 
 protected:
   const char *getPacketSeparator();
