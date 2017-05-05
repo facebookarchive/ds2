@@ -333,7 +333,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
                                      -Wdeprecated -Wfloat-equal
                                      -Wnon-virtual-dtor)
   if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(ds2 PRIVATE -Wextra-semi)
+    target_compile_options(ds2 PRIVATE -Wextra-semi -Wmissing-prototypes)
   endif ()
   if ("${OS_NAME}" MATCHES "Windows")
     target_compile_options(ds2 PRIVATE -Wno-missing-braces

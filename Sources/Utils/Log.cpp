@@ -70,8 +70,8 @@ void SetLogColorsEnabled(bool enabled) { sColorsEnabled = enabled; }
 
 void SetLogOutputStream(FILE *stream) { sOutputStream = stream; }
 
-void vLog(int level, char const *classname, char const *funcname,
-          char const *format, va_list ap) {
+static void vLog(int level, char const *classname, char const *funcname,
+                 char const *format, va_list ap) {
   std::stringstream ss;
 
   std::vector<char> buffer;
