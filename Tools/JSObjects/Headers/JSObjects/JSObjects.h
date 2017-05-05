@@ -11,9 +11,11 @@
 #ifndef __JSObjects_h
 #define __JSObjects_h
 
+#include <cmath>
 #include <cstdint>
 #include <cstdio>
 #include <functional>
+#include <limits>
 #include <map>
 #include <memory>
 #include <string>
@@ -152,7 +154,12 @@ public:
   }
 
   virtual bool equals(JSReal const *obj) const {
-    return (obj != nullptr && (obj == this || value() == obj->value()));
+    if (obj == nullptr) {
+      return false;
+    }
+
+    return obj == this || std::fabs(value() - obj->value()) <=
+                              std::numeric_limits<decltype(value())>::epsilon();
   }
 
 protected:
