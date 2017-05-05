@@ -139,7 +139,8 @@ cd "$lldb_path/test"
 blacklist_dir="$top/Support/Testing/Blacklists"
 args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v)
 
-args+=("--exclude" "$blacklist_dir/upstream/general.blacklist")
+args+=("--exclude" "$blacklist_dir/upstream/general.blacklist"
+       "--exclude" "$blacklist_dir/upstream/non-debugserver-tests.blacklist")
 if ! $opt_no_ds2_blacklists; then
   args+=("--exclude" "$blacklist_dir/ds2/general.blacklist")
 fi
