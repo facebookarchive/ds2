@@ -843,11 +843,11 @@ bool ProcFS::EnumerateThreads(pid_t pid, std::function<void(pid_t)> const &cb) {
     return false;
 
   while (struct dirent *dp = readdir(dir)) {
-    pid_t pid = strtol(dp->d_name, nullptr, 0);
-    if (pid == 0)
+    pid_t tid = strtol(dp->d_name, nullptr, 0);
+    if (tid == 0)
       continue;
 
-    cb(pid);
+    cb(tid);
   }
   closedir(dir);
 
