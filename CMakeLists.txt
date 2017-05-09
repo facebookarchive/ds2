@@ -328,48 +328,66 @@ if (TIZEN)
   target_compile_definitions(ds2 PRIVATE __TIZEN__)
 endif ()
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  target_compile_options(ds2 PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter
-                                     -Wdeprecated -Wfloat-equal
-                                     -Wnon-virtual-dtor)
-  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(ds2 PRIVATE -Wextra-semi -Wmissing-prototypes)
-  endif ()
-  if ("${OS_NAME}" MATCHES "Windows")
-    target_compile_options(ds2 PRIVATE -Wno-missing-braces
-                                       -Wno-missing-field-initializers
-                                       -Wno-tautological-compare)
-  endif ()
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
+    "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  include(CheckCCompilerFlag)
+  include(CheckCXXCompilerFlag)
 
+  function(enable_warning TARGET FLAG)
+    string(REGEX REPLACE "[-/ ]" "" TAG "${FLAG}")
+
+    CHECK_C_COMPILER_FLAG("${FLAG}" ${TAG}_FLAG_AVAILABLE_C)
+    if (${TAG}_FLAG_AVAILABLE_C)
+      target_compile_options("${TARGET}" PRIVATE
+          $<$<COMPILE_LANGUAGE:C>:${FLAG}>)
+    endif ()
+
+    CHECK_CXX_COMPILER_FLAG("${FLAG}" "${TAG}_FLAG_AVAILABLE_CXX")
+    if (${TAG}_FLAG_AVAILABLE_CXX)
+      target_compile_options("${TARGET}" PRIVATE
+          $<$<COMPILE_LANGUAGE:CXX>:${FLAG}>)
+    endif ()
+  endfunction()
+
+  function(enable_warning_version TARGET FLAG COMPILER_ID MIN_VERSION)
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "${COMPILER_ID}" AND
+        NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "${MIN_VERSION}")
+      enable_warning("${TARGET}" "${FLAG}")
+    endif ()
+  endfunction()
+
+  enable_warning(ds2 -Wall)
+  enable_warning(ds2 -Wextra)
+  enable_warning(ds2 -Werror)
+
+  # Disable `-Wunused-parameter` to help with callbacks and delegates.
+  enable_warning(ds2 -Wno-unused-parameter)
+
+  # Extra warnings.
+  enable_warning(ds2 -Wcomma)
+  enable_warning(ds2 -Wdeprecated)
+  enable_warning(ds2 -Wextra-semi)
+  enable_warning(ds2 -Wfloat-equal)
+  enable_warning(ds2 -Winconsistent-missing-override)
+  enable_warning(ds2 -Wmissing-prototypes)
+  enable_warning(ds2 -Wnon-virtual-dtor)
+  enable_warning(ds2 -Wsuggest-override)
+
+  # `-Wunused-but-set-parameter` seems to be buggy in gcc pre-6.0 when dealing
+  # with `nullptr_t`.
+  enable_warning_version(ds2 -Wno-unused-but-set-parameter GNU 6.0)
 
   # -Wshadow on clang pre-4.0 is too restrictive and annoying.
-  if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND
-       NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "4.0") OR
-      ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" AND
-       NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "8.1"))
-    target_compile_options(ds2 PRIVATE -Wshadow)
-  endif ()
-  # `-Wunused-but-set-parameter` seems to be buggy in gcc 6.0+ when dealing
-  # with `nullptr_t`.
-  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" AND
-      NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "6.0")
-    target_compile_options(ds2 PRIVATE -Wno-unused-but-set-parameter)
-  endif ()
-  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" AND
-      NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "5.1")
-    target_compile_options(
-        ds2 PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-Wsuggest-override>)
-  endif ()
-  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
-      NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "3.5")
-    target_compile_options(
-        ds2 PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-Winconsistent-missing-override>)
-  endif ()
-  if (("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND
-       NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "3.9") OR
-      ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang" AND
-       NOT "${CMAKE_CXX_COMPILER_VERSION}" VERSION_LESS "8.1"))
-    target_compile_options(ds2 PRIVATE -Wcomma)
+  enable_warning_version(ds2 -Wshadow Clang 4.0)
+  enable_warning_version(ds2 -Wshadow AppleClang 8.1)
+  enable_warning_version(ds2 -Wcomma Clang 3.9)
+  enable_warning_version(ds2 -Wcomma AppleClang 8.1)
+
+  # Some Windows headers won't build without these.
+  if ("${OS_NAME}" MATCHES "Windows")
+    enable_warning(ds2 -Wno-missing-braces)
+    enable_warning(ds2 -Wno-missing-field-initializers)
+    enable_warning(ds2 -Wno-tautological-compare)
   endif ()
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(ds2 PRIVATE /W3 /DSTRICT /wd4244 /wd4996)
