@@ -11,6 +11,7 @@
 dist: trusty
 sudo: required
 language: generic
+filter_secrets: false
 branches:
   only:
     - master
