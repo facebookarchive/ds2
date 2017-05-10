@@ -8,7 +8,6 @@ TestConstThis
 TestDumpDynamic
 TestExternCSymbols
 TestFrameVariableScope
-TestMiBreak.MiBreakTestCase.test_lldbmi_break_insert_function_pending
 TestRedefinitionsInInlines
 TestSBValueConstAddrOf
 TestStringPrinter

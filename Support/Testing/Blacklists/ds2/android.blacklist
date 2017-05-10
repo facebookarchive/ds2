@@ -1,7 +1,6 @@
 skip
 CreateAfterAttachTestCase.test_create_after_attach_with_popen
 CreateDuringStepTestCase.test_step_inst_with
-test_lldbmi
 TestQuoting
 TestRegistersIterator.RegistersIteratorTestCase.test_iter_registers
 TestStopHook

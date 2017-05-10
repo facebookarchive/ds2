@@ -8,4 +8,5 @@ TestGoASTContext.TestGoASTContext.test_with_dsym_and_python_api
 TestExpressions.TestGoUserExpression.test_with_dsym_and_python_api
 
 skip
+TestChangeValueAPI.ChangeValueAPITestCase.test_change_value
 TestIntegerTypesExpr.IntegerTypesExprTestCase.test_unsigned_int_type
