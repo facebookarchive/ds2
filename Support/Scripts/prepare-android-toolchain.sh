@@ -11,7 +11,7 @@
 
 source "$(dirname "$0")/common.sh"
 
-ndk_release="r13b"
+ndk_release="r14b"
 install_dir="/tmp/aosp-toolchain"
 
 case "$(uname)" in
