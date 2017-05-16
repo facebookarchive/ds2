@@ -122,18 +122,20 @@ void HardwareBreakpointManager::enumerateThreads(
   }
 }
 
-void HardwareBreakpointManager::enable(Target::Thread *thread) {
-  super::enable(thread);
+ErrorCode HardwareBreakpointManager::enable(Target::Thread *thread) {
+  ErrorCode error = super::enable(thread);
 
   enumerateThreads(thread,
                    [this](Target::Thread *t) { _enabled.insert(t->tid()); });
+  return error;
 }
 
-void HardwareBreakpointManager::disable(Target::Thread *thread) {
-  super::disable(thread);
+ErrorCode HardwareBreakpointManager::disable(Target::Thread *thread) {
+  ErrorCode error = super::disable(thread);
 
   enumerateThreads(thread,
                    [this](Target::Thread *t) { _enabled.erase(t->tid()); });
+  return error;
 }
 
 bool HardwareBreakpointManager::enabled(Target::Thread *thread) const {

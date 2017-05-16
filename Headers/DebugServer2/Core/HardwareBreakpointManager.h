@@ -45,8 +45,8 @@ public:
   virtual size_t maxWatchpoints();
 
 public:
-  void enable(Target::Thread *thread = nullptr) override;
-  void disable(Target::Thread *thread = nullptr) override;
+  ErrorCode enable(Target::Thread *thread = nullptr) override;
+  ErrorCode disable(Target::Thread *thread = nullptr) override;
 
 protected:
   ErrorCode isValid(Address const &address, size_t size,

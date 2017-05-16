@@ -69,18 +69,18 @@ bool SoftwareBreakpointManager::has(Address const &address) const {
   return super::has(address);
 }
 
-void SoftwareBreakpointManager::enumerate(
-    std::function<void(Site const &)> const &cb) const {
+ErrorCode SoftwareBreakpointManager::enumerate(
+    std::function<ErrorCode(Site const &)> const &cb) const {
   //
   // Remove the thumb bit.
   //
-  super::enumerate([&](Site const &site) {
+  return super::enumerate([&](Site const &site) {
     if (site.address & 1) {
       Site copy(site);
       copy.address = copy.address.value() & ~1;
-      cb(copy);
+      return cb(copy);
     } else {
-      cb(site);
+      return cb(site);
     }
   });
 }

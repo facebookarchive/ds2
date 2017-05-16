@@ -106,14 +106,17 @@ bool BreakpointManager::has(Address const &address) const {
   return (_sites.find(address) != _sites.end());
 }
 
-void BreakpointManager::enumerate(
-    std::function<void(Site const &)> const &cb) const {
+ErrorCode BreakpointManager::enumerate(
+    std::function<ErrorCode(Site const &)> const &cb) const {
+  ErrorCode result = kSuccess;
   for (auto const &it : _sites) {
-    cb(it.second);
+    ErrorCode tmp = cb(it.second);
+    result = (tmp != kSuccess) ? tmp : result;
   }
+  return result;
 }
 
-void BreakpointManager::enable(Target::Thread *thread) {
+ErrorCode BreakpointManager::enable(Target::Thread *thread) {
   //
   // Both callbacks should be installed by child class before
   // enabling the breakpoint manager.
@@ -122,16 +125,19 @@ void BreakpointManager::enable(Target::Thread *thread) {
     DS2LOG(Warning, "double-enabling breakpoints");
   }
 
-  enumerate([this, thread](Site const &site) { enableLocation(site, thread); });
+  return enumerate([this, thread](Site const &site) {
+    return enableLocation(site, thread);
+  });
 }
 
-void BreakpointManager::disable(Target::Thread *thread) {
+ErrorCode BreakpointManager::disable(Target::Thread *thread) {
   if (!enabled(thread)) {
     DS2LOG(Warning, "double-disabling breakpoints");
   }
 
-  enumerate(
-      [this, thread](Site const &site) { disableLocation(site, thread); });
+  ErrorCode error = enumerate([this, thread](Site const &site) {
+    return disableLocation(site, thread);
+  });
 
   //
   // Remove temporary breakpoints.
@@ -148,6 +154,8 @@ void BreakpointManager::disable(Target::Thread *thread) {
       it++;
     }
   }
+
+  return error;
 }
 
 bool BreakpointManager::hit(Address const &address, Site &site) {

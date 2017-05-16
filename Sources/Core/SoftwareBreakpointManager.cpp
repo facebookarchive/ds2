@@ -94,16 +94,18 @@ ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site,
   return kSuccess;
 }
 
-void SoftwareBreakpointManager::enable(Target::Thread *thread) {
-  super::enable(thread);
+ErrorCode SoftwareBreakpointManager::enable(Target::Thread *thread) {
+  ErrorCode error = super::enable(thread);
 
   _enabled = true;
+  return error;
 }
 
-void SoftwareBreakpointManager::disable(Target::Thread *thread) {
-  super::disable(thread);
+ErrorCode SoftwareBreakpointManager::disable(Target::Thread *thread) {
+  ErrorCode error = super::disable(thread);
 
   _enabled = false;
+  return error;
 }
 
 bool SoftwareBreakpointManager::enabled(Target::Thread *thread) const {
