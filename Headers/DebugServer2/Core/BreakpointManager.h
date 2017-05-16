@@ -76,7 +76,8 @@ public:
   virtual bool has(Address const &address) const;
 
 public:
-  virtual void enumerate(std::function<void(Site const &)> const &cb) const;
+  virtual ErrorCode
+  enumerate(std::function<ErrorCode(Site const &)> const &cb) const;
 
 protected:
   virtual ErrorCode isValid(Address const &address, size_t size,
@@ -94,8 +95,8 @@ public:
   virtual int hit(Target::Thread *thread, Site &site) = 0;
 
 public:
-  virtual void enable(Target::Thread *thread = nullptr);
-  virtual void disable(Target::Thread *thread = nullptr);
+  virtual ErrorCode enable(Target::Thread *thread = nullptr);
+  virtual ErrorCode disable(Target::Thread *thread = nullptr);
 
 protected:
   virtual ErrorCode enableLocation(Site const &site,

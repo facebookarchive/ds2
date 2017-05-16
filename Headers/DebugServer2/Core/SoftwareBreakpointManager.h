@@ -38,8 +38,8 @@ protected:
                                     Target::Thread *thread = nullptr) override;
 
 public:
-  void enable(Target::Thread *thread = nullptr) override;
-  void disable(Target::Thread *thread = nullptr) override;
+  ErrorCode enable(Target::Thread *thread = nullptr) override;
+  ErrorCode disable(Target::Thread *thread = nullptr) override;
 
 protected:
   ErrorCode isValid(Address const &address, size_t size,
@@ -47,8 +47,8 @@ protected:
 
 #if defined(ARCH_ARM) || defined(ARCH_ARM64)
 public:
-  virtual void
-  enumerate(std::function<void(Site const &)> const &cb) const override;
+  virtual ErrorCode
+  enumerate(std::function<ErrorCode(Site const &)> const &cb) const override;
 
 public:
   virtual ErrorCode add(Address const &address, Type type, size_t size,

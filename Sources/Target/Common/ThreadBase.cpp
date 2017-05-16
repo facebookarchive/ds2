@@ -34,7 +34,7 @@ ErrorCode ThreadBase::modifyRegisters(
 ErrorCode ThreadBase::beforeResume() {
   BreakpointManager *bpm = _process->hardwareBreakpointManager();
   if (bpm != nullptr) {
-    bpm->enable((Target::Thread *)this);
+    CHK(bpm->enable((Target::Thread *)this));
   }
 
   return kSuccess;

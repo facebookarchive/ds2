@@ -290,7 +290,7 @@ ErrorCode ProcessBase::beforeResume() {
   //
   BreakpointManager *bpm = softwareBreakpointManager();
   if (bpm != nullptr) {
-    bpm->enable();
+    CHK(bpm->enable());
   }
 
   enumerateThreads([&](Thread *thread) { thread->beforeResume(); });
@@ -312,12 +312,12 @@ ErrorCode ProcessBase::afterResume() {
         DS2LOG(Debug, "hit breakpoint for tid %" PRI_PID, it.second->tid());
       }
     }
-    swBpm->disable();
+    CHK(swBpm->disable());
   }
 
   BreakpointManager *hwBpm = hardwareBreakpointManager();
   if (hwBpm != nullptr) {
-    hwBpm->disable();
+    CHK(hwBpm->disable());
   }
 
   return kSuccess;
