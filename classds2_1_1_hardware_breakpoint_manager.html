@@ -168,6 +168,12 @@ virtual int&#160;</td><td class="memItemRight" valign="bottom"><b>getAvailableLo
 <tr class="memitem:a9241faecf0340b0ced283af966bce446"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9241faecf0340b0ced283af966bce446"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>enumerateThreads</b> (Target::Thread *thread, std::function&lt; void(Target::Thread *t)&gt; const &amp;cb) const </td></tr>
 <tr class="separator:a9241faecf0340b0ced283af966bce446"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a044af9e990ca1198e28417a48dfaac4f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a044af9e990ca1198e28417a48dfaac4f"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>readDebugRegisters</b> (Target::Thread *thread, std::vector&lt; uint64_t &gt; &amp;regs) const </td></tr>
+<tr class="separator:a044af9e990ca1198e28417a48dfaac4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba8b069f9e59ee1c5da2bbcf30dbbfcf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba8b069f9e59ee1c5da2bbcf30dbbfcf"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>writeDebugRegisters</b> (Target::Thread *thread, std::vector&lt; uint64_t &gt; &amp;regs) const </td></tr>
+<tr class="separator:aba8b069f9e59ee1c5da2bbcf30dbbfcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classds2_1_1_breakpoint_manager"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classds2_1_1_breakpoint_manager')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classds2_1_1_breakpoint_manager.html">ds2::BreakpointManager</a></td></tr>
 <tr class="memitem:a395905f5d438102cbbbd66383cad0ffd inherit pro_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a395905f5d438102cbbbd66383cad0ffd"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>BreakpointManager</b> (<a class="el" href="classds2_1_1_target_1_1_process_base.html">Target::ProcessBase</a> *process)</td></tr>

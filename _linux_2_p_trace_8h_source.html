@@ -192,21 +192,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                                    uint32_t ctrl, <span class="keywordtype">size_t</span> idx) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  ErrorCode writeHardwareWatchpoint(<a class="code" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, uint32_t addr,</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                                    uint32_t ctrl, <span class="keywordtype">size_t</span> idx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#elif defined(ARCH_X86) || defined(ARCH_X86_64)</span></div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor"></span><span class="keyword">public</span>:</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  uintptr_t readDebugReg(<a class="code" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <span class="keywordtype">size_t</span> idx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  ErrorCode writeDebugReg(<a class="code" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <span class="keywordtype">size_t</span> idx,</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                          uintptr_t val) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="preprocessor">#if defined(ARCH_ARM64)</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="preprocessor"></span><span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  <span class="keywordtype">int</span> getMaxStoppoints(<a class="code" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <span class="keywordtype">int</span> regSet);</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">#if defined(ARCH_ARM64)</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="preprocessor"></span><span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="keywordtype">int</span> getMaxStoppoints(<a class="code" href="structds2_1_1_process_thread_id.html">ProcessThreadId</a> <span class="keyword">const</span> &amp;ptid, <span class="keywordtype">int</span> regSet);</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor"></span>};</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;} <span class="comment">// namespace Linux</span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;} <span class="comment">// namespace Host</span></div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;} <span class="comment">// namespace ds2</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor"></span>};</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;} <span class="comment">// namespace Linux</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;} <span class="comment">// namespace Host</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;} <span class="comment">// namespace ds2</span></div>
 <div class="ttc" id="structds2_1_1_process_thread_id_html"><div class="ttname"><a href="structds2_1_1_process_thread_id.html">ds2::ProcessThreadId</a></div><div class="ttdef"><b>Definition:</b> Types.h:57</div></div>
 <div class="ttc" id="classds2_1_1_address_html"><div class="ttname"><a href="classds2_1_1_address.html">ds2::Address</a></div><div class="ttdef"><b>Definition:</b> Types.h:93</div></div>
 <div class="ttc" id="structds2_1_1_process_info_html"><div class="ttname"><a href="structds2_1_1_process_info.html">ds2::ProcessInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:236</div></div>
