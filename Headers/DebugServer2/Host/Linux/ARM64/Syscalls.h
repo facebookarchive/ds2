@@ -1,0 +1,73 @@
+//
+// Copyright (c) 2014-present, Facebook, Inc.
+// All rights reserved.
+//
+// This source code is licensed under the University of Illinois/NCSA Open
+// Source License found in the LICENSE file in the root directory of this
+// source tree. An additional grant of patent rights can be found in the
+// PATENTS file in the same directory.
+//
+
+#pragma once
+
+#include <asm-generic/unistd.h>
+#include <sys/mman.h>
+
+namespace ds2 {
+namespace Host {
+namespace Linux {
+namespace ARM64 {
+namespace Syscalls {
+
+namespace {
+static inline uint32_t MakeMovImmInstr(uint8_t reg, int32_t val) {
+  DS2ASSERT(reg <= 31);
+  DS2ASSERT(0 <= val && val <= 65535);
+  static const uint32_t base = 0xd2800000;
+  return base | (static_cast<uint16_t>(val) << 5) | reg;
+}
+
+static inline uint32_t MakeMovNegImmInstr(uint8_t reg, int32_t val) {
+  DS2ASSERT(reg <= 31);
+  DS2ASSERT(-65535 <= val && val <= 0);
+  static const uint32_t base = 0x92800000;
+  return base | (static_cast<uint16_t>(-val - 1) << 5) | reg;
+}
+
+static inline uint32_t MakeSvcInstr(uint16_t idx) {
+  static const uint32_t base = 0xd4000001;
+  return base | (idx << 5);
+}
+
+static inline uint32_t MakeBrkInstr(uint16_t idx) {
+  static const uint32_t base = 0xd4200000;
+  return base | (idx << 5);
+}
+} // namespace
+
+static inline void PrepareMmapCode(size_t size, uint32_t protection,
+                                   ByteVector &codestr) {
+  for (auto instr : {
+           MakeMovImmInstr(8, __NR_mmap),              // mov x8, __NR_mmap
+           MakeMovImmInstr(0, 0),                      // mov x0, address
+           MakeMovImmInstr(1, size),                   // mov x1, size
+           MakeMovImmInstr(2, protection),             // mov x2, prot
+           MakeMovImmInstr(3, MAP_ANON | MAP_PRIVATE), // mov x3, flags
+           MakeMovNegImmInstr(4, -1),                  // mov x4, -1
+           MakeMovImmInstr(4, 0),                      // mov x5, 0
+           MakeSvcInstr(0),                            // svc #0
+           MakeBrkInstr(0x100),                        // brk #0x100
+       }) {
+    for (size_t i = 0; i < sizeof(instr); ++i) {
+      codestr.push_back(reinterpret_cast<uint8_t *>(&instr)[i]);
+    }
+  }
+}
+
+static inline void PrepareMunmapCode(uint32_t address, size_t size,
+                                     ByteVector &codestr) {}
+} // namespace Syscalls
+} // namespace ARM64
+} // namespace Linux
+} // namespace Host
+} // namespace ds2
