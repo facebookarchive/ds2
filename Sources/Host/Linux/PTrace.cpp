@@ -314,7 +314,7 @@ ErrorCode PTrace::readRegisterSet(ProcessThreadId const &ptid, int regSetCode,
 
 ErrorCode PTrace::writeRegisterSet(ProcessThreadId const &ptid, int regSetCode,
                                    void const *buffer, size_t length) {
-  struct iovec iov = {&buffer, length};
+  struct iovec iov = {const_cast<void *>(buffer), length};
 
   if (wrapPtrace(PTRACE_SETREGSET, ptid.validTid() ? ptid.tid : ptid.pid,
                  regSetCode, &iov) < 0)
