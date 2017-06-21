@@ -53,20 +53,11 @@ int PTrace::getMaxHardwareWatchpoints(ProcessThreadId const &ptid) {
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
                                ProcessInfo const &pinfo,
                                Architecture::CPUState &state) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
   state.isA32 = pinfo.pointerSize == sizeof(uint32_t);
 
   // Read GPRs.
   struct user_pt_regs gprs;
-  error = readRegisterSet(ptid, NT_PRSTATUS, &gprs, sizeof(gprs));
-  if (error != kSuccess)
-    return error;
-
+  CHK(readRegisterSet(ptid, NT_PRSTATUS, &gprs, sizeof(gprs)));
   // The layout is identical.
   std::memcpy(state.state64.gp.regs, &gprs, sizeof(state.state64.gp.regs));
 
@@ -76,21 +67,11 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
 ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
                                 ProcessInfo const &,
                                 Architecture::CPUState const &state) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
-
   // Write GPRs.
   struct user_pt_regs gprs;
-
   // The layout is identical.
   std::memcpy(&gprs, state.state64.gp.regs, sizeof(state.state64.gp.regs));
-
-  error = writeRegisterSet(ptid, NT_PRSTATUS, &gprs, sizeof(gprs));
-  if (error != kSuccess)
-    return error;
+  CHK(writeRegisterSet(ptid, NT_PRSTATUS, &gprs, sizeof(gprs)));
 
   return kSuccess;
 }
