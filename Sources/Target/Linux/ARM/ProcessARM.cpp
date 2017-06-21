@@ -284,9 +284,7 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   }
 
   // Code inject and execute
-  CHK(ptrace().execute(_currentThread->tid(), info, &codestr[0], codestr.size(),
-                       *address));
-
+  CHK(executeCode(codestr, *address));
   CHK(checkMemoryErrorCode(*address));
 
   return kSuccess;
