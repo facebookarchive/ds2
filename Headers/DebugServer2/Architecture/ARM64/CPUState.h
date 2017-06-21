@@ -38,7 +38,7 @@ typedef ds2::Architecture::ARM::CPUState CPUState32;
 //
 struct CPUState64 {
   union {
-    uint64_t regs[32 + 1 + 1];
+    uint64_t regs[31 + 1 + 1 + 1];
     struct {
       uint64_t x0, x1, x2, r3, x4, x5, x6, r7, x8, x9, x10, r11, x12, x13, x14,
           r15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28,
@@ -98,9 +98,12 @@ public:
 
 public:
   inline bool getLLDBRegisterPtr(int regno, void **ptr, size_t *length) const {
-    if (regno >= reg_lldb_r0 && regno <= reg_lldb_r31) {
+    if (regno >= reg_lldb_r0 && regno <= reg_lldb_r30) {
       *ptr = const_cast<uint64_t *>(&gp.regs[regno - reg_lldb_r0]);
       *length = sizeof(gp.regs[0]);
+    } else if (regno == reg_lldb_sp) {
+      *ptr = const_cast<uint64_t *>(&gp.sp);
+      *length = sizeof(gp.sp);
     } else if (regno == reg_lldb_pc) {
       *ptr = const_cast<uint64_t *>(&gp.pc);
       *length = sizeof(gp.pc);
@@ -115,9 +118,12 @@ public:
   }
 
   inline bool getGDBRegisterPtr(int regno, void **ptr, size_t *length) const {
-    if (regno >= reg_gdb_r0 && regno <= reg_gdb_r31) {
+    if (regno >= reg_gdb_r0 && regno <= reg_gdb_r30) {
       *ptr = const_cast<uint64_t *>(&gp.regs[regno - reg_gdb_r0]);
       *length = sizeof(gp.regs[0]);
+    } else if (regno == reg_gdb_sp) {
+      *ptr = const_cast<uint64_t *>(&gp.sp);
+      *length = sizeof(gp.sp);
     } else if (regno == reg_gdb_pc) {
       *ptr = const_cast<uint64_t *>(&gp.pc);
       *length = sizeof(gp.pc);
