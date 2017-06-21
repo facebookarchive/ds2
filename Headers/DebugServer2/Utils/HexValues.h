@@ -21,7 +21,7 @@
 namespace ds2 {
 
 static inline char NibbleToHex(uint8_t byte) {
-  return "0123456789abcdef"[byte & 0xf];
+  return "0123456789abcdef"[byte & 0x0f];
 }
 
 static inline uint8_t HexToNibble(char ch) {
@@ -42,7 +42,7 @@ template <typename T> static inline std::string ToHex(T const &vec) {
   std::string result;
   for (char n : vec) {
     result += NibbleToHex(n >> 4);
-    result += NibbleToHex(n & 15);
+    result += NibbleToHex(n & 0x0f);
   }
   return result;
 }
