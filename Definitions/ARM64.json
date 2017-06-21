@@ -137,7 +137,7 @@
                 "generic-name"         : "lr",
                 "invalidate-registers" : [ "w30" ]
             },
-            "r31" : {
+            "sp" : {
                 "gdb-encoding"         : "data-pointer",
                 "alternate-name"       : "sp",
                 "generic-name"         : "sp"

@@ -60,7 +60,7 @@ extern RegisterDef const reg_def_r27;
 extern RegisterDef const reg_def_r28;
 extern RegisterDef const reg_def_r29;
 extern RegisterDef const reg_def_r30;
-extern RegisterDef const reg_def_r31;
+extern RegisterDef const reg_def_sp;
 extern RegisterDef const reg_def_pc;
 
 // Register Set (pseudo-gpr32)
@@ -109,7 +109,7 @@ RegisterDef const *const lldb_reg_defs_0[] = {
     &reg_def_r15, &reg_def_r16, &reg_def_r17, &reg_def_r18,  &reg_def_r19,
     &reg_def_r20, &reg_def_r21, &reg_def_r22, &reg_def_r23,  &reg_def_r24,
     &reg_def_r25, &reg_def_r26, &reg_def_r27, &reg_def_r28,  &reg_def_r29,
-    &reg_def_r30, &reg_def_r31, &reg_def_pc,  &reg_def_cpsr, &reg_def_w0,
+    &reg_def_r30, &reg_def_sp,  &reg_def_pc,  &reg_def_cpsr, &reg_def_w0,
     &reg_def_w1,  &reg_def_w2,  &reg_def_w3,  &reg_def_w4,   &reg_def_w5,
     &reg_def_w6,  &reg_def_w7,  &reg_def_w8,  &reg_def_w9,   &reg_def_w10,
     &reg_def_w11, &reg_def_w12, &reg_def_w13, &reg_def_w14,  &reg_def_w15,
@@ -160,7 +160,7 @@ GDBFeatureEntry const gdb_fents_org_gnu_gdb_aarch64_core[] = {
     {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r28},
     {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r29},
     {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r30},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r31},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_sp},
     {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_pc},
     {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_cpsr},
     {ds2::Architecture::kGDBFeatureTypeNone, nullptr}};
@@ -866,17 +866,17 @@ RegisterDef const reg_def_r30 = {
     0,
     reg_inv_defs_r30,
     nullptr};
-RegisterDef const reg_def_r31 = {
-    "r31",
+RegisterDef const reg_def_sp = {
+    "sp",
     nullptr,
     "sp",
     "sp",
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r31,
-    ds2::Architecture::ARM64::reg_gdb_r31,
-    ds2::Architecture::ARM64::reg_gcc_r31,
-    ds2::Architecture::ARM64::reg_lldb_r31,
+    ds2::Architecture::ARM64::reg_dwarf_sp,
+    ds2::Architecture::ARM64::reg_gdb_sp,
+    ds2::Architecture::ARM64::reg_gcc_sp,
+    ds2::Architecture::ARM64::reg_lldb_sp,
     248,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
