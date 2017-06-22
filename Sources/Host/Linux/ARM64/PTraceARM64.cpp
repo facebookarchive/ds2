@@ -24,13 +24,6 @@ namespace Host {
 namespace Linux {
 
 int PTrace::getMaxStoppoints(ProcessThreadId const &ptid, int regSet) {
-  pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-
-  if (error != kSuccess)
-    return 0;
-
   // Retrieve the information about Hardware Breakpoint, if supported.
   // user_hwdebug_state.dbg_info is formatted as follows:
   //
@@ -41,7 +34,7 @@ int PTrace::getMaxStoppoints(ProcessThreadId const &ptid, int regSet) {
   //
   // DEBUG_ARCH should be 0x06 for aarch64-armv8a.
   struct user_hwdebug_state drs;
-  if (readRegisterSet(pid, regSet, &drs, sizeof(drs)) != kSuccess ||
+  if (readRegisterSet(ptid, regSet, &drs, sizeof(drs)) != kSuccess ||
       ((drs.dbg_info >> 8) & 0xff) != 0x06) {
     return 0;
   }
