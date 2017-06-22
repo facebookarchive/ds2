@@ -108,10 +108,7 @@ state32_to_user(struct xfpregs_struct &xfpregs,
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
                                Architecture::CPUState &state) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   //
   // Read GPRs
@@ -162,10 +159,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
                                 ProcessInfo const &,
                                 Architecture::CPUState const &state) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   //
   // Write GPRs

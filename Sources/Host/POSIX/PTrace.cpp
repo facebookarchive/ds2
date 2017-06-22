@@ -96,10 +96,7 @@ ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {
 ErrorCode PTrace::doStepResume(bool stepping, ProcessThreadId const &ptid,
                                int signal, Address const &address) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
 #if defined(OS_LINUX)
   // Handling of continuation address is performed in Linux::PTrace.

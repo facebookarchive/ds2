@@ -31,10 +31,7 @@ namespace Linux {
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
                                Architecture::CPUState &state) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   //
   // Read GPRs
@@ -59,10 +56,10 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid, ProcessInfo const &,
 
 uint32_t PTrace::getStoppointData(ProcessThreadId const &ptid) {
   pid_t pid;
-
   ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
+  if (error != kSuccess) {
     return 0;
+  }
 
   //
   // Retrieve the information about Hardware Breakpoint, if supported.
@@ -97,10 +94,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
                                 ProcessInfo const &,
                                 Architecture::CPUState const &state) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   //
   // Read GPRs
@@ -128,10 +122,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
 ErrorCode PTrace::writeStoppoint(ProcessThreadId const &ptid, size_t idx,
                                  uint32_t *val) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   if (wrapPtrace(PTRACE_SETHBPREGS, pid, idx, val) < 0)
     return Platform::TranslateError();

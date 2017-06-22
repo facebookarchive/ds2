@@ -32,10 +32,7 @@ namespace Linux {
 
 ErrorCode PTrace::wait(ProcessThreadId const &ptid, int *status) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   int stat;
   pid_t ret;
@@ -105,10 +102,7 @@ ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
                             void *buffer, size_t length, size_t *count,
                             bool nullTerm) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   bool foundNull = false;
   size_t nread = 0;
@@ -187,10 +181,7 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
                               Address const &address, void const *buffer,
                               size_t length, size_t *count) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   size_t nwritten = 0;
   uintptr_t base = address;
@@ -286,10 +277,7 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
 
 ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   if (wrapPtrace(PTRACE_GETSIGINFO, pid, nullptr, &si) < 0)
     return Platform::TranslateError();
