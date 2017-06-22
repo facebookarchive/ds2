@@ -1,10 +1,10 @@
 <map id="ds2::Target::Darwin::Process" name="ds2::Target::Darwin::Process">
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_darwin_1_1_mach_o_process.html" title="ds2::Target::Darwin\l::MachOProcess" alt="" coords="926,85,1063,126"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="674,65,811,106"/>
-<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="270,87,445,113"/>
-<area shape="rect" id="node5" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="17,19,116,45"/>
-<area shape="rect" id="node7" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="6,141,127,168"/>
-<area shape="rect" id="node8" href="$classds2_1_1_host_1_1_darwin_1_1_mach.html" title="ds2::Host::Darwin::Mach" alt="" coords="659,131,827,157"/>
-<area shape="rect" id="node9" href="$classds2_1_1_host_1_1_darwin_1_1_p_trace.html" title="ds2::Host::Darwin::\lPTrace" alt="" coords="927,158,1063,199"/>
-<area shape="rect" id="node10" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title="ds2::Host::POSIX::PTrace" alt="" coords="653,181,832,208"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_darwin_1_1_mach_o_process.html" title="ds2::Target::Darwin\l::MachOProcess" alt="" coords="963,85,1106,126"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="708,65,847,106"/>
+<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="283,87,466,113"/>
+<area shape="rect" id="node5" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="17,19,122,45"/>
+<area shape="rect" id="node7" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="6,141,133,168"/>
+<area shape="rect" id="node8" href="$classds2_1_1_host_1_1_darwin_1_1_mach.html" title="ds2::Host::Darwin::Mach" alt="" coords="689,131,865,157"/>
+<area shape="rect" id="node9" href="$classds2_1_1_host_1_1_darwin_1_1_p_trace.html" title="ds2::Host::Darwin::\lPTrace" alt="" coords="963,158,1106,199"/>
+<area shape="rect" id="node10" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title="ds2::Host::POSIX::PTrace" alt="" coords="688,181,867,208"/>
 </map>

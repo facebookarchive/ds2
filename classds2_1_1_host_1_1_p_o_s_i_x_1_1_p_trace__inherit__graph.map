@@ -1,5 +1,5 @@
 <map id="ds2::Host::POSIX::PTrace" name="ds2::Host::POSIX::PTrace">
-<area shape="rect" id="node2" href="$classds2_1_1_host_1_1_darwin_1_1_p_trace.html" title="ds2::Host::Darwin::\lPTrace" alt="" coords="5,81,140,122"/>
-<area shape="rect" id="node3" href="$classds2_1_1_host_1_1_free_b_s_d_1_1_p_trace.html" title="ds2::Host::FreeBSD\l::PTrace" alt="" coords="165,81,305,122"/>
-<area shape="rect" id="node4" href="$classds2_1_1_host_1_1_linux_1_1_p_trace.html" title="ds2::Host::Linux::PTrace" alt="" coords="331,88,499,115"/>
+<area shape="rect" id="node2" href="$classds2_1_1_host_1_1_darwin_1_1_p_trace.html" title="ds2::Host::Darwin::\lPTrace" alt="" coords="5,81,147,122"/>
+<area shape="rect" id="node3" href="$classds2_1_1_host_1_1_free_b_s_d_1_1_p_trace.html" title="ds2::Host::FreeBSD\l::PTrace" alt="" coords="172,81,319,122"/>
+<area shape="rect" id="node4" href="$classds2_1_1_host_1_1_linux_1_1_p_trace.html" title="ds2::Host::Linux::PTrace" alt="" coords="343,88,516,115"/>
 </map>

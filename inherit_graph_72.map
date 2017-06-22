@@ -1,8 +1,8 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classds2_1_1_target_1_1_thread_base.html" title="ds2::Target::ThreadBase" alt="" coords="6,111,173,137"/>
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_thread.html" title="ds2::Target::POSIX\l::Thread" alt="" coords="229,70,366,111"/>
-<area shape="rect" id="node6" href="$classds2_1_1_target_1_1_windows_1_1_thread.html" title="ds2::Target::Windows\l::Thread" alt="" coords="222,135,373,177"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_darwin_1_1_thread.html" title="ds2::Target::Darwin\l::Thread" alt="" coords="429,5,566,46"/>
-<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_thread.html" title="ds2::Target::FreeBSD\l::Thread" alt="" coords="422,70,573,111"/>
-<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_linux_1_1_thread.html" title="ds2::Target::Linux\l::Thread" alt="" coords="434,135,561,177"/>
+<area shape="rect" id="node1" href="$classds2_1_1_target_1_1_thread_base.html" title="ds2::Target::ThreadBase" alt="" coords="5,111,181,137"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_thread.html" title="ds2::Target::POSIX\l::Thread" alt="" coords="237,70,376,111"/>
+<area shape="rect" id="node6" href="$classds2_1_1_target_1_1_windows_1_1_thread.html" title="ds2::Target::Windows\l::Thread" alt="" coords="229,135,384,177"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_darwin_1_1_thread.html" title="ds2::Target::Darwin\l::Thread" alt="" coords="438,5,581,46"/>
+<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_thread.html" title="ds2::Target::FreeBSD\l::Thread" alt="" coords="432,70,587,111"/>
+<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_linux_1_1_thread.html" title="ds2::Target::Linux\l::Thread" alt="" coords="443,135,576,177"/>
 </map>

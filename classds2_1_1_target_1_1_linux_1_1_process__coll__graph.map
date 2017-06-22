@@ -1,9 +1,9 @@
 <map id="ds2::Target::Linux::Process" name="ds2::Target::Linux::Process">
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="103,294,240,335"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="103,201,240,242"/>
-<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="115,109,289,136"/>
-<area shape="rect" id="node5" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,104,32"/>
-<area shape="rect" id="node7" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="246,5,367,32"/>
-<area shape="rect" id="node8" href="$classds2_1_1_host_1_1_linux_1_1_p_trace.html" title="ds2::Host::Linux::PTrace" alt="" coords="268,301,436,328"/>
-<area shape="rect" id="node9" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title="ds2::Host::POSIX::PTrace" alt="" coords="265,208,444,235"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="112,294,251,335"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="112,201,251,242"/>
+<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="125,109,307,136"/>
+<area shape="rect" id="node5" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,109,32"/>
+<area shape="rect" id="node7" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="262,5,388,32"/>
+<area shape="rect" id="node8" href="$classds2_1_1_host_1_1_linux_1_1_p_trace.html" title="ds2::Host::Linux::PTrace" alt="" coords="276,301,449,328"/>
+<area shape="rect" id="node9" href="$classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html" title="ds2::Host::POSIX::PTrace" alt="" coords="275,208,453,235"/>
 </map>

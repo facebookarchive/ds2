@@ -1,8 +1,8 @@
 <map id="ds2::Architecture::X86_64::CPUState" name="ds2::Architecture::X86_64::CPUState">
-<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_x86_1_1_c_p_u_state.html" title="ds2::Architecture::\lX86::CPUState" alt="" coords="253,73,382,114"/>
-<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_x86_1_1_x87_register.html" title="ds2::Architecture::\lX86::X87Register" alt="" coords="15,5,145,46"/>
-<area shape="rect" id="node6" href="$structds2_1_1_architecture_1_1_x86__64_1_1_c_p_u_state64.html" title="ds2::Architecture::\lX86_64::CPUState64" alt="" coords="243,138,391,179"/>
-<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_x86_1_1_s_s_e_vector.html" title="ds2::Architecture::\lX86::SSEVector" alt="" coords="15,107,145,149"/>
-<area shape="rect" id="node5" href="$structds2_1_1_architecture_1_1_x86_1_1_a_v_x_vector.html" title="ds2::Architecture::\lX86::AVXVector" alt="" coords="15,190,145,231"/>
-<area shape="rect" id="node7" href="$structds2_1_1_architecture_1_1_x86__64_1_1_e_a_v_x_vector.html" title="ds2::Architecture::\lX86_64::EAVXVector" alt="" coords="6,283,154,325"/>
+<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_x86_1_1_c_p_u_state.html" title="ds2::Architecture::\lX86::CPUState" alt="" coords="256,73,395,114"/>
+<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_x86_1_1_x87_register.html" title="ds2::Architecture::\lX86::X87Register" alt="" coords="12,5,151,46"/>
+<area shape="rect" id="node6" href="$structds2_1_1_architecture_1_1_x86__64_1_1_c_p_u_state64.html" title="ds2::Architecture::\lX86_64::CPUState64" alt="" coords="248,138,403,179"/>
+<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_x86_1_1_s_s_e_vector.html" title="ds2::Architecture::\lX86::SSEVector" alt="" coords="12,107,151,149"/>
+<area shape="rect" id="node5" href="$structds2_1_1_architecture_1_1_x86_1_1_a_v_x_vector.html" title="ds2::Architecture::\lX86::AVXVector" alt="" coords="12,190,151,231"/>
+<area shape="rect" id="node7" href="$structds2_1_1_architecture_1_1_x86__64_1_1_e_a_v_x_vector.html" title="ds2::Architecture::\lX86_64::EAVXVector" alt="" coords="6,283,157,325"/>
 </map>

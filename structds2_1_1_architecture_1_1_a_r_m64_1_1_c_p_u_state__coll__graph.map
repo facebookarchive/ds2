@@ -1,7 +1,7 @@
 <map id="ds2::Architecture::ARM64::CPUState" name="ds2::Architecture::ARM64::CPUState">
-<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_a_r_m64_1_1_c_p_u_state64.html" title="ds2::Architecture::\lARM64::CPUState64" alt="" coords="219,150,367,191"/>
-<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_quad.html" title="ds2::Architecture::\lARM::VFPQuad" alt="" coords="6,82,135,123"/>
-<area shape="rect" id="node6" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_c_p_u_state.html" title="ds2::Architecture::\lARM::CPUState" alt="" coords="229,73,358,114"/>
-<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_single.html" title="ds2::Architecture::\lARM::VFPSingle" alt="" coords="6,5,135,46"/>
-<area shape="rect" id="node5" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_double.html" title="ds2::Architecture::\lARM::VFPDouble" alt="" coords="6,173,135,214"/>
+<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_a_r_m64_1_1_c_p_u_state64.html" title="ds2::Architecture::\lARM64::CPUState64" alt="" coords="229,150,381,191"/>
+<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_quad.html" title="ds2::Architecture::\lARM::VFPQuad" alt="" coords="5,82,144,123"/>
+<area shape="rect" id="node6" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_c_p_u_state.html" title="ds2::Architecture::\lARM::CPUState" alt="" coords="236,73,375,114"/>
+<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_single.html" title="ds2::Architecture::\lARM::VFPSingle" alt="" coords="5,5,144,46"/>
+<area shape="rect" id="node5" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_double.html" title="ds2::Architecture::\lARM::VFPDouble" alt="" coords="5,173,144,214"/>
 </map>
