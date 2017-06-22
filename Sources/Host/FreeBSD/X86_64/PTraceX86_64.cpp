@@ -172,10 +172,7 @@ ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
                                ProcessInfo const &pinfo,
                                Architecture::CPUState &state) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   //
   // Read GPRs
@@ -211,10 +208,7 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
                                 ProcessInfo const &pinfo,
                                 Architecture::CPUState const &state) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   if (pinfo.pointerSize == sizeof(uint32_t) && !state.is32)
     return kErrorInvalidArgument;

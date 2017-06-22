@@ -74,10 +74,7 @@ ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
                              Address const &address, void *buffer,
                              size_t length, size_t *count) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   uintptr_t base = address.value();
   struct ptrace_io_desc desc;
@@ -106,10 +103,7 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
                               Address const &address, void const *buffer,
                               size_t length, size_t *count) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   uintptr_t base = address;
   struct ptrace_io_desc desc;
@@ -137,10 +131,7 @@ ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
 ErrorCode PTrace::getLwpInfo(ProcessThreadId const &ptid,
                              struct ptrace_lwpinfo *lwpinfo) {
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   if (wrapPtrace(PT_LWPINFO, pid, lwpinfo, sizeof(struct ptrace_lwpinfo)) < 0)
     return Platform::TranslateError();
@@ -151,10 +142,7 @@ ErrorCode PTrace::getLwpInfo(ProcessThreadId const &ptid,
 ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   struct ptrace_lwpinfo lwpinfo;
   pid_t pid;
-
-  ErrorCode error = ptidToPid(ptid, pid);
-  if (error != kSuccess)
-    return error;
+  CHK(ptidToPid(ptid, pid));
 
   if (wrapPtrace(PT_LWPINFO, pid, &lwpinfo, sizeof lwpinfo) < 0)
     return Platform::TranslateError();
