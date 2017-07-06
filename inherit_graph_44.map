@@ -1,6 +1,3 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classds2_1_1_g_d_b_remote_1_1_session_delegate.html" title="ds2::GDBRemote::SessionDelegate" alt="" coords="6,45,253,72"/>
-<area shape="rect" id="node2" href="$classds2_1_1_g_d_b_remote_1_1_dummy_session_delegate_impl.html" title="ds2::GDBRemote::DummySession\lDelegateImpl" alt="" coords="301,38,541,79"/>
-<area shape="rect" id="node3" href="$classds2_1_1_g_d_b_remote_1_1_debug_session_impl_base.html" title="ds2::GDBRemote::DebugSession\lImplBase" alt="" coords="590,5,821,46"/>
-<area shape="rect" id="node4" href="$classds2_1_1_g_d_b_remote_1_1_platform_session_impl_base.html" title="ds2::GDBRemote::Platform\lSessionImplBase" alt="" coords="609,70,802,111"/>
+<area shape="rect" id="node1" href="$classds2_1_1_host_1_1_darwin_1_1_lib_proc.html" title="ds2::Host::Darwin::\lLibProc" alt="" coords="6,5,149,46"/>
 </map>
