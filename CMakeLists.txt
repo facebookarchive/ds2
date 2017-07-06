@@ -208,10 +208,6 @@ set(TARGET_Windows_SOURCES
     Sources/Target/Windows/${ARCH_NAME}/Thread${ARCH_NAME}.cpp
     )
 
-set(GDB_SOURCES
-    Sources/GDB/ByteCodeInterpreter.cpp
-    )
-
 set(GDBREMOTE_SOURCES
     Sources/GDBRemote/DebugSessionImpl.cpp
     Sources/GDBRemote/DummySessionDelegateImpl.cpp
@@ -295,7 +291,6 @@ set(DEBUGSERVER2_SOURCES
     ${TARGET_SOURCES}
     ${ARCHITECTURE_SOURCES}
     ${SUPPORT_SOURCES}
-    ${GDB_SOURCES}
     ${GDBREMOTE_SOURCES}
     ${CORE_SOURCES}
     )
