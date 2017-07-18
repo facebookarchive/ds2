@@ -1,6 +1,6 @@
 <map id="ds2::GDBRemote::StopInfo" name="ds2::GDBRemote::StopInfo">
-<area shape="rect" id="node2" href="$structds2_1_1_stop_info.html" title="ds2::StopInfo" alt="" coords="5,96,112,123"/>
-<area shape="rect" id="node3" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="6,5,111,32"/>
-<area shape="rect" id="node4" href="$structds2_1_1_g_d_b_remote_1_1_process_thread_id.html" title="ds2::GDBRemote::ProcessThreadId" alt="" coords="137,96,380,123"/>
-<area shape="rect" id="node5" href="$structds2_1_1_process_thread_id.html" title="ds2::ProcessThreadId" alt="" coords="179,5,337,32"/>
+<area shape="rect" id="node2" href="$structds2_1_1_stop_info.html" title="ds2::StopInfo" alt="" coords="5,96,104,123"/>
+<area shape="rect" id="node3" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,104,32"/>
+<area shape="rect" id="node4" href="$structds2_1_1_g_d_b_remote_1_1_process_thread_id.html" title="ds2::GDBRemote::ProcessThreadId" alt="" coords="129,96,361,123"/>
+<area shape="rect" id="node5" href="$structds2_1_1_process_thread_id.html" title="ds2::ProcessThreadId" alt="" coords="170,5,320,32"/>
 </map>

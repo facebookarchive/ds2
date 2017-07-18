@@ -1,11 +1,11 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structds2_1_1make__unique__enabler.html" title="ds2::make_unique_enabler\l\&lt; Process \&gt;" alt="" coords="5,5,200,46"/>
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_windows_1_1_process.html" title="ds2::Target::Windows\l::Process" alt="" coords="248,5,403,46"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="11,73,194,100"/>
-<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="256,70,395,111"/>
-<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_darwin_1_1_mach_o_process.html" title="ds2::Target::Darwin\l::MachOProcess" alt="" coords="451,37,594,78"/>
-<area shape="rect" id="node7" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="453,102,592,143"/>
-<area shape="rect" id="node6" href="$classds2_1_1_target_1_1_darwin_1_1_process.html" title="ds2::Target::Darwin\l::Process" alt="" coords="649,37,791,78"/>
-<area shape="rect" id="node8" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_process.html" title="ds2::Target::FreeBSD\l::Process" alt="" coords="643,102,797,143"/>
-<area shape="rect" id="node9" href="$classds2_1_1_target_1_1_linux_1_1_process.html" title="ds2::Target::Linux\l::Process" alt="" coords="653,167,787,209"/>
+<area shape="rect" id="node1" href="$structds2_1_1make__unique__enabler.html" title="ds2::make_unique_enabler\l\&lt; Process \&gt;" alt="" coords="6,5,183,46"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_windows_1_1_process.html" title="ds2::Target::Windows\l::Process" alt="" coords="233,5,383,46"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="7,73,182,100"/>
+<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="239,70,377,111"/>
+<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_darwin_1_1_mach_o_process.html" title="ds2::Target::Darwin\l::MachOProcess" alt="" coords="433,37,570,78"/>
+<area shape="rect" id="node7" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="433,102,570,143"/>
+<area shape="rect" id="node6" href="$classds2_1_1_target_1_1_darwin_1_1_process.html" title="ds2::Target::Darwin\l::Process" alt="" coords="626,37,763,78"/>
+<area shape="rect" id="node8" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_process.html" title="ds2::Target::FreeBSD\l::Process" alt="" coords="619,102,770,143"/>
+<area shape="rect" id="node9" href="$classds2_1_1_target_1_1_linux_1_1_process.html" title="ds2::Target::Linux\l::Process" alt="" coords="631,167,758,209"/>
 </map>

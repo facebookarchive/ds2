@@ -1,6 +1,6 @@
 <map id="ds2::Target::POSIX::ELFProcess" name="ds2::Target::POSIX::ELFProcess">
-<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_process.html" title="ds2::Target::FreeBSD\l::Process" alt="" coords="5,262,159,303"/>
-<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_linux_1_1_process.html" title="ds2::Target::Linux\l::Process" alt="" coords="184,262,317,303"/>
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="97,81,236,122"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="75,5,257,32"/>
+<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_process.html" title="ds2::Target::FreeBSD\l::Process" alt="" coords="5,262,155,303"/>
+<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_linux_1_1_process.html" title="ds2::Target::Linux\l::Process" alt="" coords="179,262,305,303"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="93,81,229,122"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="74,5,248,32"/>
 </map>

@@ -1,9 +1,9 @@
 <map id="ds2::Target::ProcessBase" name="ds2::Target::ProcessBase">
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="245,37,384,78"/>
-<area shape="rect" id="node8" href="$classds2_1_1_target_1_1_windows_1_1_process.html" title="ds2::Target::Windows\l::Process" alt="" coords="237,102,392,143"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_darwin_1_1_mach_o_process.html" title="ds2::Target::Darwin\l::MachOProcess" alt="" coords="441,5,583,46"/>
-<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="443,70,581,111"/>
-<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_darwin_1_1_process.html" title="ds2::Target::Darwin\l::Process" alt="" coords="638,5,781,46"/>
-<area shape="rect" id="node6" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_process.html" title="ds2::Target::FreeBSD\l::Process" alt="" coords="632,70,787,111"/>
-<area shape="rect" id="node7" href="$classds2_1_1_target_1_1_linux_1_1_process.html" title="ds2::Target::Linux\l::Process" alt="" coords="643,135,776,177"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="237,37,374,78"/>
+<area shape="rect" id="node8" href="$classds2_1_1_target_1_1_windows_1_1_process.html" title="ds2::Target::Windows\l::Process" alt="" coords="230,102,381,143"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_darwin_1_1_mach_o_process.html" title="ds2::Target::Darwin\l::MachOProcess" alt="" coords="430,5,567,46"/>
+<area shape="rect" id="node5" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_e_l_f_process.html" title="ds2::Target::POSIX\l::ELFProcess" alt="" coords="430,70,567,111"/>
+<area shape="rect" id="node4" href="$classds2_1_1_target_1_1_darwin_1_1_process.html" title="ds2::Target::Darwin\l::Process" alt="" coords="623,5,761,46"/>
+<area shape="rect" id="node6" href="$classds2_1_1_target_1_1_free_b_s_d_1_1_process.html" title="ds2::Target::FreeBSD\l::Process" alt="" coords="617,70,767,111"/>
+<area shape="rect" id="node7" href="$classds2_1_1_target_1_1_linux_1_1_process.html" title="ds2::Target::Linux\l::Process" alt="" coords="629,135,755,177"/>
 </map>

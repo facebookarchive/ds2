@@ -1,5 +1,5 @@
 <map id="ds2::Architecture::ARM64::CPUState64" name="ds2::Architecture::ARM64::CPUState64">
-<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_quad.html" title="ds2::Architecture::\lARM::VFPQuad" alt="" coords="5,5,144,46"/>
-<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_single.html" title="ds2::Architecture::\lARM::VFPSingle" alt="" coords="5,70,144,111"/>
-<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_double.html" title="ds2::Architecture::\lARM::VFPDouble" alt="" coords="5,135,144,177"/>
+<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_quad.html" title="ds2::Architecture::\lARM::VFPQuad" alt="" coords="6,5,135,46"/>
+<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_single.html" title="ds2::Architecture::\lARM::VFPSingle" alt="" coords="6,70,135,111"/>
+<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_a_r_m_1_1_v_f_p_double.html" title="ds2::Architecture::\lARM::VFPDouble" alt="" coords="6,135,135,177"/>
 </map>

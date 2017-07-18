@@ -1,6 +1,6 @@
 <map id="ds2::Target::POSIX::ELFProcess" name="ds2::Target::POSIX::ELFProcess">
-<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="119,201,257,242"/>
-<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="134,109,316,136"/>
-<area shape="rect" id="node4" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,109,32"/>
-<area shape="rect" id="node6" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="289,5,415,32"/>
+<area shape="rect" id="node2" href="$classds2_1_1_target_1_1_p_o_s_i_x_1_1_process.html" title="ds2::Target::POSIX\l::Process" alt="" coords="111,201,248,242"/>
+<area shape="rect" id="node3" href="$classds2_1_1_target_1_1_process_base.html" title="ds2::Target::ProcessBase" alt="" coords="125,109,299,136"/>
+<area shape="rect" id="node4" href="$classds2_1_1_address.html" title="ds2::Address" alt="" coords="5,5,104,32"/>
+<area shape="rect" id="node6" href="$structds2_1_1_process_info.html" title="ds2::ProcessInfo" alt="" coords="269,5,389,32"/>
 </map>

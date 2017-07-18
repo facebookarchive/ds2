@@ -1,6 +1,6 @@
 <map id="ds2::Architecture::X86_64::CPUState64" name="ds2::Architecture::X86_64::CPUState64">
-<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_x86_1_1_x87_register.html" title="ds2::Architecture::\lX86::X87Register" alt="" coords="12,5,151,46"/>
-<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_x86_1_1_s_s_e_vector.html" title="ds2::Architecture::\lX86::SSEVector" alt="" coords="12,70,151,111"/>
-<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_x86__64_1_1_e_a_v_x_vector.html" title="ds2::Architecture::\lX86_64::EAVXVector" alt="" coords="6,135,157,177"/>
-<area shape="rect" id="node5" href="$structds2_1_1_architecture_1_1_x86_1_1_a_v_x_vector.html" title="ds2::Architecture::\lX86::AVXVector" alt="" coords="12,201,151,242"/>
+<area shape="rect" id="node2" href="$structds2_1_1_architecture_1_1_x86_1_1_x87_register.html" title="ds2::Architecture::\lX86::X87Register" alt="" coords="15,5,145,46"/>
+<area shape="rect" id="node3" href="$structds2_1_1_architecture_1_1_x86_1_1_s_s_e_vector.html" title="ds2::Architecture::\lX86::SSEVector" alt="" coords="15,70,145,111"/>
+<area shape="rect" id="node4" href="$structds2_1_1_architecture_1_1_x86__64_1_1_e_a_v_x_vector.html" title="ds2::Architecture::\lX86_64::EAVXVector" alt="" coords="6,135,154,177"/>
+<area shape="rect" id="node5" href="$structds2_1_1_architecture_1_1_x86_1_1_a_v_x_vector.html" title="ds2::Architecture::\lX86::AVXVector" alt="" coords="15,201,145,242"/>
 </map>
