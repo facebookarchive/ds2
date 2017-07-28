@@ -22,7 +22,7 @@ if same_dir "$PWD" "$top"; then
 fi
 
 # Get a recent cmake from cmake.org; packages for Ubuntu are too old.
-cmake_version="3.6"
+cmake_version="3.7"
 cmake_package="cmake-${cmake_version}.0-Linux-x86_64"
 if [ "$(linux_distribution)" == "ubuntu" ] && [ ! -d "/tmp/$cmake_package/bin" ]; then
   cd /tmp
