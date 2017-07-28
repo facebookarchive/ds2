@@ -16,6 +16,10 @@ branches:
   only:
     - master
 
+env:
+  global:
+    - LINUX_DISTRO="trusty"
+
 matrix:
   fast_finish: true
   include:
