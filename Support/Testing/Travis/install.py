@@ -39,7 +39,7 @@ if host == 'Darwin':
     if os.getenv('CLANG') != '1':
         dist_packages.append('gcc')
 elif host == 'Linux':
-    if "Ubuntu" in platform.linux_distribution():
+    if os.getenv("LINUX_DISTRO") == "trusty":
         dist_packages.append('ninja-build')
     else:
         dist_packages.append('ninja')
