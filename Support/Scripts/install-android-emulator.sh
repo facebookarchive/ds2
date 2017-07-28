@@ -16,10 +16,23 @@ source "$(dirname "$0")/common.sh"
 target_arch="${1-arm}"
 
 case "$(uname)" in
-  "Linux")  platform_name="linux"; package_extension="tgz";;
-  "Darwin") platform_name="macosx"; package_extension="zip";;
+  "Linux")  platform_name="linux";;
+  "Darwin") platform_name="darwin";;
   *)        die "This script works only on Linux and macOS.";;
 esac
+
+sdk_dir="/tmp/android-sdk-${platform_name}"
+sdkmanager="${sdk_dir}/tools/bin/sdkmanager"
+avdmanager="${sdk_dir}/tools/bin/avdmanager"
+
+if [ ! -f "$sdkmanager" ]; then
+  package_name="sdk-tools-${platform_name}-3859397.zip"
+  wget "https://dl.google.com/android/repository/${package_name}" -P /tmp
+  unzip -d "${sdk_dir}" "/tmp/${package_name}"
+  rm -f "/tmp/${package_name}"
+fi
+
+echo "y" | "${sdkmanager}" --update
 
 case "${target_arch}" in
   "arm")   emulator_image_arch="armeabi-v7a"; api_level="${2-21}";;
@@ -28,34 +41,10 @@ case "${target_arch}" in
   *)     die "Unknown architecture '${target_arch}'.";;
 esac
 
-package_list=()
-
-# This is required due to dependency issues in the sdk. Hopefully this can be removed in future
-# versions of the sdk.
-if [ "${api_level}" -gt 23 ]; then
-  android_sdk_version="r24"
-  package_list+=("android-23", "platform-tools", "tools")
-else
-  android_sdk_version="r23"
-fi
-
-package_list+=("android-${api_level}", "sys-img-${emulator_image_arch}-android-${api_level}")
-
-android_script="/tmp/android-sdk-${platform_name}/tools/android"
-
-if [ ! -f "$android_script" ]; then
-  android_sdk_package="android-sdk_${android_sdk_version}-${platform_name}.${package_extension}"
-  wget "https://dl.google.com/android/${android_sdk_package}" -P /tmp
-  case "${package_extension}" in
-    "zip") unzip -d /tmp "/tmp/${android_sdk_package}";;
-    "tgz") tar -C /tmp -xvf "/tmp/${android_sdk_package}";;
-    *) die "Unknown archive extension '${package_extension}'."
-  esac
-  rm -f "/tmp/${android_sdk_package}"
-fi
-
-for package in "${package_list[@]}"; do
-  echo "y" | "$android_script" update sdk -u -a --filter "$package"
-done
-
-echo "no" | "$android_script" create avd --force -n test -t "android-${api_level}" --abi "${emulator_image_arch}"
+system_image_package="system-images;android-${api_level};default;${emulator_image_arch}"
+"${sdkmanager}" "platforms;android-${api_level}"
+"${sdkmanager}" "${system_image_package}"
+echo "no" | "${avdmanager}" create avd \
+  --force -n test \
+  --package "${system_image_package}" \
+  --abi "${emulator_image_arch}"

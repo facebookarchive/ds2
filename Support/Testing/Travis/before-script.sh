@@ -15,18 +15,19 @@ source "$top/Support/Scripts/common.sh"
 if [[ "$TARGET" == Android-* && -n "${LLDB_TESTS-}" ]]; then
   case "$(uname)" in
     "Linux")  platform_name="linux";;
-    "Darwin") platform_name="macosx";;
+    "Darwin") platform_name="darwin";;
   esac
 
   case "${TARGET}" in
-    "Android-ARM") emulator_arch="arm";;
-    "Android-ARM64") emulator_arch="ranchu-arm64";;
-    "Android-X86") emulator_arch="x86";;
+    "Android-ARM") emulator_arch="emulator64-arm";;
+    "Android-ARM64") emulator_arch="emulator";;
+    "Android-X86") emulator_arch="emulator64-x86";;
     *)             die "Unknown target '${TARGET}'.";;
   esac
 
-  emulator="/tmp/android-sdk-${platform_name}/tools/emulator64-${emulator_arch}"
-
-  "$emulator" -avd test -no-skin -no-audio -no-window &
+  sdk_dir="/tmp/android-sdk-${platform_name}"
+  emulator="${sdk_dir}/emulator/${emulator_arch}"
+  qt_lib_path="${sdk_dir}/emulator/lib64/qt/lib/"
+  LD_LIBRARY_PATH="${qt_lib_path}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" "$emulator" -avd test -gpu off -no-window &
   adb wait-for-device
 fi
