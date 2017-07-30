@@ -51,6 +51,7 @@ if [ ! -f "$android_script" ]; then
     "tgz") tar -C /tmp -xvf "/tmp/${android_sdk_package}";;
     *) die "Unknown archive extension '${package_extension}'."
   esac
+  rm -f "/tmp/${android_sdk_package}"
 fi
 
 for package in "${package_list[@]}"; do
