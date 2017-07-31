@@ -57,7 +57,16 @@ for package in "${package_list[@]}"; do
   echo "y" | "$android_script" update sdk -u -a --filter "$package"
 done
 
-du -sh * /tmp/*
+echo "=========== install-android-emulator.sh =========== "
+echo "Installing android emulator"
+echo "du -sh $(pwd)"
+du -sh *
+echo "du -sh home"
+du -sh ~/*
+echo "du -sh /tmp"
+du -sh /tmp/*
+echo "how much space are we given anyway?"
 df -h
+echo "=========== install-android-emulator.sh =========== "
 
 echo "no" | "$android_script" create avd --force -n test -t "android-${api_level}" --abi "${emulator_image_arch}"
