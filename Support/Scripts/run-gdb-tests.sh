@@ -27,6 +27,7 @@ gdb_src_path="$build_dir/$gdb_basename"
 
 wget "$gdb_ftp_path/$gdb_basename.tar.gz"
 tar -zxf "$gdb_basename.tar.gz"
+rm -f "${gdb_basename}.tar.gz"
 
 testingPath="$top/Support/Testing"
 for p in $testingPath/Patches/gdb/*.patch; do
