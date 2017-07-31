@@ -312,7 +312,7 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "no-colors", 'n',
                  "disable colored output");
 
-  // General ds2 options.
+// General ds2 options.
 #if defined(OS_POSIX)
   opts.addOption(ds2::OptParse::boolOption, "daemonize", 'f',
                  "detach and become a daemon");
@@ -408,7 +408,7 @@ int main(int argc, char **argv) {
     ds2::SetLogColorsEnabled(false);
   }
 
-  // General ds2 options.
+// General ds2 options.
 #if defined(OS_POSIX)
   gDaemonize = opts.getBool("daemonize");
 #endif
