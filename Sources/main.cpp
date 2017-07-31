@@ -17,6 +17,7 @@
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/QueueChannel.h"
 #include "DebugServer2/Host/Socket.h"
+#include "DebugServer2/Utils/Daemon.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/OptParse.h"
 #include "DebugServer2/Utils/String.h"
@@ -46,6 +47,7 @@ using ds2::GDBRemote::SlaveSessionImpl;
 
 static std::string gDefaultPort = "12345";
 static std::string gDefaultHost = "127.0.0.1";
+static bool gDaemonize = false;
 static bool gKeepAlive = false;
 static bool gGDBCompat = false;
 
@@ -98,6 +100,12 @@ static int PlatformMain(std::string const &host, std::string const &port) {
   };
 
   std::unique_ptr<Socket> serverSocket = CreateSocket(host, port, false);
+
+#if defined(OS_POSIX)
+  if (gDaemonize) {
+    ds2::Utils::Daemonize();
+  }
+#endif
 
   do {
     std::unique_ptr<Socket> clientSocket = serverSocket->accept();
@@ -155,6 +163,12 @@ static int DebugMain(ds2::StringCollection const &args,
       fclose(namedPipe);
     }
   }
+
+#if defined(OS_POSIX)
+  if (gDaemonize) {
+    ds2::Utils::Daemonize();
+  }
+#endif
 
   do {
     std::unique_ptr<DebugSessionImpl> impl;
@@ -299,6 +313,10 @@ int main(int argc, char **argv) {
                  "disable colored output");
 
   // General ds2 options.
+#if defined(OS_POSIX)
+  opts.addOption(ds2::OptParse::boolOption, "daemonize", 'f',
+                 "detach and become a daemon");
+#endif
   opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
                  "keep the server alive after the client disconnects");
   opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
@@ -391,6 +409,10 @@ int main(int argc, char **argv) {
   }
 
   // General ds2 options.
+#if defined(OS_POSIX)
+  gDaemonize = opts.getBool("daemonize");
+#endif
+
   gKeepAlive = opts.getBool("keep-alive");
 #if !defined(OS_WIN32)
   if (mode == kRunModePlatform) {
