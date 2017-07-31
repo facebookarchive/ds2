@@ -298,9 +298,11 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "no-colors", 'n',
                  "disable colored output");
 
-  // Non-debugserver options.
-  opts.addOption(ds2::OptParse::boolOption, "list-processes", 'L',
-                 "list processes debuggable by the current user");
+  // General ds2 options.
+  opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
+                 "keep the server alive after the client disconnects");
+  opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
+                 "connect back to the debugger at [HOST]:PORT");
 
   // Target debug options.
   opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
@@ -309,10 +311,6 @@ int main(int argc, char **argv) {
                  "remove an element from the environment before lauch");
   opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
                  "attach to the name or PID specified");
-  opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
-                 "connect back to the debugger at [HOST]:PORT");
-  opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
-                 "keep the server alive after the client disconnects");
 
   // lldb-server compatibility options.
   opts.addOption(ds2::OptParse::boolOption, "gdb-compat", 'g',
@@ -326,9 +324,13 @@ int main(int argc, char **argv) {
                  "make ds2 run in its own session");
 #endif
 
-  // gdbserver compatibility options
+  // gdbserver compatibility options.
   opts.addOption(ds2::OptParse::boolOption, "once", 'O',
                  "exit after one execution of inferior (default)", true);
+
+  // Non-debugserver options.
+  opts.addOption(ds2::OptParse::boolOption, "list-processes", 'L',
+                 "list processes debuggable by the current user");
 
   if (argc < 2)
     opts.usageDie("first argument must be g[dbserver] or p[latform]");
@@ -388,9 +390,18 @@ int main(int argc, char **argv) {
     ds2::SetLogColorsEnabled(false);
   }
 
-  // Non-debugserver options.
-  if (opts.getBool("list-processes")) {
-    ListProcesses();
+  // General ds2 options.
+  gKeepAlive = opts.getBool("keep-alive");
+#if !defined(OS_WIN32)
+  if (mode == kRunModePlatform) {
+    // The platform spawner should stay alive by default.
+    gKeepAlive = true;
+  }
+#endif
+
+  reverse = opts.getBool("reverse-connect");
+  if (mode != kRunModeNormal && reverse) {
+    opts.usageDie("reverse-connect only supported in gdbserver mode");
   }
 
   // Target debug options and program arguments.
@@ -426,19 +437,6 @@ int main(int argc, char **argv) {
     attachPid = atoi(opts.getString("attach").c_str());
   }
 
-  gKeepAlive = opts.getBool("keep-alive");
-#if !defined(OS_WIN32)
-  if (mode == kRunModePlatform) {
-    // The platform spawner should stay alive by default.
-    gKeepAlive = true;
-  }
-#endif
-
-  reverse = opts.getBool("reverse-connect");
-  if (mode != kRunModeNormal && reverse) {
-    opts.usageDie("reverse-connect only supported in gdbserver mode");
-  }
-
   // lldb-server compatibilty options.
   gGDBCompat = opts.getBool("gdb-compat");
   if (mode == kRunModeNormal && gGDBCompat && args.empty() && attachPid < 0) {
@@ -460,6 +458,11 @@ int main(int argc, char **argv) {
     ::setsid();
   }
 #endif
+
+  // Non-debugserver options.
+  if (opts.getBool("list-processes")) {
+    ListProcesses();
+  }
 
   // Default host and port options.
   if (port.empty()) {
