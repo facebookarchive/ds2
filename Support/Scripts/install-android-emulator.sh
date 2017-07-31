@@ -57,4 +57,7 @@ for package in "${package_list[@]}"; do
   echo "y" | "$android_script" update sdk -u -a --filter "$package"
 done
 
+du -sh * /tmp/*
+df -h
+
 echo "no" | "$android_script" create avd --force -n test -t "android-${api_level}" --abi "${emulator_image_arch}"
