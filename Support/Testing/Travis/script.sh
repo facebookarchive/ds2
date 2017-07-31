@@ -32,6 +32,7 @@ if [ "$(linux_distribution)" == "ubuntu" ] && [ ! -d "/tmp/$cmake_package/bin" ]
   fi
 
   tar -xf "${cmake_package}.tar.gz"
+  rm -f "${cmake_package}.tar.gz"
 
   cd "$OLDPWD"
 fi

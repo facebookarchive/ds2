@@ -41,6 +41,7 @@ if [ -z "${ndk_path-}" ]; then
 
   wget "https://dl.google.com/android/repository/${ndk_package_archive}"
   unzip -q "${ndk_package_archive}"
+  rm -f "${ndk_package_archive}"
 
   ndk_path="$(realpath "$ndk_package_base")"
 fi
