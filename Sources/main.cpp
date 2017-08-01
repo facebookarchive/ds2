@@ -101,11 +101,9 @@ static int PlatformMain(std::string const &host, std::string const &port) {
 
   std::unique_ptr<Socket> serverSocket = CreateSocket(host, port, false);
 
-#if defined(OS_POSIX)
   if (gDaemonize) {
     ds2::Utils::Daemonize();
   }
-#endif
 
   do {
     std::unique_ptr<Socket> clientSocket = serverSocket->accept();
@@ -164,11 +162,9 @@ static int DebugMain(ds2::StringCollection const &args,
     }
   }
 
-#if defined(OS_POSIX)
   if (gDaemonize) {
     ds2::Utils::Daemonize();
   }
-#endif
 
   do {
     std::unique_ptr<DebugSessionImpl> impl;
