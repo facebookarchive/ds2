@@ -19,6 +19,7 @@
 
 namespace ds2 {
 namespace Utils {
+
 void Daemonize() {
   pid_t pid;
 
