@@ -14,23 +14,19 @@ source "$top/Support/Scripts/common.sh"
 
 cformat="clang-format-4.0"
 
-if [ -e "~/perl5" ]; then
-    echo "Removing perl5"
-    rm -rf ~/perl5
-fi
-if [ -e "~/otp" ]; then
-    echo "Removing otp"
-    rm -rf ~/otp
-fi
+echo "Removing perl5"
+sudo rm -rf ~/perl5
+echo "Removing otp"
+sudo rm -rf ~/otp
 
 echo "=== script.sh ==="
 echo "yet another diskutility check"
 echo "du -sh $(pwd)"
 du -sh *
 echo "du -sh home"
-du -sh ~/*
+du -sh ~/.[!.]* ~/*
 echo "du -sh /tmp"
-du -sh /tmp/*
+du -sh /tmp/.[!.]* /tmp/*
 echo "df -h"
 df -h
 echo "=== script.sh ==="
