@@ -106,6 +106,7 @@ if len(dist_packages) > 0:
             check_call('sudo yum install -y "%s"' % '" "'.join(dist_packages), shell=True)
         else:
             check_call('sudo apt-get install -y "%s"' % '" "'.join(dist_packages), shell=True)
+            check_call('sudo apt-get clean', shell=True)
 
 if len(pip_packages) > 0:
     check_call('sudo pip install --upgrade pip', shell=True)
