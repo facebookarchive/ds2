@@ -14,6 +14,27 @@ source "$top/Support/Scripts/common.sh"
 
 cformat="clang-format-4.0"
 
+if [ -e "~/perl5" ]; then
+    echo "Removing perl5"
+    rm -rf ~/perl5
+fi
+if [ -e "~/otp" ]; then
+    echo "Removing otp"
+    rm -rf ~/otp
+fi
+
+echo "=== script.sh ==="
+echo "yet another diskutility check"
+echo "du -sh $(pwd)"
+du -sh *
+echo "du -sh home"
+du -sh ~/*
+echo "du -sh /tmp"
+du -sh /tmp/*
+echo "df -h"
+df -h
+echo "=== script.sh ==="
+
 # If we're at the root of the repository, create a build directory and go
 # there; otherwise, assume that we're already in the build directory the user
 # wants to use.
