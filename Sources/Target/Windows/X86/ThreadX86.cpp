@@ -86,6 +86,14 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
     }
   }
 
+  // Debug registers
+  state.dr.dr[0] = context.Dr0;
+  state.dr.dr[1] = context.Dr1;
+  state.dr.dr[2] = context.Dr2;
+  state.dr.dr[3] = context.Dr3;
+  state.dr.dr[6] = context.Dr6;
+  state.dr.dr[7] = context.Dr7;
+
   return kSuccess;
 }
 
@@ -94,11 +102,20 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
 
   std::memset(&context, 0, sizeof(context));
   // TODO(sas): Handle floats, SSE, AVX and debug registers.
-  context.ContextFlags = CONTEXT_INTEGER | // GP registers.
-                         CONTEXT_CONTROL | // Some more GP + cs/ss.
-                         CONTEXT_SEGMENTS; // Data segment selectors.
+  context.ContextFlags = CONTEXT_INTEGER |        // GP registers.
+                         CONTEXT_CONTROL |        // Some more GP + cs/ss.
+                         CONTEXT_SEGMENTS |       // Data segment selectors.
+                         CONTEXT_DEBUG_REGISTERS; // Debug registers.
 
   state32_to_user(context, state);
+
+  // Debug registers
+  context.Dr0 = state.dr.dr[0];
+  context.Dr1 = state.dr.dr[1];
+  context.Dr2 = state.dr.dr[2];
+  context.Dr3 = state.dr.dr[3];
+  context.Dr6 = state.dr.dr[6];
+  context.Dr7 = state.dr.dr[7];
 
   BOOL result = SetThreadContext(_handle, &context);
   if (!result) {

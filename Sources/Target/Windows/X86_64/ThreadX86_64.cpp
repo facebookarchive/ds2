@@ -38,9 +38,10 @@ ErrorCode Thread::step(int signal, Address const &address) {
 
 ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   // TODO(sas): Handle floats, SSE, AVX and debug registers.
-  DWORD flags = CONTEXT_INTEGER | // GP registers.
-                CONTEXT_CONTROL | // Some more GP + cs/ss.
-                CONTEXT_SEGMENTS; // Data segment selectors.
+  DWORD flags = CONTEXT_INTEGER |        // GP registers.
+                CONTEXT_CONTROL |        // Some more GP + cs/ss.
+                CONTEXT_SEGMENTS |       // Data segment selectors.
+                CONTEXT_DEBUG_REGISTERS; // Debug registers.
 
   ProcessInfo pinfo;
   CHK(process()->getInfo(pinfo));
@@ -61,6 +62,14 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
 
     state.is32 = false;
     Architecture::X86::user_to_state64(state.state64, context);
+
+    // Debug registers
+    state.state64.dr.dr[0] = context.Dr0;
+    state.state64.dr.dr[1] = context.Dr1;
+    state.state64.dr.dr[2] = context.Dr2;
+    state.state64.dr.dr[3] = context.Dr3;
+    state.state64.dr.dr[6] = context.Dr6;
+    state.state64.dr.dr[7] = context.Dr7;
   }
 
   return kSuccess;
@@ -68,9 +77,10 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
 
 ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
   // TODO(sas): Handle floats, SSE, AVX and debug registers.
-  DWORD flags = CONTEXT_INTEGER | // GP registers.
-                CONTEXT_CONTROL | // Some more GP + cs/ss.
-                CONTEXT_SEGMENTS; // Data segment selectors.
+  DWORD flags = CONTEXT_INTEGER |        // GP registers.
+                CONTEXT_CONTROL |        // Some more GP + cs/ss.
+                CONTEXT_SEGMENTS |       // Data segment selectors.
+                CONTEXT_DEBUG_REGISTERS; // Debug registers.
 
   ProcessInfo pinfo;
   CHK(process()->getInfo(pinfo));
@@ -84,6 +94,14 @@ ErrorCode Thread::writeCPUState(Architecture::CPUState const &state) {
     std::memset(&context, 0, sizeof(context));
     context.ContextFlags = flags;
     Architecture::X86::state64_to_user(context, state.state64);
+
+    // Debug registers
+    context.Dr0 = state.state64.dr.dr[0];
+    context.Dr1 = state.state64.dr.dr[1];
+    context.Dr2 = state.state64.dr.dr[2];
+    context.Dr3 = state.state64.dr.dr[3];
+    context.Dr6 = state.state64.dr.dr[6];
+    context.Dr7 = state.state64.dr.dr[7];
 
     BOOL result = SetThreadContext(_handle, &context);
     if (!result) {
