@@ -333,11 +333,6 @@ SoftwareBreakpointManager *ProcessBase::softwareBreakpointManager() const {
 }
 
 HardwareBreakpointManager *ProcessBase::hardwareBreakpointManager() const {
-#if defined(OS_WIN32)
-  // Not implemented yet.
-  return nullptr;
-#endif
-
   if (!_hardwareBreakpointManager) {
     _hardwareBreakpointManager = ds2::make_unique<HardwareBreakpointManager>(
         const_cast<ProcessBase *>(this));
