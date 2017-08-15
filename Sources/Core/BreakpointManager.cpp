@@ -67,7 +67,7 @@ ErrorCode BreakpointManager::remove(Address const &address) {
   if (!(it->second.type & kTypePermanent))
     goto do_remove;
 
-  // If we have a premanent breakpoint, refs should be non-null. If refs is
+  // If we have a permanent breakpoint, refs should be non-null. If refs is
   // still non-null after the decrement, do not remove the breakpoint and
   // return.
   DS2ASSERT(it->second.refs > 0);
