@@ -43,6 +43,7 @@ public:
     Lifetime lifetime;
     Mode mode;
     size_t size;
+    uint64_t memoryValue;
 
   public:
     bool operator==(Site const &other) const {
