@@ -68,6 +68,16 @@ protected:
                                 std::vector<uint64_t> &regs) const;
 
 protected:
+  /*
+   * TODO(asb) currently _locations is used in tandem with _sites, where it's
+   * only purpose is to (as a vector) track the index of an address in debugRegs
+   * (see sources/core/x86/HWBPManager.enableLocation, whilst paying attention
+   * to the idx parameter).
+   * It would be nice to delete _locations and store the index in _sites.
+   * Currently the only reason we're doing that is because it isn't possible to
+   * make _sites (a std::map fixed-size, to stay true to the fixed size
+   * debugRegs on the platform).
+   */
   std::vector<uint64_t> _locations;
   std::unordered_set<ThreadId> _enabled;
 

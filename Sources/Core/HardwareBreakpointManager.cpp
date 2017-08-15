@@ -1,4 +1,3 @@
-//
 // Copyright (c) 2014-present, Facebook, Inc.
 // All rights reserved.
 //
@@ -20,7 +19,7 @@ namespace ds2 {
 
 HardwareBreakpointManager::HardwareBreakpointManager(
     Target::ProcessBase *process)
-    : super(process), _locations(maxWatchpoints(), 0) {}
+    : super(process), _locations(maxWatchpoints()) {}
 
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
 
@@ -43,7 +42,7 @@ ErrorCode HardwareBreakpointManager::add(Address const &address,
 ErrorCode HardwareBreakpointManager::remove(Address const &address) {
   auto loc = std::find(_locations.begin(), _locations.end(), address);
   if (loc != _locations.end()) {
-    _locations[loc - _locations.begin()] = 0;
+    _locations.erase(loc);
   }
 
   return super::remove(address);
@@ -72,6 +71,7 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site,
 
   if (error == kSuccess) {
     _locations[idx] = site.address;
+    CHK(storeNewValueAtAddress(site.address));
   }
   return error;
 }
@@ -83,16 +83,54 @@ ErrorCode HardwareBreakpointManager::disableLocation(Site const &site,
   auto loc = std::find(_locations.begin(), _locations.end(), site.address);
   if (loc == _locations.end()) {
     return kErrorInvalidArgument;
+  } else {
+    int idx = loc - _locations.begin();
+
+    enumerateThreads(thread, [&](Target::Thread *t) {
+      if (t->state() == Target::Thread::kStopped && enabled(t)) {
+        // TODO(asb) make sure that we're reducing the error correctly and it
+        // isn't getting overwritten by multiple calls
+        error = disableLocation(idx, t);
+      }
+    });
+
+    return error;
   }
-  int idx = loc - _locations.begin();
+}
 
-  enumerateThreads(thread, [&](Target::Thread *t) {
-    if (t->state() == Target::Thread::kStopped && enabled(t)) {
-      error = disableLocation(idx, t);
-    }
-  });
+inline bool
+HardwareBreakpointManager::softwareImplementationOfReadonlyWatchpoints(
+    Address const &address, Site &site) {
+  switch (site.mode) {
+  // if this is a readonly hardware watchpoint
+  case kModeRead:
+    // if written to, return false. if not, invoke super.
+    return checkIfWrittenTo(address) ? false : super::hit(address, site);
+    break;
+  default:
+    return super::hit(address, site);
+  }
+}
 
-  return error;
+ErrorCode
+HardwareBreakpointManager::storeNewValueAtAddress(Address const &address) {
+  uint64_t value;
+  CHK(_process->readMemory(address, &value, sizeof(value)));
+
+  try {
+    // store the new value. this will throw if _sites[address.value()] == null
+    _sites.at(address.value()).value = value;
+    return kSuccess;
+  } catch (const std::out_of_range &) {
+    return kErrorInvalidAddress;
+  }
+}
+
+bool HardwareBreakpointManager::hit(Address const &address, Site &site) {
+  auto ret = softwareImplementationOfReadonlyWatchpoints(address, site);
+  DS2ASSERT(storeNewValueAtAddress(address) == kSuccess);
+
+  return ret;
 }
 
 int HardwareBreakpointManager::getAvailableLocation() {
