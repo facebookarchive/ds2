@@ -363,6 +363,9 @@ std::string StopInfo::encode(CompatibilityMode mode, bool listThreads) const {
       ss << 0;
       break;
     case StopInfo::kReasonBreakpoint:
+    case StopInfo::kReasonAccessWatchpoint:
+    case StopInfo::kReasonReadWatchpoint:
+    case StopInfo::kReasonWriteWatchpoint:
       ss << 5; // SIGTRAP
       break;
     case StopInfo::kReasonMemoryError:
