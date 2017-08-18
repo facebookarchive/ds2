@@ -91,10 +91,16 @@ ErrorCode HardwareBreakpointManager::disableLocation(int idx,
 ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint64_t &ctrlReg,
                                                         int idx, Mode mode,
                                                         int size) {
-  int enableIdx = 1 + (idx * 2);
+  int enableIdx = idx * 2;
+#if !defined(OS_WIN32)
+  enableIdx += 1;
+#endif
+
   int infoIdx = 16 + (idx * 4);
 
   // Set G<idx> flag
+  // Except on windows, we use L<idx> as global hardware breakpoints
+  // are disabled on Windows.
   EnableBit(ctrlReg, enableIdx);
 
   // Set R/W<idx> flags
@@ -152,8 +158,15 @@ ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint64_t &ctrlReg,
 
 ErrorCode HardwareBreakpointManager::disableDebugCtrlReg(uint64_t &ctrlReg,
                                                          int idx) {
+  int disableIdx = idx * 2;
+#if !defined(OS_WIN32)
+  disableIdx += 1;
+#endif
+
   // Unset G<idx> flag
-  DisableBit(ctrlReg, 1 + (idx * 2));
+  // Except on windows, we use L<idx> as global hardware breakpoints
+  // are disabled on Windows.
+  DisableBit(ctrlReg, disableIdx);
 
   // Make sure to clear top half of the register
   DisableBits(ctrlReg, 32, 64);
