@@ -60,5 +60,9 @@ public:
 #endif
 
   virtual bool enabled(Target::Thread *thread = nullptr) const override;
+
+public:
+  virtual bool fillStopInfo(Target::Thread *thread,
+                            StopInfo &stopInfo) override;
 };
 } // namespace ds2

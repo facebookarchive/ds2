@@ -147,4 +147,33 @@ bool HardwareBreakpointManager::enabled(Target::Thread *thread) const {
 
   return isEnabled;
 }
+
+bool HardwareBreakpointManager::fillStopInfo(Target::Thread *thread,
+                                             StopInfo &stopInfo) {
+  BreakpointManager::Site site;
+  int bpIdx = hit(thread, site);
+  if (bpIdx < 0) {
+    return false;
+  }
+
+  stopInfo.watchpointIndex = bpIdx;
+  stopInfo.watchpointAddress = site.address;
+  switch (static_cast<int>(site.mode)) {
+  case BreakpointManager::kModeExec:
+    stopInfo.reason = StopInfo::kReasonBreakpoint;
+    break;
+  case BreakpointManager::kModeWrite:
+    stopInfo.reason = StopInfo::kReasonWriteWatchpoint;
+    break;
+  case BreakpointManager::kModeRead:
+    stopInfo.reason = StopInfo::kReasonReadWatchpoint;
+    break;
+  case BreakpointManager::kModeRead | BreakpointManager::kModeWrite:
+    stopInfo.reason = StopInfo::kReasonAccessWatchpoint;
+    break;
+  default:
+    DS2BUG("invalid mode");
+  }
+  return true;
+}
 } // namespace ds2
