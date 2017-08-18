@@ -26,6 +26,9 @@ public:
                 Mode mode) override;
   ErrorCode remove(Address const &address) override;
 
+protected:
+  bool hit(Address const &address, Site &site) override;
+
 public:
   int hit(Target::Thread *thread, Site &site) override;
 
@@ -39,10 +42,16 @@ protected:
   virtual ErrorCode disableLocation(int idx, Target::Thread *thread);
 
 protected:
+  bool softwareImplementationOfReadonlyWatchpoints(Address const &address,
+                                                   Site & site);
+  void storeNewValueAtAddress(Address const &address);
+
+protected:
   bool enabled(Target::Thread *thread = nullptr) const override;
 
 public:
   virtual size_t maxWatchpoints();
+  virtual bool checkIfWrittenTo(Address const &address);
 
 public:
   void enable(Target::Thread *thread = nullptr) override;

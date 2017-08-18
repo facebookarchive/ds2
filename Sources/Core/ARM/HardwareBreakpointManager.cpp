@@ -35,6 +35,12 @@ size_t HardwareBreakpointManager::maxWatchpoints() {
   return _process->getMaxWatchpoints();
 }
 
+bool HardwareBreakpointManager::checkIfWrittenTo(Address const &address) {
+  bool implemented = false;
+  DS2ASSERT(implemented);
+  return implemented;
+}
+
 ErrorCode HardwareBreakpointManager::isValid(Address const &address,
                                              size_t size, Mode mode) const {
   DS2LOG(Debug, "Trying to set hardware breakpoint on arm");

@@ -21,6 +21,7 @@ HardwareBreakpointManager::HardwareBreakpointManager(
     Target::ProcessBase *process)
     : super(process), _locations(maxWatchpoints()) {}
 
+
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
 
 ErrorCode HardwareBreakpointManager::add(Address const &address,
