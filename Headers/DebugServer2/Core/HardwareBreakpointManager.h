@@ -76,5 +76,9 @@ protected:
   virtual ErrorCode enableDebugCtrlReg(uint64_t &ctrlReg, int idx, Mode mode,
                                        int size);
 #endif
+
+public:
+  virtual bool fillStopInfo(Target::Thread *thread,
+                            StopInfo &stopInfo) override;
 };
 } // namespace ds2

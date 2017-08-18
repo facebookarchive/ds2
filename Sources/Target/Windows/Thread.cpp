@@ -127,11 +127,14 @@ void Thread::updateState(DEBUG_EVENT const &de) {
 
     switch (de.u.Exception.ExceptionRecord.ExceptionCode) {
     case STATUS_BREAKPOINT:
-    case STATUS_SINGLE_STEP:
+    case STATUS_SINGLE_STEP: {
       _stopInfo.event = StopInfo::kEventStop;
-      _stopInfo.reason = StopInfo::kReasonBreakpoint;
+      auto *hwBpm = process()->hardwareBreakpointManager();
+      if (hwBpm == nullptr || !hwBpm->fillStopInfo(this, _stopInfo)) {
+        _stopInfo.reason = StopInfo::kReasonBreakpoint;
+      }
       break;
-
+    }
     case STATUS_ACCESS_VIOLATION:
     case STATUS_ARRAY_BOUNDS_EXCEEDED:
     case STATUS_IN_PAGE_ERROR:

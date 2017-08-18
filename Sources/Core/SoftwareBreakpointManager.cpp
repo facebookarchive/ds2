@@ -113,4 +113,15 @@ bool SoftwareBreakpointManager::enabled(Target::Thread *thread) const {
 
   return _enabled;
 }
+
+bool SoftwareBreakpointManager::fillStopInfo(Target::Thread *thread,
+                                             StopInfo &stopInfo) {
+  BreakpointManager::Site site;
+  int bpIdx = hit(thread, site);
+  if (bpIdx < 0) {
+    return false;
+  }
+  stopInfo.reason = StopInfo::kReasonBreakpoint;
+  return true;
+}
 } // namespace ds2
