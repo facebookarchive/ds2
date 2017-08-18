@@ -44,7 +44,7 @@ protected:
 protected:
   bool softwareImplementationOfReadonlyWatchpoints(Address const &address,
                                                    Site & site);
-  void storeNewValueAtAddress(Address const &address);
+  ErrorCode storeNewValueAtAddress(Address const &address);
 
 protected:
   bool enabled(Target::Thread *thread = nullptr) const override;
