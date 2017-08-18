@@ -24,7 +24,7 @@ protected:
   Thread(Process *process, ThreadId tid);
 
 protected:
-  void fillWatchpointData();
+  void setBreakpointStopReason();
 
 protected:
   ErrorCode updateStopInfo(int waitStatus) override;
