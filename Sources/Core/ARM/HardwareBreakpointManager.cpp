@@ -35,10 +35,8 @@ size_t HardwareBreakpointManager::maxWatchpoints() {
   return _process->getMaxWatchpoints();
 }
 
-bool HardwareBreakpointManager::checkIfWrittenTo(Address const &address) {
-  bool implemented = false;
-  DS2ASSERT(implemented);
-  return implemented;
+bool HardwareBreakpointManager::wasWritten(Address const &address) {
+  DS2BUG("not implemented");
 }
 
 ErrorCode HardwareBreakpointManager::isValid(Address const &address,

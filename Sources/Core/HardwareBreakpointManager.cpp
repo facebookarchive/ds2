@@ -21,7 +21,6 @@ HardwareBreakpointManager::HardwareBreakpointManager(
     Target::ProcessBase *process)
     : super(process), _locations(maxWatchpoints()) {}
 
-
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
 
 ErrorCode HardwareBreakpointManager::add(Address const &address,
@@ -106,7 +105,7 @@ HardwareBreakpointManager::softwareImplementationOfReadonlyWatchpoints(
   // if this is a readonly hardware watchpoint
   case kModeRead:
     // if written to, return false. if not, invoke super.
-    return checkIfWrittenTo(address) ? false : super::hit(address, site);
+    return wasWritten(address) ? false : super::hit(address, site);
     break;
   default:
     return super::hit(address, site);
@@ -143,7 +142,7 @@ int HardwareBreakpointManager::getAvailableLocation() {
   auto it = std::find(_locations.begin(), _locations.end(), 0);
   DS2ASSERT(it != _locations.end());
 
-  return (it - _locations.begin());
+  return it - _locations.begin();
 }
 
 void HardwareBreakpointManager::enumerateThreads(

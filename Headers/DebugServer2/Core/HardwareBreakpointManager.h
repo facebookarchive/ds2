@@ -43,7 +43,7 @@ protected:
 
 protected:
   bool softwareImplementationOfReadonlyWatchpoints(Address const &address,
-                                                   Site & site);
+                                                   Site &site);
   ErrorCode storeNewValueAtAddress(Address const &address);
 
 protected:
@@ -51,7 +51,7 @@ protected:
 
 public:
   virtual size_t maxWatchpoints();
-  virtual bool checkIfWrittenTo(Address const &address);
+  virtual bool wasWritten(Address const &address);
 
 public:
   void enable(Target::Thread *thread = nullptr) override;

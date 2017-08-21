@@ -32,7 +32,7 @@ size_t HardwareBreakpointManager::maxWatchpoints() {
   return 4; // dr0, dr1, dr2, dr3
 }
 
-bool HardwareBreakpointManager::checkIfWrittenTo(Address const &address) {
+bool HardwareBreakpointManager::wasWritten(Address const &address) {
   Site site;
   try {
     site = _sites.at(address);
