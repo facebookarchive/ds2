@@ -39,5 +39,27 @@ ErrorCode ThreadBase::beforeResume() {
 
   return kSuccess;
 }
+
+void ThreadBase::setHardwareBreakpointStopReason(int bpIdx, BreakpointManager::Site const &site) {
+  _stopInfo.watchpointIndex = bpIdx;
+  _stopInfo.watchpointAddress = site.address;
+
+  switch (static_cast<int>(site.mode)) {
+    case BreakpointManager::kModeExec:
+      _stopInfo.reason = StopInfo::kReasonBreakpoint;
+      break;
+    case BreakpointManager::kModeWrite:
+      _stopInfo.reason = StopInfo::kReasonWriteWatchpoint;
+      break;
+    case BreakpointManager::kModeRead:
+      _stopInfo.reason = StopInfo::kReasonReadWatchpoint;
+      break;
+    case BreakpointManager::kModeRead | BreakpointManager::kModeWrite:
+      _stopInfo.reason = StopInfo::kReasonAccessWatchpoint;
+      break;
+    default:
+      DS2BUG("Invalid mode");
+  }
+}
 } // namespace Target
 } // namespace ds2

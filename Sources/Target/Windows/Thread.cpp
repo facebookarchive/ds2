@@ -33,6 +33,19 @@ Thread::Thread(Process *process, ThreadId tid, HANDLE handle)
 
 Thread::~Thread() { ::CloseHandle(_handle); }
 
+void Thread::setBreakpointStopReason() {
+  HardwareBreakpointManager *hwBpm = process()->hardwareBreakpointManager();
+  if (hwBpm != nullptr) {
+    BreakpointManager::Site site;
+    int bpIdx = hwBpm->hit(this, site);
+    if (bpIdx >= 0) {
+      setHardwareBreakpointStopReason(bpIdx, site);
+      return;
+    }
+  }
+  _stopInfo.reason = StopInfo::kReasonBreakpoint;
+}
+
 ErrorCode Thread::terminate() {
   BOOL result = ::TerminateThread(_handle, 0);
   if (!result) {
@@ -124,7 +137,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
     case STATUS_BREAKPOINT:
     case STATUS_SINGLE_STEP:
       _stopInfo.event = StopInfo::kEventStop;
-      _stopInfo.reason = StopInfo::kReasonBreakpoint;
+      setBreakpointStopReason();
       break;
 
     case STATUS_ACCESS_VIOLATION:

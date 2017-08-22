@@ -27,6 +27,9 @@ protected:
 public:
   virtual ~Thread();
 
+protected:
+  void setBreakpointStopReason();
+
 public:
   virtual ErrorCode terminate() override;
 

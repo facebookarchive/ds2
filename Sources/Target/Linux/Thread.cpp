@@ -35,36 +35,16 @@ namespace Linux {
 
 Thread::Thread(Process *process, ThreadId tid) : super(process, tid) {}
 
-void Thread::fillWatchpointData() {
+void Thread::setBreakpointStopReason() {
   HardwareBreakpointManager *hwBpm = process()->hardwareBreakpointManager();
-
-  if (hwBpm) {
+  if (hwBpm != nullptr) {
     BreakpointManager::Site site;
-
     int bpIdx = hwBpm->hit(this, site);
     if (bpIdx >= 0) {
-      _stopInfo.watchpointIndex = bpIdx;
-      _stopInfo.watchpointAddress = site.address;
-
-      switch (static_cast<int>(site.mode)) {
-      case BreakpointManager::kModeExec:
-        _stopInfo.reason = StopInfo::kReasonBreakpoint;
-        return;
-      case BreakpointManager::kModeWrite:
-        _stopInfo.reason = StopInfo::kReasonWriteWatchpoint;
-        return;
-      case BreakpointManager::kModeRead:
-        _stopInfo.reason = StopInfo::kReasonReadWatchpoint;
-        return;
-      case BreakpointManager::kModeRead | BreakpointManager::kModeWrite:
-        _stopInfo.reason = StopInfo::kReasonAccessWatchpoint;
-        return;
-      default:
-        DS2BUG("invalid mode");
-      }
+      setHardwareBreakpointStopReason(bpIdx, site);
+      return;
     }
   }
-
   _stopInfo.reason = StopInfo::kReasonTrace;
 }
 
@@ -134,7 +114,7 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
         break;
       case TRAP_HWBKPT:
       case TRAP_TRACE:
-        fillWatchpointData();
+        setBreakpointStopReason();
         break;
       case SI_KERNEL:
       case TRAP_BRKPT:

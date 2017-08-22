@@ -362,6 +362,9 @@ std::string StopInfo::encode(CompatibilityMode mode, bool listThreads) const {
     case StopInfo::kReasonLibraryEvent:
       ss << 0;
       break;
+    case StopInfo::kReasonWriteWatchpoint:
+    case StopInfo::kReasonReadWatchpoint:
+    case StopInfo::kReasonAccessWatchpoint:
     case StopInfo::kReasonBreakpoint:
       ss << 5; // SIGTRAP
       break;

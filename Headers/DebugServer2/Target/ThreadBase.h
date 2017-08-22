@@ -11,6 +11,7 @@
 #pragma once
 
 #include "DebugServer2/Architecture/CPUState.h"
+#include "DebugServer2/Core/BreakpointManager.h"
 #include "DebugServer2/Target/ProcessDecl.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -57,6 +58,9 @@ public:
 
 public:
   virtual ErrorCode beforeResume();
+
+protected:
+  void setHardwareBreakpointStopReason(int bpIdx, BreakpointManager::Site const &site);
 
 public:
   virtual ErrorCode readCPUState(Architecture::CPUState &state) = 0;
