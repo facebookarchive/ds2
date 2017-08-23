@@ -84,7 +84,7 @@ struct CPUState64 {
     X87Register regs[8];
     uint16_t fstw;
     uint16_t fctw;
-    uint8_t ftag;
+    uint16_t ftag;
     uint32_t firip;
     uint32_t forip;
     uint16_t fop;
