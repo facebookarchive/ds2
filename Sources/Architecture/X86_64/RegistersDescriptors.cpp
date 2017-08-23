@@ -2321,7 +2321,7 @@ RegisterDef const reg_def_ftag = {
     nullptr,
     nullptr,
     "float",
-    8,
+    16,
     -1,
     ds2::Architecture::X86_64::reg_gdb_ftag,
     -1,

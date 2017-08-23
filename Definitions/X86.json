@@ -349,7 +349,7 @@
 
             "fctrl" : { "bit-size" : 16 },
             "fstat" : { "bit-size" : 16 },
-            "ftag"  : { "bit-size" : 8 },
+            "ftag"  : { "bit-size" : 16 },
             "fiseg" : { },
             "fioff" : { },
             "foseg" : { },
