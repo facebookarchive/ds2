@@ -101,8 +101,8 @@ enum BranchCond {
   kCondLS,
   kCondGE,
   kCondLT,
-  kCondLE,
   kCondGT,
+  kCondLE,
   kCondAL,
   kCondNV
 };
