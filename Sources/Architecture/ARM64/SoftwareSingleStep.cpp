@@ -36,7 +36,48 @@ ErrorCode PrepareARM64SoftwareSingleStep(Process *process, uint64_t pc,
     return kSuccess;
   }
 
-  return kErrorUnsupported;
+  DS2LOG(Debug, "ARM64 branch found at %#" PRIx64, pc);
+
+  link = (info.type == kBranchTypeBL || info.type == kBranchTypeBLR);
+
+  //
+  // If it's a conditional branch, we need to set nextPC to the next
+  // instruction. Otherwise, we leave nextPC to its undefined value.
+  //
+  if (info.type == kBranchTypeBcc || info.type == kBranchTypeCB ||
+      info.type == kBranchTypeTB || link) {
+    nextPC = pc + sizeof(insn);
+    nextPCSize = sizeof(insn);
+  }
+
+  switch (info.type) {
+  //
+  // Simple branches
+  //
+  case kBranchTypeB:
+  case kBranchTypeBL:
+  case kBranchTypeBcc:
+  case kBranchTypeCB:
+  case kBranchTypeTB:
+    branchPC = pc + info.disp;
+    branchPCSize = sizeof(insn);
+    break;
+
+  //
+  // Branch to registers
+  //
+  case kBranchTypeBR:
+  case kBranchTypeBLR:
+  case kBranchTypeRET:
+    branchPC = state.state64.gp.regs[info.reg];
+    branchPCSize = sizeof(insn);
+    break;
+
+  default:
+    DS2BUG("Invalid branch type");
+  }
+
+  return kSuccess;
 }
 } // namespace ARM64
 } // namespace Architecture
