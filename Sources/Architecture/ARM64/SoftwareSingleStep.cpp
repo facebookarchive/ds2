@@ -9,6 +9,7 @@
 //
 
 #include "DebugServer2/Architecture/ARM64/SoftwareSingleStep.h"
+#include "DebugServer2/Architecture/ARM64/Branching.h"
 #include "DebugServer2/Utils/Bits.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -24,6 +25,17 @@ ErrorCode PrepareARM64SoftwareSingleStep(Process *process, uint64_t pc,
                                          uint64_t &nextPC, uint64_t &nextPCSize,
                                          uint64_t &branchPC,
                                          uint64_t &branchPCSize) {
+  uint32_t insn;
+
+  CHK(process->readMemory(pc, &insn, sizeof(insn)));
+  BranchInfo info;
+  if (!GetARM64BranchInfo(insn, info)) {
+    // We couldn't find a branch, the next instruction is standard ARM64.
+    nextPC = pc + sizeof(insn);
+    nextPCSize = sizeof(insn);
+    return kSuccess;
+  }
+
   return kErrorUnsupported;
 }
 } // namespace ARM64
