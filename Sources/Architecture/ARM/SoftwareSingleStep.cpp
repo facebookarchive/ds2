@@ -10,10 +10,12 @@
 
 #include "DebugServer2/Architecture/ARM/SoftwareSingleStep.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
+#if defined(ARCH_ARM64)
+#include "DebugServer2/Architecture/ARM64/SoftwareSingleStep.h"
+#endif
 #include "DebugServer2/Utils/Bits.h"
 #include "DebugServer2/Utils/Log.h"
 
-using ds2::Architecture::CPUState;
 using ds2::Target::Process;
 
 namespace ds2 {
@@ -315,15 +317,16 @@ ErrorCode PrepareARMSoftwareSingleStep(Process *process, uint32_t pc,
 
 ErrorCode PrepareSoftwareSingleStep(Process *process,
                                     BreakpointManager *manager,
-                                    CPUState const &state,
+                                    Architecture::CPUState const &state,
                                     Address const &address) {
   bool link = false;
-  uint32_t pc = address.valid() ? address.value() : state.pc();
-  uint32_t nextPC = static_cast<uint32_t>(-1);
-  uint32_t nextPCSize = 0;
-  uint32_t branchPC = static_cast<uint32_t>(-1);
-  uint32_t branchPCSize = 0;
+  uintptr_t pc = address.valid() ? address.value() : state.pc();
+  uintptr_t nextPC = static_cast<uintptr_t>(-1);
+  uintptr_t nextPCSize = 0;
+  uintptr_t branchPC = static_cast<uintptr_t>(-1);
+  uintptr_t branchPCSize = 0;
 
+#if defined(ARCH_ARM)
   if (state.isThumb()) {
     CHK(PrepareThumbSoftwareSingleStep(process, pc, state, link, nextPC,
                                        nextPCSize, branchPC, branchPCSize));
@@ -331,18 +334,23 @@ ErrorCode PrepareSoftwareSingleStep(Process *process,
     CHK(PrepareARMSoftwareSingleStep(process, pc, state, link, nextPC,
                                      nextPCSize, branchPC, branchPCSize));
   }
+#else
+  CHK(PrepareARM64SoftwareSingleStep(process, pc, state, link, nextPC,
+                                     nextPCSize, branchPC, branchPCSize));
+#endif
 
-  DS2LOG(Debug, "PC=%#x, branchPC=%#x[size=%d, link=%s] nextPC=%#x[size=%d]",
+  DS2LOG(Debug, "PC=%#" PRIxPTR " branchPC=%#" PRIxPTR " [size=%" PRIuPTR
+                ", link=%s] nextPC=%#" PRIxPTR " [size=%" PRIuPTR "]",
          pc, branchPC, branchPCSize, link ? "true" : "false", nextPC,
          nextPCSize);
 
-  if (branchPC != static_cast<uint32_t>(-1)) {
+  if (branchPC != static_cast<uintptr_t>(-1)) {
     DS2ASSERT(branchPCSize != 0);
     CHK(manager->add(branchPC, BreakpointManager::kTypeTemporaryOneShot,
                      branchPCSize, BreakpointManager::kModeExec));
   }
 
-  if (nextPC != static_cast<uint32_t>(-1)) {
+  if (nextPC != static_cast<uintptr_t>(-1)) {
     DS2ASSERT(nextPCSize != 0);
     CHK(manager->add(nextPC, BreakpointManager::kTypeTemporaryOneShot,
                      nextPCSize, BreakpointManager::kModeExec));
@@ -350,6 +358,7 @@ ErrorCode PrepareSoftwareSingleStep(Process *process,
 
   return kSuccess;
 }
+
 } // namespace ARM
 } // namespace Architecture
 } // namespace ds2

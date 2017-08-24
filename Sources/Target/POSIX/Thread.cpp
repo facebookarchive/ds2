@@ -11,6 +11,8 @@
 #include "DebugServer2/Target/POSIX/Thread.h"
 #if defined(ARCH_ARM)
 #include "DebugServer2/Architecture/ARM/SoftwareSingleStep.h"
+#elif defined(ARCH_ARM64)
+#include "DebugServer2/Architecture/ARM64/SoftwareSingleStep.h"
 #endif
 #include "DebugServer2/Target/Process.h"
 
@@ -74,7 +76,7 @@ ErrorCode Thread::suspend() {
   return kSuccess;
 }
 
-#if defined(ARCH_ARM)
+#if defined(ARCH_ARM) || defined(ARCH_ARM64)
 ErrorCode Thread::step(int signal, Address const &address) {
   if (_state == kInvalid || _state == kRunning) {
     return kErrorInvalidArgument;
@@ -87,7 +89,7 @@ ErrorCode Thread::step(int signal, Address const &address) {
   // Prepare a software (arch-dependent) single step and resume execution.
   Architecture::CPUState state;
   CHK(readCPUState(state));
-  CHK(PrepareSoftwareSingleStep(
+  CHK(ds2::Architecture::ARM::PrepareSoftwareSingleStep(
       process(), process()->softwareBreakpointManager(), state, address));
   CHK(resume(signal, address));
   _state = kStepped;

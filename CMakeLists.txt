@@ -104,6 +104,7 @@ set(ARCHITECTURE_ARM_SOURCES
 
 set(ARCHITECTURE_ARM64_SOURCES
     ${ARCHITECTURE_ARM_SOURCES}
+    Sources/Architecture/ARM64/SoftwareSingleStep.cpp
     Sources/Architecture/ARM64/RegistersDescriptors.cpp
     )
 
