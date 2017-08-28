@@ -30,11 +30,10 @@ ErrorCode HardwareBreakpointManager::add(Address const &address,
     return kErrorInvalidArgument;
   }
 
-  if (mode == kModeRead) {
-    DS2LOG(Warning,
-           "read-only watchpoints are unsupported, setting as read-write");
+  // Readonly hardware watchpoints aren't natively implemented, so they
+  // are implemened in software instead. See #510
+  if (mode == kModeRead)
     mode = static_cast<Mode>(mode | kModeWrite);
-  }
 
   return super::add(address, lifetime, size, mode);
 }

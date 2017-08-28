@@ -137,6 +137,9 @@ ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint64_t &ctrlReg,
     EnableBit(ctrlReg, infoIdx);
     DisableBit(ctrlReg, infoIdx + 1);
     break;
+  // Readonly watchpoints aren't implemented in hardware, so a
+  // read|write watchpoint is placed, and write halts are filtered
+  // out in software. See #510
   case kModeRead:
   case kModeRead | kModeWrite:
     EnableBit(ctrlReg, infoIdx);
