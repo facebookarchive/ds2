@@ -29,6 +29,9 @@
 #include <limits>
 #include <sys/ptrace.h>
 #include <sys/wait.h>
+#if defined(HAVE_PROCESS_VM_READV) || defined(HAVE_PROCESS_VM_WRITEV)
+#include <sys/uio.h>
+#endif
 #include <unistd.h>
 
 using ds2::Host::Linux::PTrace;
@@ -100,6 +103,61 @@ static pid_t blocking_waitpid(pid_t pid, int *status, int flags) {
   } while (ret == -1 && errno == EINTR);
 
   return ret;
+}
+
+ErrorCode Process::readMemory(Address const &address, void *data, size_t length,
+                              size_t *count) {
+#if defined(HAVE_PROCESS_VM_READV)
+  // Using process_vm_readv() is faster than using ptrace() because we can do
+  // bigger reads that ptrace() (which can only read a word at a time); the
+  // drawback is that process_vm_readv() cannot bypass page-level permissions
+  // like ptrace() can.
+  // This is why for reads smaller than word-size we go straight to the
+  // fallback so we reduce the number of possible process_vm_readv() failures.
+  // The most common occurence of this is when writing breakpoints.
+
+  if (length > sizeof(uintptr_t)) {
+    struct iovec local_iov = {data, length};
+    struct iovec remote_iov = {reinterpret_cast<void *>(address.value()),
+                               length};
+    auto id = _currentThread == nullptr ? _pid : _currentThread->tid();
+
+    ssize_t ret = process_vm_readv(id, &local_iov, 1, &remote_iov, 1, 0);
+    if (ret >= 0) {
+      if (count != nullptr) {
+        *count = ret;
+      }
+      return kSuccess;
+    }
+  }
+#endif
+
+  // Fallback to super::readMemory, which uses ptrace(2).
+  return super::readMemory(address, data, length, count);
+}
+
+ErrorCode Process::writeMemory(Address const &address, void const *data,
+                               size_t length, size_t *count) {
+#if defined(HAVE_PROCESS_VM_WRITEV)
+  // See comment in Process::readMemory.
+  if (length > sizeof(uintptr_t)) {
+    struct iovec local_iov = {const_cast<void *>(data), length};
+    struct iovec remote_iov = {reinterpret_cast<void *>(address.value()),
+                               length};
+    auto id = _currentThread == nullptr ? _pid : _currentThread->tid();
+
+    ssize_t ret = process_vm_writev(id, &local_iov, 1, &remote_iov, 1, 0);
+    if (ret >= 0) {
+      if (count != nullptr) {
+        *count = ret;
+      }
+      return kSuccess;
+    }
+  }
+#endif
+
+  // Fallback to super::writeMemory, which uses ptrace(2).
+  return super::writeMemory(address, data, length, count);
 }
 
 ErrorCode Process::checkMemoryErrorCode(uint64_t address) {

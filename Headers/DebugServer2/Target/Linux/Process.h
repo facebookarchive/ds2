@@ -36,6 +36,12 @@ protected:
   ErrorCode executeCode(ByteVector const &codestr, uint64_t &result);
 
 public:
+  ErrorCode readMemory(Address const &address, void *data, size_t length,
+                       size_t *count = nullptr) override;
+  ErrorCode writeMemory(Address const &address, void const *data, size_t length,
+                        size_t *count = nullptr) override;
+
+public:
   ErrorCode allocateMemory(size_t size, uint32_t protection,
                            uint64_t *address) override;
   ErrorCode deallocateMemory(uint64_t address, size_t size) override;
