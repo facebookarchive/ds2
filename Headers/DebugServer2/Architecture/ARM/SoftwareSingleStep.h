@@ -33,7 +33,7 @@ ErrorCode PrepareARMSoftwareSingleStep(Target::Process *process, uint32_t pc,
 
 ErrorCode PrepareSoftwareSingleStep(Target::Process *process,
                                     BreakpointManager *manager,
-                                    CPUState const &state,
+                                    Architecture::CPUState const &state,
                                     Address const &address);
 } // namespace ARM
 } // namespace Architecture
