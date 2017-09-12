@@ -28,23 +28,12 @@ case "${target_arch}" in
   *)     die "Unknown architecture '${target_arch}'.";;
 esac
 
-package_list=()
-
-# This is required due to dependency issues in the sdk. Hopefully this can be removed in future
-# versions of the sdk.
-if [ "${api_level}" -gt 23 ]; then
-  android_sdk_version="r24"
-  package_list+=("android-23", "platform-tools", "tools")
-else
-  android_sdk_version="r23"
-fi
-
-package_list+=("android-${api_level}", "sys-img-${emulator_image_arch}-android-${api_level}")
+package_list=("platform-tools", "tools", "android-${api_level}", "sys-img-${emulator_image_arch}-android-${api_level}")
 
 android_script="/tmp/android-sdk-${platform_name}/tools/android"
 
 if [ ! -f "$android_script" ]; then
-  android_sdk_package="android-sdk_${android_sdk_version}-${platform_name}.${package_extension}"
+  android_sdk_package="android-sdk_r24-${platform_name}.${package_extension}"
   wget "https://dl.google.com/android/${android_sdk_package}" -P /tmp
   case "${package_extension}" in
     "zip") unzip -d /tmp "/tmp/${android_sdk_package}";;
