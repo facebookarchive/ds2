@@ -2126,9 +2126,42 @@ void Session::Handle_qShlibInfoAddr(ProtocolInterpreter::Handler const &,
 //
 void Session::Handle_qSpeedTest(ProtocolInterpreter::Handler const &,
                                 std::string const &args) {
-  // TODO implement me, must send back the data for
-  // response_size bytes.
-  abort();
+  size_t response_size_start = 0;
+  size_t response_size_end = args.find(':', response_size_start);
+  if (response_size_end == std::string::npos) {
+    sendError(kErrorInvalidArgument);
+    return;
+  }
+  size_t response_size_value_start = response_size_end + 1;
+  size_t response_size_value_end = args.find(';', response_size_value_start);
+  if (response_size_value_end == std::string::npos) {
+    sendError(kErrorInvalidArgument);
+    return;
+  }
+
+  // The `data` field just serves as a placeholder for the debugger to send the
+  // debugserver packets of arbitrary size.
+
+  uint64_t response_size =
+      strtoull(args.substr(response_size_value_start,
+                           response_size_value_end - response_size_value_start)
+                   .c_str(),
+               nullptr, 10);
+
+  if (response_size == 0) {
+    sendOK();
+  } else {
+    std::string result = "data:";
+    const size_t total_target_size = result.length() + response_size;
+    result.reserve(total_target_size);
+    while (result.length() < total_target_size) {
+      static const char filler_data[] = "1234567890qwertyuiopasdfghjklzxcvbnm";
+      static const size_t filler_data_size = sizeof(filler_data) - 1;
+      result.append(filler_data, std::min(filler_data_size,
+                                          total_target_size - result.length()));
+    }
+    send(result);
+  }
 }
 
 //
