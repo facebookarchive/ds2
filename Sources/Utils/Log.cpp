@@ -72,6 +72,10 @@ void SetLogOutputStream(FILE *stream) { sOutputStream = stream; }
 
 static void vLog(int level, char const *classname, char const *funcname,
                  char const *format, va_list ap) {
+  if (level < sLogLevel) {
+    return;
+  }
+
   std::stringstream ss;
 
   std::vector<char> buffer;
@@ -90,9 +94,6 @@ static void vLog(int level, char const *classname, char const *funcname,
   if (classname != nullptr)
     functag << classname << "::";
   functag << funcname;
-
-  if (level < sLogLevel)
-    return;
 
   ss << '[' << Host::Platform::GetCurrentProcessId() << ']';
   ss << '[' << functag.str() << ']';
