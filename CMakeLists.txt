@@ -309,6 +309,13 @@ set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET ds2 PROPERTY CXX_EXTENSIONS OFF)
 set_property(TARGET ds2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS True)
+add_custom_command(TARGET ds2 PRE_LINK
+                   COMMAND ${CMAKE_COMMAND} -E copy
+                   "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json"
+                   "${CMAKE_HOME_DIRECTORY}/compile_commands.json")
+
+
 if ("${OS_NAME}" MATCHES "Windows")
   target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)
   target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6
