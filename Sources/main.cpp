@@ -215,42 +215,6 @@ static int SlaveMain() {
 }
 #endif
 
-[[noreturn]] static void ListProcesses() {
-  printf("Processes running on %s:\n\n", Platform::GetHostName());
-  printf("%s\n%s\n", "PID    USER       ARCH    NAME",
-         "====== ========== ======= ============================");
-
-  Platform::EnumerateProcesses(
-      true, ds2::UserId(), [&](ds2::ProcessInfo const &info) {
-        std::string pid = ds2::Utils::ToString(info.pid);
-
-        std::string user;
-        if (!Platform::GetUserName(info.realUid, user)) {
-#if !defined(OS_WIN32)
-          user = ds2::Utils::ToString(info.realUid);
-#else
-          user = "<unknown>";
-#endif
-        }
-
-        std::string path = info.name;
-        size_t lastsep;
-#if defined(OS_WIN32)
-        lastsep = path.rfind('\\');
-#else
-        lastsep = path.rfind('/');
-#endif
-        if (lastsep != std::string::npos) {
-          path = path.substr(lastsep + 1);
-        }
-
-        printf("%-6s %-10.10s %-7.7s %s\n", pid.c_str(), user.c_str(),
-               ds2::GetArchName(info.cpuType, info.cpuSubType), path.c_str());
-      });
-
-  ::exit(EXIT_SUCCESS);
-}
-
 #if defined(OS_WIN32)
 // On certain Windows targets (Windows Phone in particular), we build ds2 as a
 // library and load it from another process. To achieve this, we need `main` to
@@ -341,10 +305,6 @@ int main(int argc, char **argv) {
   // gdbserver compatibility options.
   opts.addOption(ds2::OptParse::boolOption, "once", 'O',
                  "exit after one execution of inferior (default)", true);
-
-  // Non-debugserver options.
-  opts.addOption(ds2::OptParse::boolOption, "list-processes", 'L',
-                 "list processes debuggable by the current user");
 
   if (argc < 2)
     opts.usageDie("first argument must be g[dbserver] or p[latform]");
@@ -476,11 +436,6 @@ int main(int argc, char **argv) {
     ::setsid();
   }
 #endif
-
-  // Non-debugserver options.
-  if (opts.getBool("list-processes")) {
-    ListProcesses();
-  }
 
   // Default host and port options.
   if (port.empty()) {
