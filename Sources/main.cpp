@@ -269,10 +269,10 @@ int main(int argc, char **argv) {
 #endif
 
   // clang-format on
-  std::ostringstream ss;
-  for (int i = 0; i < argc; ++i)
-    ss << argv[i] << " ";
-  std::string full_args = ss.str();
+  std::ostringstream full_args;
+  for (int i = 0; i < argc; ++i) {
+    full_args << argv[i] << " ";
+  }
 
   ds2::OptParse opts;
   int idx;
@@ -492,7 +492,7 @@ int main(int argc, char **argv) {
     host = gDefaultHost;
   }
 
-  DS2LOG(Debug, "ds2 launched with arguments: %s", full_args.c_str());
+  DS2LOG(Debug, "ds2 launched with arguments: %s", full_args.str().c_str());
 
   switch (mode) {
   case kRunModeNormal:
