@@ -48,7 +48,6 @@ using ds2::GDBRemote::SlaveSessionImpl;
 static std::string gDefaultPort = "12345";
 static std::string gDefaultHost = "127.0.0.1";
 static bool gDaemonize = false;
-static bool gKeepAlive = false;
 static bool gGDBCompat = false;
 
 // This function creates and initializes a socket than can be either a client
@@ -119,7 +118,7 @@ static int PlatformMain(std::string const &host, std::string const &port) {
         std::move(platformClient));
 
     thread.detach();
-  } while (gKeepAlive);
+  } while (true);
 
   return EXIT_SUCCESS;
 }
@@ -166,19 +165,17 @@ static int DebugMain(ds2::StringCollection const &args,
     ds2::Utils::Daemonize();
   }
 
-  do {
-    std::unique_ptr<DebugSessionImpl> impl;
+  std::unique_ptr<DebugSessionImpl> impl;
 
-    if (attachPid > 0)
-      impl = ds2::make_unique<DebugSessionImpl>(attachPid);
-    else if (args.size() > 0)
-      impl = ds2::make_unique<DebugSessionImpl>(args, env);
-    else
-      impl = ds2::make_unique<DebugSessionImpl>();
+  if (attachPid > 0)
+    impl = ds2::make_unique<DebugSessionImpl>(attachPid);
+  else if (args.size() > 0)
+    impl = ds2::make_unique<DebugSessionImpl>(args, env);
+  else
+    impl = ds2::make_unique<DebugSessionImpl>();
 
-    return RunDebugServer(reverse ? socket.get() : socket->accept().get(),
-                          impl.get());
-  } while (gKeepAlive);
+  return RunDebugServer(reverse ? socket.get() : socket->accept().get(),
+                        impl.get());
 
   return EXIT_SUCCESS;
 }
@@ -277,8 +274,6 @@ int main(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "daemonize", 'f',
                  "detach and become a daemon");
 #endif
-  opts.addOption(ds2::OptParse::boolOption, "keep-alive", 'k',
-                 "keep the server alive after the client disconnects");
   opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
                  "connect back to the debugger at [HOST]:PORT");
 
@@ -367,14 +362,6 @@ int main(int argc, char **argv) {
 // General ds2 options.
 #if defined(OS_POSIX)
   gDaemonize = opts.getBool("daemonize");
-#endif
-
-  gKeepAlive = opts.getBool("keep-alive");
-#if !defined(OS_WIN32)
-  if (mode == kRunModePlatform) {
-    // The platform spawner should stay alive by default.
-    gKeepAlive = true;
-  }
 #endif
 
   reverse = opts.getBool("reverse-connect");
