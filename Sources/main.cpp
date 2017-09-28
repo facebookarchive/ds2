@@ -72,7 +72,7 @@ CreateSocket(std::string const &host, std::string const &port, bool reverse) {
     } else {
       // This print to stderr is required when gdb launches ds2
       if (gGDBCompat) {
-        fprintf(stderr, "Listening on port %s\n", socket->port().c_str());
+        ::fprintf(stderr, "Listening on port %s\n", socket->port().c_str());
       }
 
       DS2LOG(Debug, "listening on [%s:%s]", socket->address().c_str(),
@@ -82,47 +82,6 @@ CreateSocket(std::string const &host, std::string const &port, bool reverse) {
 
   return socket;
 }
-
-#if !defined(OS_WIN32)
-static int PlatformMain(std::string const &host, std::string const &port) {
-  struct PlatformClient {
-    std::unique_ptr<Socket> socket;
-    PlatformSessionImpl impl;
-    Session session;
-
-    PlatformClient(std::unique_ptr<Socket> socket_)
-        : socket(std::move(socket_)),
-          session(ds2::GDBRemote::kCompatibilityModeLLDB) {
-      session.setDelegate(&impl);
-      session.create(socket.get());
-    }
-  };
-
-  std::unique_ptr<Socket> serverSocket = CreateSocket(host, port, false);
-
-  if (gDaemonize) {
-    ds2::Utils::Daemonize();
-  }
-
-  do {
-    std::unique_ptr<Socket> clientSocket = serverSocket->accept();
-    auto platformClient =
-        ds2::make_unique<PlatformClient>(std::move(clientSocket));
-
-    std::thread thread(
-        [](std::unique_ptr<PlatformClient> client) {
-          while (client->session.receive(/*cooked=*/false)) {
-            continue;
-          }
-        },
-        std::move(platformClient));
-
-    thread.detach();
-  } while (true);
-
-  return EXIT_SUCCESS;
-}
-#endif
 
 static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
   Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
@@ -142,10 +101,156 @@ static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
   return EXIT_SUCCESS;
 }
 
-static int DebugMain(ds2::StringCollection const &args,
-                     ds2::EnvironmentBlock const &env, int attachPid,
-                     std::string const &host, std::string const &port,
-                     bool reverse, std::string const &namedPipePath) {
+static void AddSharedOptions(ds2::OptParse &opts) {
+  opts.addOption(ds2::OptParse::stringOption, "log-file", 'o',
+                 "output log messages to the file specified");
+  opts.addOption(ds2::OptParse::boolOption, "remote-debug", 'D',
+                 "enable log for remote protocol packets");
+  opts.addOption(ds2::OptParse::boolOption, "debug", 'd',
+                 "enable debug log output");
+  opts.addOption(ds2::OptParse::boolOption, "no-colors", 'n',
+                 "disable colored output");
+
+#if defined(OS_POSIX)
+  opts.addOption(ds2::OptParse::boolOption, "daemonize", 'f',
+                 "detach and become a daemon");
+  opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
+                 "make ds2 run in its own session");
+#endif
+}
+
+static void HandleSharedOptions(ds2::OptParse const &opts) {
+  if (!opts.getString("log-file").empty()) {
+    FILE *stream = fopen(opts.getString("log-file").c_str(), "a");
+    if (stream == nullptr) {
+      DS2LOG(Error, "unable to open %s for writing: %s",
+             opts.getString("log-file").c_str(), strerror(errno));
+    } else {
+#if defined(OS_POSIX)
+      // When ds2 is spawned by an app (e.g.: on Android), it will run with the
+      // app's user/group ID, and will create its log file owned by the app. By
+      // default, the permissions will be 0600 (rw-------) which makes us
+      // unable to get the log files. chmod() them to be able to access them.
+      fchmod(fileno(stream), 0644);
+      fcntl(fileno(stream), F_SETFD, FD_CLOEXEC);
+#endif
+      ds2::SetLogColorsEnabled(false);
+      ds2::SetLogOutputStream(stream);
+      ds2::SetLogLevel(ds2::kLogLevelDebug);
+    }
+  }
+
+  if (opts.getBool("remote-debug")) {
+    ds2::SetLogLevel(ds2::kLogLevelPacket);
+  } else if (opts.getBool("debug")) {
+    ds2::SetLogLevel(ds2::kLogLevelDebug);
+  }
+
+  if (opts.getBool("no-colors")) {
+    ds2::SetLogColorsEnabled(false);
+  }
+
+#if defined(OS_POSIX)
+  gDaemonize = opts.getBool("daemonize");
+
+  if (opts.getBool("setsid")) {
+    ::setsid();
+  }
+#endif
+}
+
+static int GdbserverMain(int argc, char **argv) {
+  DS2ASSERT(argv[1][0] == 'g');
+
+  ds2::OptParse opts;
+  AddSharedOptions(opts);
+
+  // Target debug options.
+  opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
+                 "add an element to the environment before launch");
+  opts.addOption(ds2::OptParse::vectorOption, "unset-env", 'E',
+                 "remove an element from the environment before lauch");
+  opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
+                 "attach to the name or PID specified");
+
+  // lldb-server compatibility options.
+  opts.addOption(ds2::OptParse::boolOption, "gdb-compat", 'g',
+                 "force ds2 to run in gdb compat mode");
+  opts.addOption(ds2::OptParse::stringOption, "named-pipe", 'N',
+                 "determine a port dynamically and write back to FIFO");
+  opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
+                 "connect back to the debugger at [HOST]:PORT");
+  opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
+                 "use native registers (no-op)", true);
+
+  // gdbserver compatibility options.
+  opts.addOption(ds2::OptParse::boolOption, "once", 'O',
+                 "exit after one execution of inferior (default)", true);
+
+  int idx = opts.parse(argc, argv);
+  HandleSharedOptions(opts);
+
+  // Target debug program and arguments.
+  ds2::StringCollection args(&argv[idx], &argv[argc]);
+
+  // Target debug environment.
+  ds2::EnvironmentBlock env;
+  Platform::GetCurrentEnvironment(env);
+
+  for (auto const &e : opts.getVector("set-env")) {
+    char const *arg = e.c_str();
+    char const *equal = strchr(arg, '=');
+    if (equal == nullptr || equal == arg) {
+      DS2LOG(Error, "trying to add invalid environment value '%s', skipping",
+             e.c_str());
+      continue;
+    }
+    env[std::string(arg, equal)] = equal + 1;
+  }
+
+  for (auto const &e : opts.getVector("unset-env")) {
+    if (env.find(e) == env.end()) {
+      DS2LOG(Warning, "trying to remove '%s' not present in the environment",
+             e.c_str());
+      continue;
+    }
+    env.erase(e);
+  }
+
+  int attachPid = opts.getString("attach").empty()
+                      ? -1
+                      : atoi(opts.getString("attach").c_str());
+
+  gGDBCompat = opts.getBool("gdb-compat");
+  if (gGDBCompat && args.empty() && attachPid < 0) {
+    // In GDB compatibility mode, we need a process to attach to or a command
+    // line so we can launch it.
+    // In LLDB mode, we can launch the debug server without any of those two
+    // things, and wait for an "A" command that specifies the command line to
+    // use to launch the inferior.
+    opts.usageDie("either a program or target PID is required in gdb mode");
+  }
+
+  // This is used for llgs testing. We determine a port number dynamically and
+  // write it back to the FIFO passed as argument for the test harness to use
+  // it.
+  std::string namedPipePath = opts.getString("named-pipe");
+
+  bool reverse = opts.getBool("reverse-connect");
+
+  std::string host = opts.getHost();
+  std::string port = opts.getPort();
+
+  // Default host and port options.
+  if (port.empty()) {
+    // If we have a named pipe, set the port to 0 to indicate that we should
+    // dynamically allocate it and write it back to the FIFO.
+    port = namedPipePath.empty() ? gDefaultPort : "0";
+  }
+  if (host.empty()) {
+    host = gDefaultHost;
+  }
+
   std::unique_ptr<Socket> socket = CreateSocket(host, port, reverse);
 
   if (!namedPipePath.empty()) {
@@ -176,12 +281,68 @@ static int DebugMain(ds2::StringCollection const &args,
 
   return RunDebugServer(reverse ? socket.get() : socket->accept().get(),
                         impl.get());
+}
+
+#if !defined(OS_WIN32)
+static int PlatformMain(int argc, char **argv) {
+  DS2ASSERT(argv[1][0] == 'p');
+
+  ds2::OptParse opts;
+  AddSharedOptions(opts);
+  opts.parse(argc, argv);
+  HandleSharedOptions(opts);
+
+  struct PlatformClient {
+    std::unique_ptr<Socket> socket;
+    PlatformSessionImpl impl;
+    Session session;
+
+    PlatformClient(std::unique_ptr<Socket> socket_)
+        : socket(std::move(socket_)),
+          session(ds2::GDBRemote::kCompatibilityModeLLDB) {
+      session.setDelegate(&impl);
+      session.create(socket.get());
+    }
+  };
+
+  std::string host = opts.getHost().empty() ? gDefaultHost : opts.getHost();
+  std::string port = opts.getPort().empty() ? gDefaultPort : opts.getPort();
+
+  std::unique_ptr<Socket> serverSocket = CreateSocket(host, port, false);
+
+  if (gDaemonize) {
+    ds2::Utils::Daemonize();
+  }
+
+  do {
+    std::unique_ptr<Socket> clientSocket = serverSocket->accept();
+    auto platformClient =
+        ds2::make_unique<PlatformClient>(std::move(clientSocket));
+
+    std::thread thread(
+        [](std::unique_ptr<PlatformClient> client) {
+          while (client->session.receive(/*cooked=*/false)) {
+            continue;
+          }
+        },
+        std::move(platformClient));
+
+    thread.detach();
+  } while (true);
 
   return EXIT_SUCCESS;
 }
 
-#if !defined(OS_WIN32)
-static int SlaveMain() {
+static int SlaveMain(int argc, char **argv) {
+  DS2ASSERT(argv[1][0] == 's');
+
+  ds2::OptParse opts;
+  AddSharedOptions(opts);
+  opts.parse(argc, argv);
+  HandleSharedOptions(opts);
+
+  ds2::SetLogLevel(ds2::kLogLevelWarning);
+
   std::unique_ptr<Socket> server = CreateSocket(gDefaultHost, "0", false);
   std::string port = server->port();
 
@@ -205,12 +366,23 @@ static int SlaveMain() {
   } else {
     // Write to the standard output to let our parent know
     // where we're listening.
-    fprintf(stdout, "%s %d\n", port.c_str(), pid);
+    ::fprintf(stdout, "%s %d\n", port.c_str(), pid);
   }
 
   return EXIT_SUCCESS;
 }
 #endif
+
+[[noreturn]] static void UsageDie(char const *argv0) {
+  static const std::vector<std::string> modes = {"gdbserver", "platform"};
+
+  ::fprintf(stderr, "Usage:\n");
+  for (auto const &mode : modes) {
+    auto c_str = mode.c_str();
+    ::fprintf(stderr, "  %s [%c]%s [options]\n", argv0, c_str[0], c_str + 1);
+  }
+  ::exit(EXIT_FAILURE);
+}
 
 #if defined(OS_WIN32)
 // On certain Windows targets (Windows Phone in particular), we build ds2 as a
@@ -220,6 +392,8 @@ static int SlaveMain() {
 __declspec(dllexport)
 #endif
 int main(int argc, char **argv) {
+// clang-format on
+
 #if defined(OS_POSIX)
   // When ds2 is launched inside the lldb test-runner, python will leak file
   // descriptors to its inferior (ds2). Clean up these file descriptors before
@@ -229,224 +403,26 @@ int main(int argc, char **argv) {
   }
 #endif
 
-  // clang-format on
-  std::ostringstream full_args;
-  for (int i = 0; i < argc; ++i) {
-    full_args << argv[i] << " ";
-  }
-
-  ds2::OptParse opts;
-  int idx;
-
   ds2::Host::Platform::Initialize();
 #if !defined(OS_WIN32)
   ds2::SetLogColorsEnabled(isatty(fileno(stderr)));
 #endif
   ds2::SetLogLevel(ds2::kLogLevelInfo);
 
-  enum RunMode {
-    kRunModeNormal,
-#if !defined(OS_WIN32)
-    kRunModePlatform,
-    kRunModeSlave,
-#endif
-  };
-
-  int attachPid = -1;
-  std::string namedPipePath;
-  RunMode mode = kRunModeNormal;
-  bool reverse = false;
-
-  // Logging options.
-  opts.addOption(ds2::OptParse::stringOption, "log-file", 'o',
-                 "output log messages to the file specified");
-  opts.addOption(ds2::OptParse::boolOption, "remote-debug", 'D',
-                 "enable log for remote protocol packets");
-  opts.addOption(ds2::OptParse::boolOption, "debug", 'd',
-                 "enable debug log output");
-  opts.addOption(ds2::OptParse::boolOption, "no-colors", 'n',
-                 "disable colored output");
-
-// General ds2 options.
-#if defined(OS_POSIX)
-  opts.addOption(ds2::OptParse::boolOption, "daemonize", 'f',
-                 "detach and become a daemon");
-#endif
-  opts.addOption(ds2::OptParse::boolOption, "reverse-connect", 'R',
-                 "connect back to the debugger at [HOST]:PORT");
-
-  // Target debug options.
-  opts.addOption(ds2::OptParse::vectorOption, "set-env", 'e',
-                 "add an element to the environment before launch");
-  opts.addOption(ds2::OptParse::vectorOption, "unset-env", 'E',
-                 "remove an element from the environment before lauch");
-  opts.addOption(ds2::OptParse::stringOption, "attach", 'a',
-                 "attach to the name or PID specified");
-
-  // lldb-server compatibility options.
-  opts.addOption(ds2::OptParse::boolOption, "gdb-compat", 'g',
-                 "force ds2 to run in gdb compat mode");
-  opts.addOption(ds2::OptParse::stringOption, "named-pipe", 'N',
-                 "determine a port dynamically and write back to FIFO");
-  opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
-                 "use native registers (no-op)", true);
-#if defined(OS_POSIX)
-  opts.addOption(ds2::OptParse::boolOption, "setsid", 'S',
-                 "make ds2 run in its own session");
-#endif
-
-  // gdbserver compatibility options.
-  opts.addOption(ds2::OptParse::boolOption, "once", 'O',
-                 "exit after one execution of inferior (default)", true);
-
-  if (argc < 2)
-    opts.usageDie("first argument must be g[dbserver] or p[latform]");
+  if (argc < 2) {
+    UsageDie(argv[0]);
+  }
 
   switch (argv[1][0]) {
   case 'g':
-    mode = kRunModeNormal;
-    break;
+    return GdbserverMain(argc, argv);
 #if !defined(OS_WIN32)
   case 'p':
-    mode = kRunModePlatform;
-    break;
+    return PlatformMain(argc, argv);
   case 's':
-    mode = kRunModeSlave;
-    break;
+    return SlaveMain(argc, argv);
 #endif
   default:
-    opts.usageDie("first argument must be g[dbserver] or p[latform]");
-  }
-
-  idx = opts.parse(argc, argv);
-  argc -= idx;
-  argv += idx;
-
-  // Logging options.
-  if (!opts.getString("log-file").empty()) {
-    FILE *stream = fopen(opts.getString("log-file").c_str(), "a");
-    if (stream == nullptr) {
-      DS2LOG(Error, "unable to open %s for writing: %s",
-             opts.getString("log-file").c_str(), strerror(errno));
-    } else {
-#if defined(OS_POSIX)
-      // When ds2 is spawned by an app (e.g.: on Android), it will run with the
-      // app's user/group ID, and will create its log file owned by the app. By
-      // default, the permissions will be 0600 (rw-------) which makes us
-      // unable to get the log files. chmod() them to be able to access them.
-      fchmod(fileno(stream), 0644);
-      fcntl(fileno(stream), F_SETFD, FD_CLOEXEC);
-#endif
-      ds2::SetLogColorsEnabled(false);
-      ds2::SetLogOutputStream(stream);
-      ds2::SetLogLevel(ds2::kLogLevelDebug);
-    }
-  }
-
-  if (opts.getBool("remote-debug")) {
-    ds2::SetLogLevel(ds2::kLogLevelPacket);
-  } else if (opts.getBool("debug")) {
-    ds2::SetLogLevel(ds2::kLogLevelDebug);
-#if !defined(OS_WIN32)
-  } else if (mode == kRunModeSlave) {
-    ds2::SetLogLevel(ds2::kLogLevelWarning);
-#endif
-  }
-
-  if (opts.getBool("no-colors")) {
-    ds2::SetLogColorsEnabled(false);
-  }
-
-// General ds2 options.
-#if defined(OS_POSIX)
-  gDaemonize = opts.getBool("daemonize");
-#endif
-
-  reverse = opts.getBool("reverse-connect");
-  if (mode != kRunModeNormal && reverse) {
-    opts.usageDie("reverse-connect only supported in gdbserver mode");
-  }
-
-  std::string host = opts.getHost();
-  std::string port = opts.getPort();
-
-  // Target debug options and program arguments.
-  ds2::StringCollection args(&argv[0], &argv[argc]);
-  if (mode != kRunModeNormal && !args.empty()) {
-    opts.usageDie("PROGRAM and ARGUMENTS only supported in gdbserver mode");
-  }
-
-  ds2::EnvironmentBlock env;
-  Platform::GetCurrentEnvironment(env);
-
-  for (auto const &e : opts.getVector("set-env")) {
-    char const *arg = e.c_str();
-    char const *equal = strchr(arg, '=');
-    if (equal == nullptr || equal == arg) {
-      DS2LOG(Error, "trying to add invalid environment value '%s', skipping",
-             e.c_str());
-      continue;
-    }
-    env[std::string(arg, equal)] = equal + 1;
-  }
-
-  for (auto const &e : opts.getVector("unset-env")) {
-    if (env.find(e) == env.end()) {
-      DS2LOG(Warning, "trying to remove '%s' not present in the environment",
-             e.c_str());
-      continue;
-    }
-    env.erase(e);
-  }
-
-  if (!opts.getString("attach").empty()) {
-    attachPid = atoi(opts.getString("attach").c_str());
-  }
-
-  // lldb-server compatibilty options.
-  gGDBCompat = opts.getBool("gdb-compat");
-  if (mode == kRunModeNormal && gGDBCompat && args.empty() && attachPid < 0) {
-    // In GDB compatibility mode, we need a process to attach to or a command
-    // line so we can launch it.
-    // In LLDB mode, we can launch the debug server without any of those two
-    // things, and wait for an "A" command that specifies the command line to
-    // use to launch the inferior.
-    opts.usageDie("either a program or target PID is required in gdb mode");
-  }
-
-  // This is used for llgs testing. We determine a port number dynamically and
-  // write it back to the FIFO passed as argument for the test harness to use
-  // it.
-  namedPipePath = opts.getString("named-pipe");
-
-#if defined(OS_POSIX)
-  if (opts.getBool("setsid")) {
-    ::setsid();
-  }
-#endif
-
-  // Default host and port options.
-  if (port.empty()) {
-    // If we have a named pipe, set the port to 0 to indicate that we should
-    // dynamically allocate it and write it back to the FIFO.
-    port = namedPipePath.empty() ? gDefaultPort : "0";
-  }
-  if (host.empty()) {
-    host = gDefaultHost;
-  }
-
-  DS2LOG(Debug, "ds2 launched with arguments: %s", full_args.str().c_str());
-
-  switch (mode) {
-  case kRunModeNormal:
-    return DebugMain(args, env, attachPid, host, port, reverse, namedPipePath);
-#if !defined(OS_WIN32)
-  case kRunModePlatform:
-    return PlatformMain(host, port);
-  case kRunModeSlave:
-    return SlaveMain();
-#endif
-  default:
-    DS2BUG("invalid run mode: %d", mode);
+    UsageDie(argv[0]);
   }
 }
