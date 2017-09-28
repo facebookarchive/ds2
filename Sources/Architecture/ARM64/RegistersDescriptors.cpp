@@ -29,37 +29,37 @@ namespace {
 extern RegisterDef const reg_def_cpsr;
 
 // Register Set (gpr)
-extern RegisterDef const reg_def_r0;
-extern RegisterDef const reg_def_r1;
-extern RegisterDef const reg_def_r2;
-extern RegisterDef const reg_def_r3;
-extern RegisterDef const reg_def_r4;
-extern RegisterDef const reg_def_r5;
-extern RegisterDef const reg_def_r6;
-extern RegisterDef const reg_def_r7;
-extern RegisterDef const reg_def_r8;
-extern RegisterDef const reg_def_r9;
-extern RegisterDef const reg_def_r10;
-extern RegisterDef const reg_def_r11;
-extern RegisterDef const reg_def_r12;
-extern RegisterDef const reg_def_r13;
-extern RegisterDef const reg_def_r14;
-extern RegisterDef const reg_def_r15;
-extern RegisterDef const reg_def_r16;
-extern RegisterDef const reg_def_r17;
-extern RegisterDef const reg_def_r18;
-extern RegisterDef const reg_def_r19;
-extern RegisterDef const reg_def_r20;
-extern RegisterDef const reg_def_r21;
-extern RegisterDef const reg_def_r22;
-extern RegisterDef const reg_def_r23;
-extern RegisterDef const reg_def_r24;
-extern RegisterDef const reg_def_r25;
-extern RegisterDef const reg_def_r26;
-extern RegisterDef const reg_def_r27;
-extern RegisterDef const reg_def_r28;
-extern RegisterDef const reg_def_r29;
-extern RegisterDef const reg_def_r30;
+extern RegisterDef const reg_def_x0;
+extern RegisterDef const reg_def_x1;
+extern RegisterDef const reg_def_x2;
+extern RegisterDef const reg_def_x3;
+extern RegisterDef const reg_def_x4;
+extern RegisterDef const reg_def_x5;
+extern RegisterDef const reg_def_x6;
+extern RegisterDef const reg_def_x7;
+extern RegisterDef const reg_def_x8;
+extern RegisterDef const reg_def_x9;
+extern RegisterDef const reg_def_x10;
+extern RegisterDef const reg_def_x11;
+extern RegisterDef const reg_def_x12;
+extern RegisterDef const reg_def_x13;
+extern RegisterDef const reg_def_x14;
+extern RegisterDef const reg_def_x15;
+extern RegisterDef const reg_def_x16;
+extern RegisterDef const reg_def_x17;
+extern RegisterDef const reg_def_x18;
+extern RegisterDef const reg_def_x19;
+extern RegisterDef const reg_def_x20;
+extern RegisterDef const reg_def_x21;
+extern RegisterDef const reg_def_x22;
+extern RegisterDef const reg_def_x23;
+extern RegisterDef const reg_def_x24;
+extern RegisterDef const reg_def_x25;
+extern RegisterDef const reg_def_x26;
+extern RegisterDef const reg_def_x27;
+extern RegisterDef const reg_def_x28;
+extern RegisterDef const reg_def_x29;
+extern RegisterDef const reg_def_x30;
 extern RegisterDef const reg_def_sp;
 extern RegisterDef const reg_def_pc;
 
@@ -103,13 +103,13 @@ extern RegisterDef const reg_def_w30;
 // LLDB Register Set (General Purpose Registers)
 
 RegisterDef const *const lldb_reg_defs_0[] = {
-    &reg_def_r0,  &reg_def_r1,  &reg_def_r2,  &reg_def_r3,   &reg_def_r4,
-    &reg_def_r5,  &reg_def_r6,  &reg_def_r7,  &reg_def_r8,   &reg_def_r9,
-    &reg_def_r10, &reg_def_r11, &reg_def_r12, &reg_def_r13,  &reg_def_r14,
-    &reg_def_r15, &reg_def_r16, &reg_def_r17, &reg_def_r18,  &reg_def_r19,
-    &reg_def_r20, &reg_def_r21, &reg_def_r22, &reg_def_r23,  &reg_def_r24,
-    &reg_def_r25, &reg_def_r26, &reg_def_r27, &reg_def_r28,  &reg_def_r29,
-    &reg_def_r30, &reg_def_sp,  &reg_def_pc,  &reg_def_cpsr, &reg_def_w0,
+    &reg_def_x0,  &reg_def_x1,  &reg_def_x2,  &reg_def_x3,   &reg_def_x4,
+    &reg_def_x5,  &reg_def_x6,  &reg_def_x7,  &reg_def_x8,   &reg_def_x9,
+    &reg_def_x10, &reg_def_x11, &reg_def_x12, &reg_def_x13,  &reg_def_x14,
+    &reg_def_x15, &reg_def_x16, &reg_def_x17, &reg_def_x18,  &reg_def_x19,
+    &reg_def_x20, &reg_def_x21, &reg_def_x22, &reg_def_x23,  &reg_def_x24,
+    &reg_def_x25, &reg_def_x26, &reg_def_x27, &reg_def_x28,  &reg_def_x29,
+    &reg_def_x30, &reg_def_sp,  &reg_def_pc,  &reg_def_cpsr, &reg_def_w0,
     &reg_def_w1,  &reg_def_w2,  &reg_def_w3,  &reg_def_w4,   &reg_def_w5,
     &reg_def_w6,  &reg_def_w7,  &reg_def_w8,  &reg_def_w9,   &reg_def_w10,
     &reg_def_w11, &reg_def_w12, &reg_def_w13, &reg_def_w14,  &reg_def_w15,
@@ -129,37 +129,37 @@ LLDBRegisterSet const *const lldb_reg_sets[] = {&lldb_reg_set_0, nullptr};
 
 // GDB Feature (org.gnu.gdb.aarch64.core)
 GDBFeatureEntry const gdb_fents_org_gnu_gdb_aarch64_core[] = {
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r0},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r1},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r2},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r3},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r4},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r5},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r6},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r7},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r8},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r9},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r10},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r11},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r12},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r13},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r14},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r15},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r16},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r17},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r18},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r19},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r20},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r21},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r22},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r23},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r24},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r25},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r26},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r27},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r28},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r29},
-    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_r30},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x0},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x1},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x2},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x3},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x4},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x5},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x6},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x7},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x8},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x9},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x10},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x11},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x12},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x13},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x14},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x15},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x16},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x17},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x18},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x19},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x20},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x21},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x22},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x23},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x24},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x25},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x26},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x27},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x28},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x29},
+    {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_x30},
     {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_sp},
     {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_pc},
     {ds2::Architecture::kGDBFeatureTypeRegister, &reg_def_cpsr},
@@ -176,695 +176,695 @@ GDBFeature const *const gdb_features[] = {&gdb_feat_org_gnu_gdb_aarch64_core,
 // LLDB Register Invalidation/Container Sets
 //
 
-RegisterDef const *const reg_inv_defs_r0[] = {&reg_def_w0, nullptr};
-RegisterDef const *const reg_inv_defs_r1[] = {&reg_def_w1, nullptr};
-RegisterDef const *const reg_inv_defs_r2[] = {&reg_def_w2, nullptr};
-RegisterDef const *const reg_inv_defs_r3[] = {&reg_def_w3, nullptr};
-RegisterDef const *const reg_inv_defs_r4[] = {&reg_def_w4, nullptr};
-RegisterDef const *const reg_inv_defs_r5[] = {&reg_def_w5, nullptr};
-RegisterDef const *const reg_inv_defs_r6[] = {&reg_def_w6, nullptr};
-RegisterDef const *const reg_inv_defs_r7[] = {&reg_def_w7, nullptr};
-RegisterDef const *const reg_inv_defs_r8[] = {&reg_def_w8, nullptr};
-RegisterDef const *const reg_inv_defs_r9[] = {&reg_def_w9, nullptr};
-RegisterDef const *const reg_inv_defs_r10[] = {&reg_def_w10, nullptr};
-RegisterDef const *const reg_inv_defs_r11[] = {&reg_def_w11, nullptr};
-RegisterDef const *const reg_inv_defs_r12[] = {&reg_def_w12, nullptr};
-RegisterDef const *const reg_inv_defs_r13[] = {&reg_def_w13, nullptr};
-RegisterDef const *const reg_inv_defs_r14[] = {&reg_def_w14, nullptr};
-RegisterDef const *const reg_inv_defs_r15[] = {&reg_def_w15, nullptr};
-RegisterDef const *const reg_inv_defs_r16[] = {&reg_def_w16, nullptr};
-RegisterDef const *const reg_inv_defs_r17[] = {&reg_def_w17, nullptr};
-RegisterDef const *const reg_inv_defs_r18[] = {&reg_def_w18, nullptr};
-RegisterDef const *const reg_inv_defs_r19[] = {&reg_def_w19, nullptr};
-RegisterDef const *const reg_inv_defs_r20[] = {&reg_def_w20, nullptr};
-RegisterDef const *const reg_inv_defs_r21[] = {&reg_def_w21, nullptr};
-RegisterDef const *const reg_inv_defs_r22[] = {&reg_def_w22, nullptr};
-RegisterDef const *const reg_inv_defs_r23[] = {&reg_def_w23, nullptr};
-RegisterDef const *const reg_inv_defs_r24[] = {&reg_def_w24, nullptr};
-RegisterDef const *const reg_inv_defs_r25[] = {&reg_def_w25, nullptr};
-RegisterDef const *const reg_inv_defs_r26[] = {&reg_def_w26, nullptr};
-RegisterDef const *const reg_inv_defs_r27[] = {&reg_def_w27, nullptr};
-RegisterDef const *const reg_inv_defs_r28[] = {&reg_def_w28, nullptr};
-RegisterDef const *const reg_inv_defs_r29[] = {&reg_def_w29, nullptr};
-RegisterDef const *const reg_inv_defs_r30[] = {&reg_def_w30, nullptr};
-RegisterDef const *const reg_inv_defs_w0[] = {&reg_def_r0, nullptr};
-RegisterDef const *const reg_cnt_defs_w0[] = {&reg_def_r0, nullptr};
-RegisterDef const *const reg_inv_defs_w1[] = {&reg_def_r1, nullptr};
-RegisterDef const *const reg_cnt_defs_w1[] = {&reg_def_r1, nullptr};
-RegisterDef const *const reg_inv_defs_w2[] = {&reg_def_r2, nullptr};
-RegisterDef const *const reg_cnt_defs_w2[] = {&reg_def_r2, nullptr};
-RegisterDef const *const reg_inv_defs_w3[] = {&reg_def_r3, nullptr};
-RegisterDef const *const reg_cnt_defs_w3[] = {&reg_def_r3, nullptr};
-RegisterDef const *const reg_inv_defs_w4[] = {&reg_def_r4, nullptr};
-RegisterDef const *const reg_cnt_defs_w4[] = {&reg_def_r4, nullptr};
-RegisterDef const *const reg_inv_defs_w5[] = {&reg_def_r5, nullptr};
-RegisterDef const *const reg_cnt_defs_w5[] = {&reg_def_r5, nullptr};
-RegisterDef const *const reg_inv_defs_w6[] = {&reg_def_r6, nullptr};
-RegisterDef const *const reg_cnt_defs_w6[] = {&reg_def_r6, nullptr};
-RegisterDef const *const reg_inv_defs_w7[] = {&reg_def_r7, nullptr};
-RegisterDef const *const reg_cnt_defs_w7[] = {&reg_def_r7, nullptr};
-RegisterDef const *const reg_inv_defs_w8[] = {&reg_def_r8, nullptr};
-RegisterDef const *const reg_cnt_defs_w8[] = {&reg_def_r8, nullptr};
-RegisterDef const *const reg_inv_defs_w9[] = {&reg_def_r9, nullptr};
-RegisterDef const *const reg_cnt_defs_w9[] = {&reg_def_r9, nullptr};
-RegisterDef const *const reg_inv_defs_w10[] = {&reg_def_r10, nullptr};
-RegisterDef const *const reg_cnt_defs_w10[] = {&reg_def_r10, nullptr};
-RegisterDef const *const reg_inv_defs_w11[] = {&reg_def_r11, nullptr};
-RegisterDef const *const reg_cnt_defs_w11[] = {&reg_def_r11, nullptr};
-RegisterDef const *const reg_inv_defs_w12[] = {&reg_def_r12, nullptr};
-RegisterDef const *const reg_cnt_defs_w12[] = {&reg_def_r12, nullptr};
-RegisterDef const *const reg_inv_defs_w13[] = {&reg_def_r13, nullptr};
-RegisterDef const *const reg_cnt_defs_w13[] = {&reg_def_r13, nullptr};
-RegisterDef const *const reg_inv_defs_w14[] = {&reg_def_r14, nullptr};
-RegisterDef const *const reg_cnt_defs_w14[] = {&reg_def_r14, nullptr};
-RegisterDef const *const reg_inv_defs_w15[] = {&reg_def_r15, nullptr};
-RegisterDef const *const reg_cnt_defs_w15[] = {&reg_def_r15, nullptr};
-RegisterDef const *const reg_inv_defs_w16[] = {&reg_def_r16, nullptr};
-RegisterDef const *const reg_cnt_defs_w16[] = {&reg_def_r16, nullptr};
-RegisterDef const *const reg_inv_defs_w17[] = {&reg_def_r17, nullptr};
-RegisterDef const *const reg_cnt_defs_w17[] = {&reg_def_r17, nullptr};
-RegisterDef const *const reg_inv_defs_w18[] = {&reg_def_r18, nullptr};
-RegisterDef const *const reg_cnt_defs_w18[] = {&reg_def_r18, nullptr};
-RegisterDef const *const reg_inv_defs_w19[] = {&reg_def_r19, nullptr};
-RegisterDef const *const reg_cnt_defs_w19[] = {&reg_def_r19, nullptr};
-RegisterDef const *const reg_inv_defs_w20[] = {&reg_def_r20, nullptr};
-RegisterDef const *const reg_cnt_defs_w20[] = {&reg_def_r20, nullptr};
-RegisterDef const *const reg_inv_defs_w21[] = {&reg_def_r21, nullptr};
-RegisterDef const *const reg_cnt_defs_w21[] = {&reg_def_r21, nullptr};
-RegisterDef const *const reg_inv_defs_w22[] = {&reg_def_r22, nullptr};
-RegisterDef const *const reg_cnt_defs_w22[] = {&reg_def_r22, nullptr};
-RegisterDef const *const reg_inv_defs_w23[] = {&reg_def_r23, nullptr};
-RegisterDef const *const reg_cnt_defs_w23[] = {&reg_def_r23, nullptr};
-RegisterDef const *const reg_inv_defs_w24[] = {&reg_def_r24, nullptr};
-RegisterDef const *const reg_cnt_defs_w24[] = {&reg_def_r24, nullptr};
-RegisterDef const *const reg_inv_defs_w25[] = {&reg_def_r25, nullptr};
-RegisterDef const *const reg_cnt_defs_w25[] = {&reg_def_r25, nullptr};
-RegisterDef const *const reg_inv_defs_w26[] = {&reg_def_r26, nullptr};
-RegisterDef const *const reg_cnt_defs_w26[] = {&reg_def_r26, nullptr};
-RegisterDef const *const reg_inv_defs_w27[] = {&reg_def_r27, nullptr};
-RegisterDef const *const reg_cnt_defs_w27[] = {&reg_def_r27, nullptr};
-RegisterDef const *const reg_inv_defs_w28[] = {&reg_def_r28, nullptr};
-RegisterDef const *const reg_cnt_defs_w28[] = {&reg_def_r28, nullptr};
-RegisterDef const *const reg_inv_defs_w29[] = {&reg_def_r29, nullptr};
-RegisterDef const *const reg_cnt_defs_w29[] = {&reg_def_r29, nullptr};
-RegisterDef const *const reg_inv_defs_w30[] = {&reg_def_r30, nullptr};
-RegisterDef const *const reg_cnt_defs_w30[] = {&reg_def_r30, nullptr};
+RegisterDef const *const reg_inv_defs_x0[] = {&reg_def_w0, nullptr};
+RegisterDef const *const reg_inv_defs_x1[] = {&reg_def_w1, nullptr};
+RegisterDef const *const reg_inv_defs_x2[] = {&reg_def_w2, nullptr};
+RegisterDef const *const reg_inv_defs_x3[] = {&reg_def_w3, nullptr};
+RegisterDef const *const reg_inv_defs_x4[] = {&reg_def_w4, nullptr};
+RegisterDef const *const reg_inv_defs_x5[] = {&reg_def_w5, nullptr};
+RegisterDef const *const reg_inv_defs_x6[] = {&reg_def_w6, nullptr};
+RegisterDef const *const reg_inv_defs_x7[] = {&reg_def_w7, nullptr};
+RegisterDef const *const reg_inv_defs_x8[] = {&reg_def_w8, nullptr};
+RegisterDef const *const reg_inv_defs_x9[] = {&reg_def_w9, nullptr};
+RegisterDef const *const reg_inv_defs_x10[] = {&reg_def_w10, nullptr};
+RegisterDef const *const reg_inv_defs_x11[] = {&reg_def_w11, nullptr};
+RegisterDef const *const reg_inv_defs_x12[] = {&reg_def_w12, nullptr};
+RegisterDef const *const reg_inv_defs_x13[] = {&reg_def_w13, nullptr};
+RegisterDef const *const reg_inv_defs_x14[] = {&reg_def_w14, nullptr};
+RegisterDef const *const reg_inv_defs_x15[] = {&reg_def_w15, nullptr};
+RegisterDef const *const reg_inv_defs_x16[] = {&reg_def_w16, nullptr};
+RegisterDef const *const reg_inv_defs_x17[] = {&reg_def_w17, nullptr};
+RegisterDef const *const reg_inv_defs_x18[] = {&reg_def_w18, nullptr};
+RegisterDef const *const reg_inv_defs_x19[] = {&reg_def_w19, nullptr};
+RegisterDef const *const reg_inv_defs_x20[] = {&reg_def_w20, nullptr};
+RegisterDef const *const reg_inv_defs_x21[] = {&reg_def_w21, nullptr};
+RegisterDef const *const reg_inv_defs_x22[] = {&reg_def_w22, nullptr};
+RegisterDef const *const reg_inv_defs_x23[] = {&reg_def_w23, nullptr};
+RegisterDef const *const reg_inv_defs_x24[] = {&reg_def_w24, nullptr};
+RegisterDef const *const reg_inv_defs_x25[] = {&reg_def_w25, nullptr};
+RegisterDef const *const reg_inv_defs_x26[] = {&reg_def_w26, nullptr};
+RegisterDef const *const reg_inv_defs_x27[] = {&reg_def_w27, nullptr};
+RegisterDef const *const reg_inv_defs_x28[] = {&reg_def_w28, nullptr};
+RegisterDef const *const reg_inv_defs_x29[] = {&reg_def_w29, nullptr};
+RegisterDef const *const reg_inv_defs_x30[] = {&reg_def_w30, nullptr};
+RegisterDef const *const reg_inv_defs_w0[] = {&reg_def_x0, nullptr};
+RegisterDef const *const reg_cnt_defs_w0[] = {&reg_def_x0, nullptr};
+RegisterDef const *const reg_inv_defs_w1[] = {&reg_def_x1, nullptr};
+RegisterDef const *const reg_cnt_defs_w1[] = {&reg_def_x1, nullptr};
+RegisterDef const *const reg_inv_defs_w2[] = {&reg_def_x2, nullptr};
+RegisterDef const *const reg_cnt_defs_w2[] = {&reg_def_x2, nullptr};
+RegisterDef const *const reg_inv_defs_w3[] = {&reg_def_x3, nullptr};
+RegisterDef const *const reg_cnt_defs_w3[] = {&reg_def_x3, nullptr};
+RegisterDef const *const reg_inv_defs_w4[] = {&reg_def_x4, nullptr};
+RegisterDef const *const reg_cnt_defs_w4[] = {&reg_def_x4, nullptr};
+RegisterDef const *const reg_inv_defs_w5[] = {&reg_def_x5, nullptr};
+RegisterDef const *const reg_cnt_defs_w5[] = {&reg_def_x5, nullptr};
+RegisterDef const *const reg_inv_defs_w6[] = {&reg_def_x6, nullptr};
+RegisterDef const *const reg_cnt_defs_w6[] = {&reg_def_x6, nullptr};
+RegisterDef const *const reg_inv_defs_w7[] = {&reg_def_x7, nullptr};
+RegisterDef const *const reg_cnt_defs_w7[] = {&reg_def_x7, nullptr};
+RegisterDef const *const reg_inv_defs_w8[] = {&reg_def_x8, nullptr};
+RegisterDef const *const reg_cnt_defs_w8[] = {&reg_def_x8, nullptr};
+RegisterDef const *const reg_inv_defs_w9[] = {&reg_def_x9, nullptr};
+RegisterDef const *const reg_cnt_defs_w9[] = {&reg_def_x9, nullptr};
+RegisterDef const *const reg_inv_defs_w10[] = {&reg_def_x10, nullptr};
+RegisterDef const *const reg_cnt_defs_w10[] = {&reg_def_x10, nullptr};
+RegisterDef const *const reg_inv_defs_w11[] = {&reg_def_x11, nullptr};
+RegisterDef const *const reg_cnt_defs_w11[] = {&reg_def_x11, nullptr};
+RegisterDef const *const reg_inv_defs_w12[] = {&reg_def_x12, nullptr};
+RegisterDef const *const reg_cnt_defs_w12[] = {&reg_def_x12, nullptr};
+RegisterDef const *const reg_inv_defs_w13[] = {&reg_def_x13, nullptr};
+RegisterDef const *const reg_cnt_defs_w13[] = {&reg_def_x13, nullptr};
+RegisterDef const *const reg_inv_defs_w14[] = {&reg_def_x14, nullptr};
+RegisterDef const *const reg_cnt_defs_w14[] = {&reg_def_x14, nullptr};
+RegisterDef const *const reg_inv_defs_w15[] = {&reg_def_x15, nullptr};
+RegisterDef const *const reg_cnt_defs_w15[] = {&reg_def_x15, nullptr};
+RegisterDef const *const reg_inv_defs_w16[] = {&reg_def_x16, nullptr};
+RegisterDef const *const reg_cnt_defs_w16[] = {&reg_def_x16, nullptr};
+RegisterDef const *const reg_inv_defs_w17[] = {&reg_def_x17, nullptr};
+RegisterDef const *const reg_cnt_defs_w17[] = {&reg_def_x17, nullptr};
+RegisterDef const *const reg_inv_defs_w18[] = {&reg_def_x18, nullptr};
+RegisterDef const *const reg_cnt_defs_w18[] = {&reg_def_x18, nullptr};
+RegisterDef const *const reg_inv_defs_w19[] = {&reg_def_x19, nullptr};
+RegisterDef const *const reg_cnt_defs_w19[] = {&reg_def_x19, nullptr};
+RegisterDef const *const reg_inv_defs_w20[] = {&reg_def_x20, nullptr};
+RegisterDef const *const reg_cnt_defs_w20[] = {&reg_def_x20, nullptr};
+RegisterDef const *const reg_inv_defs_w21[] = {&reg_def_x21, nullptr};
+RegisterDef const *const reg_cnt_defs_w21[] = {&reg_def_x21, nullptr};
+RegisterDef const *const reg_inv_defs_w22[] = {&reg_def_x22, nullptr};
+RegisterDef const *const reg_cnt_defs_w22[] = {&reg_def_x22, nullptr};
+RegisterDef const *const reg_inv_defs_w23[] = {&reg_def_x23, nullptr};
+RegisterDef const *const reg_cnt_defs_w23[] = {&reg_def_x23, nullptr};
+RegisterDef const *const reg_inv_defs_w24[] = {&reg_def_x24, nullptr};
+RegisterDef const *const reg_cnt_defs_w24[] = {&reg_def_x24, nullptr};
+RegisterDef const *const reg_inv_defs_w25[] = {&reg_def_x25, nullptr};
+RegisterDef const *const reg_cnt_defs_w25[] = {&reg_def_x25, nullptr};
+RegisterDef const *const reg_inv_defs_w26[] = {&reg_def_x26, nullptr};
+RegisterDef const *const reg_cnt_defs_w26[] = {&reg_def_x26, nullptr};
+RegisterDef const *const reg_inv_defs_w27[] = {&reg_def_x27, nullptr};
+RegisterDef const *const reg_cnt_defs_w27[] = {&reg_def_x27, nullptr};
+RegisterDef const *const reg_inv_defs_w28[] = {&reg_def_x28, nullptr};
+RegisterDef const *const reg_cnt_defs_w28[] = {&reg_def_x28, nullptr};
+RegisterDef const *const reg_inv_defs_w29[] = {&reg_def_x29, nullptr};
+RegisterDef const *const reg_cnt_defs_w29[] = {&reg_def_x29, nullptr};
+RegisterDef const *const reg_inv_defs_w30[] = {&reg_def_x30, nullptr};
+RegisterDef const *const reg_cnt_defs_w30[] = {&reg_def_x30, nullptr};
 RegisterDef const *const reg_inv_defs_cpsr[] = {
-    &reg_def_r8,  &reg_def_r9,  &reg_def_r10, &reg_def_r11,
-    &reg_def_r12, &reg_def_r13, &reg_def_r14, nullptr};
+    &reg_def_x8,  &reg_def_x9,  &reg_def_x10, &reg_def_x11,
+    &reg_def_x12, &reg_def_x13, &reg_def_x14, nullptr};
 
 //
 // Register Definitions
 //
 
-RegisterDef const reg_def_r0 = {
-    "r0",
+RegisterDef const reg_def_x0 = {
+    "x0",
     nullptr,
     "arg1",
     "arg1",
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r0,
-    ds2::Architecture::ARM64::reg_gdb_r0,
-    ds2::Architecture::ARM64::reg_gcc_r0,
-    ds2::Architecture::ARM64::reg_lldb_r0,
+    ds2::Architecture::ARM64::reg_dwarf_x0,
+    ds2::Architecture::ARM64::reg_gdb_x0,
+    ds2::Architecture::ARM64::reg_gcc_x0,
+    ds2::Architecture::ARM64::reg_lldb_x0,
     0,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r0,
+    reg_inv_defs_x0,
     nullptr};
-RegisterDef const reg_def_r1 = {
-    "r1",
+RegisterDef const reg_def_x1 = {
+    "x1",
     nullptr,
     "arg2",
     "arg2",
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r1,
-    ds2::Architecture::ARM64::reg_gdb_r1,
-    ds2::Architecture::ARM64::reg_gcc_r1,
-    ds2::Architecture::ARM64::reg_lldb_r1,
+    ds2::Architecture::ARM64::reg_dwarf_x1,
+    ds2::Architecture::ARM64::reg_gdb_x1,
+    ds2::Architecture::ARM64::reg_gcc_x1,
+    ds2::Architecture::ARM64::reg_lldb_x1,
     8,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r1,
+    reg_inv_defs_x1,
     nullptr};
-RegisterDef const reg_def_r2 = {
-    "r2",
+RegisterDef const reg_def_x2 = {
+    "x2",
     nullptr,
     "arg3",
     "arg3",
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r2,
-    ds2::Architecture::ARM64::reg_gdb_r2,
-    ds2::Architecture::ARM64::reg_gcc_r2,
-    ds2::Architecture::ARM64::reg_lldb_r2,
+    ds2::Architecture::ARM64::reg_dwarf_x2,
+    ds2::Architecture::ARM64::reg_gdb_x2,
+    ds2::Architecture::ARM64::reg_gcc_x2,
+    ds2::Architecture::ARM64::reg_lldb_x2,
     16,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r2,
+    reg_inv_defs_x2,
     nullptr};
-RegisterDef const reg_def_r3 = {
-    "r3",
+RegisterDef const reg_def_x3 = {
+    "x3",
     nullptr,
     "arg4",
     "arg4",
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r3,
-    ds2::Architecture::ARM64::reg_gdb_r3,
-    ds2::Architecture::ARM64::reg_gcc_r3,
-    ds2::Architecture::ARM64::reg_lldb_r3,
+    ds2::Architecture::ARM64::reg_dwarf_x3,
+    ds2::Architecture::ARM64::reg_gdb_x3,
+    ds2::Architecture::ARM64::reg_gcc_x3,
+    ds2::Architecture::ARM64::reg_lldb_x3,
     24,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r3,
+    reg_inv_defs_x3,
     nullptr};
-RegisterDef const reg_def_r4 = {
-    "r4",
+RegisterDef const reg_def_x4 = {
+    "x4",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r4,
-    ds2::Architecture::ARM64::reg_gdb_r4,
-    ds2::Architecture::ARM64::reg_gcc_r4,
-    ds2::Architecture::ARM64::reg_lldb_r4,
+    ds2::Architecture::ARM64::reg_dwarf_x4,
+    ds2::Architecture::ARM64::reg_gdb_x4,
+    ds2::Architecture::ARM64::reg_gcc_x4,
+    ds2::Architecture::ARM64::reg_lldb_x4,
     32,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r4,
+    reg_inv_defs_x4,
     nullptr};
-RegisterDef const reg_def_r5 = {
-    "r5",
+RegisterDef const reg_def_x5 = {
+    "x5",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r5,
-    ds2::Architecture::ARM64::reg_gdb_r5,
-    ds2::Architecture::ARM64::reg_gcc_r5,
-    ds2::Architecture::ARM64::reg_lldb_r5,
+    ds2::Architecture::ARM64::reg_dwarf_x5,
+    ds2::Architecture::ARM64::reg_gdb_x5,
+    ds2::Architecture::ARM64::reg_gcc_x5,
+    ds2::Architecture::ARM64::reg_lldb_x5,
     40,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r5,
+    reg_inv_defs_x5,
     nullptr};
-RegisterDef const reg_def_r6 = {
-    "r6",
+RegisterDef const reg_def_x6 = {
+    "x6",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r6,
-    ds2::Architecture::ARM64::reg_gdb_r6,
-    ds2::Architecture::ARM64::reg_gcc_r6,
-    ds2::Architecture::ARM64::reg_lldb_r6,
+    ds2::Architecture::ARM64::reg_dwarf_x6,
+    ds2::Architecture::ARM64::reg_gdb_x6,
+    ds2::Architecture::ARM64::reg_gcc_x6,
+    ds2::Architecture::ARM64::reg_lldb_x6,
     48,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r6,
+    reg_inv_defs_x6,
     nullptr};
-RegisterDef const reg_def_r7 = {
-    "r7",
+RegisterDef const reg_def_x7 = {
+    "x7",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r7,
-    ds2::Architecture::ARM64::reg_gdb_r7,
-    ds2::Architecture::ARM64::reg_gcc_r7,
-    ds2::Architecture::ARM64::reg_lldb_r7,
+    ds2::Architecture::ARM64::reg_dwarf_x7,
+    ds2::Architecture::ARM64::reg_gdb_x7,
+    ds2::Architecture::ARM64::reg_gcc_x7,
+    ds2::Architecture::ARM64::reg_lldb_x7,
     56,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r7,
+    reg_inv_defs_x7,
     nullptr};
-RegisterDef const reg_def_r8 = {
-    "r8",
+RegisterDef const reg_def_x8 = {
+    "x8",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r8,
-    ds2::Architecture::ARM64::reg_gdb_r8,
-    ds2::Architecture::ARM64::reg_gcc_r8,
-    ds2::Architecture::ARM64::reg_lldb_r8,
+    ds2::Architecture::ARM64::reg_dwarf_x8,
+    ds2::Architecture::ARM64::reg_gdb_x8,
+    ds2::Architecture::ARM64::reg_gcc_x8,
+    ds2::Architecture::ARM64::reg_lldb_x8,
     64,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r8,
+    reg_inv_defs_x8,
     nullptr};
-RegisterDef const reg_def_r9 = {
-    "r9",
+RegisterDef const reg_def_x9 = {
+    "x9",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r9,
-    ds2::Architecture::ARM64::reg_gdb_r9,
-    ds2::Architecture::ARM64::reg_gcc_r9,
-    ds2::Architecture::ARM64::reg_lldb_r9,
+    ds2::Architecture::ARM64::reg_dwarf_x9,
+    ds2::Architecture::ARM64::reg_gdb_x9,
+    ds2::Architecture::ARM64::reg_gcc_x9,
+    ds2::Architecture::ARM64::reg_lldb_x9,
     72,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r9,
+    reg_inv_defs_x9,
     nullptr};
-RegisterDef const reg_def_r10 = {
-    "r10",
+RegisterDef const reg_def_x10 = {
+    "x10",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r10,
-    ds2::Architecture::ARM64::reg_gdb_r10,
-    ds2::Architecture::ARM64::reg_gcc_r10,
-    ds2::Architecture::ARM64::reg_lldb_r10,
+    ds2::Architecture::ARM64::reg_dwarf_x10,
+    ds2::Architecture::ARM64::reg_gdb_x10,
+    ds2::Architecture::ARM64::reg_gcc_x10,
+    ds2::Architecture::ARM64::reg_lldb_x10,
     80,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r10,
+    reg_inv_defs_x10,
     nullptr};
-RegisterDef const reg_def_r11 = {
-    "r11",
+RegisterDef const reg_def_x11 = {
+    "x11",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r11,
-    ds2::Architecture::ARM64::reg_gdb_r11,
-    ds2::Architecture::ARM64::reg_gcc_r11,
-    ds2::Architecture::ARM64::reg_lldb_r11,
+    ds2::Architecture::ARM64::reg_dwarf_x11,
+    ds2::Architecture::ARM64::reg_gdb_x11,
+    ds2::Architecture::ARM64::reg_gcc_x11,
+    ds2::Architecture::ARM64::reg_lldb_x11,
     88,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r11,
+    reg_inv_defs_x11,
     nullptr};
-RegisterDef const reg_def_r12 = {
-    "r12",
+RegisterDef const reg_def_x12 = {
+    "x12",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r12,
-    ds2::Architecture::ARM64::reg_gdb_r12,
-    ds2::Architecture::ARM64::reg_gcc_r12,
-    ds2::Architecture::ARM64::reg_lldb_r12,
+    ds2::Architecture::ARM64::reg_dwarf_x12,
+    ds2::Architecture::ARM64::reg_gdb_x12,
+    ds2::Architecture::ARM64::reg_gcc_x12,
+    ds2::Architecture::ARM64::reg_lldb_x12,
     96,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r12,
+    reg_inv_defs_x12,
     nullptr};
-RegisterDef const reg_def_r13 = {
-    "r13",
+RegisterDef const reg_def_x13 = {
+    "x13",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r13,
-    ds2::Architecture::ARM64::reg_gdb_r13,
-    ds2::Architecture::ARM64::reg_gcc_r13,
-    ds2::Architecture::ARM64::reg_lldb_r13,
+    ds2::Architecture::ARM64::reg_dwarf_x13,
+    ds2::Architecture::ARM64::reg_gdb_x13,
+    ds2::Architecture::ARM64::reg_gcc_x13,
+    ds2::Architecture::ARM64::reg_lldb_x13,
     104,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r13,
+    reg_inv_defs_x13,
     nullptr};
-RegisterDef const reg_def_r14 = {
-    "r14",
+RegisterDef const reg_def_x14 = {
+    "x14",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r14,
-    ds2::Architecture::ARM64::reg_gdb_r14,
-    ds2::Architecture::ARM64::reg_gcc_r14,
-    ds2::Architecture::ARM64::reg_lldb_r14,
+    ds2::Architecture::ARM64::reg_dwarf_x14,
+    ds2::Architecture::ARM64::reg_gdb_x14,
+    ds2::Architecture::ARM64::reg_gcc_x14,
+    ds2::Architecture::ARM64::reg_lldb_x14,
     112,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r14,
+    reg_inv_defs_x14,
     nullptr};
-RegisterDef const reg_def_r15 = {
-    "r15",
+RegisterDef const reg_def_x15 = {
+    "x15",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r15,
-    ds2::Architecture::ARM64::reg_gdb_r15,
-    ds2::Architecture::ARM64::reg_gcc_r15,
-    ds2::Architecture::ARM64::reg_lldb_r15,
+    ds2::Architecture::ARM64::reg_dwarf_x15,
+    ds2::Architecture::ARM64::reg_gdb_x15,
+    ds2::Architecture::ARM64::reg_gcc_x15,
+    ds2::Architecture::ARM64::reg_lldb_x15,
     120,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r15,
+    reg_inv_defs_x15,
     nullptr};
-RegisterDef const reg_def_r16 = {
-    "r16",
+RegisterDef const reg_def_x16 = {
+    "x16",
     nullptr,
     "ip0",
     "ip0",
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r16,
-    ds2::Architecture::ARM64::reg_gdb_r16,
-    ds2::Architecture::ARM64::reg_gcc_r16,
-    ds2::Architecture::ARM64::reg_lldb_r16,
+    ds2::Architecture::ARM64::reg_dwarf_x16,
+    ds2::Architecture::ARM64::reg_gdb_x16,
+    ds2::Architecture::ARM64::reg_gcc_x16,
+    ds2::Architecture::ARM64::reg_lldb_x16,
     128,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r16,
+    reg_inv_defs_x16,
     nullptr};
-RegisterDef const reg_def_r17 = {
-    "r17",
+RegisterDef const reg_def_x17 = {
+    "x17",
     nullptr,
     "ip1",
     "ip1",
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r17,
-    ds2::Architecture::ARM64::reg_gdb_r17,
-    ds2::Architecture::ARM64::reg_gcc_r17,
-    ds2::Architecture::ARM64::reg_lldb_r17,
+    ds2::Architecture::ARM64::reg_dwarf_x17,
+    ds2::Architecture::ARM64::reg_gdb_x17,
+    ds2::Architecture::ARM64::reg_gcc_x17,
+    ds2::Architecture::ARM64::reg_lldb_x17,
     136,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r17,
+    reg_inv_defs_x17,
     nullptr};
-RegisterDef const reg_def_r18 = {
-    "r18",
+RegisterDef const reg_def_x18 = {
+    "x18",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r18,
-    ds2::Architecture::ARM64::reg_gdb_r18,
-    ds2::Architecture::ARM64::reg_gcc_r18,
-    ds2::Architecture::ARM64::reg_lldb_r18,
+    ds2::Architecture::ARM64::reg_dwarf_x18,
+    ds2::Architecture::ARM64::reg_gdb_x18,
+    ds2::Architecture::ARM64::reg_gcc_x18,
+    ds2::Architecture::ARM64::reg_lldb_x18,
     144,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r18,
+    reg_inv_defs_x18,
     nullptr};
-RegisterDef const reg_def_r19 = {
-    "r19",
+RegisterDef const reg_def_x19 = {
+    "x19",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r19,
-    ds2::Architecture::ARM64::reg_gdb_r19,
-    ds2::Architecture::ARM64::reg_gcc_r19,
-    ds2::Architecture::ARM64::reg_lldb_r19,
+    ds2::Architecture::ARM64::reg_dwarf_x19,
+    ds2::Architecture::ARM64::reg_gdb_x19,
+    ds2::Architecture::ARM64::reg_gcc_x19,
+    ds2::Architecture::ARM64::reg_lldb_x19,
     152,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r19,
+    reg_inv_defs_x19,
     nullptr};
-RegisterDef const reg_def_r20 = {
-    "r20",
+RegisterDef const reg_def_x20 = {
+    "x20",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r20,
-    ds2::Architecture::ARM64::reg_gdb_r20,
-    ds2::Architecture::ARM64::reg_gcc_r20,
-    ds2::Architecture::ARM64::reg_lldb_r20,
+    ds2::Architecture::ARM64::reg_dwarf_x20,
+    ds2::Architecture::ARM64::reg_gdb_x20,
+    ds2::Architecture::ARM64::reg_gcc_x20,
+    ds2::Architecture::ARM64::reg_lldb_x20,
     160,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r20,
+    reg_inv_defs_x20,
     nullptr};
-RegisterDef const reg_def_r21 = {
-    "r21",
+RegisterDef const reg_def_x21 = {
+    "x21",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r21,
-    ds2::Architecture::ARM64::reg_gdb_r21,
-    ds2::Architecture::ARM64::reg_gcc_r21,
-    ds2::Architecture::ARM64::reg_lldb_r21,
+    ds2::Architecture::ARM64::reg_dwarf_x21,
+    ds2::Architecture::ARM64::reg_gdb_x21,
+    ds2::Architecture::ARM64::reg_gcc_x21,
+    ds2::Architecture::ARM64::reg_lldb_x21,
     168,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r21,
+    reg_inv_defs_x21,
     nullptr};
-RegisterDef const reg_def_r22 = {
-    "r22",
+RegisterDef const reg_def_x22 = {
+    "x22",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r22,
-    ds2::Architecture::ARM64::reg_gdb_r22,
-    ds2::Architecture::ARM64::reg_gcc_r22,
-    ds2::Architecture::ARM64::reg_lldb_r22,
+    ds2::Architecture::ARM64::reg_dwarf_x22,
+    ds2::Architecture::ARM64::reg_gdb_x22,
+    ds2::Architecture::ARM64::reg_gcc_x22,
+    ds2::Architecture::ARM64::reg_lldb_x22,
     176,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r22,
+    reg_inv_defs_x22,
     nullptr};
-RegisterDef const reg_def_r23 = {
-    "r23",
+RegisterDef const reg_def_x23 = {
+    "x23",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r23,
-    ds2::Architecture::ARM64::reg_gdb_r23,
-    ds2::Architecture::ARM64::reg_gcc_r23,
-    ds2::Architecture::ARM64::reg_lldb_r23,
+    ds2::Architecture::ARM64::reg_dwarf_x23,
+    ds2::Architecture::ARM64::reg_gdb_x23,
+    ds2::Architecture::ARM64::reg_gcc_x23,
+    ds2::Architecture::ARM64::reg_lldb_x23,
     184,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r23,
+    reg_inv_defs_x23,
     nullptr};
-RegisterDef const reg_def_r24 = {
-    "r24",
+RegisterDef const reg_def_x24 = {
+    "x24",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r24,
-    ds2::Architecture::ARM64::reg_gdb_r24,
-    ds2::Architecture::ARM64::reg_gcc_r24,
-    ds2::Architecture::ARM64::reg_lldb_r24,
+    ds2::Architecture::ARM64::reg_dwarf_x24,
+    ds2::Architecture::ARM64::reg_gdb_x24,
+    ds2::Architecture::ARM64::reg_gcc_x24,
+    ds2::Architecture::ARM64::reg_lldb_x24,
     192,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r24,
+    reg_inv_defs_x24,
     nullptr};
-RegisterDef const reg_def_r25 = {
-    "r25",
+RegisterDef const reg_def_x25 = {
+    "x25",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r25,
-    ds2::Architecture::ARM64::reg_gdb_r25,
-    ds2::Architecture::ARM64::reg_gcc_r25,
-    ds2::Architecture::ARM64::reg_lldb_r25,
+    ds2::Architecture::ARM64::reg_dwarf_x25,
+    ds2::Architecture::ARM64::reg_gdb_x25,
+    ds2::Architecture::ARM64::reg_gcc_x25,
+    ds2::Architecture::ARM64::reg_lldb_x25,
     200,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r25,
+    reg_inv_defs_x25,
     nullptr};
-RegisterDef const reg_def_r26 = {
-    "r26",
+RegisterDef const reg_def_x26 = {
+    "x26",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r26,
-    ds2::Architecture::ARM64::reg_gdb_r26,
-    ds2::Architecture::ARM64::reg_gcc_r26,
-    ds2::Architecture::ARM64::reg_lldb_r26,
+    ds2::Architecture::ARM64::reg_dwarf_x26,
+    ds2::Architecture::ARM64::reg_gdb_x26,
+    ds2::Architecture::ARM64::reg_gcc_x26,
+    ds2::Architecture::ARM64::reg_lldb_x26,
     208,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r26,
+    reg_inv_defs_x26,
     nullptr};
-RegisterDef const reg_def_r27 = {
-    "r27",
+RegisterDef const reg_def_x27 = {
+    "x27",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r27,
-    ds2::Architecture::ARM64::reg_gdb_r27,
-    ds2::Architecture::ARM64::reg_gcc_r27,
-    ds2::Architecture::ARM64::reg_lldb_r27,
+    ds2::Architecture::ARM64::reg_dwarf_x27,
+    ds2::Architecture::ARM64::reg_gdb_x27,
+    ds2::Architecture::ARM64::reg_gcc_x27,
+    ds2::Architecture::ARM64::reg_lldb_x27,
     216,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r27,
+    reg_inv_defs_x27,
     nullptr};
-RegisterDef const reg_def_r28 = {
-    "r28",
+RegisterDef const reg_def_x28 = {
+    "x28",
     nullptr,
     nullptr,
     nullptr,
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r28,
-    ds2::Architecture::ARM64::reg_gdb_r28,
-    ds2::Architecture::ARM64::reg_gcc_r28,
-    ds2::Architecture::ARM64::reg_lldb_r28,
+    ds2::Architecture::ARM64::reg_dwarf_x28,
+    ds2::Architecture::ARM64::reg_gdb_x28,
+    ds2::Architecture::ARM64::reg_gcc_x28,
+    ds2::Architecture::ARM64::reg_lldb_x28,
     224,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingSizedInteger, nullptr},
     0,
-    reg_inv_defs_r28,
+    reg_inv_defs_x28,
     nullptr};
-RegisterDef const reg_def_r29 = {
-    "r29",
+RegisterDef const reg_def_x29 = {
+    "x29",
     nullptr,
     "fp",
     "fp",
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r29,
-    ds2::Architecture::ARM64::reg_gdb_r29,
-    ds2::Architecture::ARM64::reg_gcc_r29,
-    ds2::Architecture::ARM64::reg_lldb_r29,
+    ds2::Architecture::ARM64::reg_dwarf_x29,
+    ds2::Architecture::ARM64::reg_gdb_x29,
+    ds2::Architecture::ARM64::reg_gcc_x29,
+    ds2::Architecture::ARM64::reg_lldb_x29,
     232,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingDataPointer, nullptr},
     0,
-    reg_inv_defs_r29,
+    reg_inv_defs_x29,
     nullptr};
-RegisterDef const reg_def_r30 = {
-    "r30",
+RegisterDef const reg_def_x30 = {
+    "x30",
     nullptr,
     "lr",
     "lr",
     nullptr,
     64,
-    ds2::Architecture::ARM64::reg_dwarf_r30,
-    ds2::Architecture::ARM64::reg_gdb_r30,
-    ds2::Architecture::ARM64::reg_gcc_r30,
-    ds2::Architecture::ARM64::reg_lldb_r30,
+    ds2::Architecture::ARM64::reg_dwarf_x30,
+    ds2::Architecture::ARM64::reg_gdb_x30,
+    ds2::Architecture::ARM64::reg_gcc_x30,
+    ds2::Architecture::ARM64::reg_lldb_x30,
     240,
     ds2::Architecture::kLLDBVectorFormatNone,
     ds2::Architecture::kEncodingUInteger,
     ds2::Architecture::kFormatHexadecimal,
     {ds2::Architecture::kGDBEncodingCodePointer, nullptr},
     0,
-    reg_inv_defs_r30,
+    reg_inv_defs_x30,
     nullptr};
 RegisterDef const reg_def_sp = {
     "sp",
