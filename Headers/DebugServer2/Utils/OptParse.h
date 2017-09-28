@@ -32,9 +32,9 @@ public:
   int parse(int argc, char **argv, std::string &host, std::string &port);
 
 public:
-  bool getBool(std::string const &name);
-  std::string const &getString(std::string const &name);
-  std::vector<std::string> const &getVector(std::string const &name);
+  bool getBool(std::string const &name) const;
+  std::string const &getString(std::string const &name) const;
+  std::vector<std::string> const &getVector(std::string const &name) const;
 
 public:
   void usageDie(std::string const &message = std::string());
@@ -57,6 +57,6 @@ private:
   OptionCollection _options;
 
   OptionCollection::iterator findShortOpt(char shortOption);
-  OptionStorage const &get(std::string const &name, OptionType type);
+  OptionStorage const &get(std::string const &name, OptionType type) const;
 };
 } // namespace ds2
