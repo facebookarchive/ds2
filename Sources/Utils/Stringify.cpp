@@ -86,6 +86,7 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_STRINGIFY(StopInfo::kReasonInstructionError)
     DO_STRINGIFY(StopInfo::kReasonLibraryEvent)
     DO_STRINGIFY(StopInfo::kReasonDebugOutput)
+    DO_STRINGIFY(StopInfo::kReasonUserException)
 #endif
     DO_DEFAULT("unknown StopInfo reason", reason)
   }

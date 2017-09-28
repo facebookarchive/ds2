@@ -377,6 +377,9 @@ std::string StopInfo::encode(CompatibilityMode mode, bool listThreads) const {
     case StopInfo::kReasonInstructionError:
       ss << 4; // SIGILL
       break;
+    case StopInfo::kReasonUserException:
+      ss << 30; // SIGUSR1
+      break;
     default:
       DS2BUG("not implemented");
     }
