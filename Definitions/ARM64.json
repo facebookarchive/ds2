@@ -26,112 +26,112 @@
                 "referencing-sets"      : [ "pseudo-gpr32" ]
             },
 
-            "r0"  : {
+            "x0"  : {
                 "alternate-name"       : "arg1",
                 "generic-name"         : "arg1",
                 "invalidate-registers" : [ "w0" ]
             },
-            "r1"  : {
+            "x1"  : {
                 "alternate-name"       : "arg2",
                 "generic-name"         : "arg2",
                 "invalidate-registers" : [ "w1" ]
             },
-            "r2"  : {
+            "x2"  : {
                 "alternate-name"       : "arg3",
                 "generic-name"         : "arg3",
                 "invalidate-registers" : [ "w2" ]
             },
-            "r3"  : {
+            "x3"  : {
                 "alternate-name"       : "arg4",
                 "generic-name"         : "arg4",
                 "invalidate-registers" : [ "w3" ]
             },
-            "r4"  : {
+            "x4"  : {
                 "invalidate-registers" : [ "w4" ]
             },
-            "r5"  : {
+            "x5"  : {
                 "invalidate-registers" : [ "w5" ]
             },
-            "r6"  : {
+            "x6"  : {
                 "invalidate-registers" : [ "w6" ]
             },
-            "r7"  : {
+            "x7"  : {
                 "invalidate-registers" : [ "w7" ]
             },
-            "r8"  : {
+            "x8"  : {
                 "invalidate-registers" : [ "w8" ]
             },
-            "r9"  : {
+            "x9"  : {
                 "invalidate-registers" : [ "w9" ]
             },
-            "r10" : {
+            "x10" : {
                 "invalidate-registers" : [ "w10" ]
             },
-            "r11" : {
+            "x11" : {
                 "invalidate-registers" : [ "w11" ]
             },
-            "r12" : {
+            "x12" : {
                 "invalidate-registers" : [ "w12" ]
             },
-            "r13" : {
+            "x13" : {
                 "invalidate-registers" : [ "w13" ]
             },
-            "r14" : {
+            "x14" : {
                 "invalidate-registers" : [ "w14" ]
             },
-            "r15" : {
+            "x15" : {
                 "invalidate-registers" : [ "w15" ]
             },
-            "r16" : {
+            "x16" : {
                 "alternate-name"       : "ip0",
                 "generic-name"         : "ip0",
                 "invalidate-registers" : [ "w16" ]
             },
-            "r17" : {
+            "x17" : {
                 "alternate-name"       : "ip1",
                 "generic-name"         : "ip1",
                 "invalidate-registers" : [ "w17" ]
             },
-            "r18" : {
+            "x18" : {
                 "invalidate-registers" : [ "w18" ]
             },
-            "r19" : {
+            "x19" : {
                 "invalidate-registers" : [ "w19" ]
             },
-            "r20" : {
+            "x20" : {
                 "invalidate-registers" : [ "w20" ]
             },
-            "r21" : {
+            "x21" : {
                 "invalidate-registers" : [ "w21" ]
             },
-            "r22" : {
+            "x22" : {
                 "invalidate-registers" : [ "w22" ]
             },
-            "r23" : {
+            "x23" : {
                 "invalidate-registers" : [ "w23" ]
             },
-            "r24" : {
+            "x24" : {
                 "invalidate-registers" : [ "w24" ]
             },
-            "r25" : {
+            "x25" : {
                 "invalidate-registers" : [ "w25" ]
             },
-            "r26" : {
+            "x26" : {
                 "invalidate-registers" : [ "w26" ]
             },
-            "r27" : {
+            "x27" : {
                 "invalidate-registers" : [ "w27" ]
             },
-            "r28" : {
+            "x28" : {
                 "invalidate-registers" : [ "w28" ]
             },
-            "r29" : {
+            "x29" : {
                 "gdb-encoding"         : "data-pointer",
                 "alternate-name"       : "fp",
                 "generic-name"         : "fp",
                 "invalidate-registers" : [ "w29" ]
             },
-            "r30" : {
+            "x30" : {
                 "gdb-encoding"         : "code-pointer",
                 "alternate-name"       : "lr",
                 "generic-name"         : "lr",
@@ -163,128 +163,128 @@
             },
 
             "w0"  : {
-                "container-registers"  : [ "r0" ],
-                "invalidate-registers" : [ "r0" ]
+                "container-registers"  : [ "x0" ],
+                "invalidate-registers" : [ "x0" ]
             },
             "w1"  : {
-                "container-registers"  : [ "r1" ],
-                "invalidate-registers" : [ "r1" ]
+                "container-registers"  : [ "x1" ],
+                "invalidate-registers" : [ "x1" ]
             },
             "w2"  : {
-                "container-registers"  : [ "r2" ],
-                "invalidate-registers" : [ "r2" ]
+                "container-registers"  : [ "x2" ],
+                "invalidate-registers" : [ "x2" ]
             },
             "w3"  : {
-                "container-registers"  : [ "r3" ],
-                "invalidate-registers" : [ "r3" ]
+                "container-registers"  : [ "x3" ],
+                "invalidate-registers" : [ "x3" ]
             },
             "w4"  : {
-                "container-registers"  : [ "r4" ],
-                "invalidate-registers" : [ "r4" ]
+                "container-registers"  : [ "x4" ],
+                "invalidate-registers" : [ "x4" ]
             },
             "w5"  : {
-                "container-registers"  : [ "r5" ],
-                "invalidate-registers" : [ "r5" ]
+                "container-registers"  : [ "x5" ],
+                "invalidate-registers" : [ "x5" ]
             },
             "w6"  : {
-                "container-registers"  : [ "r6" ],
-                "invalidate-registers" : [ "r6" ]
+                "container-registers"  : [ "x6" ],
+                "invalidate-registers" : [ "x6" ]
             },
             "w7"  : {
-                "container-registers"  : [ "r7" ],
-                "invalidate-registers" : [ "r7" ]
+                "container-registers"  : [ "x7" ],
+                "invalidate-registers" : [ "x7" ]
             },
             "w8"  : {
-                "container-registers"  : [ "r8" ],
-                "invalidate-registers" : [ "r8" ]
+                "container-registers"  : [ "x8" ],
+                "invalidate-registers" : [ "x8" ]
             },
             "w9"  : {
-                "container-registers"  : [ "r9" ],
-                "invalidate-registers" : [ "r9" ]
+                "container-registers"  : [ "x9" ],
+                "invalidate-registers" : [ "x9" ]
             },
             "w10" : {
-                "container-registers"  : [ "r10" ],
-                "invalidate-registers" : [ "r10" ]
+                "container-registers"  : [ "x10" ],
+                "invalidate-registers" : [ "x10" ]
             },
             "w11" : {
-                "container-registers"  : [ "r11" ],
-                "invalidate-registers" : [ "r11" ]
+                "container-registers"  : [ "x11" ],
+                "invalidate-registers" : [ "x11" ]
             },
             "w12" : {
-                "container-registers"  : [ "r12" ],
-                "invalidate-registers" : [ "r12" ]
+                "container-registers"  : [ "x12" ],
+                "invalidate-registers" : [ "x12" ]
             },
             "w13" : {
-                "container-registers"  : [ "r13" ],
-                "invalidate-registers" : [ "r13" ]
+                "container-registers"  : [ "x13" ],
+                "invalidate-registers" : [ "x13" ]
             },
             "w14" : {
-                "container-registers"  : [ "r14" ],
-                "invalidate-registers" : [ "r14" ]
+                "container-registers"  : [ "x14" ],
+                "invalidate-registers" : [ "x14" ]
             },
             "w15" : {
-                "container-registers"  : [ "r15" ],
-                "invalidate-registers" : [ "r15" ]
+                "container-registers"  : [ "x15" ],
+                "invalidate-registers" : [ "x15" ]
             },
             "w16" : {
-                "container-registers"  : [ "r16" ],
-                "invalidate-registers" : [ "r16" ]
+                "container-registers"  : [ "x16" ],
+                "invalidate-registers" : [ "x16" ]
             },
             "w17" : {
-                "container-registers"  : [ "r17" ],
-                "invalidate-registers" : [ "r17" ]
+                "container-registers"  : [ "x17" ],
+                "invalidate-registers" : [ "x17" ]
             },
             "w18" : {
-                "container-registers"  : [ "r18" ],
-                "invalidate-registers" : [ "r18" ]
+                "container-registers"  : [ "x18" ],
+                "invalidate-registers" : [ "x18" ]
             },
             "w19" : {
-                "container-registers"  : [ "r19" ],
-                "invalidate-registers" : [ "r19" ]
+                "container-registers"  : [ "x19" ],
+                "invalidate-registers" : [ "x19" ]
             },
             "w20" : {
-                "container-registers"  : [ "r20" ],
-                "invalidate-registers" : [ "r20" ]
+                "container-registers"  : [ "x20" ],
+                "invalidate-registers" : [ "x20" ]
             },
             "w21" : {
-                "container-registers"  : [ "r21" ],
-                "invalidate-registers" : [ "r21" ]
+                "container-registers"  : [ "x21" ],
+                "invalidate-registers" : [ "x21" ]
             },
             "w22" : {
-                "container-registers"  : [ "r22" ],
-                "invalidate-registers" : [ "r22" ]
+                "container-registers"  : [ "x22" ],
+                "invalidate-registers" : [ "x22" ]
             },
             "w23" : {
-                "container-registers"  : [ "r23" ],
-                "invalidate-registers" : [ "r23" ]
+                "container-registers"  : [ "x23" ],
+                "invalidate-registers" : [ "x23" ]
             },
             "w24" : {
-                "container-registers"  : [ "r24" ],
-                "invalidate-registers" : [ "r24" ]
+                "container-registers"  : [ "x24" ],
+                "invalidate-registers" : [ "x24" ]
             },
             "w25" : {
-                "container-registers"  : [ "r25" ],
-                "invalidate-registers" : [ "r25" ]
+                "container-registers"  : [ "x25" ],
+                "invalidate-registers" : [ "x25" ]
             },
             "w26" : {
-                "container-registers"  : [ "r26" ],
-                "invalidate-registers" : [ "r26" ]
+                "container-registers"  : [ "x26" ],
+                "invalidate-registers" : [ "x26" ]
             },
             "w27" : {
-                "container-registers"  : [ "r27" ],
-                "invalidate-registers" : [ "r27" ]
+                "container-registers"  : [ "x27" ],
+                "invalidate-registers" : [ "x27" ]
             },
             "w28" : {
-                "container-registers"  : [ "r28" ],
-                "invalidate-registers" : [ "r28" ]
+                "container-registers"  : [ "x28" ],
+                "invalidate-registers" : [ "x28" ]
             },
             "w29" : {
-                "container-registers"  : [ "r29" ],
-                "invalidate-registers" : [ "r29" ]
+                "container-registers"  : [ "x29" ],
+                "invalidate-registers" : [ "x29" ]
             },
             "w30" : {
-                "container-registers"  : [ "r30" ],
-                "invalidate-registers" : [ "r30" ]
+                "container-registers"  : [ "x30" ],
+                "invalidate-registers" : [ "x30" ]
             }
         },
 
@@ -299,7 +299,7 @@
                 "gdb-reg-number"       : 25,
                 "gcc-reg-number"       : 33,
                 "dwarf-reg-number"     : 33,
-                "invalidate-registers" : [ "r8", "r9", "r10", "r11", "r12", "r13", "r14" ],
+                "invalidate-registers" : [ "x8", "x9", "x10", "x11", "x12", "x13", "x14" ],
                 "referencing-sets"     : [ "gpr" ]
             }
         }

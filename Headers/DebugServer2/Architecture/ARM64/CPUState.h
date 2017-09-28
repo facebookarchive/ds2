@@ -81,14 +81,14 @@ public:
   inline void getStopGPState(GPRegisterStopMap &regs, bool forLLDB) const {
     if (forLLDB) {
       for (size_t n = 0; n < 33; n++) {
-        regs[n + reg_lldb_r0] = GPRegisterValue{sizeof(gp.regs[n]), gp.regs[n]};
+        regs[n + reg_lldb_x0] = GPRegisterValue{sizeof(gp.regs[n]), gp.regs[n]};
       }
       regs[reg_lldb_cpsr] = GPRegisterValue{sizeof(gp.cpsr), gp.cpsr};
     } else {
       // GDB can live with non-zero registers
       for (size_t n = 0; n < 33; n++) {
         if (n >= 13) {
-          regs[n + reg_gdb_r0] =
+          regs[n + reg_gdb_x0] =
               GPRegisterValue{sizeof(gp.regs[n]), gp.regs[n]};
         }
       }
@@ -98,8 +98,8 @@ public:
 
 public:
   inline bool getLLDBRegisterPtr(int regno, void **ptr, size_t *length) const {
-    if (regno >= reg_lldb_r0 && regno <= reg_lldb_r30) {
-      *ptr = const_cast<uint64_t *>(&gp.regs[regno - reg_lldb_r0]);
+    if (regno >= reg_lldb_x0 && regno <= reg_lldb_x30) {
+      *ptr = const_cast<uint64_t *>(&gp.regs[regno - reg_lldb_x0]);
       *length = sizeof(gp.regs[0]);
     } else if (regno == reg_lldb_sp) {
       *ptr = const_cast<uint64_t *>(&gp.sp);
@@ -118,8 +118,8 @@ public:
   }
 
   inline bool getGDBRegisterPtr(int regno, void **ptr, size_t *length) const {
-    if (regno >= reg_gdb_r0 && regno <= reg_gdb_r30) {
-      *ptr = const_cast<uint64_t *>(&gp.regs[regno - reg_gdb_r0]);
+    if (regno >= reg_gdb_x0 && regno <= reg_gdb_x30) {
+      *ptr = const_cast<uint64_t *>(&gp.regs[regno - reg_gdb_x0]);
       *length = sizeof(gp.regs[0]);
     } else if (regno == reg_gdb_sp) {
       *ptr = const_cast<uint64_t *>(&gp.sp);
