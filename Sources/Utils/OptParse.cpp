@@ -139,15 +139,16 @@ int OptParse::parse(int argc, char **argv, std::string &host,
 #undef CHECK
 }
 
-bool OptParse::getBool(std::string const &name) {
+bool OptParse::getBool(std::string const &name) const {
   return get(name, boolOption).values.boolValue;
 }
 
-std::string const &OptParse::getString(std::string const &name) {
+std::string const &OptParse::getString(std::string const &name) const {
   return get(name, stringOption).values.stringValue;
 }
 
-std::vector<std::string> const &OptParse::getVector(std::string const &name) {
+std::vector<std::string> const &
+OptParse::getVector(std::string const &name) const {
   return get(name, vectorOption).values.vectorValue;
 }
 
@@ -204,10 +205,10 @@ void OptParse::usageDie(std::string const &message) {
 }
 
 OptParse::OptionStorage const &OptParse::get(std::string const &name,
-                                             OptionType type) {
+                                             OptionType type) const {
   DS2ASSERT(_options.find(name) != _options.end());
-  DS2ASSERT(_options[name].type == type);
-  return _options[name];
+  DS2ASSERT(_options.at(name).type == type);
+  return _options.at(name);
 }
 
 std::map<std::string, OptParse::OptionStorage>::iterator
