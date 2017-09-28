@@ -84,7 +84,12 @@ ErrorCode Thread::resume(int signal, Address const &address) {
         return Platform::TranslateError();
       }
     } else {
-      BOOL result = ::ContinueDebugEvent(_process->pid(), _tid, DBG_CONTINUE);
+      DWORD continueStatus =
+          (_stopInfo.event == StopInfo::kEventStop &&
+           _stopInfo.reason == StopInfo::kReasonUserException)
+              ? DBG_EXCEPTION_NOT_HANDLED
+              : DBG_CONTINUE;
+      BOOL result = ::ContinueDebugEvent(_process->pid(), _tid, continueStatus);
       if (!result) {
         return Platform::TranslateError();
       }
@@ -160,15 +165,19 @@ void Thread::updateState(DEBUG_EVENT const &de) {
       _stopInfo.reason = StopInfo::kReasonInstructionError;
       break;
 
+    case DS2_EXCEPTION_UNCAUGHT_COM:
+    case DS2_EXCEPTION_UNCAUGHT_USER:
+    case DS2_EXCEPTION_UNCAUGHT_WINRT:
+      _stopInfo.event = StopInfo::kEventStop;
+      _stopInfo.reason = StopInfo::kReasonUserException;
+      break;
+
     default:
       DS2LOG(Warning, "unsupported exception code: %lx",
              de.u.Exception.ExceptionRecord.ExceptionCode);
 
     case STATUS_INVALID_DISPOSITION:
     case STATUS_NONCONTINUABLE_EXCEPTION:
-    case DS2_EXCEPTION_UNCAUGHT_COM:
-    case DS2_EXCEPTION_UNCAUGHT_USER:
-    case DS2_EXCEPTION_UNCAUGHT_WINRT:
       _stopInfo.event = StopInfo::kEventStop;
       _stopInfo.reason = StopInfo::kReasonInstructionError;
       break;
