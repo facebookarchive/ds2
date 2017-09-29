@@ -169,14 +169,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">void</span> getStopGPState(GPRegisterStopMap &amp;regs, <span class="keywordtype">bool</span> forLLDB)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordflow">if</span> (forLLDB) {</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> n = 0; n &lt; 33; n++) {</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        regs[n + reg_lldb_r0] = <a class="code" href="structds2_1_1_architecture_1_1_g_p_register_value.html">GPRegisterValue</a>{<span class="keyword">sizeof</span>(gp.regs[n]), gp.regs[n]};</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        regs[n + reg_lldb_x0] = <a class="code" href="structds2_1_1_architecture_1_1_g_p_register_value.html">GPRegisterValue</a>{<span class="keyword">sizeof</span>(gp.regs[n]), gp.regs[n]};</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      }</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;      regs[reg_lldb_cpsr] = <a class="code" href="structds2_1_1_architecture_1_1_g_p_register_value.html">GPRegisterValue</a>{<span class="keyword">sizeof</span>(gp.cpsr), gp.cpsr};</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    } <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      <span class="comment">// GDB can live with non-zero registers</span></div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> n = 0; n &lt; 33; n++) {</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keywordflow">if</span> (n &gt;= 13) {</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;          regs[n + reg_gdb_r0] =</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;          regs[n + reg_gdb_x0] =</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;              <a class="code" href="structds2_1_1_architecture_1_1_g_p_register_value.html">GPRegisterValue</a>{<span class="keyword">sizeof</span>(gp.regs[n]), gp.regs[n]};</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        }</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;      }</div>
@@ -186,8 +186,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">bool</span> getLLDBRegisterPtr(<span class="keywordtype">int</span> regno, <span class="keywordtype">void</span> **ptr, <span class="keywordtype">size_t</span> *length)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">if</span> (regno &gt;= reg_lldb_r0 &amp;&amp; regno &lt;= reg_lldb_r30) {</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;      *ptr = <span class="keyword">const_cast&lt;</span>uint64_t *<span class="keyword">&gt;</span>(&amp;gp.regs[regno - reg_lldb_r0]);</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">if</span> (regno &gt;= reg_lldb_x0 &amp;&amp; regno &lt;= reg_lldb_x30) {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;      *ptr = <span class="keyword">const_cast&lt;</span>uint64_t *<span class="keyword">&gt;</span>(&amp;gp.regs[regno - reg_lldb_x0]);</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;      *length = <span class="keyword">sizeof</span>(gp.regs[0]);</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (regno == reg_lldb_sp) {</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;      *ptr = <span class="keyword">const_cast&lt;</span>uint64_t *<span class="keyword">&gt;</span>(&amp;gp.sp);</div>
@@ -206,8 +206,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  }</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <span class="keyword">inline</span> <span class="keywordtype">bool</span> getGDBRegisterPtr(<span class="keywordtype">int</span> regno, <span class="keywordtype">void</span> **ptr, <span class="keywordtype">size_t</span> *length)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">if</span> (regno &gt;= reg_gdb_r0 &amp;&amp; regno &lt;= reg_gdb_r30) {</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;      *ptr = <span class="keyword">const_cast&lt;</span>uint64_t *<span class="keyword">&gt;</span>(&amp;gp.regs[regno - reg_gdb_r0]);</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">if</span> (regno &gt;= reg_gdb_x0 &amp;&amp; regno &lt;= reg_gdb_x30) {</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;      *ptr = <span class="keyword">const_cast&lt;</span>uint64_t *<span class="keyword">&gt;</span>(&amp;gp.regs[regno - reg_gdb_x0]);</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;      *length = <span class="keyword">sizeof</span>(gp.regs[0]);</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (regno == reg_gdb_sp) {</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;      *ptr = <span class="keyword">const_cast&lt;</span>uint64_t *<span class="keyword">&gt;</span>(&amp;gp.sp);</div>
