@@ -54,7 +54,7 @@ static inline void PrepareMmapCode(size_t size, uint32_t protection,
            MakeMovImmInstr(2, protection),             // mov x2, prot
            MakeMovImmInstr(3, MAP_ANON | MAP_PRIVATE), // mov x3, flags
            MakeMovNegImmInstr(4, -1),                  // mov x4, -1
-           MakeMovImmInstr(4, 0),                      // mov x5, 0
+           MakeMovImmInstr(5, 0),                      // mov x5, 0
            MakeSvcInstr(0),                            // svc #0
            MakeBrkInstr(0x100),                        // brk #0x100
        }) {
