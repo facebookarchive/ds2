@@ -29,12 +29,16 @@ public:
                  std::string const &help = std::string(), bool hidden = false);
 
 public:
-  int parse(int argc, char **argv, std::string &host, std::string &port);
+  int parse(int argc, char **argv);
 
 public:
   bool getBool(std::string const &name) const;
   std::string const &getString(std::string const &name) const;
   std::vector<std::string> const &getVector(std::string const &name) const;
+
+public:
+  std::string const &getHost() const;
+  std::string const &getPort() const;
 
 public:
   void usageDie(std::string const &message = std::string());
@@ -54,8 +58,12 @@ private:
 
   typedef std::map<std::string, OptionStorage> OptionCollection;
 
+private:
   OptionCollection _options;
+  std::string _host;
+  std::string _port;
 
+private:
   OptionCollection::iterator findShortOpt(char shortOption);
   OptionStorage const &get(std::string const &name, OptionType type) const;
 };

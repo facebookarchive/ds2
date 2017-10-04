@@ -24,8 +24,7 @@ void OptParse::addOption(OptionType type, std::string const &name,
   _options[name] = {shortName, type, {false, "", {}}, help, hidden};
 }
 
-int OptParse::parse(int argc, char **argv, std::string &host,
-                    std::string &port) {
+int OptParse::parse(int argc, char **argv) {
 #define CHECK(COND)                                                            \
   do {                                                                         \
     if (!(COND)) {                                                             \
@@ -108,7 +107,7 @@ int OptParse::parse(int argc, char **argv, std::string &host,
     } else {
       // We already have our [host]:port, this can only be the path to the
       // binary to run.
-      if (!port.empty())
+      if (!_port.empty())
         break;
 
       std::string addrString(argv[idx]);
@@ -123,13 +122,13 @@ int OptParse::parse(int argc, char **argv, std::string &host,
         // IPv6 addresses can be of the form '[a:b:c:d::1]:12345', so we need
         // to strip the square brackets around the host part.
         if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
-          host = addrString.substr(1, splitPos - 2);
+          _host = addrString.substr(1, splitPos - 2);
         } else {
-          host = addrString.substr(0, splitPos);
+          _host = addrString.substr(0, splitPos);
         }
       }
 
-      port = addrString.substr(splitPos + 1);
+      _port = addrString.substr(splitPos + 1);
     }
 
     ++idx;
@@ -151,6 +150,10 @@ std::vector<std::string> const &
 OptParse::getVector(std::string const &name) const {
   return get(name, vectorOption).values.vectorValue;
 }
+
+std::string const &OptParse::getHost() const { return _host; }
+
+std::string const &OptParse::getPort() const { return _port; }
 
 static void print(char const *format, ...) {
   va_list ap, sap;
