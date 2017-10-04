@@ -253,8 +253,6 @@ int main(int argc, char **argv) {
   };
 
   int attachPid = -1;
-  std::string port;
-  std::string host;
   std::string namedPipePath;
   RunMode mode = kRunModeNormal;
   bool reverse = false;
@@ -320,7 +318,7 @@ int main(int argc, char **argv) {
     opts.usageDie("first argument must be g[dbserver] or p[latform]");
   }
 
-  idx = opts.parse(argc, argv, host, port);
+  idx = opts.parse(argc, argv);
   argc -= idx;
   argv += idx;
 
@@ -368,6 +366,9 @@ int main(int argc, char **argv) {
   if (mode != kRunModeNormal && reverse) {
     opts.usageDie("reverse-connect only supported in gdbserver mode");
   }
+
+  std::string host = opts.getHost();
+  std::string port = opts.getPort();
 
   // Target debug options and program arguments.
   ds2::StringCollection args(&argv[0], &argv[argc]);
