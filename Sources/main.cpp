@@ -371,13 +371,29 @@ static int SlaveMain(int argc, char **argv) {
 }
 #endif
 
+static int VersionMain(int argc, char **argv) {
+  std::stringstream ss;
+  ss << "ds2 at ";
+  if (::strlen(DS2_GIT_HASH) != 0) {
+    ss << "revision " << DS2_GIT_HASH;
+  } else {
+    ss << "unknown revision";
+  }
+  ss << std::endl;
+
+  ::fprintf(stdout, "%s", ss.str().c_str());
+  return EXIT_SUCCESS;
+}
+
 [[noreturn]] static void UsageDie(char const *argv0) {
-  static const std::vector<std::string> modes = {"gdbserver", "platform"};
+  static const std::vector<std::pair<std::string, bool>> modes = {
+      {"version", false}, {"gdbserver", true}, {"platform", true}};
 
   ::fprintf(stderr, "Usage:\n");
   for (auto const &mode : modes) {
-    auto c_str = mode.c_str();
-    ::fprintf(stderr, "  %s [%c]%s [options]\n", argv0, c_str[0], c_str + 1);
+    auto c_str = mode.first.c_str();
+    ::fprintf(stderr, "  %s [%c]%s%s\n", argv0, c_str[0], c_str + 1,
+              mode.second ? " [options]" : "");
   }
   ::exit(EXIT_FAILURE);
 }
@@ -420,6 +436,8 @@ int main(int argc, char **argv) {
   case 's':
     return SlaveMain(argc, argv);
 #endif
+  case 'v':
+    return VersionMain(argc, argv);
   default:
     UsageDie(argv[0]);
   }
