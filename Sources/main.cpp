@@ -329,8 +329,6 @@ static int PlatformMain(int argc, char **argv) {
 
     thread.detach();
   } while (true);
-
-  return EXIT_SUCCESS;
 }
 
 static int SlaveMain(int argc, char **argv) {
