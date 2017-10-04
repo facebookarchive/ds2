@@ -309,6 +309,13 @@ set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET ds2 PROPERTY CXX_EXTENSIONS OFF)
 set_property(TARGET ds2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
+execute_process(COMMAND git rev-parse --short HEAD
+                WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+                OUTPUT_VARIABLE DS2_GIT_HASH
+                OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_QUIET)
+set_property(SOURCE Sources/main.cpp APPEND PROPERTY COMPILE_DEFINITIONS
+             DS2_GIT_HASH="${DS2_GIT_HASH}")
+
 if ("${OS_NAME}" MATCHES "Windows")
   target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)
   target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6
