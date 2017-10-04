@@ -31,7 +31,7 @@ elif host == 'Linux':
         dist = os.getenv("LINUX_DISTRO")
         keys.append('http://llvm.org/apt/llvm-snapshot.gpg.key')
         llvm_url = 'http://llvm.org/apt/' + dist + '/'
-        repo_name = 'llvm-toolchain-' + dist + '-4.0'
+        repo_name = 'llvm-toolchain-' + dist + '-5.0'
         repositories.append('deb ' + llvm_url + ' ' + repo_name + ' main')
 
     if target in [ 'Style', 'Registers' ]:

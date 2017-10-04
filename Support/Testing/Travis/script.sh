@@ -12,7 +12,7 @@
 top="$(git rev-parse --show-toplevel)"
 source "$top/Support/Scripts/common.sh"
 
-cformat="clang-format-4.0"
+cformat="clang-format-5.0"
 
 "$top/Support/Testing/Travis/travis-hacks.sh"
 
@@ -82,7 +82,7 @@ cmake_options=(-G Ninja)
 
 # Except for the Android toolchain that we install ourselves, CentOS uses
 # different compiler names than Ubuntu, so we can only use the toolchain files
-# on Ubuntu. In addition, clang-4.0 is also not available for CentOS
+# on Ubuntu. In addition, clang-5.0 is also not available for CentOS
 if [ "$(linux_distribution)" != "centos" ] || [[ "$TARGET" == Android-* ]]; then
   target_name="${TARGET}"
 
