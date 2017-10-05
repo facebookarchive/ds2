@@ -41,7 +41,7 @@ public:
   std::string const &getPort() const;
 
 public:
-  void usageDie(std::string const &message = std::string());
+  void usageDie(char const *format = nullptr, ...);
 
 private:
   struct OptionStorage {
