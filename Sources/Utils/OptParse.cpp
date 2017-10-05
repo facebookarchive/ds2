@@ -25,10 +25,10 @@ void OptParse::addOption(OptionType type, std::string const &name,
 }
 
 int OptParse::parse(int argc, char **argv) {
-#define CHECK(COND)                                                            \
+#define CHECK(COND, ...)                                                       \
   do {                                                                         \
     if (!(COND)) {                                                             \
-      usageDie();                                                              \
+      usageDie(__VA_ARGS__);                                                   \
     }                                                                          \
   } while (0)
 
@@ -56,10 +56,10 @@ int OptParse::parse(int argc, char **argv) {
 
       // Long option.
       auto it = _options.find(argStr);
-      CHECK(it != _options.end());
+      CHECK(it != _options.end(), "unrecognized option `%s'\n", argv[idx]);
 
       if (it->second.type != boolOption && argVal.empty()) {
-        CHECK(idx + 1 < argc);
+        CHECK(idx + 1 < argc, "option `%s' expects an argument\n", argv[idx]);
         argVal = std::string(argv[++idx]);
       }
 
@@ -76,10 +76,10 @@ int OptParse::parse(int argc, char **argv) {
       }
     } else if (argv[idx][0] == '-') {
       // Short option.
-      CHECK(argv[idx][1] != '\0');
+      CHECK(argv[idx][1] != '\0', "unrecognized option `-'\n");
       for (int optidx = 1; optidx > 0 && argv[idx][optidx] != '\0'; ++optidx) {
         auto it = findShortOpt(argv[idx][optidx]);
-        CHECK(it != _options.end());
+        CHECK(it != _options.end(), "unrecognized option `%s'\n", argv[idx]);
         switch (it->second.type) {
         case boolOption:
           it->second.values.boolValue = true;
@@ -88,7 +88,8 @@ int OptParse::parse(int argc, char **argv) {
           if (argv[idx][optidx + 1] != '\0') {
             it->second.values.stringValue = argv[idx] + optidx + 1;
           } else {
-            CHECK(idx + 1 < argc);
+            CHECK(idx + 1 < argc, "option `%s' expects an argument\n",
+                  argv[idx]);
             it->second.values.stringValue = argv[++idx];
             optidx = -1;
           }
@@ -97,7 +98,8 @@ int OptParse::parse(int argc, char **argv) {
           if (argv[idx][optidx + 1] != '\0') {
             it->second.values.vectorValue.push_back(argv[idx] + optidx + 1);
           } else {
-            CHECK(idx + 1 < argc);
+            CHECK(idx + 1 < argc, "option `%s' expects an argument\n",
+                  argv[idx]);
             it->second.values.vectorValue.push_back(argv[++idx]);
             optidx = -1;
           }
@@ -155,30 +157,43 @@ std::string const &OptParse::getHost() const { return _host; }
 
 std::string const &OptParse::getPort() const { return _port; }
 
-static void print(char const *format, ...) {
-  va_list ap, sap;
+static void VPrint(char const *format, va_list ap) {
+  va_list ap_copy;
 
-  va_start(ap, format);
-  va_copy(sap, ap);
+  va_copy(ap_copy, ap);
+  std::vector<char> line(ds2::Utils::VSNPrintf(nullptr, 0, format, ap_copy) +
+                         1);
+  va_end(ap_copy);
 
-  std::vector<char> line(ds2::Utils::VSNPrintf(nullptr, 0, format, ap) + 1);
-  ds2::Utils::VSNPrintf(line.data(), line.size(), format, sap);
-
-  va_end(ap);
-  va_end(sap);
+  va_copy(ap_copy, ap);
+  ds2::Utils::VSNPrintf(line.data(), line.size(), format, ap_copy);
+  va_end(ap_copy);
 
   fputs(line.data(), stderr);
 #if defined(OS_WIN32)
   OutputDebugStringA(line.data());
 #endif
-};
+}
 
-void OptParse::usageDie(std::string const &message) {
-  if (!message.empty()) {
-    print("error: %s\n", message.c_str());
+static void Print(char const *format, ...) {
+  va_list ap;
+
+  va_start(ap, format);
+  VPrint(format, ap);
+  va_end(ap);
+}
+
+void OptParse::usageDie(char const *format, ...) {
+  if (format != nullptr) {
+    va_list ap;
+
+    Print("error: ");
+    va_start(ap, format);
+    VPrint(format, ap);
+    va_end(ap);
   }
 
-  print("usage: ds2 RUN_MODE [OPTIONS] %s%s\n", "[HOST]:PORT ",
+  Print("usage: ds2 RUN_MODE [OPTIONS] %s%s\n", "[HOST]:PORT ",
         "[-- PROGRAM [ARGUMENTS...]]");
 
   size_t help_align = 0;
@@ -196,12 +211,12 @@ void OptParse::usageDie(std::string const &message) {
     if (e.second.hidden)
       continue;
 
-    print("  -%c, --%s", e.second.shortName, e.first.c_str());
-    print(" %s", (e.second.type == stringOption ? "ARG" : "   "));
+    Print("  -%c, --%s", e.second.shortName, e.first.c_str());
+    Print(" %s", (e.second.type == stringOption ? "ARG" : "   "));
     for (size_t i = 0; i < help_align - e.first.size(); ++i) {
-      print(" ");
+      Print(" ");
     }
-    print("%s\n", e.second.help.c_str());
+    Print("%s\n", e.second.help.c_str());
   }
 
   ::exit(EXIT_FAILURE);
