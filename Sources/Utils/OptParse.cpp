@@ -178,8 +178,8 @@ void OptParse::usageDie(std::string const &message) {
     print("error: %s\n", message.c_str());
   }
 
-  print("usage: %s [%s] [%s] [%s] [%s]\n", "ds2", "RUN_MODE", "OPTIONS",
-        "[HOST]:PORT", "-- PROGRAM [ARGUMENTS...]");
+  print("usage: ds2 RUN_MODE [OPTIONS] %s%s\n", "[HOST]:PORT ",
+        "[-- PROGRAM [ARGUMENTS...]]");
 
   size_t help_align = 0;
 
