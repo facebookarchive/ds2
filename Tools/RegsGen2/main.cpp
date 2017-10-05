@@ -886,7 +886,7 @@ static void GenerateRegisterDefs(FILE *fp, Context const &ctx) {
             "%zd, " // reg->BitSize
             "%s, "  // reg->DWARFRegisterNumber
             "%s, "  // reg->GDBRegisterNumber
-            "%s, "  // reg->GCCRegisterNumber
+            "%s, "  // reg->EHFrameRegisterNumber
             "%s, "  // reg->LLDBRegisterNumber
             "%s, "  // reg->LLDBOffset
             "%s, "  // reg->LLDBVectorFormat
@@ -908,8 +908,8 @@ static void GenerateRegisterDefs(FILE *fp, Context const &ctx) {
             NameOfRegister(reg->GDBRegisterNumber, reg->Name,
                            "ds2::Architecture::" + ctx.Namespace + "::reg_gdb_")
                 .c_str(),
-            NameOfRegister(reg->GCCRegisterNumber, reg->Name,
-                           "ds2::Architecture::" + ctx.Namespace + "::reg_gcc_")
+            NameOfRegister(reg->EHFrameRegisterNumber, reg->Name,
+                           "ds2::Architecture::" + ctx.Namespace + "::reg_ehframe_")
                 .c_str(),
             NameOfRegister(reg->LLDBRegisterNumber, reg->Name,
                            "ds2::Architecture::" + ctx.Namespace +
@@ -980,19 +980,19 @@ static void GenerateEnums(FILE *fp, Context const &ctx) {
     fprintf(fp, "};\n\n");
   }
 
-  // GCC
+  // EHFrame
   regs.clear();
   for (auto reg : ctx.Registers) {
-    if (!(reg->GCCRegisterNumber < 0)) {
+    if (!(reg->EHFrameRegisterNumber < 0)) {
       regs.push_back(reg);
     }
   }
 
   if (!regs.empty()) {
-    fprintf(fp, "enum /* gcc_reg */ {\n");
+    fprintf(fp, "enum /* ehframe_reg */ {\n");
     for (auto reg : regs) {
-      fprintf(fp, "%*sreg_gcc_%s = %zd,\n", 4, "", reg->Name.c_str(),
-              reg->GCCRegisterNumber);
+      fprintf(fp, "%*sreg_ehframe_%s = %zd,\n", 4, "", reg->Name.c_str(),
+              reg->EHFrameRegisterNumber);
     }
     fprintf(fp, "};\n\n");
   }

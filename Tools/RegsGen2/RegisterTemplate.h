@@ -38,9 +38,9 @@ private:
 private:
   Register _template;
   Number _DWARFRegisterNumber;
-  Number _GCCRegisterNumber;
+  Number _ehframeRegisterNumber;
   Number _GDBRegisterNumber;
-  bool _DWARFGCCAliased;
+  bool _DWARFEhframeAliased;
   bool _explicitGDBRegisterNumber;
   std::string _specificOSABI;
   std::string _genericOSABI;

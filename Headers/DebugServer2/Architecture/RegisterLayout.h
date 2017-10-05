@@ -83,7 +83,7 @@ struct RegisterDef {
   ssize_t BitSize;
   int32_t DWARFRegisterNumber;
   int32_t GDBRegisterNumber;
-  int32_t GCCRegisterNumber;
+  int32_t EHFrameRegisterNumber;
   int32_t LLDBRegisterNumber;
   ssize_t LLDBOffset;
   Architecture::LLDBVectorFormat LLDBVectorFormat;

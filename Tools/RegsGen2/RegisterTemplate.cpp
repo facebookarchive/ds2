@@ -51,7 +51,7 @@ ssize_t RegisterTemplate::Number::next() {
 
 RegisterTemplate::RegisterTemplate(std::string const &specificOSABI,
                                    std::string const &genericOSABI)
-    : _DWARFGCCAliased(false), _explicitGDBRegisterNumber(false),
+    : _DWARFEhframeAliased(false), _explicitGDBRegisterNumber(false),
       _specificOSABI(specificOSABI), _genericOSABI(genericOSABI) {}
 
 //
@@ -65,11 +65,11 @@ RegisterTemplate::RegisterTemplate(std::string const &specificOSABI,
 //
 // base-dwarf-reg-number
 // base-gdb-reg-number
-// base-gcc-reg-number
+// base-ehframe-reg-number
 // explicit-gdb-number -- when generating GDB tables, emit only the reg number
 //                        where specified.
 //
-// dwarf-gcc-alias (DWARF and GCC register numbers are the same)
+// dwarf-ehframe-alias (DWARF and EHFrame register numbers are the same)
 //
 // referencing-sets
 //
@@ -152,24 +152,24 @@ bool RegisterTemplate::parse(JSDictionary const *d) {
     _explicitGDBRegisterNumber = explct;
   }
 
-  if (auto base = d->value<JSInteger>("base-gcc-reg-number")) {
+  if (auto base = d->value<JSInteger>("base-ehframe-reg-number")) {
     if (base->value() < 0) {
-      fprintf(stderr, "error: base GCC register number cannot be "
+      fprintf(stderr, "error: base EHFrame register number cannot be "
                       "negative\n");
       return false;
     }
 
-    if (auto alias = d->value<JSBoolean>("dwarf-gcc-alias")) {
+    if (auto alias = d->value<JSBoolean>("dwarf-ehframe-alias")) {
       if (alias->value()) {
-        fprintf(stderr, "warning: defining GCC to be alias of DWARF "
-                        "registers and setting base GCC register at the "
+        fprintf(stderr, "warning: defining EHFrame to be alias of DWARF "
+                        "registers and setting base EHFrame register at the "
                         "same time\n");
       }
     }
 
-    _GCCRegisterNumber.init(base->value());
-  } else if (auto alias = d->value<JSBoolean>("dwarf-gcc-alias")) {
-    _DWARFGCCAliased = alias->value();
+    _ehframeRegisterNumber.init(base->value());
+  } else if (auto alias = d->value<JSBoolean>("dwarf-ehframe-alias")) {
+    _DWARFEhframeAliased = alias->value();
   }
 
   if (auto priv = d->value<JSBoolean>("private")) {
@@ -341,8 +341,8 @@ Register *RegisterTemplate::make(std::string const &name,
     _DWARFRegisterNumber.mark(base->value());
     reg->DWARFRegisterNumber = base->value();
 
-    if (_DWARFGCCAliased) {
-      reg->GCCRegisterNumber = base->value();
+    if (_DWARFEhframeAliased) {
+      reg->EHFrameRegisterNumber = base->value();
     }
   }
 
@@ -358,17 +358,17 @@ Register *RegisterTemplate::make(std::string const &name,
     reg->GDBRegisterNumber = base->value();
   }
 
-  if (!_DWARFGCCAliased) {
-    if (auto base = d->value<JSInteger>("gcc-reg-number")) {
+  if (!_DWARFEhframeAliased) {
+    if (auto base = d->value<JSInteger>("ehframe-reg-number")) {
       if (base->value() < 0) {
         fprintf(stderr, "error: register '%s' specifies a negative "
-                        "GCC register number",
+                        "EHFrame register number",
                 name.c_str());
         return nullptr;
       }
 
-      _GCCRegisterNumber.mark(base->value());
-      reg->GCCRegisterNumber = base->value();
+      _ehframeRegisterNumber.mark(base->value());
+      reg->EHFrameRegisterNumber = base->value();
     }
   }
 
@@ -494,10 +494,10 @@ void RegisterTemplate::setRegisterNumbers(Register *reg) {
   if (reg->DWARFRegisterNumber < 0) {
     reg->DWARFRegisterNumber = _DWARFRegisterNumber.next();
   }
-  if (_DWARFGCCAliased) {
-    reg->GCCRegisterNumber = reg->DWARFRegisterNumber;
-  } else if (reg->GCCRegisterNumber < 0) {
-    reg->GCCRegisterNumber = _GCCRegisterNumber.next();
+  if (_DWARFEhframeAliased) {
+    reg->EHFrameRegisterNumber = reg->DWARFRegisterNumber;
+  } else if (reg->EHFrameRegisterNumber < 0) {
+    reg->EHFrameRegisterNumber = _ehframeRegisterNumber.next();
   }
   if (!_explicitGDBRegisterNumber && reg->GDBRegisterNumber < 0) {
     reg->GDBRegisterNumber = _GDBRegisterNumber.next();

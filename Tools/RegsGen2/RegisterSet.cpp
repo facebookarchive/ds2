@@ -58,7 +58,7 @@ bool RegisterSet::parse(Context &ctx, std::string const &name,
   }
 
   //
-  // Now assign the GDB/GCC/DWARF register number, this must be done after
+  // Now assign the GDB/EHFrame/DWARF register number, this must be done after
   // all registers are parsed to avoid overriding registers definining a
   // fixed register number.
   //

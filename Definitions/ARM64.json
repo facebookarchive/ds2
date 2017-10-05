@@ -19,9 +19,9 @@
                 "encoding"              : "int",
                 "format"                : "hex",
 
-                "base-gdb-reg-number"   : 0,
-                "base-gcc-reg-number"   : 0,
-                "base-dwarf-reg-number" : 0,
+                "base-gdb-reg-number"       : 0,
+                "base-ehframe-reg-number"   : 0,
+                "base-dwarf-reg-number"     : 0,
 
                 "referencing-sets"      : [ "pseudo-gpr32" ]
             },
@@ -155,9 +155,9 @@
                 "encoding"              : "int",
                 "format"                : "hex",
 
-                "base-gdb-reg-number"   : 0,
-                "base-gcc-reg-number"   : 0,
-                "base-dwarf-reg-number" : 0,
+                "base-gdb-reg-number"       : 0,
+                "base-ehframe-reg-number"   : 0,
+                "base-dwarf-reg-number"     : 0,
 
                 "referencing-sets"      : [ "gpr" ]
             },
@@ -297,7 +297,7 @@
                 "alternate-name"       : "flags",
                 "generic-name"         : "flags",
                 "gdb-reg-number"       : 25,
-                "gcc-reg-number"       : 33,
+                "ehframe-reg-number"   : 33,
                 "dwarf-reg-number"     : 33,
                 "invalidate-registers" : [ "x8", "x9", "x10", "x11", "x12", "x13", "x14" ],
                 "referencing-sets"     : [ "gpr" ]
