@@ -210,24 +210,24 @@ enum /* gdb_reg */ {
   reg_gdb_fpscr = 58,
 };
 
-enum /* gcc_reg */ {
-  reg_gcc_r0 = 0,
-  reg_gcc_r1 = 1,
-  reg_gcc_r2 = 2,
-  reg_gcc_r3 = 3,
-  reg_gcc_r4 = 4,
-  reg_gcc_r5 = 5,
-  reg_gcc_r6 = 6,
-  reg_gcc_r7 = 7,
-  reg_gcc_r8 = 8,
-  reg_gcc_r9 = 9,
-  reg_gcc_r10 = 10,
-  reg_gcc_r11 = 11,
-  reg_gcc_r12 = 12,
-  reg_gcc_r13 = 13,
-  reg_gcc_r14 = 14,
-  reg_gcc_r15 = 15,
-  reg_gcc_cpsr = 16,
+enum /* ehframe_reg */ {
+  reg_ehframe_r0 = 0,
+  reg_ehframe_r1 = 1,
+  reg_ehframe_r2 = 2,
+  reg_ehframe_r3 = 3,
+  reg_ehframe_r4 = 4,
+  reg_ehframe_r5 = 5,
+  reg_ehframe_r6 = 6,
+  reg_ehframe_r7 = 7,
+  reg_ehframe_r8 = 8,
+  reg_ehframe_r9 = 9,
+  reg_ehframe_r10 = 10,
+  reg_ehframe_r11 = 11,
+  reg_ehframe_r12 = 12,
+  reg_ehframe_r13 = 13,
+  reg_ehframe_r14 = 14,
+  reg_ehframe_r15 = 15,
+  reg_ehframe_cpsr = 16,
 };
 
 enum /* lldb_reg */ {

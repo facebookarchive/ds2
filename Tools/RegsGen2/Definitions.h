@@ -39,7 +39,7 @@ struct Register {
   std::string GDBEncodingName;
 
   ssize_t GDBRegisterNumber;
-  ssize_t GCCRegisterNumber;
+  ssize_t EHFrameRegisterNumber;
   ssize_t DWARFRegisterNumber;
   ssize_t LLDBRegisterNumber;
 
@@ -69,7 +69,7 @@ struct Register {
       : Index(0), Private(false), NoGDBRegisterNumber(false), BitSize(0),
         Format(kFormatInvalid), LLDBVectorFormat(kLLDBVectorFormatNone),
         Encoding(kEncodingInvalid), GDBEncoding(kGDBEncodingInvalid),
-        GDBRegisterNumber(-1), GCCRegisterNumber(-1), DWARFRegisterNumber(-1),
+        GDBRegisterNumber(-1), EHFrameRegisterNumber(-1), DWARFRegisterNumber(-1),
         LLDBRegisterNumber(-1), LLDBOffset(-1), ParentElement(-1) {}
 };
 

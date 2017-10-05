@@ -355,7 +355,7 @@ ErrorCode DebugSessionImplBase::onQueryRegisterInfo(Session &, uint32_t regno,
 
   info.bitSize = reginfo.Def->BitSize;
   info.byteOffset = reginfo.Def->LLDBOffset;
-  info.gccRegisterIndex = reginfo.Def->GCCRegisterNumber;
+  info.ehframeRegisterIndex = reginfo.Def->EHFrameRegisterNumber;
   info.dwarfRegisterIndex = reginfo.Def->DWARFRegisterNumber;
   info.regno = regno;
 

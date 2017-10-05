@@ -119,7 +119,7 @@
 
                 "base-dwarf-reg-number" : 0,
                 "base-gdb-reg-number"   : 0,
-                "dwarf-gcc-alias"       : true,
+                "dwarf-ehframe-alias"   : true,
 
                 "no-gdb-reg-number"     : true,
 
@@ -509,7 +509,7 @@
 
                 "base-dwarf-reg-number" : 33,
                 "base-gdb-reg-number"   : 24,
-                "dwarf-gcc-alias"       : true,
+                "dwarf-ehframe-alias"   : true,
                 "no-gdb-reg-number"     : true
             },
 
@@ -577,7 +577,7 @@
 
                 "base-dwarf-reg-number" : 17,
                 "base-gdb-reg-number"   : 40,
-                "dwarf-gcc-alias"       : true,
+                "dwarf-ehframe-alias"   : true,
 
                 "referencing-sets"      : [ "sse-regs" ]
             },
@@ -642,7 +642,7 @@
                 "explicit-gdb-reg-number" : true,
                 "base-dwarf-reg-number"   : 17,
                 "base-gdb-reg-number"     : 40,
-                "dwarf-gcc-alias"         : true,
+                "dwarf-ehframe-alias"     : true,
 
                 "parent-set"              : "avx-regs",
                 "parent-element"          : 0,

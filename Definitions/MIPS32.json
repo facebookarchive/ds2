@@ -20,9 +20,9 @@
                 "encoding"              : "int",
                 "format"                : "hex",
 
-                "base-gdb-reg-number"   : 0,
-                "base-gcc-reg-number"   : 0,
-                "base-dwarf-reg-number" : 0
+                "base-gdb-reg-number"       : 0,
+                "base-ehframe-reg-number"   : 0,
+                "base-dwarf-reg-number"     : 0
             },
 
             "r0"  : {

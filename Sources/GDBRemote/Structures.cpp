@@ -723,9 +723,10 @@ std::string RegisterInfo::encode(int xmlSet) const {
     regInfo.push_back(std::make_pair("regnum", ds2::Utils::ToString(regno)));
   }
 
-  if (!(gccRegisterIndex < 0))
-    regInfo.push_back(std::make_pair(xml ? "gcc_regnum" : "gcc",
-                                     ds2::Utils::ToString(gccRegisterIndex)));
+  if (!(ehframeRegisterIndex < 0))
+    regInfo.push_back(
+        std::make_pair(xml ? "ehframe_regnum" : "ehframe",
+                       ds2::Utils::ToString(ehframeRegisterIndex)));
 
   if (!(dwarfRegisterIndex < 0))
     regInfo.push_back(std::make_pair(xml ? "dwarf_regnum" : "dwarf",

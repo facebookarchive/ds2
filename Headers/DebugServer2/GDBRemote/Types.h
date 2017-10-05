@@ -147,7 +147,7 @@ struct RegisterInfo {
   std::string genericName;
   size_t bitSize;
   ssize_t byteOffset;
-  ssize_t gccRegisterIndex;
+  ssize_t ehframeRegisterIndex;
   ssize_t dwarfRegisterIndex;
   uint32_t regno;
   Encoding encoding;
@@ -156,7 +156,7 @@ struct RegisterInfo {
   std::vector<uint32_t> invalidateRegisters;
 
   RegisterInfo()
-      : bitSize(0), byteOffset(-1), gccRegisterIndex(-1),
+      : bitSize(0), byteOffset(-1), ehframeRegisterIndex(-1),
         encoding(kEncodingNone), format(kFormatNone) {}
 
   // xmlSet is the index of this set of registers in the

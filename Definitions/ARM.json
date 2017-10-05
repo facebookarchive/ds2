@@ -19,9 +19,9 @@
                 "encoding"              : "int",
                 "format"                : "hex",
 
-                "base-gdb-reg-number"   : 0,
-                "base-gcc-reg-number"   : 0,
-                "base-dwarf-reg-number" : 0
+                "base-gdb-reg-number"       : 0,
+                "base-ehframe-reg-number"   : 0,
+                "base-dwarf-reg-number"     : 0
             },
 
             "r0"  : {
@@ -84,7 +84,7 @@
                 "alternate-name"       : "flags",
                 "generic-name"         : "flags",
                 "gdb-reg-number"       : 25,
-                "gcc-reg-number"       : 16,
+                "ehframe-reg-number"   : 16,
                 "dwarf-reg-number"     : 128,
                 "invalidate-registers" : [ "r8", "r9", "r10", "r11", "r12", "r13", "r14" ],
                 "referencing-sets"     : [ "gpr" ]
