@@ -196,24 +196,34 @@ void OptParse::usageDie(char const *format, ...) {
   Print("usage: ds2 RUN_MODE [OPTIONS] %s%s\n", "[HOST]:PORT ",
         "[-- PROGRAM [ARGUMENTS...]]");
 
+  static std::map<OptionType, std::string> const argTypePlaceholder = {
+      {stringOption, "ARG"}, {vectorOption, "ARG..."}, {boolOption, ""},
+  };
+
   size_t help_align = 0;
 
   std::for_each(_options.begin(), _options.end(),
                 [&help_align](OptionCollection::value_type const &arg) {
-                  if (arg.first.size() > help_align) {
-                    help_align = arg.first.size();
+                  size_t argLength =
+                      arg.first.size() + 1 +
+                      argTypePlaceholder.at(arg.second.type).size();
+                  if (argLength > help_align) {
+                    help_align = argLength;
                   }
                 });
 
   help_align += 2;
 
   for (auto const &e : _options) {
-    if (e.second.hidden)
+    if (e.second.hidden) {
       continue;
+    }
 
-    Print("  -%c, --%s", e.second.shortName, e.first.c_str());
-    Print(" %s", (e.second.type == stringOption ? "ARG" : "   "));
-    for (size_t i = 0; i < help_align - e.first.size(); ++i) {
+    Print("  -%c, --%s %s", e.second.shortName, e.first.c_str(),
+          argTypePlaceholder.at(e.second.type).c_str());
+    for (size_t i =
+             e.first.size() + 1 + argTypePlaceholder.at(e.second.type).size();
+         i < help_align; ++i) {
       Print(" ");
     }
     Print("%s\n", e.second.help.c_str());
