@@ -60,6 +60,7 @@ private:
 
 private:
   OptionCollection _options;
+  std::string _runMode;
   std::string _host;
   std::string _port;
 
