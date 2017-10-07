@@ -27,6 +27,9 @@ public:
 public:
   void addOption(OptionType type, std::string const &name, char shortName,
                  std::string const &help = std::string(), bool hidden = false);
+  void addPositional(std::string const &name,
+                     std::string const &help = std::string(),
+                     bool hidden = false);
 
 public:
   int parse(int argc, char **argv);
@@ -35,6 +38,7 @@ public:
   bool getBool(std::string const &name) const;
   std::string const &getString(std::string const &name) const;
   std::vector<std::string> const &getVector(std::string const &name) const;
+  std::string const &getPositional(std::string const &name) const;
 
 public:
   std::string const &getHost() const;
@@ -56,10 +60,18 @@ private:
     bool hidden;
   };
 
+  struct PositionalStorage {
+    std::string value;
+    std::string help;
+    bool hidden;
+  };
+
   typedef std::map<std::string, OptionStorage> OptionCollection;
+  typedef std::map<std::string, PositionalStorage> PositionalCollection;
 
 private:
   OptionCollection _options;
+  PositionalCollection _positionals;
   std::string _runMode;
   std::string _host;
   std::string _port;
