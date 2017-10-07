@@ -83,6 +83,39 @@ CreateSocket(std::string const &host, std::string const &port, bool reverse) {
   return socket;
 }
 
+static std::unique_ptr<Socket> CreateSocket(std::string const &addrString,
+                                            bool reverse) {
+  if (addrString.empty()) {
+    return CreateSocket(gDefaultHost, gDefaultPort, reverse);
+  }
+
+  std::string host, port;
+
+  auto splitPos = addrString.rfind(":");
+
+  // In certain cases, the [host]:port specification is just an integer
+  // representing the port, without the separating colon. If that happens, just
+  // use the default host to create the socket.
+  if (splitPos == std::string::npos) {
+    port = addrString;
+  } else {
+    if (splitPos > 0) {
+      // IPv6 addresses can be of the form '[a:b:c:d::1]:12345', so we need
+      // to strip the square brackets around the host part.
+      if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
+        host = addrString.substr(1, splitPos - 2);
+      } else {
+        host = addrString.substr(0, splitPos);
+      }
+    }
+
+    port = addrString.substr(splitPos + 1);
+  }
+
+  return CreateSocket(host.empty() ? gDefaultHost : host,
+                      port.empty() ? gDefaultPort : port, reverse);
+}
+
 static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
   Session session(gGDBCompat ? ds2::GDBRemote::kCompatibilityModeGDB
                              : ds2::GDBRemote::kCompatibilityModeLLDB);
@@ -187,6 +220,9 @@ static int GdbserverMain(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "once", 'O',
                  "exit after one execution of inferior (default)", true);
 
+  // [host]:port positional argument.
+  opts.addPositional("[host]:port", "the [host]:port to connect to");
+
   int idx = opts.parse(argc, argv);
   HandleSharedOptions(opts);
 
@@ -238,20 +274,15 @@ static int GdbserverMain(int argc, char **argv) {
 
   bool reverse = opts.getBool("reverse-connect");
 
-  std::string host = opts.getHost();
-  std::string port = opts.getPort();
-
-  // Default host and port options.
-  if (port.empty()) {
+  std::unique_ptr<Socket> socket;
+  if (opts.getPositional("[host]:port").empty()) {
     // If we have a named pipe, set the port to 0 to indicate that we should
     // dynamically allocate it and write it back to the FIFO.
-    port = namedPipePath.empty() ? gDefaultPort : "0";
+    socket = CreateSocket(gDefaultHost,
+                          namedPipePath.empty() ? gDefaultPort : "0", reverse);
+  } else {
+    socket = CreateSocket(opts.getPositional("[host]:port"), reverse);
   }
-  if (host.empty()) {
-    host = gDefaultHost;
-  }
-
-  std::unique_ptr<Socket> socket = CreateSocket(host, port, reverse);
 
   if (!namedPipePath.empty()) {
     std::string realPort = socket->port();
@@ -289,6 +320,7 @@ static int PlatformMain(int argc, char **argv) {
 
   ds2::OptParse opts;
   AddSharedOptions(opts);
+  opts.addPositional("[host]:port", "the [host]:port to connect to");
   opts.parse(argc, argv);
   HandleSharedOptions(opts);
 
@@ -305,10 +337,8 @@ static int PlatformMain(int argc, char **argv) {
     }
   };
 
-  std::string host = opts.getHost().empty() ? gDefaultHost : opts.getHost();
-  std::string port = opts.getPort().empty() ? gDefaultPort : opts.getPort();
-
-  std::unique_ptr<Socket> serverSocket = CreateSocket(host, port, false);
+  std::unique_ptr<Socket> serverSocket =
+      CreateSocket(opts.getPositional("[host]:port"), false);
 
   if (gDaemonize) {
     ds2::Utils::Daemonize();
