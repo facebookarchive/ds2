@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <cstring>
 
 namespace ds2 {
 
@@ -22,6 +23,12 @@ void OptParse::addOption(OptionType type, std::string const &name,
   DS2ASSERT(_options.find(name) == _options.end());
   DS2ASSERT(findShortOpt(shortName) == _options.end());
   _options[name] = {shortName, type, {false, "", {}}, help, hidden};
+}
+
+void OptParse::addPositional(std::string const &name, std::string const &help,
+                             bool hidden) {
+  DS2ASSERT(_positionals.find(name) == _positionals.end());
+  _positionals[name] = {"", help, hidden};
 }
 
 int OptParse::parse(int argc, char **argv) {
@@ -108,30 +115,40 @@ int OptParse::parse(int argc, char **argv) {
         }
       }
     } else {
-      // We already have our [host]:port, this can only be the path to the
-      // binary to run.
-      if (!_port.empty())
-        break;
+      auto nextPositional =
+          std::find_if(_positionals.begin(), _positionals.end(),
+                       [](PositionalCollection::value_type &e) {
+                         return e.second.value.empty();
+                       });
 
-      std::string addrString(argv[idx]);
-      auto splitPos = addrString.rfind(":");
+      if (nextPositional != _positionals.end()) {
+        nextPositional->second.value = argv[idx];
+      } else {
+        // We already have our [host]:port, this can only be the path to the
+        // binary to run.
+        if (!_port.empty())
+          break;
 
-      // Argument is not an option (--long or -s) and not a [host]:port. We're
-      // done with parsing and this is the path to the binary to run.
-      if (splitPos == std::string::npos)
-        break;
+        std::string addrString(argv[idx]);
+        auto splitPos = addrString.rfind(":");
 
-      if (splitPos > 0) {
-        // IPv6 addresses can be of the form '[a:b:c:d::1]:12345', so we need
-        // to strip the square brackets around the host part.
-        if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
-          _host = addrString.substr(1, splitPos - 2);
-        } else {
-          _host = addrString.substr(0, splitPos);
+        // Argument is not an option (--long or -s) and not a [host]:port. We're
+        // done with parsing and this is the path to the binary to run.
+        if (splitPos == std::string::npos)
+          break;
+
+        if (splitPos > 0) {
+          // IPv6 addresses can be of the form '[a:b:c:d::1]:12345', so we need
+          // to strip the square brackets around the host part.
+          if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
+            _host = addrString.substr(1, splitPos - 2);
+          } else {
+            _host = addrString.substr(0, splitPos);
+          }
         }
-      }
 
-      _port = addrString.substr(splitPos + 1);
+        _port = addrString.substr(splitPos + 1);
+      }
     }
 
     ++idx;
@@ -152,6 +169,11 @@ std::string const &OptParse::getString(std::string const &name) const {
 std::vector<std::string> const &
 OptParse::getVector(std::string const &name) const {
   return get(name, vectorOption).values.vectorValue;
+}
+
+std::string const &OptParse::getPositional(std::string const &name) const {
+  DS2ASSERT(_positionals.find(name) != _positionals.end());
+  return _positionals.at(name).value;
 }
 
 std::string const &OptParse::getHost() const { return _host; }
@@ -185,6 +207,10 @@ static void Print(char const *format, ...) {
 }
 
 void OptParse::usageDie(char const *format, ...) {
+  // `parse()` fills in this information, and we shouldn't call this function
+  // without having started to parse arguments.
+  DS2ASSERT(!_runMode.empty());
+
   if (format != nullptr) {
     va_list ap;
 
@@ -195,30 +221,31 @@ void OptParse::usageDie(char const *format, ...) {
     Print("\n");
   }
 
-  // `parse()` fills in this information, and we shouldn't call this function
-  // without having started to parse arguments.
-  DS2ASSERT(!_runMode.empty());
-
-  Print("usage: ds2 %s [OPTIONS] %s%s\n", _runMode.c_str(), "[HOST]:PORT ",
-        "[-- PROGRAM [ARGUMENTS...]]");
-
   static std::map<OptionType, std::string> const argTypePlaceholder = {
       {stringOption, "ARG"}, {vectorOption, "ARG..."}, {boolOption, ""},
   };
 
-  size_t help_align = 0;
+  size_t helpAlign = 0;
+  auto optionPrintLength = [](std::string const &name, OptionType type) {
+    return ::strlen("-?, --") + name.length() + ::strlen(" ") +
+           argTypePlaceholder.at(type).length();
+  };
+  auto positionalPrintLength = [](std::string const &name) {
+    return name.length();
+  };
 
-  std::for_each(_options.begin(), _options.end(),
-                [&help_align](OptionCollection::value_type const &arg) {
-                  size_t argLength =
-                      arg.first.size() + 1 +
-                      argTypePlaceholder.at(arg.second.type).size();
-                  if (argLength > help_align) {
-                    help_align = argLength;
-                  }
-                });
+  Print("usage: ds2 %s [OPTIONS]", _runMode.c_str());
+  for (const auto &e : _positionals) {
+    Print(" %s", e.first.c_str());
+    helpAlign = std::max(helpAlign, positionalPrintLength(e.first));
+  }
+  Print(" %s%s\n", "[HOST]:PORT ", "[-- PROGRAM [ARGUMENTS...]]");
 
-  help_align += 2;
+  for (const auto &e : _options) {
+    helpAlign = std::max(helpAlign, optionPrintLength(e.first, e.second.type));
+  }
+
+  helpAlign += 2;
 
   for (auto const &e : _options) {
     if (e.second.hidden) {
@@ -227,9 +254,20 @@ void OptParse::usageDie(char const *format, ...) {
 
     Print("  -%c, --%s %s", e.second.shortName, e.first.c_str(),
           argTypePlaceholder.at(e.second.type).c_str());
-    for (size_t i =
-             e.first.size() + 1 + argTypePlaceholder.at(e.second.type).size();
-         i < help_align; ++i) {
+    for (size_t i = optionPrintLength(e.first, e.second.type); i < helpAlign;
+         ++i) {
+      Print(" ");
+    }
+    Print("%s\n", e.second.help.c_str());
+  }
+
+  for (auto const &e : _positionals) {
+    if (e.second.hidden) {
+      continue;
+    }
+
+    Print("  %s", e.first.c_str());
+    for (size_t i = positionalPrintLength(e.first); i < helpAlign; ++i) {
       Print(" ");
     }
     Print("%s\n", e.second.help.c_str());
