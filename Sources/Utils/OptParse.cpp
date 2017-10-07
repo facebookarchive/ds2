@@ -56,10 +56,10 @@ int OptParse::parse(int argc, char **argv) {
 
       // Long option.
       auto it = _options.find(argStr);
-      CHECK(it != _options.end(), "unrecognized option `%s'\n", argv[idx]);
+      CHECK(it != _options.end(), "unrecognized option `%s'", argv[idx]);
 
       if (it->second.type != boolOption && argVal.empty()) {
-        CHECK(idx + 1 < argc, "option `%s' expects an argument\n", argv[idx]);
+        CHECK(idx + 1 < argc, "option `%s' expects an argument", argv[idx]);
         argVal = std::string(argv[++idx]);
       }
 
@@ -76,10 +76,10 @@ int OptParse::parse(int argc, char **argv) {
       }
     } else if (argv[idx][0] == '-') {
       // Short option.
-      CHECK(argv[idx][1] != '\0', "unrecognized option `-'\n");
+      CHECK(argv[idx][1] != '\0', "unrecognized option `-'");
       for (int optidx = 1; optidx > 0 && argv[idx][optidx] != '\0'; ++optidx) {
         auto it = findShortOpt(argv[idx][optidx]);
-        CHECK(it != _options.end(), "unrecognized option `%s'\n", argv[idx]);
+        CHECK(it != _options.end(), "unrecognized option `%s'", argv[idx]);
         switch (it->second.type) {
         case boolOption:
           it->second.values.boolValue = true;
@@ -88,8 +88,7 @@ int OptParse::parse(int argc, char **argv) {
           if (argv[idx][optidx + 1] != '\0') {
             it->second.values.stringValue = argv[idx] + optidx + 1;
           } else {
-            CHECK(idx + 1 < argc, "option `%s' expects an argument\n",
-                  argv[idx]);
+            CHECK(idx + 1 < argc, "option `%s' expects an argument", argv[idx]);
             it->second.values.stringValue = argv[++idx];
             optidx = -1;
           }
@@ -98,8 +97,7 @@ int OptParse::parse(int argc, char **argv) {
           if (argv[idx][optidx + 1] != '\0') {
             it->second.values.vectorValue.push_back(argv[idx] + optidx + 1);
           } else {
-            CHECK(idx + 1 < argc, "option `%s' expects an argument\n",
-                  argv[idx]);
+            CHECK(idx + 1 < argc, "option `%s' expects an argument", argv[idx]);
             it->second.values.vectorValue.push_back(argv[++idx]);
             optidx = -1;
           }
@@ -191,6 +189,7 @@ void OptParse::usageDie(char const *format, ...) {
     va_start(ap, format);
     VPrint(format, ap);
     va_end(ap);
+    Print("\n");
   }
 
   Print("usage: ds2 RUN_MODE [OPTIONS] %s%s\n", "[HOST]:PORT ",
