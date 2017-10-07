@@ -32,9 +32,12 @@ int OptParse::parse(int argc, char **argv) {
     }                                                                          \
   } while (0)
 
-  // Skip argv[0] which contains the program name,
-  // and argv[1] which contains the run mode
+  // Skip argv[0] which contains the program name, and argv[1] which contains
+  // the run mode.
   int idx = 2;
+
+  // Save the run mode for potentially displaying it in `usageDie()`.
+  _runMode = argv[1];
 
   while (idx < argc) {
     if (argv[idx][0] == '-' && argv[idx][1] == '-') {
@@ -192,7 +195,11 @@ void OptParse::usageDie(char const *format, ...) {
     Print("\n");
   }
 
-  Print("usage: ds2 RUN_MODE [OPTIONS] %s%s\n", "[HOST]:PORT ",
+  // `parse()` fills in this information, and we shouldn't call this function
+  // without having started to parse arguments.
+  DS2ASSERT(!_runMode.empty());
+
+  Print("usage: ds2 %s [OPTIONS] %s%s\n", _runMode.c_str(), "[HOST]:PORT ",
         "[-- PROGRAM [ARGUMENTS...]]");
 
   static std::map<OptionType, std::string> const argTypePlaceholder = {
