@@ -124,30 +124,7 @@ int OptParse::parse(int argc, char **argv) {
       if (nextPositional != _positionals.end()) {
         nextPositional->second.value = argv[idx];
       } else {
-        // We already have our [host]:port, this can only be the path to the
-        // binary to run.
-        if (!_port.empty())
-          break;
-
-        std::string addrString(argv[idx]);
-        auto splitPos = addrString.rfind(":");
-
-        // Argument is not an option (--long or -s) and not a [host]:port. We're
-        // done with parsing and this is the path to the binary to run.
-        if (splitPos == std::string::npos)
-          break;
-
-        if (splitPos > 0) {
-          // IPv6 addresses can be of the form '[a:b:c:d::1]:12345', so we need
-          // to strip the square brackets around the host part.
-          if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
-            _host = addrString.substr(1, splitPos - 2);
-          } else {
-            _host = addrString.substr(0, splitPos);
-          }
-        }
-
-        _port = addrString.substr(splitPos + 1);
+        break;
       }
     }
 
@@ -175,10 +152,6 @@ std::string const &OptParse::getPositional(std::string const &name) const {
   DS2ASSERT(_positionals.find(name) != _positionals.end());
   return _positionals.at(name).value;
 }
-
-std::string const &OptParse::getHost() const { return _host; }
-
-std::string const &OptParse::getPort() const { return _port; }
 
 static void VPrint(char const *format, va_list ap) {
   va_list ap_copy;
@@ -239,7 +212,7 @@ void OptParse::usageDie(char const *format, ...) {
     Print(" %s", e.first.c_str());
     helpAlign = std::max(helpAlign, positionalPrintLength(e.first));
   }
-  Print(" %s%s\n", "[HOST]:PORT ", "[-- PROGRAM [ARGUMENTS...]]");
+  Print(" %s\n", "[-- PROGRAM [ARGUMENTS...]]");
 
   for (const auto &e : _options) {
     helpAlign = std::max(helpAlign, optionPrintLength(e.first, e.second.type));

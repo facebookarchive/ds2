@@ -41,10 +41,6 @@ public:
   std::string const &getPositional(std::string const &name) const;
 
 public:
-  std::string const &getHost() const;
-  std::string const &getPort() const;
-
-public:
   void usageDie(char const *format = nullptr, ...);
 
 private:
@@ -73,8 +69,6 @@ private:
   OptionCollection _options;
   PositionalCollection _positionals;
   std::string _runMode;
-  std::string _host;
-  std::string _port;
 
 private:
   OptionCollection::iterator findShortOpt(char shortOption);
