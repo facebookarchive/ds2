@@ -178,12 +178,11 @@ std::unique_ptr<Socket> Socket::accept() {
     return nullptr;
   }
 
-  struct sockaddr_in sin;
-  socklen_t sinlen = sizeof(sin);
+  struct sockaddr_storage ss;
+  socklen_t sslen = sizeof(ss);
   SOCKET handle;
 
-  handle =
-      ::accept(_handle, reinterpret_cast<struct sockaddr *>(&sin), &sinlen);
+  handle = ::accept(_handle, reinterpret_cast<struct sockaddr *>(&ss), &sslen);
   if (handle == INVALID_SOCKET) {
     _lastError = SOCK_ERRNO;
     return nullptr;
