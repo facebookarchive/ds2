@@ -52,8 +52,9 @@ Socket::Socket(SOCKET handle)
 Socket::~Socket() { close(); }
 
 bool Socket::create(int af) {
-  if (valid())
+  if (valid()) {
     return false;
+  }
 
   _handle = ::socket(af, SOCK_STREAM, IPPROTO_TCP);
   if (_handle == INVALID_SOCKET) {
@@ -86,8 +87,9 @@ bool Socket::create(int af) {
 }
 
 void Socket::close() {
-  if (!valid())
+  if (!valid()) {
     return;
+  }
 
 #if defined(OS_WIN32)
   ::closesocket(_handle);
@@ -101,8 +103,9 @@ void Socket::close() {
 }
 
 bool Socket::listen(std::string const &address, std::string const &port) {
-  if (listening() || connected())
+  if (listening() || connected()) {
     return false;
+  }
 
   struct addrinfo hints, *result;
   memset(&hints, 0, sizeof(hints));
@@ -171,8 +174,9 @@ bool Socket::listen(std::string const &address, std::string const &port) {
 }
 
 std::unique_ptr<Socket> Socket::accept() {
-  if (!listening())
+  if (!listening()) {
     return nullptr;
+  }
 
   struct sockaddr_in sin;
   socklen_t sinlen = sizeof(sin);
@@ -242,8 +246,9 @@ bool Socket::connect(std::string const &host, std::string const &port) {
 }
 
 bool Socket::setNonBlocking() {
-  if (!connected())
+  if (!connected()) {
     return false;
+  }
 
 #if defined(OS_WIN32)
   u_long set = 1;
@@ -262,8 +267,9 @@ bool Socket::setNonBlocking() {
 }
 
 ssize_t Socket::send(void const *buffer, size_t length) {
-  if (!connected())
+  if (!connected()) {
     return -1;
+  }
 
   ssize_t nsent =
       ::send(_handle, reinterpret_cast<const char *>(buffer), length, 0);
@@ -279,11 +285,13 @@ ssize_t Socket::send(void const *buffer, size_t length) {
 }
 
 ssize_t Socket::receive(void *buffer, size_t length) {
-  if (!connected())
+  if (!connected()) {
     return -1;
+  }
 
-  if (length == 0)
+  if (length == 0) {
     return 0;
+  }
 
   ssize_t nrecvd = ::recv(_handle, reinterpret_cast<char *>(buffer), length, 0);
   if (nrecvd <= 0) {
@@ -299,8 +307,9 @@ ssize_t Socket::receive(void *buffer, size_t length) {
 }
 
 bool Socket::wait(int ms) {
-  if (!valid())
+  if (!valid()) {
     return false;
+  }
 
 #if defined(OS_WIN32)
   fd_set fds;
