@@ -61,7 +61,6 @@ protected:
 
 public:
   bool listen(std::string const &address, std::string const &port);
-  inline bool listen(std::string const &port) { return listen(nullptr, port); }
   std::unique_ptr<Socket> accept();
   bool connect(std::string const &host, std::string const &port);
 
