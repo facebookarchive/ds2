@@ -53,8 +53,9 @@ static bool gGDBCompat = false;
 // This function creates and initializes a socket than can be either a client
 // (if reverse is true), or a server (if reverse is false) that will then need
 // to be accept()'d on.
-static std::unique_ptr<Socket>
-CreateSocket(std::string const &host, std::string const &port, bool reverse) {
+static std::unique_ptr<Socket> CreateTCPSocket(std::string const &host,
+                                               std::string const &port,
+                                               bool reverse) {
   auto socket = ds2::make_unique<Socket>();
 
   if (reverse) {
@@ -83,37 +84,81 @@ CreateSocket(std::string const &host, std::string const &port, bool reverse) {
   return socket;
 }
 
-static std::unique_ptr<Socket> CreateSocket(std::string const &addrString,
-                                            bool reverse) {
-  if (addrString.empty()) {
-    return CreateSocket(gDefaultHost, gDefaultPort, reverse);
+#if defined(OS_POSIX)
+static std::unique_ptr<Socket> CreateUNIXSocket(std::string const &path,
+                                                bool abstract, bool reverse) {
+#if !defined(OS_LINUX)
+  if (abstract) {
+    DS2LOG(Fatal, "abstract UNIX sockets not supported on this system");
+  }
+#endif
+
+  if (reverse) {
+    DS2LOG(Fatal, "reverse connections not supported with UNIX sockets");
   }
 
-  std::string host, port;
+  auto socket = ds2::make_unique<Socket>();
 
-  auto splitPos = addrString.rfind(":");
-
-  // In certain cases, the [host]:port specification is just an integer
-  // representing the port, without the separating colon. If that happens, just
-  // use the default host to create the socket.
-  if (splitPos == std::string::npos) {
-    port = addrString;
+  if (!socket->listen(path, abstract)) {
+    DS2LOG(Fatal, "cannot listen on %s: %s", path.c_str(),
+           socket->error().c_str());
   } else {
-    if (splitPos > 0) {
-      // IPv6 addresses can be of the form '[a:b:c:d::1]:12345', so we need
-      // to strip the square brackets around the host part.
-      if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
-        host = addrString.substr(1, splitPos - 2);
-      } else {
-        host = addrString.substr(0, splitPos);
+    DS2LOG(Debug, "listening on %s", path.c_str());
+  }
+
+  return socket;
+}
+#endif
+
+static std::unique_ptr<Socket> CreateSocket(std::string const &arg,
+                                            bool reverse) {
+  std::string protocol;
+  std::string addrString;
+
+  auto protocolSplitPos = arg.find("://");
+  if (protocolSplitPos == std::string::npos) {
+    protocol = "tcp";
+    addrString = arg;
+  } else {
+    protocol = arg.substr(0, protocolSplitPos);
+    addrString = arg.substr(protocolSplitPos + ::strlen("://"));
+  }
+
+  if (protocol == "tcp") {
+    std::string host, port;
+
+    auto splitPos = addrString.rfind(":");
+
+    // In certain cases, the [host]:port specification is just an integer
+    // representing the port, without the separating colon. If that happens,
+    // just use the default host to create the socket.
+    if (splitPos == std::string::npos) {
+      port = addrString;
+    } else {
+      if (splitPos > 0) {
+        // IPv6 addresses can be of the form '[a:b:c:d::1]:12345', so we need
+        // to strip the square brackets around the host part.
+        if (addrString[0] == '[' && addrString[splitPos - 1] == ']') {
+          host = addrString.substr(1, splitPos - 2);
+        } else {
+          host = addrString.substr(0, splitPos);
+        }
       }
+
+      port = addrString.substr(splitPos + 1);
     }
 
-    port = addrString.substr(splitPos + 1);
+    return CreateTCPSocket(host.empty() ? gDefaultHost : host,
+                           port.empty() ? gDefaultPort : port, reverse);
+#if defined(OS_POSIX)
+  } else if (protocol == "unix" || protocol == "unix-abstract") {
+    return CreateUNIXSocket(addrString, protocol == "unix-abstract", reverse);
+#endif
+  } else {
+    DS2LOG(Fatal, "unknown protocol `%s'", protocol.c_str());
   }
 
-  return CreateSocket(host.empty() ? gDefaultHost : host,
-                      port.empty() ? gDefaultPort : port, reverse);
+  DS2_UNREACHABLE();
 }
 
 static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
@@ -278,8 +323,8 @@ static int GdbserverMain(int argc, char **argv) {
   if (opts.getPositional("[host]:port").empty()) {
     // If we have a named pipe, set the port to 0 to indicate that we should
     // dynamically allocate it and write it back to the FIFO.
-    socket = CreateSocket(gDefaultHost,
-                          namedPipePath.empty() ? gDefaultPort : "0", reverse);
+    socket = CreateTCPSocket(
+        gDefaultHost, namedPipePath.empty() ? gDefaultPort : "0", reverse);
   } else {
     socket = CreateSocket(opts.getPositional("[host]:port"), reverse);
   }
@@ -380,7 +425,7 @@ static int SlaveMain(int argc, char **argv) {
 
   ds2::SetLogLevel(ds2::kLogLevelWarning);
 
-  std::unique_ptr<Socket> server = CreateSocket(gDefaultHost, "0", false);
+  std::unique_ptr<Socket> server = CreateTCPSocket(gDefaultHost, "0", false);
   std::string port = server->port();
 
   pid_t pid = ::fork();
