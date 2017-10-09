@@ -61,6 +61,9 @@ protected:
 
 public:
   bool listen(std::string const &address, std::string const &port);
+#if defined(OS_POSIX)
+  bool listen(std::string const &path, bool abstract = false);
+#endif
   std::unique_ptr<Socket> accept();
   bool connect(std::string const &host, std::string const &port);
 

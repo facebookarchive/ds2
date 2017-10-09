@@ -21,6 +21,7 @@
 #include <ws2tcpip.h>
 #define SOCK_ERRNO WSAGetLastError()
 #define SOCK_WOULDBLOCK WSAEWOULDBLOCK
+#define SOCK_NAMETOOLONG WSAENAMETOOLONG
 #define SOCK_ERRNO_STRINGIFY Stringify::WSAError
 #elif defined(OS_POSIX)
 #include <arpa/inet.h>
@@ -29,13 +30,16 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <poll.h>
+#include <sys/un.h>
 #include <unistd.h>
 #define SOCK_ERRNO errno
 #define SOCK_WOULDBLOCK EAGAIN
+#define SOCK_NAMETOOLONG ENAMETOOLONG
 #define SOCK_ERRNO_STRINGIFY Stringify::Errno
 #endif
 
 #include <algorithm>
+#include <cstddef>
 #include <cstring>
 
 using ds2::Utils::Stringify;
@@ -56,7 +60,7 @@ bool Socket::create(int af) {
     return false;
   }
 
-  _handle = ::socket(af, SOCK_STREAM, IPPROTO_TCP);
+  _handle = ::socket(af, SOCK_STREAM, 0);
   if (_handle == INVALID_SOCKET) {
     _lastError = SOCK_ERRNO;
     return false;
@@ -172,6 +176,61 @@ bool Socket::listen(std::string const &address, std::string const &port) {
   _state = kStateListening;
   return true;
 }
+
+#if defined(OS_POSIX)
+bool Socket::listen(std::string const &path, bool abstract) {
+#if !defined(OS_LINUX)
+  // Abstract UNIX sockets are supported only on Linux.
+  DS2ASSERT(!abstract);
+#endif
+
+  if (listening() || connected()) {
+    return false;
+  }
+
+  if (!create(AF_UNIX)) {
+    return false;
+  }
+
+  struct sockaddr_un sun;
+  ::memset(&sun, 0, sizeof(sun));
+  sun.sun_family = AF_UNIX;
+
+  if (abstract) {
+    // Abstract UNIX sockets are a Linux-only construct where the socket
+    // doesn't actually exist on the filesystem, and the given "path" is used
+    // as a generic identifier for the socket. Abstract UNIX sockets are
+    // identified by `sun_path` starting with a null character.
+    if (path.length() > sizeof(sun.sun_path) - 1) {
+      _lastError = SOCK_NAMETOOLONG;
+      return false;
+    }
+    ::strncpy(sun.sun_path + 1, path.c_str(), sizeof(sun.sun_path) - 1);
+  } else {
+    if (path.length() > sizeof(sun.sun_path)) {
+      _lastError = SOCK_NAMETOOLONG;
+      return false;
+    }
+    ::strncpy(sun.sun_path, path.c_str(), sizeof(sun.sun_path));
+  }
+
+  size_t len = offsetof(struct sockaddr_un, sun_path) + path.length() +
+               (abstract ? sizeof(char) : 0);
+  int res = ::bind(_handle, reinterpret_cast<struct sockaddr *>(&sun), len);
+  if (res < 0) {
+    _lastError = SOCK_ERRNO;
+    return false;
+  }
+
+  if (::listen(_handle, 1) < 0) {
+    _lastError = SOCK_ERRNO;
+    return false;
+  }
+
+  _state = kStateListening;
+  return true;
+}
+#endif
 
 std::unique_ptr<Socket> Socket::accept() {
   if (!listening()) {
