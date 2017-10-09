@@ -320,9 +320,18 @@ static int PlatformMain(int argc, char **argv) {
 
   ds2::OptParse opts;
   AddSharedOptions(opts);
-  opts.addPositional("[host]:port", "the [host]:port to connect to");
+
+  opts.addOption(ds2::OptParse::stringOption, "listen", 'l',
+                 "specify the [host]:port to listen on");
+  opts.addOption(ds2::OptParse::boolOption, "server", 's',
+                 "create a new process for each client (default)", true);
+
   opts.parse(argc, argv);
   HandleSharedOptions(opts);
+
+  if (opts.getString("listen").empty()) {
+    opts.usageDie("--listen required in platform mode");
+  }
 
   struct PlatformClient {
     std::unique_ptr<Socket> socket;
@@ -338,7 +347,7 @@ static int PlatformMain(int argc, char **argv) {
   };
 
   std::unique_ptr<Socket> serverSocket =
-      CreateSocket(opts.getPositional("[host]:port"), false);
+      CreateSocket(opts.getString("listen"), false);
 
   if (gDaemonize) {
     ds2::Utils::Daemonize();
