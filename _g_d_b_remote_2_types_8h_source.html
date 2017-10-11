@@ -235,7 +235,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  std::string genericName;</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <span class="keywordtype">size_t</span> bitSize;</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  ssize_t byteOffset;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  ssize_t gccRegisterIndex;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  ssize_t ehframeRegisterIndex;</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  ssize_t dwarfRegisterIndex;</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  uint32_t regno;</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;  Encoding encoding;</div>
@@ -244,7 +244,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  std::vector&lt;uint32_t&gt; invalidateRegisters;</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;  <a class="code" href="structds2_1_1_g_d_b_remote_1_1_register_info.html">RegisterInfo</a>()</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      : bitSize(0), byteOffset(-1), gccRegisterIndex(-1),</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      : bitSize(0), byteOffset(-1), ehframeRegisterIndex(-1),</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        encoding(kEncodingNone), format(kFormatNone) {}</div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;</div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  <span class="comment">// xmlSet is the index of this set of registers in the</span></div>

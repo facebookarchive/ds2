@@ -191,12 +191,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="keyword">virtual</span> ErrorCode disableLocation(<a class="code" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> <span class="keyword">const</span> &amp;site,</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                                    Target::Thread *thread = <span class="keyword">nullptr</span>) = 0;</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">bool</span> enabled(Target::Thread *thread = <span class="keyword">nullptr</span>) <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;};</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;} <span class="comment">// namespace ds2</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">bool</span> fillStopInfo(Target::Thread *thread, <a class="code" href="structds2_1_1_stop_info.html">StopInfo</a> &amp;stopInfo) = 0;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;};</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;} <span class="comment">// namespace ds2</span></div>
 <div class="ttc" id="structds2_1_1_breakpoint_manager_1_1_site_html"><div class="ttname"><a href="structds2_1_1_breakpoint_manager_1_1_site.html">ds2::BreakpointManager::Site</a></div><div class="ttdef"><b>Definition:</b> BreakpointManager.h:34</div></div>
 <div class="ttc" id="classds2_1_1_target_1_1_process_base_html"><div class="ttname"><a href="classds2_1_1_target_1_1_process_base.html">ds2::Target::ProcessBase</a></div><div class="ttdef"><b>Definition:</b> ProcessBase.h:25</div></div>
 <div class="ttc" id="classds2_1_1_address_html"><div class="ttname"><a href="classds2_1_1_address.html">ds2::Address</a></div><div class="ttdef"><b>Definition:</b> Types.h:93</div></div>
 <div class="ttc" id="classds2_1_1_breakpoint_manager_html"><div class="ttname"><a href="classds2_1_1_breakpoint_manager.html">ds2::BreakpointManager</a></div><div class="ttdef"><b>Definition:</b> BreakpointManager.h:19</div></div>
+<div class="ttc" id="structds2_1_1_stop_info_html"><div class="ttname"><a href="structds2_1_1_stop_info.html">ds2::StopInfo</a></div><div class="ttdef"><b>Definition:</b> Types.h:129</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
