@@ -1,0 +1,2 @@
+xfail
+TestRegisters.RegisterCommandsTestCase.test_fp_special_purpose_register_read_dwarf
