@@ -36,7 +36,7 @@ matrix:
     - os: linux
       env: TARGET="Android-ARM" ANDROID_PLATFORM="16"
     - os: linux
-      env: TARGET="Android-ARM64"
+      env: TARGET="Android-ARM64" LLDB_TESTS="all" PLATFORM="1" COVERAGE="1"
     - os: linux
       env: TARGET="Android-X86"
     - os: linux
