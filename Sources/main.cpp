@@ -35,15 +35,15 @@
 #include <unistd.h>
 #endif
 
-using ds2::Host::Socket;
-using ds2::Host::QueueChannel;
-using ds2::Host::Platform;
 using ds2::BreakpointManager;
+using ds2::GDBRemote::DebugSessionImpl;
+using ds2::GDBRemote::PlatformSessionImpl;
 using ds2::GDBRemote::Session;
 using ds2::GDBRemote::SessionDelegate;
-using ds2::GDBRemote::PlatformSessionImpl;
-using ds2::GDBRemote::DebugSessionImpl;
 using ds2::GDBRemote::SlaveSessionImpl;
+using ds2::Host::Platform;
+using ds2::Host::QueueChannel;
+using ds2::Host::Socket;
 
 static std::string gDefaultPort = "12345";
 static std::string gDefaultHost = "127.0.0.1";

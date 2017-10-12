@@ -195,7 +195,9 @@ void OptParse::usageDie(char const *format, ...) {
   }
 
   static std::map<OptionType, std::string> const argTypePlaceholder = {
-      {stringOption, "ARG"}, {vectorOption, "ARG..."}, {boolOption, ""},
+      {stringOption, "ARG"},
+      {vectorOption, "ARG..."},
+      {boolOption, ""},
   };
 
   size_t helpAlign = 0;

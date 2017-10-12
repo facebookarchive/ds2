@@ -18,9 +18,9 @@
 
 #define super ds2::BreakpointManager
 
-using ds2::Utils::EnableBit;
 using ds2::Utils::DisableBit;
 using ds2::Utils::DisableBits;
+using ds2::Utils::EnableBit;
 
 namespace ds2 {
 

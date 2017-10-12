@@ -24,9 +24,9 @@ namespace ARM64 {
 //
 // VFP is shared between A32 and A64
 //
-using ds2::Architecture::ARM::VFPSingle;
 using ds2::Architecture::ARM::VFPDouble;
 using ds2::Architecture::ARM::VFPQuad;
+using ds2::Architecture::ARM::VFPSingle;
 
 //
 // Import the A32 variant
