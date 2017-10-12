@@ -333,6 +333,6 @@ enum /* lldb_reg */ {
 
 extern LLDBDescriptor const LLDB;
 extern GDBDescriptor const GDB;
-}
-}
-}
+} // namespace ARM
+} // namespace Architecture
+} // namespace ds2

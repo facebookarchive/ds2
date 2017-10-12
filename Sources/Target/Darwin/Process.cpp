@@ -26,8 +26,8 @@
 #include <sys/syscall.h>
 #include <sys/wait.h>
 
-using ds2::Host::Darwin::PTrace;
 using ds2::Host::Darwin::LibProc;
+using ds2::Host::Darwin::PTrace;
 
 #define super ds2::Target::Darwin::MachOProcess
 

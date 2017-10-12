@@ -323,6 +323,6 @@ enum /* lldb_reg */ {
 
 extern LLDBDescriptor const LLDB;
 extern GDBDescriptor const GDB;
-}
-}
-}
+} // namespace X86_64
+} // namespace Architecture
+} // namespace ds2

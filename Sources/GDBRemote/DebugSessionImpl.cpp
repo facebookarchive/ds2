@@ -24,8 +24,8 @@
 #include <sstream>
 
 using ds2::Host::Platform;
-using ds2::Utils::Stringify;
 using ds2::Target::Thread;
+using ds2::Utils::Stringify;
 
 namespace ds2 {
 namespace GDBRemote {
@@ -904,8 +904,9 @@ DebugSessionImplBase::onResume(Session &session,
       }
       excluded.insert(thread);
     } else {
-      DS2LOG(Warning, "cannot resume pid %" PRIu64 " tid %" PRIu64
-                      ", action %d not yet implemented",
+      DS2LOG(Warning,
+             "cannot resume pid %" PRIu64 " tid %" PRIu64
+             ", action %d not yet implemented",
              (uint64_t)_process->pid(), (uint64_t)thread->tid(), action.action);
       continue;
     }

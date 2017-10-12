@@ -3,15 +3,15 @@
 
 #include "DebugServer2/Architecture/ARM64/RegistersDescriptors.h"
 
-using ds2::Architecture::RegisterDef;
 using ds2::Architecture::FlagDef;
 using ds2::Architecture::FlagSet;
+using ds2::Architecture::GDBFeature;
+using ds2::Architecture::GDBFeatureEntry;
 using ds2::Architecture::GDBVectorDef;
 using ds2::Architecture::GDBVectorUnion;
 using ds2::Architecture::GDBVectorUnionField;
-using ds2::Architecture::GDBFeature;
-using ds2::Architecture::GDBFeatureEntry;
 using ds2::Architecture::LLDBRegisterSet;
+using ds2::Architecture::RegisterDef;
 
 #if defined(ENDIAN_BIG)
 #define REG_REL_OFFSET(MAXBYTES, RELOFF, REGSIZE) ((MAXBYTES) - ((RELOFF) + (REGSIZE))
@@ -1512,7 +1512,7 @@ RegisterDef const reg_def_cpsr = {
     0,
     reg_inv_defs_cpsr,
     nullptr};
-}
+} // namespace
 
 //
 // Public Definitions
@@ -1523,6 +1523,6 @@ namespace ARM64 {
 
 LLDBDescriptor const LLDB = {1, lldb_reg_sets};
 GDBDescriptor const GDB = {"aarch64", "GNU/Linux", 1, gdb_features};
-}
-}
-}
+} // namespace ARM64
+} // namespace Architecture
+} // namespace ds2

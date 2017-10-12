@@ -146,8 +146,9 @@ ErrorCode ProcessBase::resume(int signal, std::set<Thread *> const &excluded) {
     case Thread::kStepped: {
       Architecture::CPUState state;
       thread->readCPUState(state);
-      DS2LOG(Debug, "resuming tid %" PRI_PID " in state %s from pc %" PRI_PTR
-                    " with signal %d",
+      DS2LOG(Debug,
+             "resuming tid %" PRI_PID " in state %s from pc %" PRI_PTR
+             " with signal %d",
              thread->tid(), Stringify::ThreadState(thread->state()),
              PRI_PTR_CAST(state.pc()), signal);
       ErrorCode error = thread->resume(signal);

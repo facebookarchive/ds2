@@ -22,8 +22,8 @@
 #include <psapi.h>
 #include <vector>
 
-using ds2::Host::ProcessSpawner;
 using ds2::Host::Platform;
+using ds2::Host::ProcessSpawner;
 using ds2::Utils::Stringify;
 
 #define super ds2::Target::ProcessBase
@@ -411,8 +411,9 @@ Process::makeMemoryWritable(Address const &address, size_t length,
     if (!region.protection || !(region.protection & kProtectionWrite)) {
       LPVOID allocError = VirtualAllocEx(
           _handle, reinterpret_cast<LPVOID>(region.start.value()),
-          region.length, MEM_COMMIT, convertMemoryProtectionToWindows(
-                                         region.protection | kProtectionWrite));
+          region.length, MEM_COMMIT,
+          convertMemoryProtectionToWindows(region.protection |
+                                           kProtectionWrite));
 
       // The region could have been modified even if `VirtualAllocEx` failed.
       modifiedRegions.push_back(region);

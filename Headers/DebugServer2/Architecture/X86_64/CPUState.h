@@ -26,9 +26,9 @@ namespace X86_64 {
 //
 // Shared between X86 and X86-64
 //
-using ds2::Architecture::X86::X87Register;
-using ds2::Architecture::X86::SSEVector;
 using ds2::Architecture::X86::AVXVector;
+using ds2::Architecture::X86::SSEVector;
+using ds2::Architecture::X86::X87Register;
 
 struct EAVXVector {
   uint64_t value[8]; // 512-bit values
