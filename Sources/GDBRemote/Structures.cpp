@@ -478,13 +478,13 @@ JSDictionary *StopInfo::encodeJson() const {
 std::string HostInfo::encode() const {
   std::ostringstream ss;
 
-//
-// For non-Apple platforms we will send arch: for qHostInfo
-// encoding, this because LLDB will assume a Mach-O target
-// (and thus only iOS and MacOS X) in case cputype: and
-// cpusubtype: are specified; however qProcessInfo requires
-// them.
-//
+  //
+  // For non-Apple platforms we will send arch: for qHostInfo
+  // encoding, this because LLDB will assume a Mach-O target
+  // (and thus only iOS and MacOS X) in case cputype: and
+  // cpusubtype: are specified; however qProcessInfo requires
+  // them.
+  //
 
 #if defined(__APPLE__)
   bool sForceCPUType = true;
