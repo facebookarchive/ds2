@@ -40,6 +40,10 @@ public:
   ErrorCode writeMemory(Address const &address, void const *data, size_t length,
                         size_t *count = nullptr) override;
 
+protected:
+  int convertMemoryProtectionToPOSIX(uint32_t protection) const;
+  uint32_t convertMemoryProtectionFromPOSIX(int POSIXProtection) const;
+
 public:
   void resetSignalPass();
   void setSignalPass(int signo, bool set);

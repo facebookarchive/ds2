@@ -18,6 +18,7 @@
 
 #include <cerrno>
 #include <csignal>
+#include <sys/mman.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -87,6 +88,38 @@ ErrorCode Process::writeMemory(Address const &address, void const *data,
                                size_t length, size_t *count) {
   auto id = _currentThread == nullptr ? _pid : _currentThread->tid();
   return ptrace().writeMemory(id, address, data, length, count);
+}
+
+int Process::convertMemoryProtectionToPOSIX(uint32_t protection) const {
+  int res = PROT_NONE;
+
+  if (protection & kProtectionRead) {
+    res |= PROT_READ;
+  }
+  if (protection & kProtectionWrite) {
+    res |= PROT_WRITE;
+  }
+  if (protection & kProtectionExecute) {
+    res |= PROT_EXEC;
+  }
+
+  return res;
+}
+
+uint32_t Process::convertMemoryProtectionFromPOSIX(int POSIXProtection) const {
+  uint32_t res = kProtectionNone;
+
+  if (POSIXProtection & PROT_READ) {
+    res |= kProtectionRead;
+  }
+  if (POSIXProtection & PROT_WRITE) {
+    res |= kProtectionWrite;
+  }
+  if (POSIXProtection & PROT_EXEC) {
+    res |= kProtectionExecute;
+  }
+
+  return res;
 }
 
 ErrorCode Process::wait() { return ptrace().wait(_pid, nullptr); }
