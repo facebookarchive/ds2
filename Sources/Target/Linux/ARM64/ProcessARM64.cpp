@@ -42,7 +42,8 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   DS2ASSERT(!is32BitProcess(this));
 
   ByteVector codestr;
-  ARM64Sys::PrepareMmapCode(size, protection, codestr);
+  ARM64Sys::PrepareMmapCode(size, convertMemoryProtectionToPOSIX(protection),
+                            codestr);
 
   uint64_t result;
   CHK(executeCode(codestr, result));

@@ -45,7 +45,7 @@ static inline uint32_t MakeBrkInstr(uint16_t idx) {
 }
 } // namespace
 
-static inline void PrepareMmapCode(size_t size, uint32_t protection,
+static inline void PrepareMmapCode(size_t size, int protection,
                                    ByteVector &codestr) {
   for (auto instr : {
            MakeMovImmInstr(8, __NR_mmap),              // mov x8, __NR_mmap

@@ -44,8 +44,7 @@ static uint8_t const gMunmapCode[] = {
     0xcc                                      // 1a: int3
 };
 
-static void PrepareMmapCode(size_t size, uint32_t protection,
-                            ByteVector &codestr) {
+static void PrepareMmapCode(size_t size, int protection, ByteVector &codestr) {
   codestr.assign(&gMmapCode[0], &gMmapCode[sizeof(gMmapCode)]);
 
   uint8_t *code = &codestr[0];
@@ -67,27 +66,31 @@ static void PrepareMunmapCode(uint64_t address, size_t size,
 
 ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
                                   uint64_t *address) {
-  if (address == nullptr)
+  if (address == nullptr) {
     return kErrorInvalidArgument;
+  }
 
   ProcessInfo info;
   ErrorCode error = getInfo(info);
-  if (error != kSuccess)
+  if (error != kSuccess) {
     return error;
+  }
 
   ByteVector codestr;
-  PrepareMmapCode(size, protection, codestr);
+  PrepareMmapCode(size, convertMemoryProtectionToPOSIX(protection), codestr);
 
   //
   // Code inject and execute
   //
   error = ptrace().execute(_currentThread->tid(), info, &codestr[0],
                            codestr.size(), *address);
-  if (error != kSuccess)
+  if (error != kSuccess) {
     return error;
+  }
 
-  if (*address == (uint64_t)MAP_FAILED)
+  if (*address == (uint64_t)MAP_FAILED) {
     return kErrorNoMemory;
+  }
 
   return kSuccess;
 }
