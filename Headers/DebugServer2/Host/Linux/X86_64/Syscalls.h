@@ -41,7 +41,7 @@ static uint8_t const gMunmapCode[] = {
 };
 } // namespace
 
-static inline void PrepareMmapCode(size_t size, uint32_t protection,
+static inline void PrepareMmapCode(size_t size, int protection,
                                    ByteVector &codestr) {
   codestr.assign(&gMmapCode[0], &gMmapCode[sizeof(gMmapCode)]);
 

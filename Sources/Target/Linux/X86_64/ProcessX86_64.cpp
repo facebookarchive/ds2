@@ -38,11 +38,13 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
 
   bool is32 = is32BitProcess(this);
 
+  int POSIXProtection = convertMemoryProtectionToPOSIX(protection);
+
   ByteVector codestr;
   if (is32) {
-    X86Sys::PrepareMmapCode(size, protection, codestr);
+    X86Sys::PrepareMmapCode(size, POSIXProtection, codestr);
   } else {
-    X86_64Sys::PrepareMmapCode(size, protection, codestr);
+    X86_64Sys::PrepareMmapCode(size, POSIXProtection, codestr);
   }
 
   uint64_t result;

@@ -114,7 +114,7 @@ static uint16_t const gT2MunmapCode[] = {
     0xde01,         // 18[0c]: udf    #1
 };
 
-static void T2PrepareMmapCode(size_t size, uint32_t protection,
+static void T2PrepareMmapCode(size_t size, int protection,
                               ByteVector &codestr) {
   InitCodeVector(codestr, gT2MmapCode);
 
@@ -166,7 +166,7 @@ static uint16_t const gT1MunmapCode[] = {
     0x0000, 0x0000  // 10[08]: .word  XXXXXXXX
 };
 
-static void T1PrepareMmapCode(size_t size, uint32_t protection,
+static void T1PrepareMmapCode(size_t size, int protection,
                               ByteVector &codestr) {
   InitCodeVector(codestr, gT1MmapCode);
 
@@ -188,7 +188,7 @@ static void T1PrepareMunmapCode(uint32_t address, size_t size,
 }
 #endif
 
-static void ThumbPrepareMmapCode(size_t size, uint32_t protection,
+static void ThumbPrepareMmapCode(size_t size, int protection,
                                  ByteVector &codestr) {
 #if (__ARM_ARCH >= 7)
   T2PrepareMmapCode(size, protection, codestr);
@@ -234,7 +234,7 @@ static uint32_t const gARMMunmapCode[] = {
     0x00000000  // 18[06]: .word  XXXXXXXX
 };
 
-static void ARMPrepareMmapCode(size_t size, uint32_t protection,
+static void ARMPrepareMmapCode(size_t size, int protection,
                                ByteVector &codestr) {
   InitCodeVector(codestr, gARMMmapCode);
 
@@ -271,16 +271,18 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   Architecture::CPUState state;
   CHK(ptrace().readCPUState(_currentThread->tid(), info, state));
 
+  int POSIXProtection = convertMemoryProtectionToPOSIX(protection);
+
   ByteVector codestr;
   if (state.isThumb()) {
-    ThumbPrepareMmapCode(size, protection, codestr);
+    ThumbPrepareMmapCode(size, POSIXProtection, codestr);
     // If the current PC is not aligned (thumb has 16bit instructions), add a
     // nop at the begining of codestr to make sure ldr PC works as intended.
     DS2ASSERT(state.pc() % 2 == 0);
     if (state.pc() % 4 != 0)
       codestr.insert(codestr.begin(), {0x00, 0x1c});
   } else {
-    ARMPrepareMmapCode(size, protection, codestr);
+    ARMPrepareMmapCode(size, POSIXProtection, codestr);
   }
 
   // Code inject and execute

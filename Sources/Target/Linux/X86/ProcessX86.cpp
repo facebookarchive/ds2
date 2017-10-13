@@ -25,7 +25,8 @@ ErrorCode Process::allocateMemory(size_t size, uint32_t protection,
   }
 
   ByteVector codestr;
-  X86Sys::PrepareMmapCode(size, protection, codestr);
+  X86Sys::PrepareMmapCode(size, convertMemoryProtectionToPOSIX(protection),
+                          codestr);
 
   uint64_t result;
   CHK(executeCode(codestr, result));
