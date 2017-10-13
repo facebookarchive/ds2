@@ -325,7 +325,7 @@ ErrorCode Process::restoreRegionsProtection(
   return kSuccess;
 }
 
-DWORD Process::convertMemoryProtectionToWindows(uint32_t protection) {
+DWORD Process::convertMemoryProtectionToWindows(uint32_t protection) const {
   DWORD allocProtection = 0;
 
   if (protection & kProtectionExecute) {
@@ -346,7 +346,8 @@ DWORD Process::convertMemoryProtectionToWindows(uint32_t protection) {
   return allocProtection;
 }
 
-uint32_t Process::convertMemoryProtectionFromWindows(DWORD winProtection) {
+uint32_t
+Process::convertMemoryProtectionFromWindows(DWORD winProtection) const {
   switch (winProtection) {
   case PAGE_EXECUTE_READWRITE:
   case PAGE_EXECUTE_WRITECOPY:
