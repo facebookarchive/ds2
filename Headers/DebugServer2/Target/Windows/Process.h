@@ -58,8 +58,10 @@ private:
   restoreRegionsProtection(const std::vector<MemoryRegionInfo> &regions);
   ErrorCode getMemoryRegionInfoInternal(Address const &address,
                                         MemoryRegionInfo &info);
-  DWORD convertMemoryProtectionToWindows(uint32_t protection);
-  uint32_t convertMemoryProtectionFromWindows(DWORD winProtection);
+
+protected:
+  DWORD convertMemoryProtectionToWindows(uint32_t protection) const;
+  uint32_t convertMemoryProtectionFromWindows(DWORD winProtection) const;
 
 public:
   ErrorCode getMemoryRegionInfo(Address const &address,
