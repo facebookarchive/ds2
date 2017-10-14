@@ -129,7 +129,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;};</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;} <span class="comment">// namespace</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> PrepareMmapCode(<span class="keywordtype">size_t</span> size, uint32_t protection,</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> PrepareMmapCode(<span class="keywordtype">size_t</span> size, <span class="keywordtype">int</span> protection,</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                                   ByteVector &amp;codestr) {</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  codestr.assign(&amp;gMmapCode[0], &amp;gMmapCode[<span class="keyword">sizeof</span>(gMmapCode)]);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>

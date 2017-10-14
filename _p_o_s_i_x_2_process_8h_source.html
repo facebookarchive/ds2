@@ -128,23 +128,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  ErrorCode writeMemory(<a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address, <span class="keywordtype">void</span> <span class="keyword">const</span> *data, <span class="keywordtype">size_t</span> length,</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                        <span class="keywordtype">size_t</span> *count = <span class="keyword">nullptr</span>) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="keywordtype">void</span> resetSignalPass();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keywordtype">void</span> setSignalPass(<span class="keywordtype">int</span> signo, <span class="keywordtype">bool</span> set);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="keywordtype">int</span> convertMemoryProtectionToPOSIX(uint32_t protection) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  uint32_t convertMemoryProtectionFromPOSIX(<span class="keywordtype">int</span> POSIXProtection) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  ErrorCode wait() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html">Host::POSIX::PTrace</a> &amp;ptrace() <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="keyword">static</span> ds2::Target::Process *Create(<a class="code" href="classds2_1_1_host_1_1_process_spawner.html">Host::ProcessSpawner</a> &amp;spawner);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keyword">static</span> ds2::Target::Process *Attach(ProcessId pid);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;};</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;} <span class="comment">// namespace POSIX</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;} <span class="comment">// namespace Target</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;} <span class="comment">// namespace ds2</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keywordtype">void</span> resetSignalPass();</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <span class="keywordtype">void</span> setSignalPass(<span class="keywordtype">int</span> signo, <span class="keywordtype">bool</span> set);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  ErrorCode wait() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keyword">virtual</span> <a class="code" href="classds2_1_1_host_1_1_p_o_s_i_x_1_1_p_trace.html">Host::POSIX::PTrace</a> &amp;ptrace() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keyword">static</span> ds2::Target::Process *Create(<a class="code" href="classds2_1_1_host_1_1_process_spawner.html">Host::ProcessSpawner</a> &amp;spawner);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keyword">static</span> ds2::Target::Process *Attach(ProcessId pid);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;} <span class="comment">// namespace POSIX</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;} <span class="comment">// namespace Target</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;} <span class="comment">// namespace ds2</span></div>
 <div class="ttc" id="classds2_1_1_target_1_1_process_base_html"><div class="ttname"><a href="classds2_1_1_target_1_1_process_base.html">ds2::Target::ProcessBase</a></div><div class="ttdef"><b>Definition:</b> ProcessBase.h:25</div></div>
 <div class="ttc" id="classds2_1_1_host_1_1_process_spawner_html"><div class="ttname"><a href="classds2_1_1_host_1_1_process_spawner.html">ds2::Host::ProcessSpawner</a></div><div class="ttdef"><b>Definition:</b> ProcessSpawner.h:21</div></div>
 <div class="ttc" id="classds2_1_1_address_html"><div class="ttname"><a href="classds2_1_1_address.html">ds2::Address</a></div><div class="ttdef"><b>Definition:</b> Types.h:93</div></div>

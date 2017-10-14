@@ -133,7 +133,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;} <span class="comment">// namespace</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> PrepareMmapCode(<span class="keywordtype">size_t</span> size, uint32_t protection,</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> PrepareMmapCode(<span class="keywordtype">size_t</span> size, <span class="keywordtype">int</span> protection,</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                                   ByteVector &amp;codestr) {</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> instr : {</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;           MakeMovImmInstr(8, __NR_mmap),              <span class="comment">// mov x8, __NR_mmap</span></div>
