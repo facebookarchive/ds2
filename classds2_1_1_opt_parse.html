@@ -107,6 +107,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af15ab967b2a29c3fcd42fbe092d2dc67"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af15ab967b2a29c3fcd42fbe092d2dc67"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>addOption</b> (OptionType type, std::string const &amp;name, char shortName, std::string const &amp;help=std::string(), bool hidden=false)</td></tr>
 <tr class="separator:af15ab967b2a29c3fcd42fbe092d2dc67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8192aaacc112c629056d8214450937fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8192aaacc112c629056d8214450937fb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>addPositional</b> (std::string const &amp;name, std::string const &amp;help=std::string(), bool hidden=false)</td></tr>
+<tr class="separator:a8192aaacc112c629056d8214450937fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0529d19c0466861d33fdb432bdd5176d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0529d19c0466861d33fdb432bdd5176d"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>parse</b> (int argc, char **argv)</td></tr>
 <tr class="separator:a0529d19c0466861d33fdb432bdd5176d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,12 +122,9 @@ std::string const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ge
 <tr class="memitem:a9b7477fe647d9c5dab2a5be2a572e9a6"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b7477fe647d9c5dab2a5be2a572e9a6"></a>
 std::vector&lt; std::string &gt; const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getVector</b> (std::string const &amp;name) const </td></tr>
 <tr class="separator:a9b7477fe647d9c5dab2a5be2a572e9a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1247ec126da52425ca74c9682c2dea44"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1247ec126da52425ca74c9682c2dea44"></a>
-std::string const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getHost</b> () const </td></tr>
-<tr class="separator:a1247ec126da52425ca74c9682c2dea44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab28761470cdbb55bfbf0c44c2e45bd15"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab28761470cdbb55bfbf0c44c2e45bd15"></a>
-std::string const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getPort</b> () const </td></tr>
-<tr class="separator:ab28761470cdbb55bfbf0c44c2e45bd15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6ae3d171302217f7bd95fd7f64b71bb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af6ae3d171302217f7bd95fd7f64b71bb"></a>
+std::string const &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getPositional</b> (std::string const &amp;name) const </td></tr>
+<tr class="separator:af6ae3d171302217f7bd95fd7f64b71bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fa9185eb869edfc31a99b9e5932b891"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5fa9185eb869edfc31a99b9e5932b891"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>usageDie</b> (char const *format=nullptr,...)</td></tr>
 <tr class="separator:a5fa9185eb869edfc31a99b9e5932b891"><td class="memSeparator" colspan="2">&#160;</td></tr>
