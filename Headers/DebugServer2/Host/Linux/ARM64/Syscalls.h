@@ -34,6 +34,13 @@ static inline uint32_t MakeMovNegImmInstr(uint8_t reg, int32_t val) {
   return base | (static_cast<uint16_t>(-val - 1) << 5) | reg;
 }
 
+static inline uint32_t MakeLdrRelInstr(uint8_t reg, int32_t offset) {
+  DS2ASSERT(reg <= 31);
+  DS2ASSERT(offset % 4 == 0);
+  static const uint32_t base = 0x58000000;
+  return base | (static_cast<uint16_t>(offset / 4) << 5) | reg;
+}
+
 static inline uint32_t MakeSvcInstr(uint16_t idx) {
   static const uint32_t base = 0xd4000001;
   return base | (idx << 5);
@@ -47,16 +54,20 @@ static inline uint32_t MakeBrkInstr(uint16_t idx) {
 
 static inline void PrepareMmapCode(size_t size, int protection,
                                    ByteVector &codestr) {
+  DS2ASSERT(sizeof(size) == 8);
+
   for (auto instr : {
            MakeMovImmInstr(8, __NR_mmap),              // mov x8, __NR_mmap
            MakeMovImmInstr(0, 0),                      // mov x0, address
-           MakeMovImmInstr(1, size),                   // mov x1, size
+           MakeLdrRelInstr(1, 7 * sizeof(uint32_t)),   // ldr x1, <pc+28>
            MakeMovImmInstr(2, protection),             // mov x2, prot
            MakeMovImmInstr(3, MAP_ANON | MAP_PRIVATE), // mov x3, flags
            MakeMovNegImmInstr(4, -1),                  // mov x4, -1
            MakeMovImmInstr(5, 0),                      // mov x5, 0
            MakeSvcInstr(0),                            // svc #0
            MakeBrkInstr(0x100),                        // brk #0x100
+           reinterpret_cast<uint32_t *>(&size)[0],     // .word XXXXXXXX
+           reinterpret_cast<uint32_t *>(&size)[1],     // .word XXXXXXXX
        }) {
     for (size_t i = 0; i < sizeof(instr); ++i) {
       codestr.push_back(reinterpret_cast<uint8_t *>(&instr)[i]);
