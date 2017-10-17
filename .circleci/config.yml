@@ -1,0 +1,42 @@
+##
+## Copyright (c) 2014-present, Facebook, Inc.
+## All rights reserved.
+##
+## This source code is licensed under the University of Illinois/NCSA Open
+## Source License found in the LICENSE file in the root directory of this
+## source tree. An additional grant of patent rights can be found in the
+## PATENTS file in the same directory.
+##
+
+- ENV_VAR: &ENV_VAR
+        - enviroment:
+                CMAKE_VERSION: 3.7
+                CMAKE_PACKAGE_PREFIX: cmake-
+                CMAKE_PACKAGE_SUFFIX: .0-Linux-x86_64
+
+version: 2
+jobs:
+        dependency_cmake:
+                steps:
+                        - restore_cache:
+                                -keys:
+                                        - cached_cmake
+                        - run: 
+                                <<: ENV_VAR
+                                - command: |
+                                        CMAKE_PACKAGE=${CMAKE_PACKAGE_SUFFIX}${CMAKE_VERSION}${CMAKE_PACKAGE_SUFFIX}
+                                        if [[ -e ~/$CMAKE_PACKAGE ]]; then
+                                                exit 0
+                                        else
+                                                cd ~
+                                                wget "https://cmake.org/files/v${CMAKE_VERSION}/${CMAKE_PACKAGE}.tar.gz"
+                                                tar -xf $CMAKE_PACKAGE.tar.gz
+                                                rm -rf $CMAKE_PACKAGE.tar.gz
+                                        fi
+                                        export PATH="~/${CMAKE_PACKAGE}/bin:$PATH"
+
+workflows:
+        version: 2
+        dependencies:
+                jobs:
+                        - dependency_cmake
