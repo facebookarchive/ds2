@@ -77,7 +77,7 @@ static inline void PrepareMmapCode(size_t size, int protection,
   }
 
   // Append the raw data that `MakeLdrRelInstr` instructions will reference.
-  InsertBytes(codestr, size);    // .quad XXXXXXXXXXXXXXXX
+  InsertBytes(codestr, size); // .quad XXXXXXXXXXXXXXXX
 }
 
 static inline void PrepareMunmapCode(uint64_t address, size_t size,
@@ -85,11 +85,11 @@ static inline void PrepareMunmapCode(uint64_t address, size_t size,
   static_assert(sizeof(size) == 8, "size_t should be 8-bytes long on ARM64");
 
   for (uint32_t instr : {
-           MakeMovImmInstr(8, __NR_munmap),            // mov x8, __NR_munmap
-           MakeLdrRelInstr(0, 4 * sizeof(uint32_t)),   // ldr x0, <pc+16>
-           MakeLdrRelInstr(1, 5 * sizeof(uint32_t)),   // ldr x1, <pc+20>
-           MakeSvcInstr(0),                            // svc #0
-           MakeBrkInstr(0x100),                        // brk #0x100
+           MakeMovImmInstr(8, __NR_munmap),          // mov x8, __NR_munmap
+           MakeLdrRelInstr(0, 4 * sizeof(uint32_t)), // ldr x0, <pc+16>
+           MakeLdrRelInstr(1, 5 * sizeof(uint32_t)), // ldr x1, <pc+20>
+           MakeSvcInstr(0),                          // svc #0
+           MakeBrkInstr(0x100),                      // brk #0x100
        }) {
     InsertBytes(codestr, instr);
   }
