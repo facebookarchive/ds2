@@ -90,7 +90,7 @@ typedef SSIZE_T ssize_t;
 #elif __BYTE_ORDER__ == __ORDER_PDP_ENDIAN__
 #define ENDIAN_MIDDLE
 #else
-#error "Unknown endianness"
+#error "Unknown endianness."
 #endif
 #endif
 
