@@ -1512,6 +1512,7 @@ RegisterDef const reg_def_cpsr = {
     0,
     reg_inv_defs_cpsr,
     nullptr};
+
 } // namespace
 
 //
@@ -1523,6 +1524,7 @@ namespace ARM64 {
 
 LLDBDescriptor const LLDB = {1, lldb_reg_sets};
 GDBDescriptor const GDB = {"aarch64", "GNU/Linux", 1, gdb_features};
+
 } // namespace ARM64
 } // namespace Architecture
 } // namespace ds2

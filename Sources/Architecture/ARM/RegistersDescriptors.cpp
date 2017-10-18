@@ -2405,6 +2405,7 @@ RegisterDef const reg_def_fpscr = {
     0,
     nullptr,
     nullptr};
+
 } // namespace
 
 //
@@ -2416,6 +2417,7 @@ namespace ARM {
 
 LLDBDescriptor const LLDB = {2, lldb_reg_sets};
 GDBDescriptor const GDB = {"arm", "GNU/Linux", 3, gdb_features};
+
 } // namespace ARM
 } // namespace Architecture
 } // namespace ds2

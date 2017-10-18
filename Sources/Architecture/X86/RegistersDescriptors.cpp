@@ -1697,6 +1697,7 @@ RegisterDef const reg_def_orig_eax = {
     0,
     nullptr,
     nullptr};
+
 } // namespace
 
 //
@@ -1708,6 +1709,7 @@ namespace X86 {
 
 LLDBDescriptor const LLDB = {3, lldb_reg_sets};
 GDBDescriptor const GDB = {"i386:i386", "GNU/Linux", 3, gdb_features};
+
 } // namespace X86
 } // namespace Architecture
 } // namespace ds2
