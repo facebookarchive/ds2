@@ -62,7 +62,7 @@ static inline void PrepareMmapCode(size_t size, int protection,
                                    ByteVector &codestr) {
   static_assert(sizeof(size) == 8, "size_t should be 8-bytes long on ARM64");
 
-  for (auto instr : {
+  for (uint32_t instr : {
            MakeMovImmInstr(8, __NR_mmap),              // mov x8, __NR_mmap
            MakeMovImmInstr(0, 0),                      // mov x0, address
            MakeLdrRelInstr(1, 7 * sizeof(uint32_t)),   // ldr x1, <pc+28>
@@ -72,30 +72,31 @@ static inline void PrepareMmapCode(size_t size, int protection,
            MakeMovImmInstr(5, 0),                      // mov x5, 0
            MakeSvcInstr(0),                            // svc #0
            MakeBrkInstr(0x100),                        // brk #0x100
-           reinterpret_cast<uint32_t *>(&size)[0],     // .word XXXXXXXX
-           reinterpret_cast<uint32_t *>(&size)[1],     // .word XXXXXXXX
        }) {
     InsertBytes(codestr, instr);
   }
+
+  // Append the raw data that `MakeLdrRelInstr` instructions will reference.
+  InsertBytes(codestr, size);    // .quad XXXXXXXXXXXXXXXX
 }
 
 static inline void PrepareMunmapCode(uint64_t address, size_t size,
                                      ByteVector &codestr) {
   static_assert(sizeof(size) == 8, "size_t should be 8-bytes long on ARM64");
 
-  for (auto instr : {
+  for (uint32_t instr : {
            MakeMovImmInstr(8, __NR_munmap),            // mov x8, __NR_munmap
            MakeLdrRelInstr(0, 4 * sizeof(uint32_t)),   // ldr x0, <pc+16>
            MakeLdrRelInstr(1, 5 * sizeof(uint32_t)),   // ldr x1, <pc+20>
            MakeSvcInstr(0),                            // svc #0
            MakeBrkInstr(0x100),                        // brk #0x100
-           reinterpret_cast<uint32_t *>(&address)[0],  // .word XXXXXXXX
-           reinterpret_cast<uint32_t *>(&address)[1],  // .word XXXXXXXX
-           reinterpret_cast<uint32_t *>(&size)[0],     // .word XXXXXXXX
-           reinterpret_cast<uint32_t *>(&size)[1],     // .word XXXXXXXX
        }) {
     InsertBytes(codestr, instr);
   }
+
+  // Append the raw data that `MakeLdrRelInstr` instructions will reference.
+  InsertBytes(codestr, address); // .quad XXXXXXXXXXXXXXXX
+  InsertBytes(codestr, size);    // .quad XXXXXXXXXXXXXXXX
 }
 } // namespace Syscalls
 } // namespace ARM64
