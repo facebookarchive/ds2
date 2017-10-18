@@ -50,6 +50,12 @@ static inline uint32_t MakeBrkInstr(uint16_t idx) {
   static const uint32_t base = 0xd4200000;
   return base | (idx << 5);
 }
+
+template <typename T>
+static inline void InsertBytes(ByteVector &codestr, T value) {
+  auto valueBytes = reinterpret_cast<uint8_t *>(&value);
+  codestr.insert(codestr.end(), valueBytes, valueBytes + sizeof(T));
+}
 } // namespace
 
 static inline void PrepareMmapCode(size_t size, int protection,
@@ -69,9 +75,7 @@ static inline void PrepareMmapCode(size_t size, int protection,
            reinterpret_cast<uint32_t *>(&size)[0],     // .word XXXXXXXX
            reinterpret_cast<uint32_t *>(&size)[1],     // .word XXXXXXXX
        }) {
-    for (size_t i = 0; i < sizeof(instr); ++i) {
-      codestr.push_back(reinterpret_cast<uint8_t *>(&instr)[i]);
-    }
+    InsertBytes(codestr, instr);
   }
 }
 
@@ -90,9 +94,7 @@ static inline void PrepareMunmapCode(uint64_t address, size_t size,
            reinterpret_cast<uint32_t *>(&size)[0],     // .word XXXXXXXX
            reinterpret_cast<uint32_t *>(&size)[1],     // .word XXXXXXXX
        }) {
-    for (size_t i = 0; i < sizeof(instr); ++i) {
-      codestr.push_back(reinterpret_cast<uint8_t *>(&instr)[i]);
-    }
+    InsertBytes(codestr, instr);
   }
 }
 } // namespace Syscalls
