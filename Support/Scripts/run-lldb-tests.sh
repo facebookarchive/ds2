@@ -139,28 +139,28 @@ cd "$lldb_path/test"
 blacklist_dir="$top/Support/Testing/Blacklists"
 args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v)
 
-args+=("--exclude" "$blacklist_dir/upstream/general.blacklist"
-       "--exclude" "$blacklist_dir/upstream/non-debugserver-tests.blacklist")
+args+=("--excluded" "$blacklist_dir/upstream/general.blacklist"
+       "--excluded" "$blacklist_dir/upstream/non-debugserver-tests.blacklist")
 if ! $opt_no_ds2_blacklists; then
-  args+=("--exclude" "$blacklist_dir/ds2/general.blacklist")
+  args+=("--excluded" "$blacklist_dir/ds2/general.blacklist")
 fi
 
 if [ -n "${TARGET-}" ]; then
   if [[ "${TARGET}" == "Linux-X86_64" ]]; then
     args+=("--arch=x86_64")
     if ! $opt_no_ds2_blacklists; then
-      args+=("--exclude" "$blacklist_dir/ds2/x86_64.blacklist")
+      args+=("--excluded" "$blacklist_dir/ds2/x86_64.blacklist")
     fi
   elif [[ "${TARGET}" == "Linux-X86" || "${TARGET}" == "Android-X86" ]]; then
     args+=("--arch=i386")
-    args+=("--exclude" "$blacklist_dir/upstream/x86.blacklist")
+    args+=("--excluded" "$blacklist_dir/upstream/x86.blacklist")
     if ! $opt_no_ds2_blacklists; then
-      args+=("--exclude" "$blacklist_dir/ds2/x86.blacklist")
+      args+=("--excluded" "$blacklist_dir/ds2/x86.blacklist")
     fi
     if [[ "${PLATFORM-}" = "1" ]]; then
-      args+=("--exclude" "$blacklist_dir/upstream/x86-platform.blacklist")
+      args+=("--excluded" "$blacklist_dir/upstream/x86-platform.blacklist")
       if ! $opt_no_ds2_blacklists; then
-        args+=("--exclude" "$blacklist_dir/ds2/x86-platform.blacklist")
+        args+=("--excluded" "$blacklist_dir/ds2/x86-platform.blacklist")
       fi
     fi
   elif [[ "${TARGET}" == "Android-ARM" ]]; then
@@ -195,7 +195,7 @@ if [[ "${PLATFORM-}" = "1" ]]; then
   elif [[ "$platform_name" = "android" ]]; then
     working_dir="/data/local/tmp"
     if ! $opt_no_ds2_blacklists; then
-      args+=("--exclude" "$blacklist_dir/ds2/android.blacklist")
+      args+=("--excluded" "$blacklist_dir/ds2/android.blacklist")
     fi
   fi
 
@@ -203,9 +203,9 @@ if [[ "${PLATFORM-}" = "1" ]]; then
 
   args+=("--platform-name=remote-$platform_name" "--platform-url=connect://localhost:$server_port"
          "--platform-working-dir=$working_dir" "--no-multiprocess")
-  args+=("--exclude" "$blacklist_dir/upstream/platform.blacklist")
+  args+=("--excluded" "$blacklist_dir/upstream/platform.blacklist")
   if ! $opt_no_ds2_blacklists; then
-    args+=("--exclude" "$blacklist_dir/ds2/platform.blacklist")
+    args+=("--excluded" "$blacklist_dir/ds2/platform.blacklist")
   fi
 
   server_args=("p" "--server" "--listen" "$server_port")
