@@ -46,6 +46,7 @@ WINBASEAPI HANDLE WINAPI CreateRemoteThread(
   _Out_ LPDWORD                lpThreadId
 );
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 WINBASEAPI BOOL WINAPI GetVersionExA(
   _Inout_  LPOSVERSIONINFOA lpVersionInfo
 );
@@ -53,6 +54,7 @@ WINBASEAPI BOOL WINAPI GetVersionExW(
   _Inout_  LPOSVERSIONINFOW lpVersionInfo
 );
 #define GetVersionEx GetVersionExW
+#endif
 
 WINBASEAPI UINT WINAPI GetWindowsDirectoryA(
   _Out_ LPSTR  lpBuffer,
@@ -64,12 +66,14 @@ WINBASEAPI UINT WINAPI GetWindowsDirectoryW(
 );
 #define GetWindowsDirectory GetWindowsDirectoryW
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 #define EnumProcesses K32EnumProcesses
 WINBASEAPI BOOL WINAPI EnumProcesses(
   _Out_ DWORD *pProcessIds,
   _In_  DWORD cb,
   _Out_ DWORD *pBytesReturned
 );
+#endif
 
 #define EnumProcessModules    K32EnumProcessModules
 #define EnumProcessModulesEx  K32EnumProcessModulesEx
@@ -80,6 +84,7 @@ WINBASEAPI BOOL WINAPI EnumProcessModules(
   _Out_ LPDWORD lpcbNeeded
 );
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 #define GetModuleBaseNameA  K32GetModuleBaseNameA
 #define GetModuleBaseNameW  K32GetModuleBaseNameW
 WINBASEAPI DWORD WINAPI GetModuleBaseNameA(
@@ -111,6 +116,7 @@ WINBASEAPI DWORD WINAPI GetModuleFileNameExW(
   _In_     DWORD   nSize
 );
 #define GetModuleFileNameEx GetModuleFileNameExW
+#endif
 
 WINBASEAPI HMODULE WINAPI GetModuleHandleA(
   _In_opt_ LPCSTR lpModuleName
@@ -120,6 +126,7 @@ WINBASEAPI HMODULE WINAPI GetModuleHandleW(
 );
 #define GetModuleHandle GetModuleHandleW
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 WINBASEAPI BOOL WINAPI OpenProcessToken(
   _In_  HANDLE  ProcessHandle,
   _In_  DWORD   DesiredAccess,
@@ -169,9 +176,11 @@ WINBASEAPI LPWCH WINAPI GetEnvironmentStringsW(void);
 WINBASEAPI BOOL WINAPI FreeEnvironmentStringsW(
   _In_  LPWCH lpszEnvironmentBlock
 );
+#endif
 
 typedef struct PROC_THREAD_ATTRIBUTE_LIST *LPPROC_THREAD_ATTRIBUTE_LIST;
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 typedef struct _STARTUPINFOW {
     DWORD  cb;
     LPWSTR lpReserved;
@@ -192,12 +201,14 @@ typedef struct _STARTUPINFOW {
     HANDLE hStdOutput;
     HANDLE hStdError;
 } STARTUPINFOW, *LPSTARTUPINFOW;
+#endif
 
 typedef struct _STARTUPINFOEXW {
     STARTUPINFOW                 StartupInfo;
     LPPROC_THREAD_ATTRIBUTE_LIST lpAttributeList;
 } STARTUPINFOEXW, *LPSTARTUPINFOEXW;
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 typedef struct _STARTUPINFOA {
     DWORD  cb;
     LPSTR lpReserved;
@@ -268,12 +279,14 @@ WINBASEAPI VOID WINAPI ExitThread(
 WINBASEAPI DWORD WINAPI ResumeThread(
   _In_  HANDLE hThread
 );
+#endif
 
 WINBASEAPI BOOL WINAPI TerminateThread(
   _Inout_ HANDLE hThread,
   _In_    DWORD  dwExitCode
 );
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 WINBASEAPI DWORD WINAPI SuspendThread(
   _In_ HANDLE hThread
 );
@@ -282,12 +295,14 @@ WINBASEAPI BOOL WINAPI GetThreadContext(
   _In_     HANDLE hThread,
   _Inout_  LPCONTEXT lpContext
 );
+#endif
 
 WINBASEAPI BOOL WINAPI SetThreadContext(
   _In_  HANDLE hThread,
   _In_  const CONTEXT *lpContext
 );
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 WINBASEAPI int WINAPI GetThreadPriority(
   _In_  HANDLE hThread
 );
@@ -326,6 +341,7 @@ WINBASEAPI BOOL WINAPI GetExitCodeThread(
   _In_   HANDLE hThread,
   _Out_  LPDWORD lpExitCode
 );
+#endif
 
 WINBASEAPI BOOL WINAPI ReadProcessMemory(
   _In_   HANDLE hProcess,
@@ -343,11 +359,13 @@ WINBASEAPI BOOL WINAPI WriteProcessMemory(
   _Out_  SIZE_T *lpNumberOfBytesWritten
 );
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 WINBASEAPI BOOL WINAPI FlushInstructionCache(
   _In_ HANDLE  hProcess,
   _In_ LPCVOID lpBaseAddress,
   _In_ SIZE_T  dwSize
 );
+#endif
 
 WINBASEAPI BOOL WINAPI WaitForDebugEventEx(
   _Out_  LPDEBUG_EVENT lpDebugEvent,
@@ -360,10 +378,12 @@ WINBASEAPI BOOL WINAPI ContinueDebugEvent(
   _In_  DWORD dwContinueStatus
 );
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 WINBASEAPI BOOL WINAPI TerminateProcess(
   _In_  HANDLE hProcess,
   _In_  UINT uExitCode
 );
+#endif
 
 WINBASEAPI BOOL WINAPI DebugActiveProcess(
   _In_  DWORD dwProcessId
@@ -421,6 +441,7 @@ WINBASEAPI BOOL WINAPI Thread32Next(
   _Out_  LPTHREADENTRY32 lpte
 );
 
+#if WINDOWS_SDK_BUILD_NUMBER < 16299
 typedef LONG (WINAPI *PTOP_LEVEL_EXCEPTION_FILTER)(
     _In_ struct _EXCEPTION_POINTERS *ExceptionInfo
     );
@@ -430,6 +451,7 @@ typedef PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER;
 WINBASEAPI LPTOP_LEVEL_EXCEPTION_FILTER WINAPI SetUnhandledExceptionFilter(
   _In_ LPTOP_LEVEL_EXCEPTION_FILTER lpTopLevelExceptionFilter
 );
+#endif
 } // extern "C"
 // clang-format on
 
