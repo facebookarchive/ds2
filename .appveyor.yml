@@ -1,5 +1,5 @@
 # Operating system (build VM template)
-os: Visual Studio 2015
+os: Visual Studio 2017
 
 version: 0.1-branch-{branch}-build-{build}
 
@@ -10,13 +10,15 @@ branches:
 environment:
   matrix:
     - generator: "Visual Studio 14 2015"
-      toolchain: "WinStore"
-    - generator: "Visual Studio 14 2015 ARM"
-      toolchain: "WinStore"
-    - generator: "Visual Studio 14 2015"
       toolchain: "Windows"
-    - generator: "Visual Studio 14 2015 Win64"
+    - generator: "Visual Studio 15 2017"
       toolchain: "Windows"
+    - generator: "Visual Studio 15 2017 Win64"
+      toolchain: "Windows"
+    - generator: "Visual Studio 15 2017"
+      toolchain: "WinStore"
+    - generator: "Visual Studio 15 2017 ARM"
+      toolchain: "WinStore"
 
 clone_folder: c:\projects\ds2
 shallow_clone: true
@@ -38,6 +40,6 @@ build_script:
   - echo Running cmake...
   - cd c:\projects\ds2\build
   - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-%toolchain%.cmake ..
-  - ..\Support\Scripts\build-windows.bat
+  - msbuild /p:Configuration=Release ds2.vcxproj
 
 test: off
