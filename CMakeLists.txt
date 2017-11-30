@@ -318,8 +318,17 @@ set_property(SOURCE Sources/main.cpp APPEND PROPERTY COMPILE_DEFINITIONS
 
 if ("${OS_NAME}" MATCHES "Windows")
   target_compile_definitions(ds2 PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX CINTERFACE)
-  target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6
-                                         _WIN32_WINNT=_WIN32_WINNT_WIN6)
+  if (NOT CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
+    # WindowsStore implies Windows 10 or above; forcing compatibility with
+    # previous Windows versions adversely affects some header definitions.
+    target_compile_definitions(ds2 PRIVATE WINVER=_WIN32_WINNT_WIN6
+                                           _WIN32_WINNT=_WIN32_WINNT_WIN6)
+  endif ()
+  if (DEFINED ENV{WindowsSDKVersion})
+    string(REPLACE "." ";" WINDOWS_SDK_VERSION_LIST "$ENV{WindowsSDKVersion}")
+    list(GET WINDOWS_SDK_VERSION_LIST 2 WINDOWS_SDK_BUILD_NUMBER)
+    target_compile_definitions(ds2 PRIVATE WINDOWS_SDK_BUILD_NUMBER=${WINDOWS_SDK_BUILD_NUMBER})
+  endif ()
 endif ()
 
 if ("${OS_NAME}" MATCHES "Linux")
