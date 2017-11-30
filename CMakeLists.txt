@@ -330,6 +330,44 @@ if ("${OS_NAME}" MATCHES "Linux")
       target_compile_definitions(ds2 PRIVATE HAVE_${CHECK})
     endif ()
   endforeach ()
+elseif ("${OS_NAME}" MATCHES "Windows")
+  set(CMAKE_EXTRA_INCLUDE_FILES windows.h)
+
+  include(CheckFunctionExists)
+  foreach (FUNC CreateRemoteThread GetVersionExA GetVersionExW
+      GetWindowsDirectoryA GetWindowsDirectoryW EnumProcesses
+      K32EnumProcessModules GetModuleBaseNameA GetModuleBaseNameW
+      GetModuleFileNameExA GetModuleFileNameExW GetModuleHandleA
+      GetModuleHandleW OpenProcessToken GetTokenInformation LookupAccountSidA
+      LookupAccountSidW CopySid GetLengthSid GetEnvironmentStringsW
+      FreeEnvironmentStringsW CreateProcessA CreateProcessW CreateThread
+      ExitThread ResumeThread TerminateThread SuspendThread GetThreadContext
+      SetThreadContext GetThreadPriority SetThreadPriority GetProcessId
+      GetThreadId OpenProcess OpenThread GetExitCodeProcess GetExitCodeThread
+      ReadProcessMemory WriteProcessMemory FlushInstructionCache
+      WaitForDebugEventEx ContinueDebugEvent TerminateProcess
+      DebugActiveProcess DebugActiveProcessStop VirtualAllocEx VirtualFreeEx
+      VirtualQueryEx CreateToolhelp32Snapshot Thread32First Thread32Next
+      SetUnhandledExceptionFilter)
+    CHECK_FUNCTION_EXISTS(${FUNC} HAVE_${FUNC})
+    if (HAVE_${CHECK})
+      target_compile_definitions(ds2 PRIVATE HAVE_${FUNC})
+    endif ()
+  endforeach()
+
+  include(CheckTypeSize)
+  foreach (TYPE LPPROC_THREAD_ATTRIBUTE_LIST "struct _STARTUPINFOW"
+      "struct _STARTUPINFOEXW" "struct _STARTUPINFOA"
+      "struct _PROCESS_INFORMATION" "struct tagTHREADENTRY32"
+      PTOP_LEVEL_EXCEPTION_FILTER LPTOP_LEVEL_EXCEPTION_FILTER)
+    string(REPLACE " " "_" SANITIZED_TYPE ${TYPE})
+    CHECK_TYPE_SIZE(${TYPE} ${SANITIZED_TYPE})
+    if (HAVE_${SANITIZED_TYPE})
+      target_compile_definitions(ds2 PRIVATE HAVE_${SANITIZED_TYPE})
+    endif ()
+  endforeach ()
+
+  set(CMAKE_EXTRA_INCLUDE_FILES)
 endif ()
 
 if (TIZEN)
