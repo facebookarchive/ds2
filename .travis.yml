@@ -78,16 +78,16 @@ matrix:
       env: TARGET="Linux-X86_64"   GDB_TESTS="gdb.base/break;gdb.base/printcmds;gdb.base/step-bt" CLANG="1" COVERAGE="1"  RELEASE="1"
     # Darwin-X86_64 targets
     - os: osx
-      osx_image: xcode7
+      osx_image: xcode8.3
       env: TARGET="Darwin-X86_64" CLANG="0"
     - os: osx
-      osx_image: xcode7
+      osx_image: xcode8.3
       env: TARGET="Darwin-X86_64" CLANG="1"
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       env: TARGET="Darwin-X86_64" CLANG="0"
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       env: TARGET="Darwin-X86_64" CLANG="1"
 
 # Use travis_retry during install to reduce the impact of network failures.
