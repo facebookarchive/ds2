@@ -17,6 +17,9 @@ from subprocess import check_call
 host = os.uname()[0]
 target = os.getenv('TARGET')
 
+here = os.path.dirname(os.path.realpath(__file__))
+check_call(os.path.join(here, 'travis-hacks.sh'))
+
 if host == 'Darwin':
     check_call('brew update', shell=True)
 elif host == 'Linux':
