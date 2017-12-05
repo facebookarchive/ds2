@@ -253,10 +253,12 @@ ErrorCode Process::wait() {
     case StopInfo::kEventStop:
       signal = _currentThread->_stopInfo.signal;
 
-      DS2LOG(Debug, "stopped tid=%d status=%#x signal=%s", tid, status,
-             Stringify::Signal(signal));
+      DS2LOG(Debug, "stopped tid=%" PRI_PID " status=%#x signal=%s", tid,
+             status, Stringify::Signal(signal));
 
       if (_passthruSignals.find(signal) != _passthruSignals.end()) {
+        DS2LOG(Debug, "%s passed through to thread %" PRI_PID ", not stopping",
+               Stringify::Signal(signal), tid);
         _currentThread->resume(signal);
         goto continue_waiting;
       } else {
