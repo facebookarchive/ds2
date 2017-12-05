@@ -16,3 +16,9 @@ set -eu
 # forcibly remove them with sudo.
 sudo rm -rf ~/perl5
 sudo rm -rf ~/otp
+
+# There are some headers present on Travis macOS bots. These conflict with the
+# headers that get installed with gcc so we need to remove them.
+if [ "$(uname)" == "Darwin" ]; then
+  sudo rm -rf "/usr/local/include/c++"
+fi
