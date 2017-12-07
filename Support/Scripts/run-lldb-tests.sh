@@ -114,9 +114,13 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
     cherry_pick_patches "$lldb_path"
 
     # Sync lldb libs to local build dir
+    echo "Patching complete, trying to rsync"
     rsync -a /usr/lib/x86_64-linux-gnu/       "$python_base"
+    echo "First rsync done"
     rsync -a /usr/lib/llvm-4.0/lib/python2.7/ "$python_base/python2.7"
+    echo "Second rsync done"
     rsync -a "$python_base/liblldb-4.0.so"    "$python_base/liblldb.so"
+    echo "Third rsync done"
 
     # Fix broken python lldb symlinks
     cd "$PYTHONPATH/lldb"
