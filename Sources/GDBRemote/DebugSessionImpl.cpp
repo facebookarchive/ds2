@@ -89,12 +89,12 @@ ErrorCode DebugSessionImplBase::onQuerySupported(
   localFeatures.push_back(std::string("qXfer:libraries:read+"));
 #endif
   localFeatures.push_back(std::string("QListThreadsInStopReply+"));
+  localFeatures.push_back(std::string("QPassSignals+"));
 
   if (session.mode() != kCompatibilityModeLLDB) {
     localFeatures.push_back(std::string("ConditionalBreakpoints-"));
     localFeatures.push_back(std::string("BreakpointCommands+"));
     localFeatures.push_back(std::string("multiprocess+"));
-    localFeatures.push_back(std::string("QPassSignals+"));
     localFeatures.push_back(std::string("QDisableRandomization+"));
     localFeatures.push_back(std::string("QNonStop+"));
 #if defined(OS_LINUX)
