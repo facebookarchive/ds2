@@ -170,11 +170,11 @@ static int RunDebugServer(Socket *socket, SessionDelegate *impl) {
   session.setDelegate(impl);
   session.create(&qchannel);
 
-  DS2LOG(Debug, "DEBUG SERVER STARTED");
+  DS2LOG(Debug, "Debug session starting");
   thread.start();
   while (session.receive(/*cooked=*/true))
     continue;
-  DS2LOG(Debug, "DEBUG SERVER KILLED");
+  DS2LOG(Debug, "Debug session ended");
 
   return EXIT_SUCCESS;
 }
