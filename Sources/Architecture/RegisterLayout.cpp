@@ -299,8 +299,9 @@ void GDBXMLGenerator::generateRegister(std::ostringstream &s,
     s << "bitsize=" << quote(def->BitSize) << ' ';
   }
   if (def->GDBEncoding.Encoding != ds2::Architecture::kGDBEncodingUnknown) {
-    s << "type=" << quote(GetType(def->GDBEncoding.Encoding,
-                                  def->GDBEncoding.Name, def->BitSize))
+    s << "type="
+      << quote(GetType(def->GDBEncoding.Encoding, def->GDBEncoding.Name,
+                       def->BitSize))
       << ' ';
   }
   if ((def->Flags & ds2::Architecture::kRegisterDefNoGDBRegisterNumber) == 0 &&

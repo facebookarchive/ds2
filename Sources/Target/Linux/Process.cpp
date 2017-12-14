@@ -412,8 +412,9 @@ ErrorCode Process::getMemoryRegionInfo(Address const &address,
       }
     }
 
-    if (::sscanf(buf, "%" PRIx64 "-%" PRIx64 " %c%c%c%c %" PRIx64
-                      " %x:%x %" PRIu64 " %" STR(PATH_MAX) "s%n",
+    if (::sscanf(buf,
+                 "%" PRIx64 "-%" PRIx64 " %c%c%c%c %" PRIx64 " %x:%x %" PRIu64
+                 " %" STR(PATH_MAX) "s%n",
                  &start, &end, &r, &w, &x, &p, &offset, &devMinor, &devMajor,
                  &inode, name, &nread) != 11) {
       continue;

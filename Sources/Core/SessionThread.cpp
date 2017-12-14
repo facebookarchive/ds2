@@ -10,8 +10,8 @@
 
 #include "DebugServer2/Core/SessionThread.h"
 
-using ds2::Host::QueueChannel;
 using ds2::GDBRemote::Session;
+using ds2::Host::QueueChannel;
 
 SessionThread::SessionThread(QueueChannel *channel, Session *session)
     : _channel(channel), _session(session) {

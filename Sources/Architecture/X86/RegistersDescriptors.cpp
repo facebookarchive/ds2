@@ -3,15 +3,15 @@
 
 #include "DebugServer2/Architecture/X86/RegistersDescriptors.h"
 
-using ds2::Architecture::RegisterDef;
 using ds2::Architecture::FlagDef;
 using ds2::Architecture::FlagSet;
+using ds2::Architecture::GDBFeature;
+using ds2::Architecture::GDBFeatureEntry;
 using ds2::Architecture::GDBVectorDef;
 using ds2::Architecture::GDBVectorUnion;
 using ds2::Architecture::GDBVectorUnionField;
-using ds2::Architecture::GDBFeature;
-using ds2::Architecture::GDBFeatureEntry;
 using ds2::Architecture::LLDBRegisterSet;
+using ds2::Architecture::RegisterDef;
 
 #if defined(ENDIAN_BIG)
 #define REG_REL_OFFSET(MAXBYTES, RELOFF, REGSIZE) ((MAXBYTES) - ((RELOFF) + (REGSIZE))
@@ -1697,7 +1697,8 @@ RegisterDef const reg_def_orig_eax = {
     0,
     nullptr,
     nullptr};
-}
+
+} // namespace
 
 //
 // Public Definitions
@@ -1708,6 +1709,7 @@ namespace X86 {
 
 LLDBDescriptor const LLDB = {3, lldb_reg_sets};
 GDBDescriptor const GDB = {"i386:i386", "GNU/Linux", 3, gdb_features};
-}
-}
-}
+
+} // namespace X86
+} // namespace Architecture
+} // namespace ds2

@@ -110,8 +110,9 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
 #if defined(OS_WIN32) && defined(ARCH_ARM)
   if (type == 4) {
     static const uint32_t WinARMBPType = 2;
-    DS2LOG(Warning, "requesting a breakpoint of size %u on Windows ARM, "
-                    "adjusting to type %u",
+    DS2LOG(Warning,
+           "requesting a breakpoint of size %u on Windows ARM, "
+           "adjusting to type %u",
            type, WinARMBPType);
     type = WinARMBPType;
   }
