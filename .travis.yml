@@ -79,13 +79,7 @@ matrix:
     # Darwin-X86_64 targets
     - os: osx
       osx_image: xcode8.3
-      env: TARGET="Darwin-X86_64" CLANG="0"
-    - os: osx
-      osx_image: xcode8.3
       env: TARGET="Darwin-X86_64" CLANG="1"
-    - os: osx
-      osx_image: xcode9
-      env: TARGET="Darwin-X86_64" CLANG="0"
     - os: osx
       osx_image: xcode9
       env: TARGET="Darwin-X86_64" CLANG="1"
