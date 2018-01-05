@@ -24,7 +24,8 @@ if [[ "$TARGET" == Android-* && -n "${LLDB_TESTS-}" ]]; then
 
   sdk_dir="/tmp/android-sdk-${host_platform_name}"
   emulator="${sdk_dir}/emulator/${emulator_arch}"
+  adb="${sdk_dir}/platform-tools/adb"
   qt_lib_path="${sdk_dir}/emulator/lib64/qt/lib/"
   LD_LIBRARY_PATH="${qt_lib_path}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" "$emulator" -avd test -gpu off -no-window &
-  adb wait-for-device
+  "$adb" wait-for-device
 fi

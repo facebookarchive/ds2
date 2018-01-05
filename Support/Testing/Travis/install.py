@@ -67,7 +67,6 @@ if target in android_toolchains:
                (android_toolchains[target], android_platform), shell=True)
     if os.getenv('LLDB_TESTS') != None:
         dist_packages.append('default-jdk')
-        dist_packages.append('android-tools-adb')
 
 # Running LLDB tests requires an install of lldb (for the tests to be able to
 # use the lldb python library without us building it).
