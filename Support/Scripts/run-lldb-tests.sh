@@ -19,6 +19,10 @@ UPSTREAM_BRANCH="release_40"
 top="$(git rev-parse --show-toplevel)"
 build_dir="$PWD"
 
+export PATH="/tmp/android-sdk-linux/platform-tools/:$PATH"
+echo "WHICH ADB?"
+which adb
+
 source "$top/Support/Scripts/common.sh"
 
 [ "$(uname)" == "Linux" ] || die "The lldb test suite requires a Linux host environment."

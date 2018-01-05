@@ -26,8 +26,14 @@ if [[ "$TARGET" == Android-* && -n "${LLDB_TESTS-}" ]]; then
   esac
 
   sdk_dir="/tmp/android-sdk-${platform_name}"
+  PATH="${sdk_dir}/platform-tools/:$PATH"
   emulator="${sdk_dir}/emulator/${emulator_arch}"
   qt_lib_path="${sdk_dir}/emulator/lib64/qt/lib/"
   LD_LIBRARY_PATH="${qt_lib_path}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" "$emulator" -avd test -gpu off -no-window &
+  echo "WHICH ADB?"
+  which adb
+  echo "WAIT FOR DEVICE"
   adb wait-for-device
+  echo "DEVICES?"
+  adb devices
 fi
