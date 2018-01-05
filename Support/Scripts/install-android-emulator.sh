@@ -15,18 +15,13 @@ source "$(dirname "$0")/common.sh"
 
 target_arch="${1-arm}"
 
-case "$(uname)" in
-  "Linux")  platform_name="linux";;
-  "Darwin") platform_name="darwin";;
-  *)        die "This script works only on Linux and macOS.";;
-esac
-
-sdk_dir="/tmp/android-sdk-${platform_name}"
+host_platform_name=$(get_host_platform_name)
+sdk_dir="/tmp/android-sdk-${host_platform_name}"
 sdkmanager="${sdk_dir}/tools/bin/sdkmanager"
 avdmanager="${sdk_dir}/tools/bin/avdmanager"
 
 if [ ! -f "$sdkmanager" ]; then
-  package_name="sdk-tools-${platform_name}-3859397.zip"
+  package_name="sdk-tools-${host_platform_name}-3859397.zip"
   wget "https://dl.google.com/android/repository/${package_name}" -P /tmp
   unzip -d "${sdk_dir}" "/tmp/${package_name}"
   rm -f "/tmp/${package_name}"

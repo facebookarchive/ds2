@@ -69,3 +69,11 @@ linux_distribution() {
     echo "unknown"
   fi
 }
+
+get_host_platform_name() {
+  case "$(uname)" in
+    "Linux")  echo "linux";;
+    "Darwin") echo "darwin";;
+    *)        die "This script only works on Linux and macOS.";;
+  esac
+}

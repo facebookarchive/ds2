@@ -13,10 +13,7 @@ top="$(git rev-parse --show-toplevel)"
 source "$top/Support/Scripts/common.sh"
 
 if [[ "$TARGET" == Android-* && -n "${LLDB_TESTS-}" ]]; then
-  case "$(uname)" in
-    "Linux")  platform_name="linux";;
-    "Darwin") platform_name="darwin";;
-  esac
+  host_platform_name=$(get_host_platform_name)
 
   case "${TARGET}" in
     "Android-ARM") emulator_arch="emulator64-arm";;
@@ -25,7 +22,7 @@ if [[ "$TARGET" == Android-* && -n "${LLDB_TESTS-}" ]]; then
     *)             die "Unknown target '${TARGET}'.";;
   esac
 
-  sdk_dir="/tmp/android-sdk-${platform_name}"
+  sdk_dir="/tmp/android-sdk-${host_platform_name}"
   emulator="${sdk_dir}/emulator/${emulator_arch}"
   qt_lib_path="${sdk_dir}/emulator/lib64/qt/lib/"
   LD_LIBRARY_PATH="${qt_lib_path}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" "$emulator" -avd test -gpu off -no-window &
