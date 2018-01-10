@@ -77,3 +77,7 @@ get_host_platform_name() {
     *)        die "This script only works on Linux and macOS.";;
   esac
 }
+
+get_android_ndk_dir() {
+  echo "/tmp/android-ndk"
+}
