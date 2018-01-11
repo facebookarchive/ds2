@@ -63,6 +63,15 @@ cherry_pick_patches() {
   cd "$OLDPWD"
 }
 
+get_android_compiler() {
+  case "$1" in
+    *-ARM) cc_name="arm-linux-androideabi-gcc";;
+    *-X86) cc_name="i686-linux-android-gcc";;
+    *) die "Running LLDB tests on $1 is not yet supported"
+  esac
+  echo "$(find /tmp/android-ndk -name $cc_name)"
+}
+
 if [ "$(linux_distribution)" == "centos" ]; then
   llvm_path="$build_dir/llvm"
   llvm_build="$llvm_path/build"
@@ -89,9 +98,8 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_exe="$(which lldb-5.0)"
 
   case "${TARGET}" in
-    "Android-ARM") cc_exe="/tmp/aosp-toolchain/arm/bin/arm-linux-androideabi-gcc";;
-    "Android-X86") cc_exe="/tmp/aosp-toolchain/x86/bin/i686-linux-android-gcc";;
-    *)             cc_exe="$(which gcc-5)"
+    Android-*)     cc_exe="$(get_android_compiler ${TARGET})";;
+    *)             cc_exe="$(which gcc-5)";;
   esac
 
   python_base="$build_dir/lib"
