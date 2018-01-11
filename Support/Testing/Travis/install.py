@@ -108,9 +108,9 @@ if len(dist_packages) > 0:
             check_call('sudo apt-get clean', shell=True)
 
 if len(pip_packages) > 0:
-    check_call('sudo pip install --upgrade pip', shell=True)
+    check_call('sudo pip install --no-use-wheel --upgrade pip', shell=True)
     for package in pip_packages:
-        check_call('pip install --user ' + package, shell=True)
+        check_call('pip install --no-use-wheel --upgrade --user ' + package, shell=True)
 
 # This step must happen after package installation, as it requires java be installed.
 if target in android_toolchains and os.getenv('LLDB_TESTS') != None:
