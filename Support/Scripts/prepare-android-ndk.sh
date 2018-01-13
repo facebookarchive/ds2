@@ -30,4 +30,5 @@ wget "https://dl.google.com/android/repository/${ndk_package_archive}"
 unzip -q "${ndk_package_archive}"
 rm -f "${ndk_package_archive}"
 
+rm -rf "$(get_android_ndk_dir)"
 mv "${ndk_package_base}" "$(get_android_ndk_dir)"
