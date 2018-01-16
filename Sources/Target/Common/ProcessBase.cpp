@@ -226,6 +226,11 @@ ErrorCode ProcessBase::readMemoryBuffer(Address const &address, size_t length,
     return error;
   }
 
+  SoftwareBreakpointManager *bpm = softwareBreakpointManager();
+  if (bpm) {
+    bpm->insertStashedInsns(address, length, buffer);
+  }
+
   buffer.resize(nread);
   return kSuccess;
 }
