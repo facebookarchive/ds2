@@ -46,6 +46,10 @@ protected:
                     Mode mode) const override;
   size_t chooseBreakpointSize() const override;
 
+public:
+  void insertStashedInsns(Address const &start, size_t length,
+                          ByteVector &data);
+
 #if defined(ARCH_ARM) || defined(ARCH_ARM64)
 public:
   virtual void
