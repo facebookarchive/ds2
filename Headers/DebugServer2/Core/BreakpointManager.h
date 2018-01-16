@@ -102,7 +102,6 @@ protected:
                                    Target::Thread *thread = nullptr) = 0;
   virtual ErrorCode disableLocation(Site const &site,
                                     Target::Thread *thread = nullptr) = 0;
-  virtual bool enabled(Target::Thread *thread = nullptr) const = 0;
 
 public:
   virtual bool fillStopInfo(Target::Thread *thread, StopInfo &stopInfo) = 0;
