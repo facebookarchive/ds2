@@ -128,11 +128,6 @@ ErrorCode HardwareBreakpointManager::addThread(Target::Thread *thread) {
   return kSuccess;
 }
 
-// Hardware breakpoints are always enabled
-bool HardwareBreakpointManager::enabled(Target::Thread *thread) const {
-  return true;
-}
-
 bool HardwareBreakpointManager::fillStopInfo(Target::Thread *thread,
                                              StopInfo &stopInfo) {
   BreakpointManager::Site site;

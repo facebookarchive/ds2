@@ -41,9 +41,6 @@ protected:
 public:
   ErrorCode addThread(Target::Thread *thread);
 
-protected:
-  bool enabled(Target::Thread *thread = nullptr) const override;
-
 public:
   virtual size_t maxWatchpoints();
 
@@ -67,7 +64,6 @@ protected:
 
 protected:
   std::vector<uint64_t> _locations;
-  std::unordered_set<ThreadId> _enabled;
 
 #if defined(ARCH_X86) || defined(ARCH_X86_64)
 protected:

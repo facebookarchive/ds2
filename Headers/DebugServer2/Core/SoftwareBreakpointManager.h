@@ -16,7 +16,6 @@ namespace ds2 {
 class SoftwareBreakpointManager : public BreakpointManager {
 private:
   std::map<uint64_t, ByteVector> _insns;
-  bool _enabled;
 
 public:
   SoftwareBreakpointManager(Target::ProcessBase *process);
@@ -27,6 +26,7 @@ public:
 
 public:
   virtual int hit(Target::Thread *thread, Site &site) override;
+  void afterResume();
 
 protected:
   virtual void getOpcode(uint32_t type, ByteVector &opcode) const;
@@ -36,10 +36,6 @@ protected:
                                    Target::Thread *thread = nullptr) override;
   virtual ErrorCode disableLocation(Site const &site,
                                     Target::Thread *thread = nullptr) override;
-
-public:
-  void enable(Target::Thread *thread = nullptr);
-  void disable(Target::Thread *thread = nullptr);
 
 protected:
   ErrorCode isValid(Address const &address, size_t size,
@@ -62,8 +58,6 @@ public:
 public:
   virtual bool has(Address const &address) const override;
 #endif
-
-  virtual bool enabled(Target::Thread *thread = nullptr) const override;
 
 public:
   virtual bool fillStopInfo(Target::Thread *thread,
