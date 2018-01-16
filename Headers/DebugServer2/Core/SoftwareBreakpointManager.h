@@ -38,8 +38,8 @@ protected:
                                     Target::Thread *thread = nullptr) override;
 
 public:
-  void enable(Target::Thread *thread = nullptr) override;
-  void disable(Target::Thread *thread = nullptr) override;
+  void enable(Target::Thread *thread = nullptr);
+  void disable(Target::Thread *thread = nullptr);
 
 protected:
   ErrorCode isValid(Address const &address, size_t size,
