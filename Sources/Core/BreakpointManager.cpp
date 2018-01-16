@@ -117,43 +117,6 @@ void BreakpointManager::enumerate(
   }
 }
 
-void BreakpointManager::enable(Target::Thread *thread) {
-  //
-  // Both callbacks should be installed by child class before
-  // enabling the breakpoint manager.
-  //
-  if (enabled(thread)) {
-    DS2LOG(Warning, "double-enabling breakpoints");
-  }
-
-  enumerate([this, thread](Site const &site) { enableLocation(site, thread); });
-}
-
-void BreakpointManager::disable(Target::Thread *thread) {
-  if (!enabled(thread)) {
-    DS2LOG(Warning, "double-disabling breakpoints");
-  }
-
-  enumerate(
-      [this, thread](Site const &site) { disableLocation(site, thread); });
-
-  //
-  // Remove temporary breakpoints.
-  //
-  auto it = _sites.begin();
-  while (it != _sites.end()) {
-    it->second.lifetime = it->second.lifetime & ~Lifetime::TemporaryOneShot;
-    if (it->second.lifetime == Lifetime::None) {
-      // refs should always be 0 unless we have a Lifetime::Permanent
-      // breakpoint.
-      DS2ASSERT(it->second.refs == 0);
-      _sites.erase(it++);
-    } else {
-      it++;
-    }
-  }
-}
-
 bool BreakpointManager::hit(Address const &address, Site &site) {
   if (!address.valid())
     return false;
