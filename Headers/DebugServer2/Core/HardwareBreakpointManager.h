@@ -38,15 +38,14 @@ protected:
                             Target::Thread *thread = nullptr) override;
   virtual ErrorCode disableLocation(int idx, Target::Thread *thread);
 
+public:
+  ErrorCode addThread(Target::Thread *thread);
+
 protected:
   bool enabled(Target::Thread *thread = nullptr) const override;
 
 public:
   virtual size_t maxWatchpoints();
-
-public:
-  void enable(Target::Thread *thread = nullptr) override;
-  void disable(Target::Thread *thread = nullptr) override;
 
 protected:
   ErrorCode isValid(Address const &address, size_t size,
