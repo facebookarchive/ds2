@@ -49,11 +49,7 @@ ErrorCode BreakpointManager::add(Address const &address, Lifetime lifetime,
     site.mode = mode;
     site.size = size;
 
-    // If the breakpoint manager is already in enabled state, enable
-    // the newly added breakpoint too.
-    if (enabled()) {
-      return enableLocation(site);
-    }
+    return enableLocation(site);
   }
 
   return kSuccess;
@@ -90,14 +86,7 @@ ErrorCode BreakpointManager::remove(Address const &address) {
 
 do_remove:
   DS2ASSERT(it->second.refs == 0);
-  //
-  // If the breakpoint manager is already in enabled state, disable
-  // the newly removed breakpoint too.
-  //
-  ErrorCode error = kSuccess;
-  if (enabled()) {
-    error = disableLocation(it->second);
-  }
+  ErrorCode error = disableLocation(it->second);
 
   _sites.erase(it);
   return error;
