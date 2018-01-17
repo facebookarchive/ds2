@@ -1,5 +1,4 @@
 xfail
-TestCStrings.CStringsTestCase.test_with_run_command
 TestCallUserDefinedFunction.ExprCommandCallUserDefinedFunction
 TestCompletion.CommandLineCompletionTestCase.test_de
 TestCompletion.CommandLineCompletionTestCase.test_help_fi
