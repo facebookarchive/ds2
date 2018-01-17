@@ -4,7 +4,6 @@ HelloWorldTestCase.test_with_attach_to_process_with_name_api
 LinuxCore
 LldbGdbServer
 GdbRemote
-TestConstThis
 TestDumpDynamic
 TestExternCSymbols
 TestFrameVariableScope
@@ -13,7 +12,6 @@ TestLLVMStyle.test_with_dwarf
 TestNamespaceConflicts.test_with_dwarf
 TestRedefinitionsInInlines
 TestSampleInlineTest.test_with_dwarf
-TestSBValueConstAddrOf
 TestStringPrinter
 TestStructTypes
 TestSymbols.test_with_dwarf
