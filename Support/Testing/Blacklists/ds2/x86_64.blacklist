@@ -1,3 +1,0 @@
-xfail
-TestCreateDuringInstructionStep.CreateDuringInstructionStepTestCase.test_step_inst
-TestCreateDuringInstructionStep.CreateDuringInstructionStepTestCase.test_step_inst_dwarf
