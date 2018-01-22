@@ -155,6 +155,14 @@ cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
 make
 ```
 
+#### Testing on Android device
+
+If you would like to use ds2 to run tests in the LLDB test suite using an
+Android device, you should use the script
+`Support/Scripts/prepare-android-ndk.sh` to get a checkout of the android NDK.
+The LLDB test suite expects an NDK to exist on your host, and that script will
+download and unpack it where the CMake Toolchain files expect it to be.
+
 ### Cross compiling for Linux-ARM
 
 Cross-compiling for Linux-ARM is also possible. On Ubuntu 14.04, install an arm
