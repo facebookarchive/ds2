@@ -15,6 +15,7 @@
 
 REPO_BASE="https://github.com/llvm-mirror"
 UPSTREAM_BRANCH="release_50"
+TARGET="${TARGET-${CIRCLE_JOB}}"
 
 top="$(git rev-parse --show-toplevel)"
 build_dir="$PWD"
@@ -99,7 +100,7 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
 
   case "${TARGET}" in
     Android-*)     cc_exe="$(get_android_compiler ${TARGET})";;
-    *)             cc_exe="$(which gcc-5)";;
+    *)             cc_exe="$(which gcc-4.9)";;
   esac
 
   python_base="$build_dir/lib"
@@ -237,7 +238,7 @@ fi
 
 export LLDB_TEST_TIMEOUT=8m
 
-if [ "$LLDB_TESTS" != "all" ]; then
+if [ "${LLDB_TESTS-all}" != "all" ]; then
   args+=(-p "$LLDB_TESTS")
 fi
 

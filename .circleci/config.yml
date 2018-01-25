@@ -16,7 +16,7 @@ docker_config: &docker_config
 configure_step: &configure_step
   run:
     name: Configure
-    command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-$CIRCLE_JOB.cmake ..
+    command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-${TARGET-${CIRCLE_JOB}}.cmake ..
 
 build_step: &build_step
   run:
@@ -26,9 +26,16 @@ build_step: &build_step
 test_step: &test_step
   run:
     name: Test
-    command: test -z "$LLDB_TESTS" || (cd build && ../Support/Scripts/run-lldb-tests.sh)
+    command: cd build && ../Support/Scripts/run-lldb-tests.sh
 
-defaults: &defaults
+build_only_defaults: &build_only_defaults
+  <<: *docker_config
+  steps:
+    - checkout
+    - *configure_step
+    - *build_step
+
+build_and_test_defaults: &build_and_test_defaults
   <<: *docker_config
   steps:
     - checkout
@@ -48,18 +55,32 @@ jobs:
       - run:
           name: Check style differences
           command: git --no-pager diff --exit-code
+  Linux-X86:
+    <<: *build_and_test_defaults
+  Linux-X86-platform:
+    <<: *build_and_test_defaults
+    environment:
+      TARGET: Linux-X86
+      PLATFORM: 1
+  Linux-X86_64:
+    <<: *build_and_test_defaults
+  Linux-X86_64-platform:
+    <<: *build_and_test_defaults
+    environment:
+      TARGET: Linux-X86_64
+      PLATFORM: 1
   Android-ARM64:
-    <<: *defaults
+    <<: *build_only_defaults
   Android-X86_64:
-    <<: *defaults
+    <<: *build_only_defaults
   Tizen-X86:
-    <<: *defaults
+    <<: *build_only_defaults
   Tizen-ARM:
-    <<: *defaults
+    <<: *build_only_defaults
   MinGW-X86:
-    <<: *defaults
+    <<: *build_only_defaults
   MinGW-X86_64:
-    <<: *defaults
+    <<: *build_only_defaults
   Darwin-X86_64:
     macos:
       xcode: "9.0"
@@ -68,13 +89,14 @@ jobs:
       - checkout
       - *configure_step
       - *build_step
-      - *test_step
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - Style
+      - Linux-X86
+      - Linux-X86_64
       - Android-ARM64
       - Android-X86_64
       - Tizen-X86
