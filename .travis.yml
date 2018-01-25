@@ -43,12 +43,6 @@ matrix:
       env: TARGET="Android-X86" ANDROID_PLATFORM="16"
     - os: linux
       env: TARGET="Android-X86_64"
-    - os: linux
-      env: TARGET="MinGW-X86"
-    - os: linux
-      env: TARGET="Tizen-ARM"
-    - os: linux
-      env: TARGET="Tizen-X86"
     # Linux-X86 (with LLDB tests)
     - os: linux
       env: TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="0" COVERAGE="1" PLATFORM="1"

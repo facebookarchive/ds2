@@ -1,0 +1,53 @@
+##
+## Copyright (c) 2014-present, Facebook, Inc.
+## All rights reserved.
+##
+## This source code is licensed under the University of Illinois/NCSA Open
+## Source License found in the LICENSE file in the root directory of this
+## source tree. An additional grant of patent rights can be found in the
+## PATENTS file in the same directory.
+##
+
+
+defaults: &defaults
+  docker:
+    - image: sas42/ds2-build-env
+  steps:
+    - checkout
+    - run:
+        name: Configure
+        command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-$TARGET$TARGET_SUFFIX.cmake ..
+    - run:
+        name: Build
+        command: ninja -C build
+    - run:
+        name: Test
+        command: test -z "$LLDB_TESTS" || (cd build && ../Support/Scripts/run-lldb-tests.sh)
+
+version: 2
+jobs:
+  Tizen-x86:
+    <<: *defaults
+    environment:
+      TARGET: Tizen-X86
+  Tizen-arm:
+    <<: *defaults
+    environment:
+      TARGET: Tizen-ARM
+  MinGW-x86:
+    <<: *defaults
+    environment:
+      TARGET: MinGW-X86
+  MinGW-x86_64:
+    <<: *defaults
+    environment:
+      TARGET: MinGW-X86
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - Tizen-x86
+      - Tizen-arm
+      - MinGW-x86
+      - MinGW-x86_64
