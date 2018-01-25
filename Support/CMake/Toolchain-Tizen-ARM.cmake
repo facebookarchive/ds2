@@ -11,8 +11,8 @@
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_SYSTEM_PROCESSOR ARM)
 
-set(CMAKE_C_COMPILER arm-linux-gnueabihf-gcc-4.8)
-set(CMAKE_CXX_COMPILER arm-linux-gnueabihf-g++-4.8)
+set(CMAKE_C_COMPILER arm-linux-gnueabi-gcc-4.9)
+set(CMAKE_CXX_COMPILER arm-linux-gnueabi-g++-4.9)
 
 set(TIZEN 1)
 set(STATIC 1)
