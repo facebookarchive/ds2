@@ -9,7 +9,7 @@
 ##
 
 # To build a docker image using this file, run the following command:
-#     docker build - < Support/Testing/CircleCI/Dockerfile
+#     docker build -f Support/Testing/CircleCI/Dockerfile .
 #
 # After building the image, you will see a line like this at the end of the
 # build process:
@@ -62,3 +62,9 @@ RUN apt-get install -y doxygen graphviz
 
 # Create multilib symlink for gcc 4.9
 RUN ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/asm
+
+# Install Android toolchains with our local script
+COPY Support/Scripts/common.sh /tmp
+COPY Support/Scripts/prepare-android-toolchain.sh /tmp
+RUN apt-get install -y unzip
+RUN /tmp/prepare-android-toolchain.sh x86 x86_64 arm arm64
