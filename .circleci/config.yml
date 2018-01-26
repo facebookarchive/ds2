@@ -13,19 +13,28 @@ docker_config: &docker_config
   docker:
     - image: sas42/ds2-build-env
 
+configure_step: &configure_step
+  run:
+    name: Configure
+    command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-$CIRCLE_JOB.cmake ..
+
+build_step: &build_step
+  run:
+    name: Build
+    command: ninja -C build -v
+
+test_step: &test_step
+  run:
+    name: Test
+    command: test -z "$LLDB_TESTS" || (cd build && ../Support/Scripts/run-lldb-tests.sh)
+
 defaults: &defaults
   <<: *docker_config
   steps:
     - checkout
-    - run:
-        name: Configure
-        command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-$CIRCLE_JOB.cmake ..
-    - run:
-        name: Build
-        command: ninja -C build -v
-    - run:
-        name: Test
-        command: test -z "$LLDB_TESTS" || (cd build && ../Support/Scripts/run-lldb-tests.sh)
+    - *configure_step
+    - *build_step
+    - *test_step
 
 version: 2
 jobs:
@@ -51,6 +60,15 @@ jobs:
     <<: *defaults
   MinGW-X86_64:
     <<: *defaults
+  Darwin-X86_64:
+    macos:
+      xcode: "9.0"
+    steps:
+      - run: brew install cmake ninja flex bison
+      - checkout
+      - *configure_step
+      - *build_step
+      - *test_step
 
 workflows:
   version: 2
@@ -63,3 +81,4 @@ workflows:
       - Tizen-ARM
       - MinGW-X86
       - MinGW-X86_64
+      - Darwin-X86_64
