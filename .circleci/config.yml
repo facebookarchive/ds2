@@ -19,7 +19,7 @@ defaults: &defaults
         command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-$TARGET$TARGET_SUFFIX.cmake ..
     - run:
         name: Build
-        command: ninja -C build
+        command: ninja -C build -v
     - run:
         name: Test
         command: test -z "$LLDB_TESTS" || (cd build && ../Support/Scripts/run-lldb-tests.sh)
