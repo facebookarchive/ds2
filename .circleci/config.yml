@@ -29,6 +29,16 @@ defaults: &defaults
 
 version: 2
 jobs:
+  Style:
+    <<: *docker_config
+    steps:
+      - checkout
+      - run:
+          name: Apply clang-format
+          command: find Sources Headers -type f -exec clang-format-5.0 -i -style=file {} \;
+      - run:
+          name: Check style differences
+          command: git --no-pager diff --exit-code
   Android-ARM64:
     <<: *defaults
   Android-X86_64:
@@ -46,6 +56,7 @@ workflows:
   version: 2
   build_and_test:
     jobs:
+      - Style
       - Android-ARM64
       - Android-X86_64
       - Tizen-X86
