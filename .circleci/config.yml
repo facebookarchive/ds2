@@ -9,14 +9,17 @@
 ##
 
 
-defaults: &defaults
+docker_config: &docker_config
   docker:
     - image: sas42/ds2-build-env
+
+defaults: &defaults
+  <<: *docker_config
   steps:
     - checkout
     - run:
         name: Configure
-        command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-$TARGET$TARGET_SUFFIX.cmake ..
+        command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-$CIRCLE_JOB.cmake ..
     - run:
         name: Build
         command: ninja -C build -v
@@ -26,38 +29,26 @@ defaults: &defaults
 
 version: 2
 jobs:
-  Android-arm64:
+  Android-ARM64:
     <<: *defaults
-    environment:
-      TARGET: Android-ARM64
-  Android-x86_64:
+  Android-X86_64:
     <<: *defaults
-    environment:
-      TARGET: Android-X86_64
-  Tizen-x86:
+  Tizen-X86:
     <<: *defaults
-    environment:
-      TARGET: Tizen-X86
-  Tizen-arm:
+  Tizen-ARM:
     <<: *defaults
-    environment:
-      TARGET: Tizen-ARM
-  MinGW-x86:
+  MinGW-X86:
     <<: *defaults
-    environment:
-      TARGET: MinGW-X86
-  MinGW-x86_64:
+  MinGW-X86_64:
     <<: *defaults
-    environment:
-      TARGET: MinGW-X86
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - Android-arm64
-      - Android-x86_64
-      - Tizen-x86
-      - Tizen-arm
-      - MinGW-x86
-      - MinGW-x86_64
+      - Android-ARM64
+      - Android-X86_64
+      - Tizen-X86
+      - Tizen-ARM
+      - MinGW-X86
+      - MinGW-X86_64
