@@ -26,6 +26,14 @@ defaults: &defaults
 
 version: 2
 jobs:
+  Android-arm64:
+    <<: *defaults
+    environment:
+      TARGET: Android-ARM64
+  Android-x86_64:
+    <<: *defaults
+    environment:
+      TARGET: Android-X86_64
   Tizen-x86:
     <<: *defaults
     environment:
@@ -47,6 +55,8 @@ workflows:
   version: 2
   build_and_test:
     jobs:
+      - Android-arm64
+      - Android-x86_64
       - Tizen-x86
       - Tizen-arm
       - MinGW-x86
