@@ -41,7 +41,7 @@ ds2::CPUSubType Platform::GetCPUSubType() {
 ds2::Endian Platform::GetEndian() {
 #if defined(ENDIAN_LITTLE)
   return kEndianLittle;
-#elif defined(ENDIAN_LITTLE)
+#elif defined(ENDIAN_BIG)
   return kEndianBig;
 #elif defined(ENDIAN_MIDDLE)
   return kEndianPDP;
