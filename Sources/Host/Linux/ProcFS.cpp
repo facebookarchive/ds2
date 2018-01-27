@@ -635,11 +635,7 @@ CPUType ProcFS::GetProcessCPUType(pid_t pid) {
 
   CPUType type;
   CPUSubType subtype;
-  if (!ELFSupport::MachineTypeToCPUType(info.machine, info.is64Bit, type,
-                                        subtype)) {
-    type = kCPUTypeAny;
-  }
-
+  ELFSupport::MachineTypeToCPUType(info.machine, info.is64Bit, type, subtype);
   return type;
 }
 
@@ -779,11 +775,8 @@ bool ProcFS::ReadProcessInfo(pid_t pid, ProcessInfo &info) {
   info.realGid = gid;
   info.effectiveGid = egid;
 
-  if (!ELFSupport::MachineTypeToCPUType(elf.machine, elf.is64Bit, info.cpuType,
-                                        info.cpuSubType)) {
-    info.cpuType = kCPUTypeAny;
-    info.cpuSubType = kCPUSubTypeInvalid;
-  }
+  ELFSupport::MachineTypeToCPUType(elf.machine, elf.is64Bit, info.cpuType,
+                                   info.cpuSubType);
 
   info.nativeCPUType = elf.machine;
   info.nativeCPUSubType = kInvalidCPUType;

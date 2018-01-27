@@ -49,9 +49,10 @@ bool ELFSupport::MachineTypeToCPUType(uint32_t machineType, bool is64Bit,
 #endif
 
   default:
+    type = kCPUTypeAny;
+    subType = kCPUSubTypeInvalid;
     return false;
   }
-
   return true;
 }
 } // namespace Support
