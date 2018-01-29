@@ -72,3 +72,9 @@ RUN /tmp/prepare-android-ndk.sh
 # Install a version of cmake that is at least the minimum version we support.
 COPY Support/Testing/CircleCI/install-cmake.sh /tmp
 RUN /tmp/install-cmake.sh
+
+# Install Android emulators
+RUN apt-get install -y default-jdk
+COPY Support/Scripts/install-android-emulator.sh /tmp
+RUN /tmp/install-android-emulator.sh arm
+RUN /tmp/install-android-emulator.sh x86
