@@ -28,11 +28,7 @@ matrix:
       env: TARGET="Documentation" ENCRYPTION_LABEL="c06a05533acc"
     # Cross-compiled targets
     - os: linux
-      env: TARGET="Android-ARM" LLDB_TESTS="all" PLATFORM="1" COVERAGE="1"
-    - os: linux
       env: TARGET="Android-ARM" ANDROID_PLATFORM="16"
-    #- os: linux
-    #- env: TARGET="Android-X86" LLDB_TESTS="all" PLATFORM="1" COVERAGE="1"
     - os: linux
       env: TARGET="Android-X86" ANDROID_PLATFORM="16"
     # Linux-X86 (with LLDB tests)
@@ -58,6 +54,5 @@ matrix:
 # Use travis_retry during install to reduce the impact of network failures.
 before_install: travis_retry ./Support/Testing/Travis/before-install.py
 install:        travis_retry ./Support/Testing/Travis/install.py
-before_script:  ./Support/Testing/Travis/before-script.sh
 script:         ./Support/Testing/Travis/script.sh
 after_success:  ./Support/Testing/Travis/after-success.sh
