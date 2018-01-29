@@ -33,6 +33,12 @@ check_dirty_step: &check_dirty_step
     name: Check for dirty state
     command: git --no-pager diff --exit-code
 
+start_android_emulator_step: &start_android_emulator_step
+  run:
+    name: Start Android emulator
+    command: ./Support/Scripts/start-android-emulator.sh
+    background: true
+
 build_only_defaults: &build_only_defaults
   <<: *docker_config
   steps:
@@ -46,6 +52,15 @@ build_and_test_defaults: &build_and_test_defaults
     - checkout
     - *configure_step
     - *build_step
+    - *test_step
+
+build_and_test_android: &build_and_test_android
+  <<: *docker_config
+  steps:
+    - checkout
+    - *configure_step
+    - *build_step
+    - *start_android_emulator_step
     - *test_step
 
 version: 2
@@ -82,7 +97,13 @@ jobs:
     environment:
       TARGET: Linux-X86_64
       PLATFORM: 1
+  Android-ARM:
+    <<: *build_and_test_android
+    environment:
+      PLATFORM: 1
   Android-ARM64:
+    <<: *build_only_defaults
+  Android-X86:
     <<: *build_only_defaults
   Android-X86_64:
     <<: *build_only_defaults
@@ -111,7 +132,9 @@ workflows:
       - Registers
       - Linux-X86
       - Linux-X86_64
+      - Android-ARM
       - Android-ARM64
+      - Android-X86
       - Android-X86_64
       - Tizen-X86
       - Tizen-ARM
