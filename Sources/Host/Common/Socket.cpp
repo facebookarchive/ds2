@@ -51,7 +51,12 @@ Socket::Socket()
     : _handle(INVALID_SOCKET), _state(kStateInvalid), _lastError(0) {}
 
 Socket::Socket(SOCKET handle)
-    : _handle(handle), _state(kStateConnected), _lastError(0) {}
+    : _handle(handle), _state(kStateConnected), _lastError(0) {
+#if defined(OS_POSIX)
+  ::fcntl(_handle, F_SETFD, FD_CLOEXEC);
+  ::fcntl(_handle, F_SETFL, O_NONBLOCK);
+#endif
+}
 
 Socket::~Socket() { close(); }
 

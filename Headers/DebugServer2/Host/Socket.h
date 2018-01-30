@@ -39,11 +39,9 @@ protected:
   State _state;
   int _lastError;
 
-protected:
-  Socket(SOCKET handle);
-
 public:
   Socket();
+  Socket(SOCKET handle);
   ~Socket() override;
 
 public:
