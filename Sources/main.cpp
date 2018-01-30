@@ -49,6 +49,38 @@ static std::string gDefaultHost = "127.0.0.1";
 static bool gDaemonize = false;
 static bool gGDBCompat = false;
 
+#if defined(OS_POSIX)
+static void CloseFD() {
+  for (int i = 3; i < 1024; ++i)
+    ::close(i);
+}
+
+static void CloseFD(int fd) {
+  for (int i = 3; i < fd; ++i)
+    ::close(i);
+  for (int i = fd + 1; i < 1024; ++i)
+    ::close(i);
+}
+#endif
+
+#if defined(OS_POSIX)
+static std::unique_ptr<Socket> CreateFDSocket(int fd) {
+  errno = 0;
+  int flags = ::fcntl(fd, F_GETFL);
+  if (flags == -1) {
+    DS2LOG(Error, "cannot use fd %d: %s", fd, strerror(errno));
+  }
+
+  if (::isatty(fd)) {
+    DS2LOG(Error, "cannot use fd %d: refers to a terminal", fd);
+  }
+
+  auto socket = ds2::make_unique<Socket>(fd);
+
+  return socket;
+}
+#endif
+
 // This function creates and initializes a socket than can be either a client
 // (if reverse is true), or a server (if reverse is false) that will then need
 // to be accept()'d on.
@@ -246,6 +278,11 @@ static int GdbserverMain(int argc, char **argv) {
   opts.addOption(ds2::OptParse::boolOption, "native-regs", 'r',
                  "use native registers (no-op)", true);
 
+#if defined(OS_POSIX)
+  opts.addOption(ds2::OptParse::stringOption, "fd", 'F',
+                 "use a file descriptor to communicate");
+#endif
+
   // gdbserver compatibility options.
   opts.addOption(ds2::OptParse::boolOption, "once", 'O',
                  "exit after one execution of inferior (default)", true);
@@ -304,24 +341,47 @@ static int GdbserverMain(int argc, char **argv) {
 
   bool reverse = opts.getBool("reverse-connect");
 
+#if defined(OS_POSIX)
+  int fd =
+      opts.getString("fd").empty() ? -1 : atoi(opts.getString("fd").c_str());
+#endif
+
   std::unique_ptr<Socket> socket;
-  if (opts.getPositional("[host]:port").empty()) {
-    // If we have a named pipe, set the port to 0 to indicate that we should
-    // dynamically allocate it and write it back to the FIFO.
-    socket = CreateTCPSocket(
-        gDefaultHost, namedPipePath.empty() ? gDefaultPort : "0", reverse);
+
+#if defined(OS_POSIX)
+  if (fd >= 0) {
+    socket = CreateFDSocket(fd);
+    CloseFD(fd);
   } else {
-    socket = CreateSocket(opts.getPositional("[host]:port"), reverse);
+    CloseFD();
+#endif
+    if (opts.getPositional("[host]:port").empty()) {
+      // If we have a named pipe, set the port to 0 to indicate that we should
+      // dynamically allocate it and write it back to the FIFO.
+      socket = CreateTCPSocket(
+          gDefaultHost, namedPipePath.empty() ? gDefaultPort : "0", reverse);
+    } else {
+      socket = CreateSocket(opts.getPositional("[host]:port"), reverse);
+    }
+#if defined(OS_POSIX)
   }
+#endif
 
   if (!namedPipePath.empty()) {
+#if defined(OS_POSIX)
+    if (fd >= 0) {
+      DS2LOG(Error, "named pipe should not be used with fd option");
+    }
+#endif
+
     std::string realPort = socket->port();
     FILE *namedPipe = fopen(namedPipePath.c_str(), "a");
     if (namedPipe == nullptr) {
       DS2LOG(Error, "unable to open %s: %s", namedPipePath.c_str(),
              strerror(errno));
     } else {
-      // Write the null terminator to the file. This follows the llgs behavior.
+      // Write the null terminator to the file. This follows the llgs
+      // behavior.
       fwrite(realPort.c_str(), 1, realPort.length() + 1, namedPipe);
       fclose(namedPipe);
     }
@@ -340,8 +400,13 @@ static int GdbserverMain(int argc, char **argv) {
   else
     impl = ds2::make_unique<DebugSessionImpl>();
 
+#if defined(OS_POSIX)
+  return RunDebugServer(
+      (fd >= 0 || reverse) ? socket.get() : socket->accept().get(), impl.get());
+#else
   return RunDebugServer(reverse ? socket.get() : socket->accept().get(),
                         impl.get());
+#endif
 }
 
 #if !defined(OS_WIN32)
@@ -473,16 +538,7 @@ static int VersionMain(int argc, char **argv) {
 __declspec(dllexport)
 #endif
 int main(int argc, char **argv) {
-// clang-format on
-
-#if defined(OS_POSIX)
-  // When ds2 is launched inside the lldb test-runner, python will leak file
-  // descriptors to its inferior (ds2). Clean up these file descriptors before
-  // running.
-  for (int i = 3; i < 1024; ++i) {
-    ::close(i);
-  }
-#endif
+  // clang-format on
 
   ds2::Host::Platform::Initialize();
 #if !defined(OS_WIN32)
@@ -494,9 +550,17 @@ int main(int argc, char **argv) {
     UsageDie(argv[0]);
   }
 
-  switch (argv[1][0]) {
-  case 'g':
+  if (argv[1][0] == 'g')
     return GdbserverMain(argc, argv);
+
+#if defined(OS_POSIX)
+  // When ds2 is launched inside the lldb test-runner, python will leak file
+  // descriptors to its inferior (ds2). Clean up these file descriptors before
+  // running. postpone this into GdbserverMain because --fd may be used
+  CloseFD();
+#endif
+
+  switch (argv[1][0]) {
 #if !defined(OS_WIN32)
   case 'p':
     return PlatformMain(argc, argv);
