@@ -34,21 +34,21 @@ elseif (ARCH_NAME MATCHES "AMD64")
 endif ()
 
 if ("${OS_NAME}" MATCHES "Linux")
-  set(CMAKE_EXTRA_INCLUDE_FILES unistd.h sys/ptrace.h sys/uio.h sys/user.h)
-
   include(CheckIncludeFile)
   CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
 
-  include(CheckFunctionExists)
-  CHECK_FUNCTION_EXISTS(posix_openpt HAVE_POSIX_OPENPT)
-  CHECK_FUNCTION_EXISTS(gettid HAVE_GETTID)
-  CHECK_FUNCTION_EXISTS(process_vm_readv HAVE_PROCESS_VM_READV)
-  CHECK_FUNCTION_EXISTS(process_vm_writev HAVE_PROCESS_VM_WRITEV)
+  include(CheckSymbolExists)
+  set(CMAKE_REQUIRED_DEFINITIONS "-D_XOPEN_SOURCE=600")
+  CHECK_SYMBOL_EXISTS(posix_openpt "stdlib.h;fcntl.h" HAVE_POSIX_OPENPT)
+  CHECK_SYMBOL_EXISTS(gettid "unistd.h" HAVE_GETTID)
+  CHECK_SYMBOL_EXISTS(process_vm_readv "sys/uio.h" HAVE_PROCESS_VM_READV)
+  CHECK_SYMBOL_EXISTS(process_vm_writev "sys/uio.h" HAVE_PROCESS_VM_WRITEV)
+  set(CMAKE_REQUIRED_DEFINITIONS)
 
   include(CheckTypeSize)
+  set(CMAKE_EXTRA_INCLUDE_FILES unistd.h sys/ptrace.h sys/user.h)
   CHECK_TYPE_SIZE("struct user_fpxregs_struct" STRUCT_USER_FPXREGS_STRUCT)
   CHECK_TYPE_SIZE("enum __ptrace_request" ENUM_PTRACE_REQUEST)
-
   set(CMAKE_EXTRA_INCLUDE_FILES)
 endif ()
 
