@@ -8,7 +8,7 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.7)
 cmake_policy(SET CMP0054 NEW)
 
 project(DebugServer2)
