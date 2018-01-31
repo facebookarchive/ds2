@@ -147,9 +147,6 @@ fi
 if [ -n "${TARGET-}" ]; then
   if [[ "${TARGET}" == "Linux-X86_64" ]]; then
     args+=("--arch=x86_64")
-    if ! $opt_no_ds2_blacklists; then
-      args+=("--excluded" "$blacklist_dir/ds2/x86_64.blacklist")
-    fi
   elif [[ "${TARGET}" == "Linux-X86" || "${TARGET}" == "Android-X86" ]]; then
     args+=("--arch=i386")
     args+=("--excluded" "$blacklist_dir/upstream/x86.blacklist")
