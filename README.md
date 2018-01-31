@@ -124,36 +124,23 @@ cmake -G "Visual Studio 14 2015 ARM" -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Too
 
 ### Cross compiling for Android
 
-For Android native debugging, it is possible to build ds2 with a toolchain from
-the Android NDK. A script is provided to generate the toolchain, and a CMake
-toolchain file can then be used to generate the build system.
+For Android native debugging, it is possible to build ds2 with the Android NDK.
+A script is provided to download the Android NDK automatically for you.
 
-`Support/Scripts/prepare-android-toolchain.sh` will download a working version
-of the NDK, extract it, and install the toolchain to
-`/tmp/aosp-toolchain` which can then be used for the build.
+`Support/Scripts/prepare-android-ndk.sh` will download a working version
+of the NDK, extract it, and install it to `/tmp/android-ndk`.
 
 ```sh
 cd ds2
-./Support/Scripts/prepare-android-toolchain.sh arm
+./Support/Scripts/prepare-android-ndk.sh
 mkdir build && cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
 make
 ```
 
-#### Build for Android pre-5.0
-
-`prepare-android-toolchain.sh` prepares a toolchain that targets android 5.0
-and up by default. If you want to build for an older version (4.1 and up), pass
-the API level as argument to that script. This will allow you to run ds2 on
-older devices. The other build steps are the same.
-
-```
-cd ds2
-./Support/Scripts/prepare-android-toolchain.sh arm:16
-mkdir build && cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
-make
-```
+Note that this will build ds2 targeting the highest level API level that the
+NDK supports. If you want to target another api level, e.g. 21, add the flag
+`-DCMAKE_SYSTEM_VERSION=21` to your cmake invocation.
 
 #### Testing on Android device
 

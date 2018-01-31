@@ -55,7 +55,7 @@ RUN update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32
 RUN update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
 # Install test dependencies
-RUN apt-get install -y git lldb-5.0 gdb clang-format-5.0
+RUN apt-get install -y git lldb-5.0 gdb clang-format-5.0 make
 
 # Install documentation dependencies
 RUN apt-get install -y doxygen graphviz
@@ -65,9 +65,9 @@ RUN ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/asm
 
 # Install Android toolchains with our local script
 COPY Support/Scripts/common.sh /tmp
-COPY Support/Scripts/prepare-android-toolchain.sh /tmp
+COPY Support/Scripts/prepare-android-ndk.sh /tmp
 RUN apt-get install -y unzip
-RUN /tmp/prepare-android-toolchain.sh x86 x86_64 arm arm64
+RUN /tmp/prepare-android-ndk.sh
 
 # Install a version of cmake that is at least the minimum version we support.
 COPY Support/Testing/CircleCI/install-cmake.sh /tmp

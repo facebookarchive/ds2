@@ -8,11 +8,6 @@
 ## PATENTS file in the same directory.
 ##
 
-set(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSTEM_PROCESSOR ARM64)
-
-set(CMAKE_C_COMPILER /tmp/aosp-toolchain/arm64/bin/aarch64-linux-android-gcc)
-set(CMAKE_CXX_COMPILER /tmp/aosp-toolchain/arm64/bin/aarch64-linux-android-g++)
-
-set(ANDROID 1)
-set(PIE 1)
+set(CMAKE_SYSTEM_NAME Android)
+set(CMAKE_ANDROID_ARCH_ABI arm64-v8a)
+set(CMAKE_ANDROID_NDK /tmp/android-ndk)
