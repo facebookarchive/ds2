@@ -102,7 +102,11 @@ if [[ "${COVERAGE-}" = "1" ]]; then
 fi
 
 if [[ "${CLANG-}" = "1" ]] && [[ "$TARGET" = "Linux-X86_64" ]]; then
-  cmake_options+=(-DSANITIZER="asan")
+  if [[ "${RELEASE-}" = "1" ]]; then
+    cmake_options+=(-DSANITIZER="tsan")
+  else
+    cmake_options+=(-DSANITIZER="asan")
+  fi
 fi
 
 cmake "${cmake_options[@]}" "$top"
