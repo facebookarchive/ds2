@@ -27,13 +27,13 @@ if (ARCH_NAME MATCHES "^ARM64" OR ARCH_NAME MATCHES "AARCH64")
   set(ARCH_NAME "ARM64")
 elseif (ARCH_NAME MATCHES "^ARM")
   set(ARCH_NAME "ARM") # Normalize ARMHF -> ARM
-elseif (ARCH_NAME MATCHES "I386")
+elseif (ARCH_NAME MATCHES "I[3-6]86")
   set(ARCH_NAME "X86")
 elseif (ARCH_NAME MATCHES "AMD64")
   set(ARCH_NAME "X86_64")
 endif ()
 
-if ("${OS_NAME}" MATCHES "Linux")
+if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
   include(CheckIncludeFile)
   CHECK_INCLUDE_FILE(sys/personality.h HAVE_SYS_PERSONALITY_H)
 
@@ -69,11 +69,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     set(COMMON_FLAGS "${COMMON_FLAGS} -fsanitize=integer -fsanitize=undefined")
   elseif (SANITIZER STREQUAL "tsan")
     set(COMMON_FLAGS "${COMMON_FLAGS} -fsanitize=thread")
-  endif ()
-
-  if (PIE)
-    set(COMMON_FLAGS "${COMMON_FLAGS} -fpie")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
   endif ()
 
   if (COVERAGE)
@@ -140,6 +135,8 @@ set(HOST_Linux_SOURCES
     Sources/Host/Linux/${ARCH_NAME}/PTrace${ARCH_NAME}.cpp
     )
 
+set(HOST_Android_SOURCES ${HOST_Linux_SOURCES})
+
 set(HOST_Darwin_SOURCES
     ${HOST_POSIX_SOURCES}
     Sources/Host/Darwin/LibProc.cpp
@@ -186,6 +183,8 @@ set(TARGET_Linux_SOURCES
     Sources/Target/Linux/${ARCH_NAME}/Process${ARCH_NAME}.cpp
     Sources/Target/Linux/Thread.cpp
     )
+
+set(TARGET_Android_SOURCES ${TARGET_Linux_SOURCES})
 
 set(TARGET_Darwin_SOURCES
     ${TARGET_POSIX_SOURCES}
@@ -245,6 +244,8 @@ set(UTILS_Linux_SOURCES
     ${SUPPORT_POSIX_ELF_SOURCES}
     ${UTILS_POSIX_SOURCES}
     )
+
+set(UTILS_Android_SOURCES ${UTILS_Linux_SOURCES})
 
 set(UTILS_Darwin_SOURCES
     ${UTILS_POSIX_SOURCES}
@@ -322,7 +323,7 @@ if ("${OS_NAME}" MATCHES "Windows")
                                          _WIN32_WINNT=_WIN32_WINNT_WIN6)
 endif ()
 
-if ("${OS_NAME}" MATCHES "Linux")
+if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
   foreach (CHECK SYS_PERSONALITY_H GETTID POSIX_OPENPT
            PROCESS_VM_READV PROCESS_VM_WRITEV
            STRUCT_USER_FPXREGS_STRUCT ENUM_PTRACE_REQUEST)
@@ -443,12 +444,10 @@ endif ()
 add_subdirectory(Tools/JSObjects "${CMAKE_CURRENT_BINARY_DIR}/JSObjects")
 target_link_libraries(ds2 jsobjects)
 
-if ("${OS_NAME}" MATCHES "Linux")
-  if (ANDROID)
-    target_link_libraries(ds2 log)
-  elseif (NOT TIZEN)
-    target_link_libraries(ds2 dl)
-  endif ()
+if ("${OS_NAME}" MATCHES "Android")
+  target_link_libraries(ds2 log)
+elseif ("${OS_NAME}" MATCHES "Linux" AND NOT TIZEN)
+  target_link_libraries(ds2 dl)
 endif ()
 
 if ("${OS_NAME}" MATCHES "FreeBSD")

@@ -62,9 +62,6 @@ elif host == 'Linux':
 
 if target in android_toolchains:
     # Android builds get the toolchain from AOSP and use platform 21 by default.
-    android_platform = os.getenv('ANDROID_PLATFORM', "21")
-    check_call('./Support/Scripts/prepare-android-toolchain.sh "%s:%s"' %
-               (android_toolchains[target], android_platform), shell=True)
     check_call('./Support/Scripts/prepare-android-ndk.sh', shell=True)
     if os.getenv('LLDB_TESTS') != None:
         dist_packages.append('default-jdk')
