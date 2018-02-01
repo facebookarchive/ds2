@@ -36,7 +36,7 @@ RUN add-apt-repository -y "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial
 RUN apt-get update
 
 # Install build dependencies
-RUN apt-get install -y cmake ninja-build
+RUN apt-get install -y ninja-build
 RUN apt-get install -y flex bison
 
 # Install x86 compilers
@@ -68,3 +68,7 @@ COPY Support/Scripts/common.sh /tmp
 COPY Support/Scripts/prepare-android-toolchain.sh /tmp
 RUN apt-get install -y unzip
 RUN /tmp/prepare-android-toolchain.sh x86 x86_64 arm arm64
+
+# Install a version of cmake that is at least the minimum version we support.
+COPY Support/Testing/CircleCI/install-cmake.sh /tmp
+RUN /tmp/install-cmake.sh
