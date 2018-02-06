@@ -40,6 +40,6 @@ system_image_package="system-images;android-${api_level};default;${emulator_imag
 "${sdkmanager}" "platforms;android-${api_level}"
 "${sdkmanager}" "${system_image_package}"
 echo "no" | "${avdmanager}" create avd \
-  --force -n test \
+  --force -n "android-test-${target_arch}" \
   --package "${system_image_package}" \
   --abi "${emulator_image_arch}"
