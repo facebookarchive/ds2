@@ -29,6 +29,10 @@ source "$top/Support/Scripts/common.sh"
 host_platform_name=$(get_host_platform_name)
 export PATH="/tmp/android-sdk-${host_platform_name}/platform-tools:${PATH}"
 
+if [[ "$TARGET" == Android-* ]]; then
+  adb wait-for-device
+fi
+
 opt_fast=false
 opt_no_ds2_blacklists=false
 opt_log=false
