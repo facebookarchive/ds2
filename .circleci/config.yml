@@ -28,6 +28,11 @@ test_step: &test_step
     name: Test
     command: cd build && ../Support/Scripts/run-lldb-tests.sh
 
+check_dirty_step: &check_dirty_step
+  run:
+    name: Check for dirty state
+    command: git --no-pager diff --exit-code
+
 build_only_defaults: &build_only_defaults
   <<: *docker_config
   steps:
@@ -52,9 +57,17 @@ jobs:
       - run:
           name: Apply clang-format
           command: find Sources Headers -type f -exec clang-format-5.0 -i -style=file {} \;
+      - *check_dirty_step
+  Registers:
+    <<: *docker_config
+    environment:
+      CLANG_FORMAT: clang-format-5.0
+    steps:
+      - checkout
       - run:
-          name: Check style differences
-          command: git --no-pager diff --exit-code
+          name: Generate register descriptors
+          command: ./Support/Scripts/generate-register-descriptors.sh
+      - *check_dirty_step
   Linux-X86:
     <<: *build_and_test_defaults
   Linux-X86-platform:
@@ -95,6 +108,7 @@ workflows:
   build_and_test:
     jobs:
       - Style
+      - Registers
       - Linux-X86
       - Linux-X86_64
       - Android-ARM64
