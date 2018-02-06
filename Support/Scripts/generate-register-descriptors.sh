@@ -23,7 +23,7 @@ if [ ! -x "$build_dir/regsgen2" ]; then
   echo "regsgen2 not found, building."
   mkdir -p "$build_dir"
   cd "$build_dir"
-  cmake ..
+  cmake -DCMAKE_TOOLCHAIN_FILE="${repo_root}/Support/CMake/Toolchain-Linux-X86_64.cmake" ..
   make regsgen2
 fi
 
