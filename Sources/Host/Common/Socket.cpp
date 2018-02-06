@@ -388,7 +388,7 @@ bool Socket::wait(int ms) {
   struct pollfd pfd;
   pfd.fd = _handle;
   pfd.events = POLLIN;
-  int nfds = poll(&pfd, 1, ms);
+  int nfds = ::poll(&pfd, 1, ms);
   return (nfds == 1 && (pfd.revents & POLLIN) != 0);
 #endif
 }
