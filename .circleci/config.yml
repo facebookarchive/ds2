@@ -83,6 +83,15 @@ jobs:
           name: Generate register descriptors
           command: ./Support/Scripts/generate-register-descriptors.sh
       - *check_dirty_step
+  Documentation:
+    <<: *docker_config
+    environment:
+      ENCRYPTION_LABEL: c06a05533acc
+    steps:
+      - checkout
+      - run:
+          name: Generate documentation
+          command: ./Support/Scripts/generate-documentation.sh
   Linux-X86:
     <<: *build_and_test_defaults
   Linux-X86-platform:
@@ -130,6 +139,7 @@ workflows:
     jobs:
       - Style
       - Registers
+      - Documentation
       - Linux-X86
       - Linux-X86_64
       - Android-ARM
