@@ -131,7 +131,9 @@ workflows:
       - Style
       - Registers
       - Linux-X86
+      - Linux-X86-platform
       - Linux-X86_64
+      - Linux-X86_64-platform
       - Android-ARM
       - Android-ARM64
       - Android-X86
