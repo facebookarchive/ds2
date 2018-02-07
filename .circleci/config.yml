@@ -99,6 +99,13 @@ jobs:
     environment:
       TARGET: Linux-X86
       PLATFORM: 1
+  Linux-X86-Clang:
+    <<: *build_and_test_defaults
+  Linux-X86-Clang-platform:
+    <<: *build_and_test_defaults
+    environment:
+      TARGET: Linux-X86-Clang
+      PLATFORM: 1
   Linux-X86_64:
     <<: *build_and_test_defaults
   Linux-X86_64-platform:
@@ -159,6 +166,8 @@ workflows:
       - Documentation
       - Linux-X86
       - Linux-X86-platform
+      - Linux-X86-Clang
+      - Linux-X86-Clang-platform
       - Linux-X86_64
       - Linux-X86_64-platform
       - Linux-X86_64-Clang

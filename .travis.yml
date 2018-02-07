@@ -23,11 +23,6 @@ env:
 matrix:
   fast_finish: true
   include:
-    # Linux-X86 (with LLDB tests)
-    - os: linux
-      env: TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="1"
-    - os: linux
-      env: TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="1" RELEASE="1" PLATFORM="1"
     # Linux-X86_64 (with GDB tests)
     - os: linux
       env: TARGET="Linux-X86_64"   GDB_TESTS="gdb.base/break;gdb.base/printcmds;gdb.base/step-bt" CLANG="0" COVERAGE="1"
