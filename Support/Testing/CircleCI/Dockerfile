@@ -40,11 +40,11 @@ RUN apt-get install -y ninja-build
 RUN apt-get install -y flex bison
 
 # Install x86 compilers
-RUN apt-get install -y g++-4.9-multilib
+RUN apt-get install -y g++-multilib
 RUN apt-get install -y clang-5.0
 
 # Install arm compilers
-RUN apt-get install -y g++-4.9-multilib-arm-linux-gnueabi
+RUN apt-get install -y g++-multilib-arm-linux-gnueabi
 
 # Install mingw compilers
 RUN apt-get install -y g++-mingw-w64-x86-64

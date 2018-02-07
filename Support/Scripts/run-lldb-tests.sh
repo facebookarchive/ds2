@@ -104,7 +104,7 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
 
   case "${TARGET}" in
     Android-*)     cc_exe="$(get_android_compiler ${TARGET})";;
-    *)             cc_exe="$(which gcc-4.9)";;
+    *)             cc_exe="$(which gcc)";;
   esac
 
   python_base="$build_dir/lib"
