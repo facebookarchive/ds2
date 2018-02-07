@@ -106,6 +106,13 @@ jobs:
     environment:
       TARGET: Linux-X86_64
       PLATFORM: 1
+  Linux-X86_64-Clang:
+    <<: *build_and_test_defaults
+  Linux-X86_64-Clang-platform:
+    <<: *build_and_test_defaults
+    environment:
+      TARGET: Linux-X86_64-Clang
+      PLATFORM: 1
   Android-ARM:
     <<: *build_and_test_android
     environment:
@@ -144,6 +151,8 @@ workflows:
       - Linux-X86-platform
       - Linux-X86_64
       - Linux-X86_64-platform
+      - Linux-X86_64-Clang
+      - Linux-X86_64-Clang-platform
       - Android-ARM
       - Android-ARM64
       - Android-X86
