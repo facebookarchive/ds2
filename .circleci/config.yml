@@ -16,7 +16,7 @@ docker_config: &docker_config
 configure_step: &configure_step
   run:
     name: Configure
-    command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-${TARGET-${CIRCLE_JOB}}.cmake ..
+    command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-${TARGET-${CIRCLE_JOB}}.cmake ${EXTRA_CMAKE_ARGS-} ..
 
 build_step: &build_step
   run:
@@ -110,10 +110,20 @@ jobs:
     <<: *build_and_test_android
     environment:
       PLATFORM: 1
+  Android-ARM-16:
+    <<: *build_only_defaults
+    environment:
+      TARGET: Android-ARM
+      EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=16"
   Android-ARM64:
     <<: *build_only_defaults
   Android-X86:
     <<: *build_only_defaults
+  Android-X86-16:
+    <<: *build_only_defaults
+    environment:
+      TARGET: Android-X86
+      EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=16"
   Android-X86_64:
     <<: *build_only_defaults
   Tizen-X86:
@@ -145,8 +155,10 @@ workflows:
       - Linux-X86_64
       - Linux-X86_64-platform
       - Android-ARM
+      - Android-ARM-16
       - Android-ARM64
       - Android-X86
+      - Android-X86-16
       - Android-X86_64
       - Tizen-X86
       - Tizen-ARM

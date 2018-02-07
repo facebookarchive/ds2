@@ -23,11 +23,6 @@ env:
 matrix:
   fast_finish: true
   include:
-    # Cross-compiled targets
-    - os: linux
-      env: TARGET="Android-ARM" ANDROID_PLATFORM="16"
-    - os: linux
-      env: TARGET="Android-X86" ANDROID_PLATFORM="16"
     # Linux-X86 (with LLDB tests)
     - os: linux
       env: TARGET="Linux-X86"      LLDB_TESTS="all"  CLANG="1"
