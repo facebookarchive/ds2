@@ -11,7 +11,7 @@
 
 docker_config: &docker_config
   docker:
-    - image: sas42/ds2-build-env:2018-02-07_16-40-00
+    - image: sas42/ds2-build-env:2018-02-14_16-15-00
 
 configure_step: &configure_step
   run:
@@ -26,7 +26,7 @@ build_step: &build_step
 test_step: &test_step
   run:
     name: Test
-    command: cd build && ../Support/Scripts/run-lldb-tests.sh
+    command: cd build && ../Support/Scripts/run-${DEBUGGER-lldb}-tests.sh
 
 check_dirty_step: &check_dirty_step
   run:
@@ -120,6 +120,18 @@ jobs:
     environment:
       TARGET: Linux-X86_64-Clang
       PLATFORM: 1
+  Linux-X86_64-GDB:
+    <<: *build_and_test_defaults
+    environment:
+      TARGET: Linux-X86_64
+      DEBUGGER: gdb
+      GDB_TESTS: "gdb.base/break;gdb.base/printcmds;gdb.base/step-bt"
+  Linux-X86_64-GDB-Clang:
+    <<: *build_and_test_defaults
+    environment:
+      TARGET: Linux-X86_64-Clang
+      DEBUGGER: gdb
+      GDB_TESTS: "gdb.base/break;gdb.base/printcmds;gdb.base/step-bt"
   Android-ARM:
     <<: *build_and_test_android
     environment:
@@ -172,6 +184,8 @@ workflows:
       - Linux-X86_64-platform
       - Linux-X86_64-Clang
       - Linux-X86_64-Clang-platform
+      - Linux-X86_64-GDB
+      - Linux-X86_64-GDB-Clang
       - Android-ARM
       - Android-ARM-16
       - Android-ARM64
