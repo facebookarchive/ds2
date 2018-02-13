@@ -23,6 +23,9 @@ env:
 matrix:
   fast_finish: true
   include:
+    # Documentation
+    - os: linux
+      env: TARGET="Documentation" ENCRYPTION_LABEL="c06a05533acc"
     # Linux-X86_64 (with GDB tests)
     - os: linux
       env: TARGET="Linux-X86_64"   GDB_TESTS="gdb.base/break;gdb.base/printcmds;gdb.base/step-bt" CLANG="0" COVERAGE="1"
