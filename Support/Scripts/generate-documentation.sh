@@ -48,11 +48,11 @@ git add --all .
 git commit -m "Update documentation." -m "Bump to ${SHA}."
 
 
-if [ "${CI_PULL_REQUEST-false}" != "false" ]; then
+if [ "${TRAVIS_PULL_REQUEST-false}" != "false" ]; then
   do_nothing "Documentation build on a pull request, not pushing."
 fi
 
-if [ "${CIRCLE_BRANCH-"$CURRENT_BRANCH"}" != "$SOURCE_BRANCH" ]; then
+if [ "${TRAVIS_BRANCH-"$CURRENT_BRANCH"}" != "$SOURCE_BRANCH" ]; then
   do_nothing "Documentation build on branch '$CURRENT_BRANCH', not pushing."
 fi
 

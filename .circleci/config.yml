@@ -163,7 +163,7 @@ workflows:
     jobs:
       - Style
       - Registers
-      - Documentation
+      # - Documentation
       - Linux-X86
       - Linux-X86-platform
       - Linux-X86-Clang
