@@ -55,7 +55,7 @@ RUN update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32
 RUN update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
 # Install test dependencies
-RUN apt-get install -y git lldb-5.0 gdb clang-format-5.0 make
+RUN apt-get install -y git lldb-5.0 gdb clang-format-5.0 make dejagnu
 
 # Install documentation dependencies
 RUN apt-get install -y doxygen graphviz
