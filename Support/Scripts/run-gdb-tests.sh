@@ -22,7 +22,7 @@ build_dir="$PWD"
 source "$top/Support/Scripts/common.sh"
 
 gdb_ftp_path="https://ftp.gnu.org/gnu/gdb"
-gdb_basename="gdb-7.10.1"
+gdb_basename="gdb-7.11.1"
 gdb_src_path="$build_dir/$gdb_basename"
 
 wget "$gdb_ftp_path/$gdb_basename.tar.gz"
