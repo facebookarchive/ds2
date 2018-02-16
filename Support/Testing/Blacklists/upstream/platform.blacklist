@@ -1,6 +1,2 @@
 xfail
 HelloWorldTestCase.test_with_attach_to_process_with_id_api
-HelloWorldTestCase.test_with_attach_to_process_with_name_api
-
-skip
-ChangedInferiorTestCase.test_inferior_crashing
