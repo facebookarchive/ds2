@@ -26,7 +26,7 @@ build_step: &build_step
 test_step: &test_step
   run:
     name: Test
-    command: cd build && ../Support/Scripts/run-lldb-tests.sh
+    command: cd build && ../Support/Scripts/run-lldb-tests.sh --no-ds2-blacklists
 
 check_dirty_step: &check_dirty_step
   run:
