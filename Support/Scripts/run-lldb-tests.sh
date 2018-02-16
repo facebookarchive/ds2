@@ -162,9 +162,6 @@ if [ -n "${TARGET-}" ]; then
     fi
     if [[ "${PLATFORM-}" = "1" ]]; then
       args+=("--excluded" "$blacklist_dir/upstream/x86-platform.blacklist")
-      if ! $opt_no_ds2_blacklists; then
-        args+=("--excluded" "$blacklist_dir/ds2/x86-platform.blacklist")
-      fi
     fi
   elif [[ "${TARGET}" == "Android-ARM" ]]; then
     args+=("--arch=arm")
