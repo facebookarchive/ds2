@@ -1,6 +1,3 @@
-skip
-TestFrameVariableScope
-
 xfail
 TestCallWithTimeout.ExprCommandWithTimeoutsTestCase
 ExprSyscallTestCase.test_setpgid
