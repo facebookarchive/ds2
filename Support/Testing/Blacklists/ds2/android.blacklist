@@ -4,6 +4,7 @@ CreateDuringStepTestCase.test_step_inst_with
 TestQuoting
 TestRegistersIterator.RegistersIteratorTestCase.test_iter_registers
 TestStopHook
+TestCallWithTimeout.ExprCommandWithTimeoutsTestCase
 
 xfail
 TestDataFormatterStdString.StdStringDataFormatterTestCase.test_with_run_command
