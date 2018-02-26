@@ -408,8 +408,6 @@ static int SlaveMain(int argc, char **argv) {
   opts.parse(argc, argv);
   HandleSharedOptions(opts);
 
-  ds2::SetLogLevel(ds2::kLogLevelWarning);
-
   std::unique_ptr<Socket> server = CreateTCPSocket(gDefaultHost, "0", false);
   std::string port = server->port();
 
