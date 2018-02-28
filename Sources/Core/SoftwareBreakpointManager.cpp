@@ -95,13 +95,42 @@ ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site,
 }
 
 void SoftwareBreakpointManager::enable(Target::Thread *thread) {
-  super::enable(thread);
+  //
+  // Both callbacks should be installed by child class before
+  // enabling the breakpoint manager.
+  //
+  if (enabled(thread)) {
+    DS2LOG(Warning, "double-enabling breakpoints");
+  }
+
+  enumerate([this, thread](Site const &site) { enableLocation(site, thread); });
 
   _enabled = true;
 }
 
 void SoftwareBreakpointManager::disable(Target::Thread *thread) {
-  super::disable(thread);
+  if (!enabled(thread)) {
+    DS2LOG(Warning, "double-disabling breakpoints");
+  }
+
+  enumerate(
+      [this, thread](Site const &site) { disableLocation(site, thread); });
+
+  //
+  // Remove temporary breakpoints.
+  //
+  auto it = _sites.begin();
+  while (it != _sites.end()) {
+    it->second.type =
+        static_cast<Type>(it->second.type & ~kTypeTemporaryOneShot);
+    if (!it->second.type) {
+      // refs should always be 0 unless we have a kTypePermanent breakpoint.
+      DS2ASSERT(it->second.refs == 0);
+      _sites.erase(it++);
+    } else {
+      it++;
+    }
+  }
 
   _enabled = false;
 }

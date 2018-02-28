@@ -32,9 +32,9 @@ ErrorCode ThreadBase::modifyRegisters(
 }
 
 ErrorCode ThreadBase::beforeResume() {
-  BreakpointManager *bpm = _process->hardwareBreakpointManager();
+  HardwareBreakpointManager *bpm = _process->hardwareBreakpointManager();
   if (bpm != nullptr) {
-    bpm->enable((Target::Thread *)this);
+    return bpm->addThread((Target::Thread *)this);
   }
 
   return kSuccess;
