@@ -155,6 +155,8 @@ protected:
   friend class ThreadBase;
   virtual void insert(ThreadBase *thread);
   virtual void remove(ThreadBase *thread);
+
+public:
   virtual void removeThread(ThreadId tid);
 };
 } // namespace Target
