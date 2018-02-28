@@ -31,6 +31,8 @@ namespace Target {
 namespace POSIX {
 
 ErrorCode Process::initialize(ProcessId pid, uint32_t flags) {
+  ptrace().setOwningProcess(static_cast<Target::Process *>(this));
+
   // Wait the main thread.
   int status;
   CHK(ptrace().wait(pid, &status));
