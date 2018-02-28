@@ -25,7 +25,7 @@ namespace ds2 {
 
 SoftwareBreakpointManager::SoftwareBreakpointManager(
     Target::ProcessBase *process)
-    : super(process), _enabled(false) {}
+    : super(process) {}
 
 SoftwareBreakpointManager::~SoftwareBreakpointManager() { clear(); }
 
@@ -95,28 +95,7 @@ ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site,
   return kSuccess;
 }
 
-void SoftwareBreakpointManager::enable(Target::Thread *thread) {
-  //
-  // Both callbacks should be installed by child class before
-  // enabling the breakpoint manager.
-  //
-  if (enabled(thread)) {
-    DS2LOG(Warning, "double-enabling breakpoints");
-  }
-
-  enumerate([this, thread](Site const &site) { enableLocation(site, thread); });
-
-  _enabled = true;
-}
-
-void SoftwareBreakpointManager::disable(Target::Thread *thread) {
-  if (!enabled(thread)) {
-    DS2LOG(Warning, "double-disabling breakpoints");
-  }
-
-  enumerate(
-      [this, thread](Site const &site) { disableLocation(site, thread); });
-
+void SoftwareBreakpointManager::afterResume() {
   //
   // Remove temporary breakpoints.
   //
@@ -127,21 +106,12 @@ void SoftwareBreakpointManager::disable(Target::Thread *thread) {
     if (!it->second.type) {
       // refs should always be 0 unless we have a kTypePermanent breakpoint.
       DS2ASSERT(it->second.refs == 0);
+      disableLocation(it->second);
       _sites.erase(it++);
     } else {
       it++;
     }
   }
-
-  _enabled = false;
-}
-
-bool SoftwareBreakpointManager::enabled(Target::Thread *thread) const {
-  if (thread != nullptr) {
-    DS2LOG(Warning, "thread-specific software breakpoints are unsupported");
-  }
-
-  return _enabled;
 }
 
 bool SoftwareBreakpointManager::fillStopInfo(Target::Thread *thread,

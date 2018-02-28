@@ -291,14 +291,6 @@ ErrorCode ProcessBase::beforeResume() {
   if (!isAlive())
     return kErrorProcessNotFound;
 
-  //
-  // Enable software breakpoints.
-  //
-  SoftwareBreakpointManager *bpm = softwareBreakpointManager();
-  if (bpm != nullptr) {
-    bpm->enable();
-  }
-
   enumerateThreads([&](Thread *thread) { thread->beforeResume(); });
 
   return kSuccess;
@@ -309,7 +301,7 @@ ErrorCode ProcessBase::afterResume() {
     return kSuccess;
   }
 
-  // Disable breakpoints and try to hit software breakpoints.
+  // Try to hit software breakpoints and clear temporary breakpoints.
   SoftwareBreakpointManager *bpm = softwareBreakpointManager();
   if (bpm != nullptr) {
     for (auto it : _threads) {
@@ -318,7 +310,7 @@ ErrorCode ProcessBase::afterResume() {
         DS2LOG(Debug, "hit breakpoint for tid %" PRI_PID, it.second->tid());
       }
     }
-    bpm->disable();
+    bpm->afterResume();
   }
 
   return kSuccess;
