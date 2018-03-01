@@ -71,12 +71,12 @@ jobs:
       - checkout
       - run:
           name: Apply clang-format
-          command: find Sources Headers -type f -exec clang-format-5.0 -i -style=file {} \;
+          command: find Sources Headers -type f -exec clang-format-6.0 -i -style=file {} \;
       - *check_dirty_step
   Registers:
     <<: *docker_config
     environment:
-      CLANG_FORMAT: clang-format-5.0
+      CLANG_FORMAT: clang-format-6.0
     steps:
       - checkout
       - run:
