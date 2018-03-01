@@ -42,7 +42,7 @@ RUN apt-get install -y software-properties-common python-software-properties wge
 
 # Add LLVM apt repos
 RUN wget -O - "http://llvm.org/apt/llvm-snapshot.gpg.key" | apt-key add -
-RUN add-apt-repository -y "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-5.0 main"
+RUN add-apt-repository -y "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main"
 RUN apt-get update
 
 # Install build dependencies
@@ -51,7 +51,7 @@ RUN apt-get install -y flex bison
 
 # Install x86 compilers
 RUN apt-get install -y g++-multilib
-RUN apt-get install -y clang-5.0
+RUN apt-get install -y clang-6.0
 
 # Install arm compilers
 RUN apt-get install -y g++-multilib-arm-linux-gnueabi
@@ -65,7 +65,7 @@ RUN update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32
 RUN update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
 # Install test dependencies
-RUN apt-get install -y git lldb-5.0 gdb clang-format-5.0 make dejagnu
+RUN apt-get install -y git lldb-6.0 gdb clang-format-6.0 make dejagnu
 
 # Install documentation dependencies
 RUN apt-get install -y doxygen graphviz

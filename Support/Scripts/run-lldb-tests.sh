@@ -14,7 +14,7 @@
 # broken unit tests.
 
 REPO_BASE="https://github.com/llvm-mirror"
-UPSTREAM_BRANCH="release_50"
+UPSTREAM_BRANCH="release_60"
 TARGET="${TARGET-${CIRCLE_JOB}}"
 
 top="$(git rev-parse --show-toplevel)"
@@ -100,7 +100,7 @@ if [ "$(linux_distribution)" == "centos" ]; then
   fi
 elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_path="$build_dir/lldb"
-  lldb_exe="$(which lldb-5.0)"
+  lldb_exe="$(which lldb-6.0)"
 
   case "${TARGET}" in
     Android-*)     cc_exe="$(get_android_compiler ${TARGET})";;
@@ -118,8 +118,8 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
 
     # Sync lldb libs to local build dir
     rsync -a /usr/lib/x86_64-linux-gnu/       "$python_base"
-    rsync -a /usr/lib/llvm-5.0/lib/python2.7/ "$python_base/python2.7"
-    rsync -a "$python_base/liblldb-5.0.so"    "$python_base/liblldb.so"
+    rsync -a /usr/lib/llvm-6.0/lib/python2.7/ "$python_base/python2.7"
+    rsync -a "$python_base/liblldb-6.0.so"    "$python_base/liblldb.so"
 
     # Fix broken python lldb symlinks
     cd "$PYTHONPATH/lldb"
