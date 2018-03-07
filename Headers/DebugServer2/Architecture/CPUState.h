@@ -43,5 +43,5 @@ using X86_64::CPUState;
 #else
 #error "Architecture not supported."
 #endif
-}
+} // namespace Architecture
 } // namespace ds2

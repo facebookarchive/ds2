@@ -398,6 +398,6 @@ public:
 };
 
 #pragma pack(pop)
-}
+} // namespace X86
 } // namespace Architecture
 } // namespace ds2

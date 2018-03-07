@@ -38,5 +38,5 @@ using Darwin::Thread;
 #else
 #error "Target not supported."
 #endif
-}
+} // namespace Target
 } // namespace ds2

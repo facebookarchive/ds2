@@ -846,6 +846,6 @@ bool ProcFS::EnumerateThreads(pid_t pid, std::function<void(pid_t)> const &cb) {
 
   return true;
 }
-}
+} // namespace Linux
 } // namespace Host
 } // namespace ds2

@@ -34,9 +34,9 @@
 #endif
 #include <unistd.h>
 
-using ds2::Host::Linux::PTrace;
-using ds2::Host::Linux::ProcFS;
 using ds2::Host::Platform;
+using ds2::Host::Linux::ProcFS;
+using ds2::Host::Linux::PTrace;
 using ds2::Utils::Stringify;
 
 #define super ds2::Target::POSIX::ELFProcess

@@ -316,5 +316,5 @@ DUMMY_IMPL_EMPTY(fetchStopInfoForAllThreads, Session &,
                  std::vector<StopInfo> &stops, StopInfo &processStop)
 
 DUMMY_IMPL_EMPTY(createThreadsStopInfo, Session &, JSArray &threadsStopInfo)
-}
+} // namespace GDBRemote
 } // namespace ds2
