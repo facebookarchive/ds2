@@ -357,4 +357,4 @@ struct MappedFileInfo {
   uint64_t baseAddress;
   uint64_t size;
 };
-}
+} // namespace ds2

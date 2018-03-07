@@ -163,6 +163,6 @@ static inline void state64_to_user(UserStructType &user,
 }
 #undef DO_COPY_REG
 #undef STATE_GP_REG
-}
+} // namespace X86
 } // namespace Architecture
 } // namespace ds2

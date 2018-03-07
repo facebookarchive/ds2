@@ -27,8 +27,8 @@
 #include <sys/syscall.h>
 #include <sys/wait.h>
 
-using ds2::Host::FreeBSD::PTrace;
 using ds2::Host::FreeBSD::ProcStat;
+using ds2::Host::FreeBSD::PTrace;
 
 #define super ds2::Target::POSIX::ELFProcess
 

@@ -197,6 +197,6 @@ ErrorCode PTrace::ptidToPid(ProcessThreadId const &ptid, pid_t &pid) {
 
   return kSuccess;
 }
-}
+} // namespace POSIX
 } // namespace Host
 } // namespace ds2

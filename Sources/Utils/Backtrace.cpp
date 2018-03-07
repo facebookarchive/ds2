@@ -79,5 +79,5 @@ void PrintBacktrace() {
 #else
 void PrintBacktrace() { DS2LOG(Warning, "unable to print backtrace"); }
 #endif
-}
+} // namespace Utils
 } // namespace ds2
