@@ -17,7 +17,9 @@
 #
 # This hash identifies the image you just built. You can then run it locally
 # with the following command:
-#     docker run --rm -it --name ds2-testing 360abf8e6246
+#     docker run --privileged --security-opt seccomp:unconfined --rm -it --name ds2-testing 360abf8e6246
+# We run in privileged mode so that we may use ptrace to its full
+# extent as needed.
 #
 # Publishing the image for use by CircleCI is done with:
 #     docker tag 360abf8e6246 sas42/ds2-build-env
