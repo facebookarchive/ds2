@@ -30,7 +30,6 @@
 #include <set>
 #include <string>
 #if !defined(OS_WIN32)
-#include <sys/stat.h>
 #include <thread>
 #include <unistd.h>
 #endif
@@ -199,23 +198,9 @@ static void AddSharedOptions(ds2::OptParse &opts) {
 
 static void HandleSharedOptions(ds2::OptParse const &opts) {
   if (!opts.getString("log-file").empty()) {
-    FILE *stream = fopen(opts.getString("log-file").c_str(), "a");
-    if (stream == nullptr) {
-      DS2LOG(Error, "unable to open %s for writing: %s",
-             opts.getString("log-file").c_str(), strerror(errno));
-    } else {
-#if defined(OS_POSIX)
-      // When ds2 is spawned by an app (e.g.: on Android), it will run with the
-      // app's user/group ID, and will create its log file owned by the app. By
-      // default, the permissions will be 0600 (rw-------) which makes us
-      // unable to get the log files. chmod() them to be able to access them.
-      fchmod(fileno(stream), 0644);
-      fcntl(fileno(stream), F_SETFD, FD_CLOEXEC);
-#endif
-      ds2::SetLogColorsEnabled(false);
-      ds2::SetLogOutputStream(stream);
-      ds2::SetLogLevel(ds2::kLogLevelDebug);
-    }
+    ds2::SetLogOutputFilename(opts.getString("log-file").c_str());
+    ds2::SetLogColorsEnabled(false);
+    ds2::SetLogLevel(ds2::kLogLevelDebug);
   }
 
   if (opts.getBool("remote-debug")) {
@@ -422,8 +407,6 @@ static int SlaveMain(int argc, char **argv) {
   AddSharedOptions(opts);
   opts.parse(argc, argv);
   HandleSharedOptions(opts);
-
-  ds2::SetLogLevel(ds2::kLogLevelWarning);
 
   std::unique_ptr<Socket> server = CreateTCPSocket(gDefaultHost, "0", false);
   std::string port = server->port();

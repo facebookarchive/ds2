@@ -148,12 +148,24 @@ protected:
     if (errno != 0) {
       DS2LOG(Debug, "ran ptrace command %s on pid %d, returned %s",
              Stringify::PTraceCommand(request), pid, Stringify::Errno(errno));
+      if (errno == ESRCH) {
+        removeThread(pid);
+      }
     }
 
     return ret;
   }
 
   virtual ErrorCode ptidToPid(ProcessThreadId const &ptid, pid_t &pid);
+
+public:
+  void setOwningProcess(Target::Process *process);
+
+protected:
+  void removeThread(ProcessThreadId tid);
+
+protected:
+  Target::Process *_process;
 };
 } // namespace POSIX
 } // namespace Host

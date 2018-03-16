@@ -17,7 +17,16 @@
 #if defined(PLATFORM_ANDROID)
 #include <android/log.h>
 #endif
+#include <cstdio>
+#include <cstring>
+#include <fcntl.h>
+#include <limits.h>
 #include <sstream>
+#if !defined(OS_WIN32)
+#include <cerrno>
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
 #include <vector>
 
 namespace {
@@ -31,6 +40,12 @@ FILE *sOutputStream = stdout;
 #else
 FILE *sOutputStream = stderr;
 #endif
+
+// PATH_MAX isn't defined when targeting MSVC
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
+char sOutputFilename[PATH_MAX];
 } // namespace
 
 #if defined(PLATFORM_ANDROID)
@@ -66,9 +81,28 @@ uint32_t GetLogLevel() { return sLogLevel; }
 
 void SetLogLevel(uint32_t level) { sLogLevel = level; }
 
-void SetLogColorsEnabled(bool enabled) { sColorsEnabled = enabled; }
+const char *GetLogOutputFilename() { return sOutputFilename; }
 
-void SetLogOutputStream(FILE *stream) { sOutputStream = stream; }
+void SetLogOutputFilename(const char *filename) {
+  FILE *stream = fopen(filename, "a");
+  if (stream == nullptr) {
+    DS2LOG(Error, "unable to open %s for writing: %s", filename,
+           strerror(errno));
+  } else {
+#if defined(OS_POSIX)
+    // When ds2 is spawned by an app (e.g.: on Android), it will run with the
+    // app's user/group ID, and will create its log file owned by the app. By
+    // default, the permissions will be 0600 (rw-------) which makes us
+    // unable to get the log files. chmod() them to be able to access them.
+    fchmod(fileno(stream), 0644);
+    fcntl(fileno(stream), F_SETFD, FD_CLOEXEC);
+#endif
+    sOutputStream = stream;
+    strcpy(sOutputFilename, filename);
+  }
+}
+
+void SetLogColorsEnabled(bool enabled) { sColorsEnabled = enabled; }
 
 static void vLog(int level, char const *classname, char const *funcname,
                  char const *format, va_list ap) {

@@ -10,6 +10,7 @@
 
 #include "DebugServer2/Host/POSIX/PTrace.h"
 #include "DebugServer2/Host/Platform.h"
+#include "DebugServer2/Target/Process.h"
 
 #include <cerrno>
 #include <sys/wait.h>
@@ -196,6 +197,14 @@ ErrorCode PTrace::ptidToPid(ProcessThreadId const &ptid, pid_t &pid) {
   pid = (ptid.tid <= kAnyThreadId) ? ptid.pid : ptid.tid;
 
   return kSuccess;
+}
+
+void PTrace::setOwningProcess(Target::Process *process) { _process = process; }
+
+void PTrace::removeThread(ProcessThreadId tid) {
+  if (_process) {
+    _process->removeThread(tid.pid);
+  }
 }
 }
 } // namespace Host
