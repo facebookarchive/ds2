@@ -111,8 +111,8 @@ ErrorCode PlatformSessionImplBase::onLaunchDebugServer(Session &session,
   } else if (GetLogLevel() == kLogLevelPacket) {
     args.push_back("--remote-debug");
   }
-  const char *outputFilename = GetLogOutputFilename();
-  if (outputFilename) {
+  std::string const &outputFilename = GetLogOutputFilename();
+  if (outputFilename.length() > 0) {
     args.push_back("--log-file");
     args.push_back(outputFilename);
   }

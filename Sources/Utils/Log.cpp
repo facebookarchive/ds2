@@ -40,12 +40,7 @@ FILE *sOutputStream = stdout;
 #else
 FILE *sOutputStream = stderr;
 #endif
-
-// PATH_MAX isn't defined when targeting MSVC
-#ifndef PATH_MAX
-#define PATH_MAX 1024
-#endif
-char sOutputFilename[PATH_MAX];
+std::string sOutputFilename;
 } // namespace
 
 #if defined(PLATFORM_ANDROID)
@@ -81,25 +76,26 @@ uint32_t GetLogLevel() { return sLogLevel; }
 
 void SetLogLevel(uint32_t level) { sLogLevel = level; }
 
-const char *GetLogOutputFilename() { return sOutputFilename; }
+std::string const &GetLogOutputFilename() { return sOutputFilename; }
 
-void SetLogOutputFilename(const char *filename) {
-  FILE *stream = fopen(filename, "a");
+void SetLogOutputFilename(std::string const &filename) {
+  FILE *stream = fopen(filename.c_str(), "a");
   if (stream == nullptr) {
-    DS2LOG(Error, "unable to open %s for writing: %s", filename,
+    DS2LOG(Error, "unable to open %s for writing: %s", filename.c_str(),
            strerror(errno));
-  } else {
-#if defined(OS_POSIX)
-    // When ds2 is spawned by an app (e.g.: on Android), it will run with the
-    // app's user/group ID, and will create its log file owned by the app. By
-    // default, the permissions will be 0600 (rw-------) which makes us
-    // unable to get the log files. chmod() them to be able to access them.
-    fchmod(fileno(stream), 0644);
-    fcntl(fileno(stream), F_SETFD, FD_CLOEXEC);
-#endif
-    sOutputStream = stream;
-    strcpy(sOutputFilename, filename);
+    return;
   }
+
+#if defined(OS_POSIX)
+  // When ds2 is spawned by an app (e.g.: on Android), it will run with the
+  // app's user/group ID, and will create its log file owned by the app. By
+  // default, the permissions will be 0600 (rw-------) which makes us
+  // unable to get the log files. chmod() them to be able to access them.
+  fchmod(fileno(stream), 0644);
+  fcntl(fileno(stream), F_SETFD, FD_CLOEXEC);
+#endif
+  sOutputStream = stream;
+  sOutputFilename = filename;
 }
 
 void SetLogColorsEnabled(bool enabled) { sColorsEnabled = enabled; }
