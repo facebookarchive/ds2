@@ -22,7 +22,7 @@
 namespace ds2 {
 
 // Log Level
-enum {
+enum LogLevel {
   kLogLevelPacket,
   kLogLevelDebug,
   kLogLevelInfo,
@@ -31,8 +31,8 @@ enum {
   kLogLevelFatal,
 };
 
-uint32_t GetLogLevel();
-void SetLogLevel(uint32_t level);
+LogLevel GetLogLevel();
+void SetLogLevel(LogLevel level);
 void SetLogColorsEnabled(bool enabled);
 std::string const &GetLogOutputFilename();
 void SetLogOutputFilename(std::string const &filename);
