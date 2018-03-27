@@ -34,7 +34,8 @@ enum {
 uint32_t GetLogLevel();
 void SetLogLevel(uint32_t level);
 void SetLogColorsEnabled(bool enabled);
-void SetLogOutputStream(FILE *stream);
+const char *GetLogOutputFilename();
+void SetLogOutputFilename(const char *filename);
 
 void Log(int level, char const *classname, char const *funcname,
          char const *format, ...) DS2_ATTRIBUTE_PRINTF(4, 5);

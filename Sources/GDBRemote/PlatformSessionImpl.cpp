@@ -111,6 +111,11 @@ ErrorCode PlatformSessionImplBase::onLaunchDebugServer(Session &session,
   } else if (GetLogLevel() == kLogLevelPacket) {
     args.push_back("--remote-debug");
   }
+  const char *outputFilename = GetLogOutputFilename();
+  if (outputFilename) {
+    args.push_back("--log-file");
+    args.push_back(outputFilename);
+  }
 #if defined(OS_POSIX)
   args.push_back("--setsid");
 #endif
