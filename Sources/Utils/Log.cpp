@@ -29,9 +29,10 @@
 #endif
 #include <vector>
 
+namespace ds2 {
 namespace {
 
-int sLogLevel;
+LogLevel sLogLevel;
 bool sColorsEnabled = false;
 // stderr is handled a bit differently on Windows, especially when running
 // under powershell. We can simply use stdout for log output.
@@ -70,11 +71,9 @@ static void androidLogcat(int level, char const *functag, char const *message) {
 }
 #endif
 
-namespace ds2 {
+LogLevel GetLogLevel() { return sLogLevel; }
 
-uint32_t GetLogLevel() { return sLogLevel; }
-
-void SetLogLevel(uint32_t level) { sLogLevel = level; }
+void SetLogLevel(LogLevel level) { sLogLevel = level; }
 
 std::string const &GetLogOutputFilename() { return sOutputFilename; }
 
