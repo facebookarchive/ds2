@@ -8,6 +8,8 @@
 ## PATENTS file in the same directory.
 ##
 
+# BEFORE PUSHING A NEW DOCKER IMAGE, PLEASE READ ALL OF THESE INSTRUCTIONS!
+#
 # To build a docker image using this file, run the following command:
 #     docker build -f Support/Testing/CircleCI/Dockerfile .
 #
@@ -21,9 +23,15 @@
 # We run in privileged mode so that we may use ptrace to its full
 # extent as needed.
 #
+# When building a new docker image, it's important to tag it by the date and
+# time you built the image so that we can revert to an older image if something
+# goes wrong when we build the new one.
+# For example, if you built the image on November 1st, 2018 at 4:20:00 pm, your tag
+# would be something like: 2018-11-01_16-20-00.
+#
 # Publishing the image for use by CircleCI is done with:
-#     docker tag 360abf8e6246 sas42/ds2-build-env
-#     docker push sas42/ds2-build-env
+#     docker tag 360abf8e6246 sas42/ds2-build-env:<tag>
+#     docker push sas42/ds2-build-env:<tag>
 
 FROM ubuntu:16.04
 MAINTAINER Stephane Sezer <sas@fb.com>
