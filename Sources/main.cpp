@@ -291,6 +291,15 @@ static int GdbserverMain(int argc, char **argv) {
   opts.addPositional("[host]:port", "the [host]:port to connect to");
 
   int idx = opts.parse(argc, argv);
+#if defined(OS_POSIX)
+  int fd =
+      opts.getString("fd").empty() ? -1 : atoi(opts.getString("fd").c_str());
+  if (fd >= 0) {
+    CloseFD(fd);
+  } else {
+    CloseFD();
+  }
+#endif
   HandleSharedOptions(opts);
 
   // Target debug program and arguments.
@@ -341,19 +350,12 @@ static int GdbserverMain(int argc, char **argv) {
 
   bool reverse = opts.getBool("reverse-connect");
 
-#if defined(OS_POSIX)
-  int fd =
-      opts.getString("fd").empty() ? -1 : atoi(opts.getString("fd").c_str());
-#endif
-
   std::unique_ptr<Socket> socket;
 
 #if defined(OS_POSIX)
   if (fd >= 0) {
     socket = CreateFDSocket(fd);
-    CloseFD(fd);
   } else {
-    CloseFD();
 #endif
     if (opts.getPositional("[host]:port").empty()) {
       // If we have a named pipe, set the port to 0 to indicate that we should
