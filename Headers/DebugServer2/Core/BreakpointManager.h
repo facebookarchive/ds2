@@ -34,6 +34,7 @@ public:
   struct Site {
   protected:
     friend class BreakpointManager;
+    friend class SoftwareBreakpointManager;
     int32_t refs;
 
   public:
@@ -93,16 +94,11 @@ public:
   // If not hit, returns a negative integer
   virtual int hit(Target::Thread *thread, Site &site) = 0;
 
-public:
-  virtual void enable(Target::Thread *thread = nullptr);
-  virtual void disable(Target::Thread *thread = nullptr);
-
 protected:
   virtual ErrorCode enableLocation(Site const &site,
                                    Target::Thread *thread = nullptr) = 0;
   virtual ErrorCode disableLocation(Site const &site,
                                     Target::Thread *thread = nullptr) = 0;
-  virtual bool enabled(Target::Thread *thread = nullptr) const = 0;
 
 public:
   virtual bool fillStopInfo(Target::Thread *thread, StopInfo &stopInfo) = 0;

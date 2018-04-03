@@ -45,11 +45,7 @@ ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
     site.mode = mode;
     site.size = size;
 
-    // If the breakpoint manager is already in enabled state, enable
-    // the newly added breakpoint too.
-    if (enabled()) {
-      return enableLocation(site);
-    }
+    return enableLocation(site);
   }
 
   return kSuccess;
@@ -86,14 +82,7 @@ ErrorCode BreakpointManager::remove(Address const &address) {
 
 do_remove:
   DS2ASSERT(it->second.refs == 0);
-  //
-  // If the breakpoint manager is already in enabled state, disable
-  // the newly removed breakpoint too.
-  //
-  ErrorCode error = kSuccess;
-  if (enabled()) {
-    error = disableLocation(it->second);
-  }
+  ErrorCode error = disableLocation(it->second);
 
   _sites.erase(it);
   return error;
@@ -110,43 +99,6 @@ void BreakpointManager::enumerate(
     std::function<void(Site const &)> const &cb) const {
   for (auto const &it : _sites) {
     cb(it.second);
-  }
-}
-
-void BreakpointManager::enable(Target::Thread *thread) {
-  //
-  // Both callbacks should be installed by child class before
-  // enabling the breakpoint manager.
-  //
-  if (enabled(thread)) {
-    DS2LOG(Warning, "double-enabling breakpoints");
-  }
-
-  enumerate([this, thread](Site const &site) { enableLocation(site, thread); });
-}
-
-void BreakpointManager::disable(Target::Thread *thread) {
-  if (!enabled(thread)) {
-    DS2LOG(Warning, "double-disabling breakpoints");
-  }
-
-  enumerate(
-      [this, thread](Site const &site) { disableLocation(site, thread); });
-
-  //
-  // Remove temporary breakpoints.
-  //
-  auto it = _sites.begin();
-  while (it != _sites.end()) {
-    it->second.type =
-        static_cast<Type>(it->second.type & ~kTypeTemporaryOneShot);
-    if (!it->second.type) {
-      // refs should always be 0 unless we have a kTypePermanent breakpoint.
-      DS2ASSERT(it->second.refs == 0);
-      _sites.erase(it++);
-    } else {
-      it++;
-    }
   }
 }
 

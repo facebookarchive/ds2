@@ -226,6 +226,11 @@ ErrorCode ProcessBase::readMemoryBuffer(Address const &address, size_t length,
     return error;
   }
 
+  SoftwareBreakpointManager *bpm = softwareBreakpointManager();
+  if (bpm) {
+    bpm->insertStashedInsns(address, length, buffer);
+  }
+
   buffer.resize(nread);
   return kSuccess;
 }
@@ -286,14 +291,6 @@ ErrorCode ProcessBase::beforeResume() {
   if (!isAlive())
     return kErrorProcessNotFound;
 
-  //
-  // Enable software breakpoints.
-  //
-  BreakpointManager *bpm = softwareBreakpointManager();
-  if (bpm != nullptr) {
-    bpm->enable();
-  }
-
   enumerateThreads([&](Thread *thread) { thread->beforeResume(); });
 
   return kSuccess;
@@ -304,21 +301,16 @@ ErrorCode ProcessBase::afterResume() {
     return kSuccess;
   }
 
-  // Disable breakpoints and try to hit software breakpoints.
-  BreakpointManager *swBpm = softwareBreakpointManager();
-  if (swBpm != nullptr) {
+  // Try to hit software breakpoints and clear temporary breakpoints.
+  SoftwareBreakpointManager *bpm = softwareBreakpointManager();
+  if (bpm) {
     for (auto it : _threads) {
       BreakpointManager::Site site;
-      if (swBpm->hit(it.second, site) >= 0) {
+      if (bpm->hit(it.second, site) >= 0) {
         DS2LOG(Debug, "hit breakpoint for tid %" PRI_PID, it.second->tid());
       }
     }
-    swBpm->disable();
-  }
-
-  BreakpointManager *hwBpm = hardwareBreakpointManager();
-  if (hwBpm != nullptr) {
-    hwBpm->disable();
+    bpm->afterResume();
   }
 
   return kSuccess;
@@ -344,7 +336,7 @@ HardwareBreakpointManager *ProcessBase::hardwareBreakpointManager() const {
 
 void ProcessBase::prepareForDetach() {
   SoftwareBreakpointManager *bpm = softwareBreakpointManager();
-  if (bpm != nullptr) {
+  if (bpm) {
     bpm->clear();
   }
 }

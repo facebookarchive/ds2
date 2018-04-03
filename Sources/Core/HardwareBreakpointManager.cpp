@@ -40,12 +40,13 @@ ErrorCode HardwareBreakpointManager::add(Address const &address, Type type,
 }
 
 ErrorCode HardwareBreakpointManager::remove(Address const &address) {
+  CHK(super::remove(address));
+
   auto loc = std::find(_locations.begin(), _locations.end(), address);
   if (loc != _locations.end()) {
     _locations[loc - _locations.begin()] = 0;
   }
-
-  return super::remove(address);
+  return kSuccess;
 }
 
 ErrorCode HardwareBreakpointManager::enableLocation(Site const &site,
@@ -64,9 +65,8 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site,
   }
 
   enumerateThreads(thread, [&](Target::Thread *t) {
-    if (t->state() == Target::Thread::kStopped && !enabled(t)) {
-      error = enableLocation(site, idx, t);
-    }
+    DS2ASSERT(t->state() == Target::Thread::kStopped);
+    error = enableLocation(site, idx, t);
   });
 
   if (error == kSuccess) {
@@ -86,9 +86,8 @@ ErrorCode HardwareBreakpointManager::disableLocation(Site const &site,
   int idx = loc - _locations.begin();
 
   enumerateThreads(thread, [&](Target::Thread *t) {
-    if (t->state() == Target::Thread::kStopped && enabled(t)) {
-      error = disableLocation(idx, t);
-    }
+    DS2ASSERT(t->state() == Target::Thread::kStopped);
+    error = disableLocation(idx, t);
   });
 
   return error;
@@ -122,30 +121,11 @@ void HardwareBreakpointManager::enumerateThreads(
   }
 }
 
-void HardwareBreakpointManager::enable(Target::Thread *thread) {
-  super::enable(thread);
-
-  enumerateThreads(thread,
-                   [this](Target::Thread *t) { _enabled.insert(t->tid()); });
-}
-
-void HardwareBreakpointManager::disable(Target::Thread *thread) {
-  super::disable(thread);
-
-  enumerateThreads(thread,
-                   [this](Target::Thread *t) { _enabled.erase(t->tid()); });
-}
-
-bool HardwareBreakpointManager::enabled(Target::Thread *thread) const {
-  bool isEnabled = true;
-
-  enumerateThreads(thread, [this, &isEnabled](Target::Thread *t) {
-    if (_enabled.count(t->tid()) == 0) {
-      isEnabled = false;
-    }
-  });
-
-  return isEnabled;
+ErrorCode HardwareBreakpointManager::addThread(Target::Thread *thread) {
+  for (auto &site : _sites) {
+    CHK(enableLocation(site.second, thread));
+  }
+  return kSuccess;
 }
 
 bool HardwareBreakpointManager::fillStopInfo(Target::Thread *thread,

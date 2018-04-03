@@ -16,6 +16,7 @@
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 
+#include <algorithm>
 #include <cstdlib>
 
 #define super ds2::BreakpointManager
@@ -24,7 +25,7 @@ namespace ds2 {
 
 SoftwareBreakpointManager::SoftwareBreakpointManager(
     Target::ProcessBase *process)
-    : super(process), _enabled(false) {}
+    : super(process) {}
 
 SoftwareBreakpointManager::~SoftwareBreakpointManager() { clear(); }
 
@@ -94,24 +95,23 @@ ErrorCode SoftwareBreakpointManager::disableLocation(Site const &site,
   return kSuccess;
 }
 
-void SoftwareBreakpointManager::enable(Target::Thread *thread) {
-  super::enable(thread);
-
-  _enabled = true;
-}
-
-void SoftwareBreakpointManager::disable(Target::Thread *thread) {
-  super::disable(thread);
-
-  _enabled = false;
-}
-
-bool SoftwareBreakpointManager::enabled(Target::Thread *thread) const {
-  if (thread != nullptr) {
-    DS2LOG(Warning, "thread-specific software breakpoints are unsupported");
+void SoftwareBreakpointManager::afterResume() {
+  //
+  // Remove temporary breakpoints.
+  //
+  auto it = _sites.begin();
+  while (it != _sites.end()) {
+    it->second.type =
+        static_cast<Type>(it->second.type & ~kTypeTemporaryOneShot);
+    if (!it->second.type) {
+      // refs should always be 0 unless we have a kTypePermanent breakpoint.
+      DS2ASSERT(it->second.refs == 0);
+      disableLocation(it->second);
+      _sites.erase(it++);
+    } else {
+      it++;
+    }
   }
-
-  return _enabled;
 }
 
 bool SoftwareBreakpointManager::fillStopInfo(Target::Thread *thread,
@@ -123,5 +123,31 @@ bool SoftwareBreakpointManager::fillStopInfo(Target::Thread *thread,
   }
   stopInfo.reason = StopInfo::kReasonBreakpoint;
   return true;
+}
+
+void SoftwareBreakpointManager::insertStashedInsns(Address const &start,
+                                                   size_t length,
+                                                   ByteVector &data) {
+  Address end = start + length;
+  for (auto const &insn : _insns) {
+    Address insn_start = insn.first;
+    Address insn_end = insn.first + insn.second.size();
+
+    // no overlap between region and instruction
+    if (end < insn_start || start >= insn_end) {
+      continue;
+    }
+
+    // overlap begins at beginning of instruction
+    if (start <= insn_start) {
+      uint64_t offset = insn_start - start;
+      uint64_t size = std::min((uint64_t)insn.second.size(), end - insn_start);
+      memcpy(&data[offset], &insn.second[0], size);
+    } else {
+      uint64_t offset = start - insn_start;
+      uint64_t size = std::min(insn_end - start, end - start);
+      memcpy(&data[0], &insn.second[offset], size);
+    }
+  }
 }
 } // namespace ds2
