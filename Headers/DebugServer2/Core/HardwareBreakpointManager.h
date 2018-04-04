@@ -22,7 +22,7 @@ public:
   ~HardwareBreakpointManager() override;
 
 public:
-  ErrorCode add(Address const &address, Type type, size_t size,
+  ErrorCode add(Address const &address, Lifetime lifetime, size_t size,
                 Mode mode) override;
   ErrorCode remove(Address const &address) override;
 

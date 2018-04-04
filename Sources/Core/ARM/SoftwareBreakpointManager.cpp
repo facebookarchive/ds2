@@ -23,8 +23,9 @@
 
 namespace ds2 {
 
-ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
-                                         size_t size, Mode mode) {
+ErrorCode SoftwareBreakpointManager::add(Address const &address,
+                                         Lifetime lifetime, size_t size,
+                                         Mode mode) {
   if (size < 2 || size > 4) {
     bool isThumb = false;
 
@@ -56,7 +57,7 @@ ErrorCode SoftwareBreakpointManager::add(Address const &address, Type type,
     }
   }
 
-  return super::add(address.value() & ~1ULL, type, size, mode);
+  return super::add(address.value() & ~1ULL, lifetime, size, mode);
 }
 
 ErrorCode SoftwareBreakpointManager::remove(Address const &address) {

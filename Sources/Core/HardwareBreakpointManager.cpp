@@ -24,8 +24,9 @@ HardwareBreakpointManager::HardwareBreakpointManager(
 
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
 
-ErrorCode HardwareBreakpointManager::add(Address const &address, Type type,
-                                         size_t size, Mode mode) {
+ErrorCode HardwareBreakpointManager::add(Address const &address,
+                                         Lifetime lifetime, size_t size,
+                                         Mode mode) {
   if (_sites.size() >= maxWatchpoints()) {
     return kErrorInvalidArgument;
   }
@@ -36,7 +37,7 @@ ErrorCode HardwareBreakpointManager::add(Address const &address, Type type,
     mode = static_cast<Mode>(mode | kModeWrite);
   }
 
-  return super::add(address, type, size, mode);
+  return super::add(address, lifetime, size, mode);
 }
 
 ErrorCode HardwareBreakpointManager::remove(Address const &address) {
