@@ -51,7 +51,7 @@ public:
   enumerate(std::function<void(Site const &)> const &cb) const override;
 
 public:
-  virtual ErrorCode add(Address const &address, Type type, size_t size,
+  virtual ErrorCode add(Address const &address, Lifetime lifetime, size_t size,
                         Mode mode) override;
   virtual ErrorCode remove(Address const &address) override;
 

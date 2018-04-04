@@ -22,8 +22,8 @@ BreakpointManager::~BreakpointManager() {
 
 void BreakpointManager::clear() { _sites.clear(); }
 
-ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
-                                 Mode mode) {
+ErrorCode BreakpointManager::add(Address const &address, Lifetime lifetime,
+                                 size_t size, Mode mode) {
   CHK(isValid(address, size, mode));
 
   auto it = _sites.find(address);
@@ -31,17 +31,17 @@ ErrorCode BreakpointManager::add(Address const &address, Type type, size_t size,
     if (it->second.mode != mode)
       return kErrorInvalidArgument;
 
-    it->second.type = static_cast<Type>(it->second.type | type);
-    if (type == kTypePermanent)
+    it->second.lifetime = static_cast<Lifetime>(it->second.lifetime | lifetime);
+    if (lifetime == kLifetimePermanent)
       ++it->second.refs;
   } else {
     Site &site = _sites[address];
 
     site.refs = 0;
-    if (type == kTypePermanent)
+    if (lifetime == kLifetimePermanent)
       ++site.refs;
     site.address = address;
-    site.type = type;
+    site.lifetime = lifetime;
     site.mode = mode;
     site.size = size;
 
@@ -64,7 +64,7 @@ ErrorCode BreakpointManager::remove(Address const &address) {
     return kErrorNotFound;
 
   // If we have some sort of temporary breakpoint, just remove it.
-  if (!(it->second.type & kTypePermanent))
+  if (!(it->second.lifetime & kLifetimePermanent))
     goto do_remove;
 
   // If we have a permanent breakpoint, refs should be non-null. If refs is
@@ -74,14 +74,15 @@ ErrorCode BreakpointManager::remove(Address const &address) {
   if (--it->second.refs > 0)
     return kSuccess;
 
-  // If we had a breakpoint that was *only* of type kTypePermanent and refs is
-  // now 0, we need to remove it.
-  if (it->second.type == kTypePermanent)
+  // If we had a breakpoint that only had lifetime kLifetimePermanent and refs
+  // is now 0, we need to remove it.
+  if (it->second.lifetime == kLifetimePermanent)
     goto do_remove;
 
-  // Otherwise, we had multiple breakpoint types; unset kTypePermanent and
-  // return.
-  it->second.type = static_cast<Type>(it->second.type & ~kTypePermanent);
+  // Otherwise, the breakpoint had multiple lifetimes; unset
+  // kLifetimePermanent and return.
+  it->second.lifetime =
+      static_cast<Lifetime>(it->second.lifetime & ~kLifetimePermanent);
   return kSuccess;
 
 do_remove:
@@ -138,10 +139,10 @@ void BreakpointManager::disable(Target::Thread *thread) {
   //
   auto it = _sites.begin();
   while (it != _sites.end()) {
-    it->second.type =
-        static_cast<Type>(it->second.type & ~kTypeTemporaryOneShot);
-    if (!it->second.type) {
-      // refs should always be 0 unless we have a kTypePermanent breakpoint.
+    it->second.lifetime =
+        static_cast<Lifetime>(it->second.lifetime & ~kLifetimeTemporaryOneShot);
+    if (!it->second.lifetime) {
+      // refs should always be 0 unless we have a kLifetimePermanent breakpoint.
       DS2ASSERT(it->second.refs == 0);
       _sites.erase(it++);
     } else {
@@ -159,11 +160,11 @@ bool BreakpointManager::hit(Address const &address, Site &site) {
     return false;
 
   //
-  // If this breakpoint type becomes 0, it will be erased after calling
+  // If this breakpoint's lifetime becomes 0, it will be erased after calling
   // BreakpointManager::disable
   //
-  it->second.type =
-      static_cast<Type>(it->second.type & ~kTypeTemporaryUntilHit);
+  it->second.lifetime =
+      static_cast<Lifetime>(it->second.lifetime & ~kLifetimeTemporaryUntilHit);
 
   site = it->second;
   return true;

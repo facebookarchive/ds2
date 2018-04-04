@@ -338,13 +338,13 @@ ErrorCode PrepareSoftwareSingleStep(Process *process,
 
   if (branchPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(branchPCSize != 0);
-    CHK(manager->add(branchPC, BreakpointManager::kTypeTemporaryOneShot,
+    CHK(manager->add(branchPC, BreakpointManager::kLifetimeTemporaryOneShot,
                      branchPCSize, BreakpointManager::kModeExec));
   }
 
   if (nextPC != static_cast<uint32_t>(-1)) {
     DS2ASSERT(nextPCSize != 0);
-    CHK(manager->add(nextPC, BreakpointManager::kTypeTemporaryOneShot,
+    CHK(manager->add(nextPC, BreakpointManager::kLifetimeTemporaryOneShot,
                      nextPCSize, BreakpointManager::kModeExec));
   }
 

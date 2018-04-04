@@ -18,10 +18,10 @@ namespace ds2 {
 
 class BreakpointManager {
 public:
-  enum Type : unsigned int {
-    kTypePermanent = (1 << 0),
-    kTypeTemporaryOneShot = (1 << 1),
-    kTypeTemporaryUntilHit = (1 << 2),
+  enum Lifetime : unsigned int {
+    kLifetimePermanent = (1 << 0),
+    kLifetimeTemporaryOneShot = (1 << 1),
+    kLifetimeTemporaryUntilHit = (1 << 2),
   };
 
   enum Mode {
@@ -38,13 +38,13 @@ public:
 
   public:
     Address address;
-    Type type;
+    Lifetime lifetime;
     Mode mode;
     size_t size;
 
   public:
     bool operator==(Site const &other) const {
-      return (address == other.address) && (type == other.type) &&
+      return (address == other.address) && (lifetime == other.lifetime) &&
              (mode == other.mode) && (size == other.size);
     }
   };
@@ -68,7 +68,7 @@ public:
   virtual void clear();
 
 public:
-  virtual ErrorCode add(Address const &address, Type type, size_t size,
+  virtual ErrorCode add(Address const &address, Lifetime lifetime, size_t size,
                         Mode mode);
   virtual ErrorCode remove(Address const &address);
 
