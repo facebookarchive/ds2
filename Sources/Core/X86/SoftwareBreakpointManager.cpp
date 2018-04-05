@@ -60,8 +60,11 @@ void SoftwareBreakpointManager::getOpcode(uint32_t type,
 
 ErrorCode SoftwareBreakpointManager::isValid(Address const &address,
                                              size_t size, Mode mode) const {
-  DS2ASSERT(size == 0 || size == 1);
   DS2ASSERT(mode == kModeExec);
+  if (size != 0 && size != 1) {
+    DS2LOG(Debug, "Received unsupported breakpoint size %zu", size);
+    return kErrorInvalidArgument;
+  }
 
   return super::isValid(address, size, mode);
 }

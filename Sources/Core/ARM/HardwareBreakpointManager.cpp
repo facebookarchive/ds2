@@ -37,6 +37,7 @@ size_t HardwareBreakpointManager::maxWatchpoints() {
 
 ErrorCode HardwareBreakpointManager::isValid(Address const &address,
                                              size_t size, Mode mode) const {
+  DS2LOG(Debug, "Trying to set hardware breakpoint on arm");
   return kErrorUnsupported;
 }
 } // namespace ds2

@@ -214,14 +214,18 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
 
   case 2:
   case 4:
-    if (mode == kModeExec)
+    if (mode == kModeExec) {
       return kErrorInvalidArgument;
+    }
     break;
   default:
+    DS2LOG(Debug, "Received unsupported hardware breakpoint size %zu", size);
     return kErrorInvalidArgument;
   }
 
   if ((mode & kModeExec) && (mode & (kModeRead | kModeWrite))) {
+    DS2LOG(Debug, "Trying to set a hardware breakpoint with mixed exec and "
+                  "read/write modes");
     return kErrorInvalidArgument;
   }
 
