@@ -128,9 +128,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>disable</b> (Target::
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>fillStopInfo</b> (Target::Thread *thread, <a class="el" href="structds2_1_1_stop_info.html">StopInfo</a> &amp;stopInfo) override</td></tr>
 <tr class="separator:a6f135a0eabba899fd215a9096f45e773"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classds2_1_1_breakpoint_manager"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classds2_1_1_breakpoint_manager')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classds2_1_1_breakpoint_manager.html">ds2::BreakpointManager</a></td></tr>
-<tr class="memitem:ac19e72c94677cfc9eeb177fdccfd3696 inherit pub_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac19e72c94677cfc9eeb177fdccfd3696"></a>
-virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, Type type, size_t size, Mode mode)</td></tr>
-<tr class="separator:ac19e72c94677cfc9eeb177fdccfd3696 inherit pub_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaba2508613b230e98cb04a4706aaefeb inherit pub_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaba2508613b230e98cb04a4706aaefeb"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, Lifetime lifetime, size_t size, Mode mode)</td></tr>
+<tr class="separator:aaba2508613b230e98cb04a4706aaefeb inherit pub_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d71d773dcccb252483a7d43d8e19550 inherit pub_methods_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d71d773dcccb252483a7d43d8e19550"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address)</td></tr>
 <tr class="separator:a1d71d773dcccb252483a7d43d8e19550 inherit pub_methods_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,11 +169,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>hit</b> (<a c
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_types_classds2_1_1_breakpoint_manager"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classds2_1_1_breakpoint_manager')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classds2_1_1_breakpoint_manager.html">ds2::BreakpointManager</a></td></tr>
-<tr class="memitem:acb2d9229a187b34bc2da92ab66c01dcb inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Type</b> : unsigned int { <b>kTypePermanent</b> = (1 &lt;&lt; 0), 
-<b>kTypeTemporaryOneShot</b> = (1 &lt;&lt; 1), 
-<b>kTypeTemporaryUntilHit</b> = (1 &lt;&lt; 2)
+<tr class="memitem:a43a1791541d103672ba6be1b848647bf inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Lifetime</b> : unsigned int { <b>kLifetimePermanent</b> = (1 &lt;&lt; 0), 
+<b>kLifetimeTemporaryOneShot</b> = (1 &lt;&lt; 1), 
+<b>kLifetimeTemporaryUntilHit</b> = (1 &lt;&lt; 2)
  }</td></tr>
-<tr class="separator:acb2d9229a187b34bc2da92ab66c01dcb inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a43a1791541d103672ba6be1b848647bf inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a892d68a1fe7e280cf6bb82e167519d1b inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Mode</b> { <b>kModeExec</b> = (1 &lt;&lt; 0), 
 <b>kModeRead</b> = (1 &lt;&lt; 1), 
 <b>kModeWrite</b> = (1 &lt;&lt; 2)

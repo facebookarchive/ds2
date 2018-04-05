@@ -106,10 +106,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;</div>
 <div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classds2_1_1_breakpoint_manager.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classds2_1_1_breakpoint_manager.html">BreakpointManager</a> {</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keyword">enum</span> Type : <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    kTypePermanent = (1 &lt;&lt; 0),</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    kTypeTemporaryOneShot = (1 &lt;&lt; 1),</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    kTypeTemporaryUntilHit = (1 &lt;&lt; 2),</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keyword">enum</span> Lifetime : <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> {</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    kLifetimePermanent = (1 &lt;&lt; 0),</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    kLifetimeTemporaryOneShot = (1 &lt;&lt; 1),</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    kLifetimeTemporaryUntilHit = (1 &lt;&lt; 2),</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  };</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keyword">enum</span> Mode {</div>
@@ -126,13 +126,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <a class="code" href="classds2_1_1_address.html">Address</a> address;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    Type type;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    Lifetime lifetime;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    Mode mode;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keywordtype">size_t</span> size;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">bool</span> operator==(<a class="code" href="structds2_1_1_breakpoint_manager_1_1_site.html">Site</a> <span class="keyword">const</span> &amp;other)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;      <span class="keywordflow">return</span> (address == other.address) &amp;&amp; (type == other.type) &amp;&amp;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;      <span class="keywordflow">return</span> (address == other.address) &amp;&amp; (lifetime == other.lifetime) &amp;&amp;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;             (mode == other.mode) &amp;&amp; (size == other.size);</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  };</div>
@@ -156,7 +156,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keyword">virtual</span> <span class="keywordtype">void</span> clear();</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keyword">virtual</span> ErrorCode add(<a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address, Type type, <span class="keywordtype">size_t</span> size,</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keyword">virtual</span> ErrorCode add(<a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address, Lifetime lifetime, <span class="keywordtype">size_t</span> size,</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                        Mode mode);</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="keyword">virtual</span> ErrorCode <span class="keyword">remove</span>(<a class="code" href="classds2_1_1_address.html">Address</a> <span class="keyword">const</span> &amp;address);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;</div>

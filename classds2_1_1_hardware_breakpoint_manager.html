@@ -113,9 +113,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abfa355aa4357b6422195476e8c781297"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abfa355aa4357b6422195476e8c781297"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>HardwareBreakpointManager</b> (<a class="el" href="classds2_1_1_target_1_1_process_base.html">Target::ProcessBase</a> *process)</td></tr>
 <tr class="separator:abfa355aa4357b6422195476e8c781297"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0050ec788df19f399f2a29c6769f6ac1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0050ec788df19f399f2a29c6769f6ac1"></a>
-ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, Type type, size_t size, Mode mode) override</td></tr>
-<tr class="separator:a0050ec788df19f399f2a29c6769f6ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad92aa79a9c9a3a4b20b7493454ffe832"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad92aa79a9c9a3a4b20b7493454ffe832"></a>
+ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, Lifetime lifetime, size_t size, Mode mode) override</td></tr>
+<tr class="separator:ad92aa79a9c9a3a4b20b7493454ffe832"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60565d054c1f58ca2176843fe156247c"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a60565d054c1f58ca2176843fe156247c"></a>
 ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address) override</td></tr>
 <tr class="separator:a60565d054c1f58ca2176843fe156247c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -204,11 +204,11 @@ SiteMap&#160;</td><td class="memItemRight" valign="bottom"><b>_sites</b></td></t
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_types_classds2_1_1_breakpoint_manager"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classds2_1_1_breakpoint_manager')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classds2_1_1_breakpoint_manager.html">ds2::BreakpointManager</a></td></tr>
-<tr class="memitem:acb2d9229a187b34bc2da92ab66c01dcb inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Type</b> : unsigned int { <b>kTypePermanent</b> = (1 &lt;&lt; 0), 
-<b>kTypeTemporaryOneShot</b> = (1 &lt;&lt; 1), 
-<b>kTypeTemporaryUntilHit</b> = (1 &lt;&lt; 2)
+<tr class="memitem:a43a1791541d103672ba6be1b848647bf inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Lifetime</b> : unsigned int { <b>kLifetimePermanent</b> = (1 &lt;&lt; 0), 
+<b>kLifetimeTemporaryOneShot</b> = (1 &lt;&lt; 1), 
+<b>kLifetimeTemporaryUntilHit</b> = (1 &lt;&lt; 2)
  }</td></tr>
-<tr class="separator:acb2d9229a187b34bc2da92ab66c01dcb inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a43a1791541d103672ba6be1b848647bf inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a892d68a1fe7e280cf6bb82e167519d1b inherit pub_types_classds2_1_1_breakpoint_manager"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Mode</b> { <b>kModeExec</b> = (1 &lt;&lt; 0), 
 <b>kModeRead</b> = (1 &lt;&lt; 1), 
 <b>kModeWrite</b> = (1 &lt;&lt; 2)

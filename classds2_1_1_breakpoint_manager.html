@@ -117,11 +117,11 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:acb2d9229a187b34bc2da92ab66c01dcb"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Type</b> : unsigned int { <b>kTypePermanent</b> = (1 &lt;&lt; 0), 
-<b>kTypeTemporaryOneShot</b> = (1 &lt;&lt; 1), 
-<b>kTypeTemporaryUntilHit</b> = (1 &lt;&lt; 2)
+<tr class="memitem:a43a1791541d103672ba6be1b848647bf"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Lifetime</b> : unsigned int { <b>kLifetimePermanent</b> = (1 &lt;&lt; 0), 
+<b>kLifetimeTemporaryOneShot</b> = (1 &lt;&lt; 1), 
+<b>kLifetimeTemporaryUntilHit</b> = (1 &lt;&lt; 2)
  }</td></tr>
-<tr class="separator:acb2d9229a187b34bc2da92ab66c01dcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a43a1791541d103672ba6be1b848647bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a892d68a1fe7e280cf6bb82e167519d1b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><b>Mode</b> { <b>kModeExec</b> = (1 &lt;&lt; 0), 
 <b>kModeRead</b> = (1 &lt;&lt; 1), 
 <b>kModeWrite</b> = (1 &lt;&lt; 2)
@@ -136,9 +136,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af81e4dd222cd6d6cb57e5e07a78cfbca"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af81e4dd222cd6d6cb57e5e07a78cfbca"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()</td></tr>
 <tr class="separator:af81e4dd222cd6d6cb57e5e07a78cfbca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac19e72c94677cfc9eeb177fdccfd3696"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac19e72c94677cfc9eeb177fdccfd3696"></a>
-virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, Type type, size_t size, Mode mode)</td></tr>
-<tr class="separator:ac19e72c94677cfc9eeb177fdccfd3696"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaba2508613b230e98cb04a4706aaefeb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aaba2508613b230e98cb04a4706aaefeb"></a>
+virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address, Lifetime lifetime, size_t size, Mode mode)</td></tr>
+<tr class="separator:aaba2508613b230e98cb04a4706aaefeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d71d773dcccb252483a7d43d8e19550"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d71d773dcccb252483a7d43d8e19550"></a>
 virtual ErrorCode&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> (<a class="el" href="classds2_1_1_address.html">Address</a> const &amp;address)</td></tr>
 <tr class="separator:a1d71d773dcccb252483a7d43d8e19550"><td class="memSeparator" colspan="2">&#160;</td></tr>
