@@ -11,7 +11,7 @@
 
 source "$(dirname "$0")/common.sh"
 
-ndk_release="r13b"
+ndk_release="r16b"
 
 case "$(uname)" in
   "Linux")  host="linux-x86_64";;

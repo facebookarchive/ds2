@@ -11,7 +11,7 @@
 
 docker_config: &docker_config
   docker:
-    - image: sas42/ds2-build-env:2018-02-14_16-15-00
+    - image: sas42/ds2-build-env:2018-04-06_15-33-00
 
 configure_step: &configure_step
   run:
@@ -136,6 +136,7 @@ jobs:
     <<: *build_and_test_android
     environment:
       PLATFORM: 1
+      EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=21"
   Android-ARM-16:
     <<: *build_only_defaults
     environment:

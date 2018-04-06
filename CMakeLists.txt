@@ -43,6 +43,7 @@ if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
   CHECK_SYMBOL_EXISTS(gettid "unistd.h" HAVE_GETTID)
   CHECK_SYMBOL_EXISTS(process_vm_readv "sys/uio.h" HAVE_PROCESS_VM_READV)
   CHECK_SYMBOL_EXISTS(process_vm_writev "sys/uio.h" HAVE_PROCESS_VM_WRITEV)
+  CHECK_SYMBOL_EXISTS(tgkill "signal.h" HAVE_TGKILL)
   set(CMAKE_REQUIRED_DEFINITIONS)
 
   include(CheckTypeSize)
@@ -327,7 +328,7 @@ if ("${OS_NAME}" MATCHES "Windows")
 endif ()
 
 if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
-  foreach (CHECK SYS_PERSONALITY_H GETTID POSIX_OPENPT
+  foreach (CHECK SYS_PERSONALITY_H GETTID POSIX_OPENPT TGKILL
            PROCESS_VM_READV PROCESS_VM_WRITEV
            STRUCT_USER_FPXREGS_STRUCT ENUM_PTRACE_REQUEST)
     if (HAVE_${CHECK})
