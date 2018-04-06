@@ -9,7 +9,7 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_version="3.7"
+cmake_version="3.10"
 cmake_package_name="cmake-${cmake_version}.0-Linux-x86_64"
 cmake_archive="${cmake_package_name}.tar.gz"
 if [ ! -e "${cmake_archive}" ] ; then

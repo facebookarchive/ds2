@@ -98,6 +98,7 @@ static inline pid_t gettid() { return ::syscall(SYS_gettid); }
 #define SYS_tkill __NR_tkill
 #endif // !SYS_tkill
 
+#if !defined(HAVE_TGKILL)
 #if !defined(SYS_tgkill)
 #define SYS_tgkill __NR_tgkill
 #endif // !SYS_tgkill
@@ -105,6 +106,7 @@ static inline pid_t gettid() { return ::syscall(SYS_gettid); }
 static inline int tgkill(pid_t pid, pid_t tid, int signo) {
   return ::syscall(SYS_tgkill, pid, tid, signo);
 }
+#endif // !HAVE_TGKILL
 
 static inline int tkill(pid_t tid, int signo) {
   return ::syscall(SYS_tkill, tid, signo);

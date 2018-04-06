@@ -332,9 +332,14 @@ char const *Stringify::PTraceCommand(int code) {
     DO_STRINGIFY(PTRACE_GETHBPREGS)
     DO_STRINGIFY(PTRACE_SETHBPREGS)
 #endif
+// Some versions of the Android NDK (e.g. r16b) export PT_GETFPREGS as
+// PTRACE_GETFPREGS but don't provide a definition for PTRACE_GETFPREGS for
+// arm64. This is a workaround.
+#if !(defined(PLATFORM_ANDROID) && defined(ARCH_ARM64))
 #if defined(PTRACE_GETFPREGS) || defined(PT_GETFPREGS)
     DO_STRINGIFY(PTRACE_GETFPREGS)
     DO_STRINGIFY(PTRACE_SETFPREGS)
+#endif
 #endif
 #if defined(PTRACE_GETVFPREGS) || defined(PT_GETVFPREGS)
     DO_STRINGIFY(PTRACE_GETVFPREGS)
