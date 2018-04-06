@@ -154,6 +154,9 @@ if [ -n "${TARGET-}" ]; then
     if ! $opt_no_ds2_blacklists; then
       args+=("--excluded" "$blacklist_dir/ds2/x86_64.blacklist")
     fi
+    if [[ "${PLATFORM-}" = "1" ]]; then
+      args+=("--excluded" "$blacklist_dir/ds2/llvm_60.blacklist")
+    fi
   elif [[ "${TARGET}" == "Linux-X86" || "${TARGET}" == "Linux-X86-Clang" || "${TARGET}" == "Android-X86" ]]; then
     args+=("--arch=i386")
     args+=("--excluded" "$blacklist_dir/upstream/x86.blacklist")
@@ -161,6 +164,7 @@ if [ -n "${TARGET-}" ]; then
       args+=("--excluded" "$blacklist_dir/ds2/x86.blacklist")
     fi
     if [[ "${PLATFORM-}" = "1" ]]; then
+      args+=("--excluded" "$blacklist_dir/ds2/llvm_60.blacklist")
       args+=("--excluded" "$blacklist_dir/upstream/x86-platform.blacklist")
     fi
   elif [[ "${TARGET}" == "Android-ARM" ]]; then
@@ -196,6 +200,7 @@ if [[ "${PLATFORM-}" = "1" ]]; then
     working_dir="/data/local/tmp"
     if ! $opt_no_ds2_blacklists; then
       args+=("--excluded" "$blacklist_dir/ds2/android.blacklist")
+      args+=("--excluded" "$blacklist_dir/ds2/android_invalid_tests.blacklist")
     fi
   fi
 
