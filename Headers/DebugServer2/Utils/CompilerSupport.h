@@ -46,12 +46,6 @@
 #define DS2_ATTRIBUTE_PRINTF(FORMAT, START)
 #endif
 
-#if __has_attribute(weak)
-#define DS2_ATTRIBUTE_WEAK __attribute__((__weak__))
-#else
-#define DS2_ATTRIBUTE_WEAK
-#endif
-
 #if defined(COMPILER_GCC)
 #if __GNUC__ > 6
 #define DS2_FALLTHROUGH [[fallthrough]]
