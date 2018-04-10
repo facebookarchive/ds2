@@ -12,26 +12,7 @@
 
 #include "DebugServer2/Base.h"
 
-// For GCC we define __has_attribute and __has_builtin to 1 because we know we
-// always have recent enough versions (support for C++11 for instance).
-
-#if !defined(__has_attribute)
-#if defined(COMPILER_GCC)
-#define __has_attribute(ATTR) 1
-#else
-#define __has_attribute(ATTR) 0
-#endif
-#endif
-
-#if !defined(__has_builtin)
-#if defined(COMPILER_GCC)
-#define __has_builtin(BUILTIN) 1
-#else
-#define __has_builtin(BUILTIN) 0
-#endif
-#endif
-
-#if __has_attribute(format)
+#if defined(COMPILER_GCC) || defined(COMPILER_CLANG)
 #if defined(PLATFORM_MINGW)
 // MinGW uses printf wrappers to provide standard format string behavior on
 // Windows. We need to use __MINGW_PRINTF_FORMAT as GCC assumes MS style printf
@@ -60,23 +41,19 @@
 
 #if defined(COMPILER_MSVC)
 #define DS2_ATTRIBUTE_PACKED "DS2_ATTRIBUTE_PACKED not implemented on MSVC"
-#elif __has_attribute(__packed__)
+#elif defined(COMPILER_GCC) || defined(COMPILER_CLANG)
 #define DS2_ATTRIBUTE_PACKED __attribute__((__packed__))
-#else
-#error "Compiler attribute __packed__ is required."
 #endif
 
 #if defined(COMPILER_MSVC)
 #define DS2_ATTRIBUTE_ALIGNED "DS2_ATTRIBUTE_ALIGNED not implemented on MSVC"
-#elif __has_attribute(__aligned__)
+#elif defined(COMPILER_GCC) || defined(COMPILER_CLANG)
 #define DS2_ATTRIBUTE_ALIGNED(SIZE) __attribute__((__aligned__(SIZE)))
-#else
-#error "Compiler attribute __aligned__ is required."
 #endif
 
 #if defined(COMPILER_MSVC)
 #define DS2_UNREACHABLE() __assume(0)
-#elif __has_builtin(__builtin_unreachable)
+#elif defined(COMPILER_GCC) || defined(COMPILER_CLANG)
 #define DS2_UNREACHABLE() __builtin_unreachable()
 #else
 #include <cstdlib>
