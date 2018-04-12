@@ -52,9 +52,7 @@ int SoftwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
 void SoftwareBreakpointManager::getOpcode(uint32_t type,
                                           ByteVector &opcode) const {
   DS2ASSERT(type == 1);
-
   opcode.clear();
-
   opcode.push_back('\xcc'); // int 3
 }
 
@@ -67,5 +65,10 @@ ErrorCode SoftwareBreakpointManager::isValid(Address const &address,
   }
 
   return super::isValid(address, size, mode);
+}
+
+size_t SoftwareBreakpointManager::chooseBreakpointSize() const {
+  // On x86 and x86_64, software breakpoints will always be of size 1
+  return 1;
 }
 } // namespace ds2

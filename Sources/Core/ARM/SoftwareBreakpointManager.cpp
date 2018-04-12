@@ -178,4 +178,9 @@ ErrorCode SoftwareBreakpointManager::isValid(Address const &address,
 
   return super::isValid(address, size, mode);
 }
+
+size_t SoftwareBreakpointManager::chooseBreakpointSize() const {
+  DS2BUG(
+      "Choosing a software breakpoint size on ARM is an unsupported operation");
+}
 } // namespace ds2
