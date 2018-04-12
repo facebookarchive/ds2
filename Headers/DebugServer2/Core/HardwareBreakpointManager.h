@@ -51,6 +51,7 @@ public:
 protected:
   ErrorCode isValid(Address const &address, size_t size,
                     Mode mode) const override;
+  size_t chooseBreakpointSize() const override;
 
 protected:
   virtual int getAvailableLocation();

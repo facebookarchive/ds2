@@ -26,6 +26,10 @@ ErrorCode BreakpointManager::add(Address const &address, Lifetime lifetime,
                                  size_t size, Mode mode) {
   CHK(isValid(address, size, mode));
 
+  if (size == 0) {
+    size = chooseBreakpointSize();
+  }
+
   auto it = _sites.find(address);
   if (it != _sites.end()) {
     if (it->second.mode != mode)

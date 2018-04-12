@@ -40,4 +40,9 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
   DS2LOG(Debug, "Trying to set hardware breakpoint on arm");
   return kErrorUnsupported;
 }
+
+size_t HardwareBreakpointManager::chooseBreakpointSize() const {
+  DS2BUG(
+      "Choosing a hardware breakpoint size on ARM is an unsupported operation");
+}
 } // namespace ds2

@@ -236,6 +236,11 @@ ErrorCode HardwareBreakpointManager::isValid(Address const &address,
   return super::isValid(address, size, mode);
 }
 
+size_t HardwareBreakpointManager::chooseBreakpointSize() const {
+  DS2BUG(
+      "Choosing a hardware breakpoint size on x86 is an unsupported operation");
+}
+
 ErrorCode HardwareBreakpointManager::readDebugRegisters(
     Target::Thread *thread, std::vector<uint64_t> &regs) const {
   Architecture::CPUState state;
