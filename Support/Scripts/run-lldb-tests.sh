@@ -61,8 +61,9 @@ cherry_pick_patches() {
   local testingPath="$top/Support/Testing"
 
   if [[ "$platform_name" = "android" ]]; then
-    # This patch is purely to improve performance on Travis, won't ever be upstreamed.
+    # This patch is purely to improve performance on CircleCI, won't ever be upstreamed.
     patch -d "$lldb_path" -p1 < "$testingPath/Patches/android-search-paths.patch"
+    patch -d "$lldb_path" -p1 < "$testingPath/Patches/getplatform-workaround.patch"
   fi
 
   cd "$OLDPWD"
