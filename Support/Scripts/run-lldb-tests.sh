@@ -38,6 +38,7 @@ opt_no_ds2_blacklists=false
 opt_no_upstream_blacklists=false
 opt_log=false
 opt_strace=false
+opt_use_lldb_server=false
 
 for o in "$@"; do
   case "$o" in
@@ -46,6 +47,7 @@ for o in "$@"; do
     --no-upstream-blacklists) opt_no_upstream_blacklists=true;;
     --log) opt_log=true;;
     --strace) opt_strace=true;;
+    --use-lldb-server) opt_use_lldb_server=true;;
     *) die "Unknown option \`$o'.";;
   esac
 done
@@ -251,7 +253,9 @@ else
     export LLDB_DEBUGSERVER_EXTRA_ARG_1="--remote-debug"
   fi
 
-  export LLDB_DEBUGSERVER_PATH="$server_path"
+  if ! $opt_use_lldb_server; then
+    export LLDB_DEBUGSERVER_PATH="$server_path"
+  fi
 fi
 
 export LLDB_TEST_TIMEOUT=8m
