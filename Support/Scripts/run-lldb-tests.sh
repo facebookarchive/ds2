@@ -35,6 +35,7 @@ fi
 
 opt_fast=false
 opt_no_ds2_blacklists=false
+opt_no_upstream_blacklists=false
 opt_log=false
 opt_strace=false
 
@@ -42,6 +43,7 @@ for o in "$@"; do
   case "$o" in
     --fast) opt_fast=true;;
     --no-ds2-blacklists) opt_no_ds2_blacklists=true;;
+    --no-upstream-blacklists) opt_no_upstream_blacklists=true;;
     --log) opt_log=true;;
     --strace) opt_strace=true;;
     *) die "Unknown option \`$o'.";;
@@ -143,8 +145,11 @@ cd "$lldb_path/test"
 blacklist_dir="$top/Support/Testing/Blacklists"
 args=(-q --executable "$lldb_exe" -u CXXFLAGS -u CFLAGS -C "$cc_exe" -v)
 
-args+=("--excluded" "$blacklist_dir/upstream/general.blacklist"
-       "--excluded" "$blacklist_dir/upstream/non-debugserver-tests.blacklist")
+if ! $opt_no_upstream_blacklists; then
+  args+=("--excluded" "$blacklist_dir/upstream/general.blacklist"
+         "--excluded" "$blacklist_dir/upstream/non-debugserver-tests.blacklist")
+fi
+
 if ! $opt_no_ds2_blacklists; then
   args+=("--excluded" "$blacklist_dir/ds2/general.blacklist")
 fi
@@ -160,13 +165,17 @@ if [ -n "${TARGET-}" ]; then
     fi
   elif [[ "${TARGET}" == "Linux-X86" || "${TARGET}" == "Linux-X86-Clang" || "${TARGET}" == "Android-X86" ]]; then
     args+=("--arch=i386")
-    args+=("--excluded" "$blacklist_dir/upstream/x86.blacklist")
+    if ! $opt_no_upstream_blacklists; then
+      args+=("--excluded" "$blacklist_dir/upstream/x86.blacklist")
+    fi
     if ! $opt_no_ds2_blacklists; then
       args+=("--excluded" "$blacklist_dir/ds2/x86.blacklist")
     fi
     if [[ "${PLATFORM-}" = "1" ]]; then
       args+=("--excluded" "$blacklist_dir/ds2/llvm_60.blacklist")
-      args+=("--excluded" "$blacklist_dir/upstream/x86-platform.blacklist")
+      if ! $opt_no_upstream_blacklists; then
+        args+=("--excluded" "$blacklist_dir/upstream/x86-platform.blacklist")
+      fi
     fi
   elif [[ "${TARGET}" == "Android-ARM" ]]; then
     args+=("--arch=arm")
@@ -209,7 +218,9 @@ if [[ "${PLATFORM-}" = "1" ]]; then
 
   args+=("--platform-name=remote-$platform_name" "--platform-url=connect://localhost:$server_port"
          "--platform-working-dir=$working_dir" "--no-multiprocess")
-  args+=("--excluded" "$blacklist_dir/upstream/platform.blacklist")
+  if ! $opt_no_upstream_blacklists; then
+    args+=("--excluded" "$blacklist_dir/upstream/platform.blacklist")
+  fi
   if ! $opt_no_ds2_blacklists; then
     args+=("--excluded" "$blacklist_dir/ds2/platform.blacklist")
   fi
