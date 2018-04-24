@@ -37,10 +37,10 @@ struct YMMHighVector {
   uint8_t value[16];
 };
 
-struct xstate_hdr {
-  uint64_t mask;
-  uint64_t reserved1[2];
-  uint64_t reserved2[5];
+struct xsave_hdr {
+  uint64_t xfeatures_mask;
+  uint64_t xcomp_bv;
+  uint64_t reserved[6];
 } DS2_ATTRIBUTE_PACKED;
 
 #if !defined(NT_X86_XSTATE)
@@ -68,13 +68,13 @@ struct user_fpxregs_struct {
 #if defined(ARCH_X86)
 struct xfpregs_struct {
   user_fpxregs_struct fpregs;
-  xstate_hdr header;
+  xsave_hdr header;
   YMMHighVector ymmh[8];
 } DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
 #elif defined(ARCH_X86_64)
 struct xfpregs_struct {
   user_fpregs_struct fpregs;
-  xstate_hdr header;
+  xsave_hdr header;
   YMMHighVector ymmh[16];
 } DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
 #endif
