@@ -46,6 +46,20 @@ struct X87Register {
   };
 };
 
+enum XFeature : uint64_t {
+  X86_X87 = 1 << 0,
+  X86_SSE = 1 << 1,
+  X86_AVX = 1 << 2,
+  X86_MPX_BNDREGS = 1 << 3,
+  X86_MPX_CSR = 1 << 4,
+  X86_AVX_512_OPMASK = 1 << 5,
+  X86_AVX_512_HI256 = 1 << 6,
+  X86_AVX_512_ZMM = 1 << 7,
+  X86_PROC_TRACE = 1 << 8,
+  X86_PROT_KEYS_USER_REGS = 1 << 9,
+  X86_UNKNOWN_XFEATURE = 1 << 10,
+};
+
 struct CPUState {
   union {
     uint32_t regs[16];
@@ -91,7 +105,9 @@ struct CPUState {
     } avx;
   };
 
-  // TODO - add information about xstate_hdr here
+  struct {
+    uint64_t xfeatures_mask;
+  } xsave_header;
 
   struct {
     uint32_t dr[8];
@@ -109,6 +125,7 @@ public:
   inline void clear() {
     std::memset(&gp, 0, sizeof(gp));
     std::memset(&x87, 0, sizeof(x87));
+    std::memset(&xsave_header, 0, sizeof(xsave_header));
     std::memset(&avx, 0, sizeof(avx));
     std::memset(&dr, 0, sizeof(dr));
 #if defined(OS_LINUX)

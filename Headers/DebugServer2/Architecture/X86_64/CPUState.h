@@ -29,6 +29,7 @@ namespace X86_64 {
 using ds2::Architecture::X86::AVXVector;
 using ds2::Architecture::X86::SSEVector;
 using ds2::Architecture::X86::X87Register;
+using ds2::Architecture::X86::XFeature;
 
 struct EAVXVector {
   uint64_t value[8]; // 512-bit values
@@ -133,7 +134,9 @@ struct CPUState64 {
     } eavx;
   };
 
-  // TODO - add information about xstate_hdr here
+  struct {
+    uint64_t xfeatures_mask;
+  } xsave_header;
 
   struct {
     uint64_t dr[8];
@@ -153,6 +156,7 @@ public:
   inline void clear() {
     std::memset(&gp, 0, sizeof(gp));
     std::memset(&x87, 0, sizeof(x87));
+    std::memset(&xsave_header, 0, sizeof(xsave_header));
     std::memset(&eavx, 0, sizeof(eavx));
     std::memset(&dr, 0, sizeof(dr));
 #if defined(OS_LINUX)

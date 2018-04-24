@@ -66,6 +66,8 @@ static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
     auto avxHigh = reinterpret_cast<uint8_t *>(&state.avx.regs[n]) + sseSize;
     memcpy(avxHigh, ymmh + n * ymmhSize, ymmhSize);
   }
+
+  state.xsave_header.xfeatures_mask = xfpregs.header.xfeatures_mask;
 }
 
 static inline void
@@ -111,6 +113,9 @@ state32_to_user(struct xfpregs_struct &xfpregs,
         reinterpret_cast<const uint8_t *>(&state.avx.regs[n]) + sseSize;
     memcpy(ymmh + n * ymmhSize, avxHigh, ymmhSize);
   }
+
+  xfpregs.header.xfeatures_mask = state.xsave_header.xfeatures_mask;
+  xfpregs.header.xcomp_bv = 0;
 }
 
 //
@@ -165,6 +170,8 @@ static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
     auto avxHigh = reinterpret_cast<uint8_t *>(&state.avx.regs[n]) + sseSize;
     memcpy(avxHigh, ymmh + n * ymmhSize, ymmhSize);
   }
+
+  state.xsave_header.xfeatures_mask = xfpregs.header.xfeatures_mask;
 }
 
 static inline void
@@ -217,6 +224,9 @@ state64_to_user(struct xfpregs_struct &xfpregs,
         reinterpret_cast<const uint8_t *>(&state.avx.regs[n]) + sseSize;
     memcpy(ymmh + n * ymmhSize, avxHigh, ymmhSize);
   }
+
+  xfpregs.header.xfeatures_mask = state.xsave_header.xfeatures_mask;
+  xfpregs.header.xcomp_bv = 0;
 }
 
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
@@ -315,13 +325,6 @@ ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
   struct iovec fpregs_iovec;
   fpregs_iovec.iov_base = &xfpregs;
   fpregs_iovec.iov_len = sizeof(xfpregs);
-
-  // We need this read to fill the kernel header (xfpregs_struct.xstate_hdr)
-  // TODO - add this header to CPUState so we don't need this read
-  if (wrapPtrace(PTRACE_GETREGSET, pid, NT_X86_XSTATE, &fpregs_iovec) < 0) {
-    // If we fail to read the AVX register info, still write the SSE regs
-    fpregs_iovec.iov_len = sizeof(xfpregs.fpregs);
-  }
 
   if (state.is32) {
     state32_to_user(xfpregs, state.state32);
