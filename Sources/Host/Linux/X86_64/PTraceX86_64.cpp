@@ -126,8 +126,10 @@ static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
   state.x87.fctw = xfpregs.fpregs.cwd;
   state.x87.ftag = xfpregs.fpregs.ftw;
   state.x87.fop = xfpregs.fpregs.fop;
-  state.x87.firip = xfpregs.fpregs.rip;
-  state.x87.forip = xfpregs.fpregs.rdp;
+  state.x87.fiseg = xfpregs.fpregs.rip >> 32;
+  state.x87.fioff = xfpregs.fpregs.rip & 0xFFFFFFFF;
+  state.x87.foseg = xfpregs.fpregs.rdp >> 32;
+  state.x87.fooff = xfpregs.fpregs.rdp & 0xFFFFFFFF;
 
   auto st_space = reinterpret_cast<uint8_t const *>(xfpregs.fpregs.st_space);
   static const size_t x87Size = sizeof(state.x87.regs[0].bytes);
@@ -175,8 +177,10 @@ state64_to_user(struct xfpregs_struct &xfpregs,
   xfpregs.fpregs.cwd = state.x87.fctw;
   xfpregs.fpregs.ftw = state.x87.ftag;
   xfpregs.fpregs.fop = state.x87.fop;
-  xfpregs.fpregs.rip = state.x87.firip;
-  xfpregs.fpregs.rdp = state.x87.forip;
+  xfpregs.fpregs.rip =
+      (static_cast<uint64_t>(state.x87.fiseg) << 32) | state.x87.fioff;
+  xfpregs.fpregs.rdp =
+      (static_cast<uint64_t>(state.x87.foseg) << 32) | state.x87.fooff;
 
   auto st_space = reinterpret_cast<uint8_t *>(xfpregs.fpregs.st_space);
   static const size_t x87Size = sizeof(state.x87.regs[0].bytes);

@@ -85,8 +85,10 @@ struct CPUState64 {
     uint16_t fstw;
     uint16_t fctw;
     uint16_t ftag;
-    uint32_t firip;
-    uint32_t forip;
+    uint32_t fioff;
+    uint32_t fiseg;
+    uint32_t fooff;
+    uint32_t foseg;
     uint16_t fop;
   } x87;
 
@@ -368,10 +370,10 @@ public:
       _GETREG2(x87, fstat, fstw);
       _GETREG2(x87, fctrl, fctw);
       _GETREG(x87, ftag);
-      _GETREG2(gp, fiseg, cs);
-      _GETREG2(x87, fioff, firip);
-      _GETREG2(gp, foseg, cs);
-      _GETREG2(x87, fooff, forip);
+      _GETREG2(x87, fiseg, fiseg);
+      _GETREG2(x87, fioff, fioff);
+      _GETREG2(x87, foseg, foseg);
+      _GETREG2(x87, fooff, fooff);
       _GETREG(x87, fop);
 
       _GETREG32(gp, eax, rax);
@@ -522,10 +524,10 @@ public:
       _GETREG2(x87, fstat, fstw);
       _GETREG2(x87, fctrl, fctw);
       _GETREG(x87, ftag);
-      _GETREG2(gp, fiseg, cs);
-      _GETREG2(x87, fioff, firip);
-      _GETREG2(gp, foseg, cs);
-      _GETREG2(x87, fooff, forip);
+      _GETREG2(x87, fiseg, fiseg);
+      _GETREG2(x87, fioff, fioff);
+      _GETREG2(x87, foseg, foseg);
+      _GETREG2(x87, fooff, fooff);
       _GETREG(x87, fop);
 
       // ymm0 maps to xmm0 for gdb
