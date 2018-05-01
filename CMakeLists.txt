@@ -47,8 +47,7 @@ if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
   set(CMAKE_REQUIRED_DEFINITIONS)
 
   include(CheckTypeSize)
-  set(CMAKE_EXTRA_INCLUDE_FILES unistd.h sys/ptrace.h sys/user.h)
-  CHECK_TYPE_SIZE("struct user_fpxregs_struct" STRUCT_USER_FPXREGS_STRUCT)
+  set(CMAKE_EXTRA_INCLUDE_FILES unistd.h sys/ptrace.h)
   CHECK_TYPE_SIZE("enum __ptrace_request" ENUM_PTRACE_REQUEST)
   set(CMAKE_EXTRA_INCLUDE_FILES)
 endif ()
@@ -330,7 +329,7 @@ endif ()
 if ("${OS_NAME}" MATCHES "Linux" OR "${OS_NAME}" MATCHES "Android")
   foreach (CHECK SYS_PERSONALITY_H GETTID POSIX_OPENPT TGKILL
            PROCESS_VM_READV PROCESS_VM_WRITEV
-           STRUCT_USER_FPXREGS_STRUCT ENUM_PTRACE_REQUEST)
+           ENUM_PTRACE_REQUEST)
     if (HAVE_${CHECK})
       target_compile_definitions(ds2 PRIVATE HAVE_${CHECK})
     endif ()

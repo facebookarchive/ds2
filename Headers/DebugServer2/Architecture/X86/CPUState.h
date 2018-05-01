@@ -33,17 +33,7 @@ struct AVXVector {
 };
 
 struct X87Register {
-  union {
-#if !defined(OS_WIN32)
-    // On Windows, long double and double are the same type.
-    // https://msdn.microsoft.com/en-us/library/9cx8xs15.aspx
-    long double f80;
-#endif
-    double f64;
-    float f32;
-    uint64_t mm;
-    uint8_t bytes[10];
-  };
+  uint8_t data[10];
 };
 
 enum XFeature : uint64_t {
@@ -113,6 +103,8 @@ struct CPUState {
     uint32_t dr[8];
   } dr;
 
+  uint64_t xcr0;
+
 #if defined(OS_LINUX)
   struct {
     uint32_t orig_eax;
@@ -128,6 +120,7 @@ public:
     std::memset(&xsave_header, 0, sizeof(xsave_header));
     std::memset(&avx, 0, sizeof(avx));
     std::memset(&dr, 0, sizeof(dr));
+    std::memset(&xcr0, 0, sizeof(xcr0));
 #if defined(OS_LINUX)
     std::memset(&linux_gp, 0, sizeof(linux_gp));
 #endif
@@ -306,14 +299,14 @@ public:
       _GETREG8H(gp, ch, ecx);
       _GETREG8H(gp, dh, edx);
 
-      _GETREG2(x87, st0, regs[0].bytes);
-      _GETREG2(x87, st1, regs[1].bytes);
-      _GETREG2(x87, st2, regs[2].bytes);
-      _GETREG2(x87, st3, regs[3].bytes);
-      _GETREG2(x87, st4, regs[4].bytes);
-      _GETREG2(x87, st5, regs[5].bytes);
-      _GETREG2(x87, st6, regs[6].bytes);
-      _GETREG2(x87, st7, regs[7].bytes);
+      _GETREG2(x87, st0, regs[0].data);
+      _GETREG2(x87, st1, regs[1].data);
+      _GETREG2(x87, st2, regs[2].data);
+      _GETREG2(x87, st3, regs[3].data);
+      _GETREG2(x87, st4, regs[4].data);
+      _GETREG2(x87, st5, regs[5].data);
+      _GETREG2(x87, st6, regs[6].data);
+      _GETREG2(x87, st7, regs[7].data);
       _GETREG2(x87, fstat, fstw);
       _GETREG2(x87, fctrl, fctw);
       _GETREG(x87, ftag);
@@ -371,14 +364,14 @@ public:
       _GETREG(gp, gs);
       _GETREG(gp, eflags);
 
-      _GETREG2(x87, st0, regs[0].bytes);
-      _GETREG2(x87, st1, regs[1].bytes);
-      _GETREG2(x87, st2, regs[2].bytes);
-      _GETREG2(x87, st3, regs[3].bytes);
-      _GETREG2(x87, st4, regs[4].bytes);
-      _GETREG2(x87, st5, regs[5].bytes);
-      _GETREG2(x87, st6, regs[6].bytes);
-      _GETREG2(x87, st7, regs[7].bytes);
+      _GETREG2(x87, st0, regs[0].data);
+      _GETREG2(x87, st1, regs[1].data);
+      _GETREG2(x87, st2, regs[2].data);
+      _GETREG2(x87, st3, regs[3].data);
+      _GETREG2(x87, st4, regs[4].data);
+      _GETREG2(x87, st5, regs[5].data);
+      _GETREG2(x87, st6, regs[6].data);
+      _GETREG2(x87, st7, regs[7].data);
       _GETREG2(x87, fstat, fstw);
       _GETREG2(x87, fctrl, fctw);
       _GETREG(x87, ftag);

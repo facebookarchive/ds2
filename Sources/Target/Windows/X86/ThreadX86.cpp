@@ -67,8 +67,8 @@ ErrorCode Thread::readCPUState(Architecture::CPUState &state) {
   uint8_t const *st_space =
       reinterpret_cast<uint8_t const *>(context.FloatSave.RegisterArea);
   for (size_t n = 0; n < 8; n++) {
-    static const int reg_size = sizeof(state.x87.regs[0].bytes);
-    memcpy(state.x87.regs[n].bytes, st_space + n * reg_size, reg_size);
+    memcpy(state.x87.regs[n].data, st_space + n * sizeof(state.x87.regs[n]),
+           sizeof(state.x87.regs[n].data));
   }
 
   // SSE state
