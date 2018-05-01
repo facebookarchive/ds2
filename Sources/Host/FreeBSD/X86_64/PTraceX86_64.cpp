@@ -47,8 +47,8 @@ static inline void user_to_state32(ds2::Architecture::X86_64::CPUState32 &state,
 
   uint8_t const *st_space = reinterpret_cast<uint8_t const *>(user.fpr_acc);
   for (size_t n = 0; n < 8; n++) {
-    memcpy(state.x87.regs[n].bytes, st_space + n * 10,
-           sizeof(state.x87.regs[n].bytes));
+    memcpy(state.x87.regs[n].data, st_space + n * 10,
+           sizeof(state.x87.regs[n].data));
   }
 
   //
@@ -82,8 +82,8 @@ state32_to_user(struct fpreg &user,
 
   uint8_t *st_space = reinterpret_cast<uint8_t *>(user.fpr_acc);
   for (size_t n = 0; n < 8; n++) {
-    memcpy(st_space + n * 10, state.x87.regs[n].bytes,
-           sizeof(state.x87.regs[n].bytes));
+    memcpy(st_space + n * 10, state.x87.regs[n].data,
+           sizeof(state.x87.regs[n].data));
   }
 
   //
@@ -112,7 +112,6 @@ static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
   state.x87.fstw = x87->en_sw;
   state.x87.fctw = x87->en_cw;
   state.x87.ftag = x87->en_tw;
-  state.x87.firip = x87->en_fip;
 
   // state.x87.fop = user.r_fop;
   // state.x87.firip = user.r_rip;
@@ -120,8 +119,8 @@ static inline void user_to_state64(ds2::Architecture::X86_64::CPUState64 &state,
 
   uint8_t const *st_space = reinterpret_cast<uint8_t const *>(user.fpr_acc);
   for (size_t n = 0; n < 8; n++) {
-    memcpy(state.x87.regs[n].bytes, st_space + n * 10,
-           sizeof(state.x87.regs[n].bytes));
+    memcpy(state.x87.regs[n].data, st_space + n * 10,
+           sizeof(state.x87.regs[n].data));
   }
 
   //
@@ -152,8 +151,8 @@ state64_to_user(struct fpreg &user,
 
   uint8_t *st_space = reinterpret_cast<uint8_t *>(user.fpr_acc);
   for (size_t n = 0; n < 8; n++) {
-    memcpy(st_space + n * 16, state.x87.regs[n].bytes,
-           sizeof(state.x87.regs[n].bytes));
+    memcpy(st_space + n * 16, state.x87.regs[n].data,
+           sizeof(state.x87.regs[n].data));
   }
 
   //

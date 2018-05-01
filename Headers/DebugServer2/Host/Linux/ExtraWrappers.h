@@ -31,6 +31,8 @@
 #endif // ARCH_ARM && !ARM_VFPREGS_SIZE
 
 #if defined(ARCH_X86) || defined(ARCH_X86_64)
+static constexpr size_t x87Padding = 6;
+
 // Required structs for PTrace GETREGSET with NT_X86_STATE
 // These structs are not made available by the system headers
 struct YMMHighVector {
@@ -47,37 +49,43 @@ struct xsave_hdr {
 #define NT_X86_XSTATE 0x202
 #endif // !NT_X86_XSTATE
 
-#if !defined(HAVE_STRUCT_USER_FPXREGS_STRUCT)
-struct user_fpxregs_struct {
-  unsigned short cwd;
-  unsigned short swd;
-  unsigned short twd;
-  unsigned short fop;
-  long fip;
-  long fcs;
-  long foo;
-  long fos;
-  long mxcsr;
-  long reserved;
-  long st_space[32];
-  long xmm_space[32];
-  long padding[56];
-};
-#endif // !HAVE_STRUCT_USER_FPXREGS_STRUCT
-
+struct fxsave_struct {
+  uint16_t fctw;
+  uint16_t fstw;
+  uint16_t ftag;
+  uint16_t fop;
+  uint32_t fioff;
+  uint32_t fiseg;
+  uint32_t fooff;
+  uint32_t foseg;
+  uint32_t mxcsr;
+  uint32_t mxcsrmask;
+  uint8_t st_space[128]; // There are 8 stmm registers, each one takes up
+                         // 10 bytes of data and 6 bytes of padding for a total
+                         // of 16 bytes per register (8 * 16 = 128)
 #if defined(ARCH_X86)
-struct xfpregs_struct {
-  user_fpxregs_struct fpregs;
-  xsave_hdr header;
-  YMMHighVector ymmh[8];
-} DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
+  uint8_t xmm_space[128]; // There are 8 xmm registers, each take up 16 bytes
+                          // (8 * 16 = 128)
+  uint8_t padding1[176];
 #elif defined(ARCH_X86_64)
-struct xfpregs_struct {
-  user_fpregs_struct fpregs;
-  xsave_hdr header;
-  YMMHighVector ymmh[16];
-} DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
+  uint8_t xmm_space[256]; // There are 16 xmm registers, each take up 16 bytes
+                          // (16 * 16 = 256)
+  uint8_t padding1[48];
 #endif
+  uint64_t xcr0; // xcr0 occurs at byte offset 464 into this structure
+  uint8_t padding[40];
+};
+
+struct xsave_struct {
+  fxsave_struct fpregs;
+  xsave_hdr header;
+#if defined(ARCH_X86)
+  YMMHighVector ymmh[8];
+#elif defined(ARCH_X86_64)
+  YMMHighVector ymmh[16];
+#endif
+} DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
+
 #endif // ARCH_X86 || ARCH_X86_64
 
 #if !defined(HAVE_POSIX_OPENPT)

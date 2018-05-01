@@ -142,6 +142,8 @@ struct CPUState64 {
     uint64_t dr[8];
   } dr;
 
+  uint64_t xcr0;
+
 #if defined(OS_LINUX)
   struct {
     uint64_t orig_rax;
@@ -159,6 +161,7 @@ public:
     std::memset(&xsave_header, 0, sizeof(xsave_header));
     std::memset(&eavx, 0, sizeof(eavx));
     std::memset(&dr, 0, sizeof(dr));
+    std::memset(&xcr0, 0, sizeof(xcr0));
 #if defined(OS_LINUX)
     std::memset(&linux_gp, 0, sizeof(linux_gp));
 #endif
@@ -363,14 +366,14 @@ public:
       _GETREG(gp, gs);
       _GETREG(gp, eflags);
 
-      _GETREG2(x87, st0, regs[0].bytes);
-      _GETREG2(x87, st1, regs[1].bytes);
-      _GETREG2(x87, st2, regs[2].bytes);
-      _GETREG2(x87, st3, regs[3].bytes);
-      _GETREG2(x87, st4, regs[4].bytes);
-      _GETREG2(x87, st5, regs[5].bytes);
-      _GETREG2(x87, st6, regs[6].bytes);
-      _GETREG2(x87, st7, regs[7].bytes);
+      _GETREG2(x87, st0, regs[0].data);
+      _GETREG2(x87, st1, regs[1].data);
+      _GETREG2(x87, st2, regs[2].data);
+      _GETREG2(x87, st3, regs[3].data);
+      _GETREG2(x87, st4, regs[4].data);
+      _GETREG2(x87, st5, regs[5].data);
+      _GETREG2(x87, st6, regs[6].data);
+      _GETREG2(x87, st7, regs[7].data);
       _GETREG2(x87, fstat, fstw);
       _GETREG2(x87, fctrl, fctw);
       _GETREG(x87, ftag);
@@ -517,14 +520,14 @@ public:
       _GETREG(gp, gs);
       _GETREG(gp, eflags);
 
-      _GETREG2(x87, st0, regs[0].bytes);
-      _GETREG2(x87, st1, regs[1].bytes);
-      _GETREG2(x87, st2, regs[2].bytes);
-      _GETREG2(x87, st3, regs[3].bytes);
-      _GETREG2(x87, st4, regs[4].bytes);
-      _GETREG2(x87, st5, regs[5].bytes);
-      _GETREG2(x87, st6, regs[6].bytes);
-      _GETREG2(x87, st7, regs[7].bytes);
+      _GETREG2(x87, st0, regs[0].data);
+      _GETREG2(x87, st1, regs[1].data);
+      _GETREG2(x87, st2, regs[2].data);
+      _GETREG2(x87, st3, regs[3].data);
+      _GETREG2(x87, st4, regs[4].data);
+      _GETREG2(x87, st5, regs[5].data);
+      _GETREG2(x87, st6, regs[6].data);
+      _GETREG2(x87, st7, regs[7].data);
       _GETREG2(x87, fstat, fstw);
       _GETREG2(x87, fctrl, fctw);
       _GETREG(x87, ftag);
