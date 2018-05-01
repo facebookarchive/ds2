@@ -5,6 +5,5 @@ TestProcessIO.ProcessIOTestCase.test_stdout_redirection
 TestProcessIO.ProcessIOTestCase.test_stdout_stderr_redirection
 TestIntegerTypes.IntegerTypesTestCase
 TestIntegerTypesExpr.IntegerTypesExprTestCase
-TestFloatTypes.FloatTypesTestCase
 TestFloatTypesExpr.FloatTypesExprTestCase
 TestSettings.SettingsCommandTestCase
