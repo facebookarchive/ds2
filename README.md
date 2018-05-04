@@ -43,18 +43,20 @@ ds2 accepts the following options:
 ```
 usage: ds2 [RUN_MODE] [OPTIONS] [[HOST]:PORT] [-- PROGRAM [ARGUMENTS...]]
   -a, --attach ARG           attach to the name or PID specified
+  -f, --daemonize            detach and become a daemon
   -d, --debug                enable debug log output
-  -D, --remote-debug         enable log for remote protocol packets
+  -F, --fd ARG               use a file descriptor to communicate
   -g, --gdb-compat           force ds2 to run in gdb compat mode
-  -k, --keep-alive           keep the server alive after the client disconnects
-  -L, --list-processes       list processes debuggable by the current user
   -o, --log-file ARG         output log messages to the file specified
   -N, --named-pipe ARG       determine a port dynamically and write back to FIFO
   -n, --no-colors            disable colored output
+  -D, --remote-debug         enable log for remote protocol packets
   -R, --reverse-connect      connect back to the debugger at [HOST]:PORT
-  -e, --set-env              add an element to the environment before launch
+  -e, --set-env ARG...       add an element to the environment before launch
   -S, --setsid               make ds2 run in its own session
-  -E, --unset-env            remove an element from the environment before lauch
+  -E, --unset-env ARG...     remove an element from the environment before lauch
+  -l, --listen ARG           specify the [host]:port to listen on
+  [host]:port                the [host]:port to connect to
 ```
 
 After building ds2 for your target, run it with the binary to debug, or attach
