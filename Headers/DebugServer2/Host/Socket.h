@@ -32,7 +32,7 @@ private:
 #endif
 
 protected:
-  enum State { kStateInvalid = 0, kStateListening = 1, kStateConnected = 2 };
+  enum class State { Invalid, Listening, Connected };
 
 protected:
   SOCKET _handle;
@@ -51,8 +51,10 @@ public:
   inline bool valid() const { return (_handle != INVALID_SOCKET); }
 
 public:
-  inline bool listening() const { return (_state == kStateListening); }
-  inline bool connected() const override { return (_state == kStateConnected); }
+  inline bool listening() const { return (_state == State::Listening); }
+  inline bool connected() const override {
+    return (_state == State::Connected);
+  }
 
 protected:
   bool create(int af);
