@@ -167,10 +167,7 @@ ds2::Target::Process *Process::Create(ProcessSpawner &spawner) {
   return process.release();
 }
 
-void Process::resetSignalPass() {
-  _passthruSignals.clear();
-  _passthruSignals.insert(SIGINT);
-}
+void Process::resetSignalPass() { _passthruSignals.clear(); }
 
 void Process::setSignalPass(int signo, bool set) {
   if (set) {
