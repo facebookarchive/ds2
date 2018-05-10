@@ -48,10 +48,10 @@ namespace ds2 {
 namespace Host {
 
 Socket::Socket()
-    : _handle(INVALID_SOCKET), _state(kStateInvalid), _lastError(0) {}
+    : _handle(INVALID_SOCKET), _state(State::Invalid), _lastError(0) {}
 
 Socket::Socket(SOCKET handle)
-    : _handle(handle), _state(kStateConnected), _lastError(0) {
+    : _handle(handle), _state(State::Connected), _lastError(0) {
 #if defined(OS_POSIX)
   ::fcntl(_handle, F_SETFD, FD_CLOEXEC);
   ::fcntl(_handle, F_SETFL, O_NONBLOCK);
@@ -106,7 +106,7 @@ void Socket::close() {
   ::close(_handle);
 #endif
 
-  _state = kStateInvalid;
+  _state = State::Invalid;
   _handle = INVALID_SOCKET;
   _lastError = 0;
 }
@@ -178,7 +178,7 @@ bool Socket::listen(std::string const &address, std::string const &port) {
     return false;
   }
 
-  _state = kStateListening;
+  _state = State::Listening;
   return true;
 }
 
@@ -232,7 +232,7 @@ bool Socket::listen(std::string const &path, bool abstract) {
     return false;
   }
 
-  _state = kStateListening;
+  _state = State::Listening;
   return true;
 }
 #endif
@@ -302,7 +302,7 @@ bool Socket::connect(std::string const &host, std::string const &port) {
 
   ::freeaddrinfo(results);
 
-  _state = kStateConnected;
+  _state = State::Connected;
   setNonBlocking();
 
   return true;
