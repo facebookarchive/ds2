@@ -69,6 +69,10 @@ for o in "$@"; do
   esac
 done
 
+if $opt_use_lldb_server && $opt_log; then
+  die "Logging with lldb-server is unsupported"
+fi
+
 # We modify $PATH here so that the lldb testing framework can call adb
 export PATH="/tmp/android-sdk-${host_platform_name}/platform-tools:${PATH}"
 
@@ -198,8 +202,10 @@ exec strace -o $build_dir/ds2-strace.log $build_dir/ds2 "\$@"
 EEOOFF
   chmod +x "$build_dir/ds2-strace.sh"
   server_path="$build_dir/ds2-strace.sh"
+elif $opt_use_lldb_server; then
+  server_path="$(which lldb-server-6.0)"
 else
-  server_path="${DEBUGSERVER_PATH-$build_dir/ds2}"
+  server_path="$build_dir/ds2"
 fi
 
 if [[ "${PLATFORM-}" = "1" ]]; then
@@ -226,7 +232,7 @@ if [[ "${PLATFORM-}" = "1" ]]; then
 
   server_args=("p" "--server" "--listen" "$server_port")
 
-  if $opt_log; then
+  if ! $opt_use_lldb_server && $opt_log; then
     server_args+=("--remote-debug" "--log-file=$working_dir/$(basename "$server_path").log")
   fi
 
@@ -245,14 +251,11 @@ if [[ "${PLATFORM-}" = "1" ]]; then
   fi
   sleep 3
 else
-  if $opt_log; then
+  if ! $opt_use_lldb_server && $opt_log; then
     export LLDB_DEBUGSERVER_LOG_FILE="$build_dir/ds2.log"
     export LLDB_DEBUGSERVER_EXTRA_ARG_1="--remote-debug"
   fi
-
-  if ! $opt_use_lldb_server; then
-    export LLDB_DEBUGSERVER_PATH="$server_path"
-  fi
+  export LLDB_DEBUGSERVER_PATH="$server_path"
 fi
 
 export LLDB_TEST_TIMEOUT=8m
