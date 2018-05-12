@@ -13,6 +13,30 @@
 # against ds2. It requires a few hacks in the testing infra to disable
 # broken unit tests.
 
+cherry_pick_patches() {
+  cd "$1"
+
+  # Disabled and enabled tests
+  local testingPath="$top/Support/Testing"
+
+  if [[ "$platform_name" = "android" ]]; then
+    # This patch is purely to improve performance on CircleCI, won't ever be upstreamed.
+    patch -d "$lldb_path" -p1 < "$testingPath/Patches/android-search-paths.patch"
+    patch -d "$lldb_path" -p1 < "$testingPath/Patches/getplatform-workaround.patch"
+  fi
+
+  cd "$OLDPWD"
+}
+
+get_android_compiler() {
+  case "$1" in
+    *-ARM) cc_name="arm-linux-androideabi-gcc";;
+    *-X86) cc_name="i686-linux-android-gcc";;
+    *) die "Running LLDB tests on $1 is not yet supported"
+  esac
+  echo "$(find /tmp/android-ndk -name $cc_name)"
+}
+
 REPO_BASE="https://github.com/llvm-mirror"
 UPSTREAM_BRANCH="release_60"
 TARGET="${TARGET-${CIRCLE_JOB}}"
@@ -54,30 +78,6 @@ if [[ "${TARGET-}" = Android-* ]]; then
 else
   platform_name="linux"
 fi
-
-cherry_pick_patches() {
-  cd "$1"
-
-  # Disabled and enabled tests
-  local testingPath="$top/Support/Testing"
-
-  if [[ "$platform_name" = "android" ]]; then
-    # This patch is purely to improve performance on CircleCI, won't ever be upstreamed.
-    patch -d "$lldb_path" -p1 < "$testingPath/Patches/android-search-paths.patch"
-    patch -d "$lldb_path" -p1 < "$testingPath/Patches/getplatform-workaround.patch"
-  fi
-
-  cd "$OLDPWD"
-}
-
-get_android_compiler() {
-  case "$1" in
-    *-ARM) cc_name="arm-linux-androideabi-gcc";;
-    *-X86) cc_name="i686-linux-android-gcc";;
-    *) die "Running LLDB tests on $1 is not yet supported"
-  esac
-  echo "$(find /tmp/android-ndk -name $cc_name)"
-}
 
 if [ "$(linux_distribution)" == "centos" ]; then
   llvm_path="$build_dir/llvm"
