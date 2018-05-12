@@ -21,17 +21,10 @@ top="$(git rev-parse --show-toplevel)"
 build_dir="$PWD"
 
 source "$top/Support/Scripts/common.sh"
-
-[ "$(uname)" == "Linux" ] || die "The lldb test suite requires a Linux host environment."
-[ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
-
-# We modify $PATH here so that the lldb testing framework can call adb
 host_platform_name=$(get_host_platform_name)
-export PATH="/tmp/android-sdk-${host_platform_name}/platform-tools:${PATH}"
 
-if [[ "$TARGET" == Android-* ]]; then
-  adb wait-for-device
-fi
+[ "${host_platform_name}" == "linux" ] || die "The lldb test suite requires a Linux host environment."
+[ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
 
 opt_fast=false
 opt_no_ds2_blacklists=false
@@ -52,7 +45,11 @@ for o in "$@"; do
   esac
 done
 
+# We modify $PATH here so that the lldb testing framework can call adb
+export PATH="/tmp/android-sdk-${host_platform_name}/platform-tools:${PATH}"
+
 if [[ "${TARGET-}" = Android-* ]]; then
+  adb wait-for-device
   platform_name="android"
 else
   platform_name="linux"
