@@ -230,7 +230,7 @@ if [[ "${PLATFORM-}" = "1" ]]; then
     args+=("--excluded" "$blacklist_dir/ds2/platform.blacklist")
   fi
 
-  server_args=("p" "--server" "--listen" "$server_port")
+  server_args=("p" "--server" "--listen" "*:$server_port")
 
   if ! $opt_use_lldb_server && $opt_log; then
     server_args+=("--remote-debug" "--log-file=$working_dir/$(basename "$server_path").log")
