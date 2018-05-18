@@ -6,3 +6,4 @@ TestCreateDuringInstructionStep.CreateDuringInstructionStepTestCase.test_step_in
 skip
 TestChangeValueAPI.ChangeValueAPITestCase.test_change_value
 TestIntegerTypesExpr.IntegerTypesExprTestCase.test_unsigned_int_type
+TestReturnValue
