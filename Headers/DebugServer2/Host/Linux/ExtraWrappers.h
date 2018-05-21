@@ -60,18 +60,14 @@ struct fxsave_struct {
   uint32_t foseg;
   uint32_t mxcsr;
   uint32_t mxcsrmask;
-  uint8_t st_space[128]; // There are 8 stmm registers, each one takes up
-                         // 10 bytes of data and 6 bytes of padding for a total
-                         // of 16 bytes per register (8 * 16 = 128)
-#if defined(ARCH_X86)
-  uint8_t xmm_space[128]; // There are 8 xmm registers, each take up 16 bytes
-                          // (8 * 16 = 128)
-  uint8_t padding1[176];
-#elif defined(ARCH_X86_64)
+  uint8_t st_space[128];  // There are 8 stmm registers, each one takes up
+                          // 10 bytes of data and 6 bytes of padding for a total
+                          // of 16 bytes per register (8 * 16 = 128).
   uint8_t xmm_space[256]; // There are 16 xmm registers, each take up 16 bytes
-                          // (16 * 16 = 256)
+                          // (16 * 16 = 256).
+                          // NOTE: x86 only uses the first 8 registers, the
+                          // second 128 bytes act as padding.
   uint8_t padding1[48];
-#endif
   uint64_t xcr0; // xcr0 occurs at byte offset 464 into this structure
   uint8_t padding[40];
 };
@@ -79,11 +75,8 @@ struct fxsave_struct {
 struct xsave_struct {
   fxsave_struct fpregs;
   xsave_hdr header;
-#if defined(ARCH_X86)
-  YMMHighVector ymmh[8];
-#elif defined(ARCH_X86_64)
-  YMMHighVector ymmh[16];
-#endif
+  YMMHighVector ymmh[16]; // NOTE: x86 only uses the first 8 registers, the
+                          // the second 128 bytes act as padding.
 } DS2_ATTRIBUTE_PACKED DS2_ATTRIBUTE_ALIGNED(64);
 
 #endif // ARCH_X86 || ARCH_X86_64
