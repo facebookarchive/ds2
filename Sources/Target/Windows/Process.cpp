@@ -17,6 +17,7 @@
 #include "DebugServer2/Types.h"
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/ScopedJanitor.h"
+#include "DebugServer2/Utils/String.h"
 #include "DebugServer2/Utils/Stringify.h"
 
 #include <psapi.h>
@@ -569,7 +570,7 @@ ErrorCode Process::enumerateSharedLibraries(
     nameSize = GetModuleFileNameExW(_handle, m, nameStr, sizeof(nameStr));
     if (nameSize == 0)
       return Platform::TranslateError();
-    sl.path = Platform::WideToNarrowString(std::wstring(nameStr, nameSize));
+    sl.path = ds2::Utils::WideToNarrowString(std::wstring(nameStr, nameSize));
 
     // The following two transforms ensure that the paths we return to the
     // debugger look like unix paths. This shouldn't be required but LLDB seems

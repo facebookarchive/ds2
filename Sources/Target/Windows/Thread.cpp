@@ -15,6 +15,7 @@
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
+#include "DebugServer2/Utils/String.h"
 #include "DebugServer2/Utils/Stringify.h"
 
 #include <cinttypes>
@@ -229,7 +230,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
 
   skip_name:
     DS2LOG(Debug, "new DLL loaded: %s, base=%" PRI_PTR,
-           Host::Platform::WideToNarrowString(name).c_str(),
+           ds2::Utils::WideToNarrowString(name).c_str(),
            PRI_PTR_CAST(de.u.LoadDll.lpBaseOfDll));
 
     if (de.u.LoadDll.hFile != NULL) {
@@ -271,7 +272,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
         const_cast<char *>(buffer.c_str()), buffer.size()));
 
     _stopInfo.debugString =
-        dsInfo.fUnicode ? Platform::WideToNarrowString(std::wstring(
+        dsInfo.fUnicode ? ds2::Utils::WideToNarrowString(std::wstring(
                               reinterpret_cast<const wchar_t *>(buffer.c_str()),
                               dsInfo.nDebugStringLength - 1))
                         : std::move(buffer);

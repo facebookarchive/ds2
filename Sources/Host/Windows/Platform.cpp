@@ -19,7 +19,6 @@
 #include <lmcons.h>
 #include <psapi.h>
 #include <shlwapi.h>
-#include <stringapiset.h>
 #include <vector>
 #include <windows.h>
 #include <winsock2.h>
@@ -121,7 +120,7 @@ char const *Platform::GetOSKernelPath() {
     if (rc == 0 || rc >= sizeof(wideKernelPath))
       goto error;
 
-    kernelPath = WideToNarrowString(wideKernelPath);
+    kernelPath = ds2::Utils::WideToNarrowString(wideKernelPath);
     kernelPath.append("\\System32\\ntoskrnl.exe");
   }
 
@@ -141,7 +140,7 @@ bool Platform::GetUserName(UserId const &uid, std::string &name) {
   if (rc == 0)
     return false;
 
-  name = WideToNarrowString(nameStr);
+  name = ds2::Utils::WideToNarrowString(nameStr);
   return true;
 }
 
@@ -159,7 +158,7 @@ bool Platform::IsFilePresent(std::string const &path) {
   // BOOL and bool are not the same type on windows. Specify `== TRUE` to
   // silence a warning.
   WIN32_FILE_ATTRIBUTE_DATA attributes; // unused
-  return ::GetFileAttributesExW(NarrowToWideString(path).c_str(),
+  return ::GetFileAttributesExW(ds2::Utils::NarrowToWideString(path).c_str(),
                                 GetFileExInfoStandard, &attributes) == TRUE;
 }
 
@@ -169,11 +168,12 @@ std::string Platform::GetWorkingDirectory() {
   std::vector<WCHAR> pathStorage(pathSize);
   ::GetCurrentDirectoryW(pathSize, pathStorage.data());
 
-  return WideToNarrowString(std::wstring(pathStorage.data()));
+  return ds2::Utils::WideToNarrowString(std::wstring(pathStorage.data()));
 }
 
 bool Platform::SetWorkingDirectory(std::string const &directory) {
-  return ::SetCurrentDirectoryW(NarrowToWideString(directory).c_str()) == TRUE;
+  return ::SetCurrentDirectoryW(
+             ds2::Utils::NarrowToWideString(directory).c_str()) == TRUE;
 }
 
 ds2::ProcessId Platform::GetCurrentProcessId() {
@@ -191,7 +191,7 @@ const char *Platform::GetSelfExecutablePath() {
     if (rc == 0 || rc >= sizeof(filenameStr))
       goto error;
 
-    filename = WideToNarrowString(filenameStr);
+    filename = ds2::Utils::WideToNarrowString(filenameStr);
   }
 
 error:
@@ -206,7 +206,7 @@ bool Platform::GetCurrentEnvironment(EnvironmentBlock &env) {
 
   while (*envStrings) {
     std::string envStr;
-    envStr = WideToNarrowString(envStrings);
+    envStr = ds2::Utils::WideToNarrowString(envStrings);
 
     size_t equal = envStr.find('=');
     DS2ASSERT(equal != std::string::npos);
@@ -292,7 +292,7 @@ bool Platform::GetProcessInfo(ProcessId pid, ProcessInfo &info) {
     if (!rc)
       goto error;
 
-    info.name = WideToNarrowString(processName);
+    info.name = ds2::Utils::WideToNarrowString(processName);
   }
 
   // Get process user ID.
@@ -374,30 +374,6 @@ std::string Platform::GetThreadName(ProcessId pid, ThreadId tid) {
   // handshake between a process and VS to transmit thread names so we
   // might end up using something similar for the inferior.
   return "";
-}
-
-std::wstring Platform::NarrowToWideString(std::string const &s) {
-  std::vector<wchar_t> res;
-  int size;
-
-  size = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, nullptr, 0);
-  DS2ASSERT(size != 0);
-  res.resize(size);
-  MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, res.data(), size);
-  return res.data();
-}
-
-std::string Platform::WideToNarrowString(std::wstring const &s) {
-  std::vector<char> res;
-  int size;
-
-  size = WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, nullptr, 0, nullptr,
-                             nullptr);
-  DS2ASSERT(size != 0);
-  res.resize(size);
-  WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, res.data(), size, nullptr,
-                      nullptr);
-  return res.data();
 }
 } // namespace Host
 } // namespace ds2

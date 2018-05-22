@@ -77,13 +77,6 @@ public:
 
 public:
   static std::string GetThreadName(ProcessId pid, ThreadId tid);
-
-// TODO: Move these to Utils/
-#if defined(OS_WIN32)
-public:
-  static std::wstring NarrowToWideString(std::string const &s);
-  static std::string WideToNarrowString(std::wstring const &s);
-#endif
 };
 } // namespace Host
 } // namespace ds2

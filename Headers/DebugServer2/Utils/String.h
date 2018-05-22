@@ -17,6 +17,10 @@
 #include <sstream>
 #include <string>
 
+#if defined(OS_WIN32)
+#include <windows.h>
+#endif
+
 #define STR_HELPER(S) #S
 #define STR(S) STR_HELPER(S)
 
@@ -68,6 +72,32 @@ static inline int SNPrintf(char *str, size_t size, char const *format, ...) {
   va_end(ap);
   return res;
 }
+
+#if defined(OS_WIN32)
+static inline std::wstring NarrowToWideString(std::string const &s) {
+  std::vector<wchar_t> res;
+  int size;
+
+  size = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, nullptr, 0);
+  DS2ASSERT(size != 0);
+  res.resize(size);
+  MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, res.data(), size);
+  return res.data();
+}
+
+static inline std::string WideToNarrowString(std::wstring const &s) {
+  std::vector<char> res;
+  int size;
+
+  size = WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, nullptr, 0, nullptr,
+                             nullptr);
+  DS2ASSERT(size != 0);
+  res.resize(size);
+  WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, res.data(), size, nullptr,
+                      nullptr);
+  return res.data();
+}
+#endif
 
 #if defined(COMPILER_MSVC)
 #pragma deprecated(sprintf, snprintf, vsnprintf)
