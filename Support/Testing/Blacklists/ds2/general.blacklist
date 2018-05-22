@@ -13,7 +13,6 @@ TestLldbGdbServer.LldbGdbServerTestCase.test_attach_commandline_continue_app_exi
 
 skip
 test_lldbmi
-EnumTypesTestCase
 TestCallWithTimeout.ExprCommandWithTimeoutsTestCase
 TestCreateAfterAttach
 TestGdbRemoteAuxvSupport.TestGdbRemoteAuxvSupport
