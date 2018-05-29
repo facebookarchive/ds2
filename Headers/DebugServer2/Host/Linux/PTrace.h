@@ -66,6 +66,7 @@ public:
 
 public:
   ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) override;
+  ErrorCode getEventMessage(ProcessThreadId const &ptid, unsigned long &data);
 
 protected:
   virtual ErrorCode readRegisterSet(ProcessThreadId const &ptid, int regSetCode,
