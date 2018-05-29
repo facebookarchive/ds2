@@ -215,6 +215,23 @@ ErrorCode Process::wait() {
 
     switch (_currentThread->_stopInfo.event) {
     case StopInfo::kEventNone:
+      if (_currentThread->_stopInfo.reason == StopInfo::kReasonClone) {
+        unsigned long clonedChildTID = 0;
+        auto error = ptrace().getClonedTID(_pid, clonedChildTID);
+        if (error != 0) {
+          return error;
+        }
+
+        int clonedChildStatus = 0;
+        clonedChildTID = ::waitpid(clonedChildTID, &clonedChildStatus, WNOHANG | __WALL);
+        DS2LOG(Debug, "child thread tid %lu %s", clonedChildTID, Stringify::WaitStatus(clonedChildStatus));
+        auto newThread = new Thread(this, clonedChildTID);
+
+        newThread->beforeResume();
+        if (!stepping) {
+          newThread->resume();
+        }
+      }
       // If the thread is stopped for no reason, it means the debugger (ds2)
       // sent a SIGSTOP to it while it was already stopped for another reason,
       // the SIGSTOP was queued, and now we're getting this notification. We
@@ -319,7 +336,7 @@ bool Process::isAlive() const {
   return super::isAlive();
 }
 
-ds2::Host::POSIX::PTrace &Process::ptrace() const {
+ds2::Host::Linux::PTrace &Process::ptrace() const {
   return const_cast<Process *>(this)->_ptrace;
 }
 

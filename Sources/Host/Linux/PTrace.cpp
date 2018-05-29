@@ -285,6 +285,15 @@ ErrorCode PTrace::getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) {
   return kSuccess;
 }
 
+ErrorCode PTrace::getClonedTID(ProcessId pid, unsigned long &clonedTID) {
+  auto res = wrapPtrace(PTRACE_GETEVENTMSG, pid , nullptr, &clonedTID);
+  if (res < 0) {
+    return Platform::TranslateError();
+  }
+
+  return kSuccess;
+}
+
 ErrorCode PTrace::readRegisterSet(ProcessThreadId const &ptid, int regSetCode,
                                   void *buffer, size_t length) {
   struct iovec iov = {buffer, length};
