@@ -222,12 +222,28 @@ ErrorCode Process::wait() {
       // If `stepping` is true, it means the thread was actually being
       // single-stepped before stopping, so instead of doing a `resume()`, we
       // have to do a new `step()`.
-      if (stepping) {
+      if (_currentThread->_stopInfo.reason == StopInfo::kReasonClone &&
+          stepping) {
+        unsigned long clonedChildTID = 0;
+        auto error = ptrace().getClonedTID(_pid, clonedChildTID);
+        if (error != 0) {
+          return error;
+        }
+
+        int clonedChildStatus = 0;
+        clonedChildTID =
+            ::waitpid(clonedChildTID, &clonedChildStatus, WNOHANG | __WALL);
+        DS2LOG(Debug, "child thread tid %lu %s", clonedChildTID,
+               Stringify::WaitStatus(clonedChildStatus));
         _currentThread->step();
+        auto newThread = new Thread(this, clonedChildTID);
+
+        newThread->beforeResume();
+        goto continue_waiting;
       } else {
         _currentThread->resume();
+        goto continue_waiting;
       }
-      goto continue_waiting;
 
     case StopInfo::kEventExit:
     case StopInfo::kEventKill:
