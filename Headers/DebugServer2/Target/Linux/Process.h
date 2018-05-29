@@ -53,7 +53,7 @@ public:
   ErrorCode wait() override;
 
 public:
-  Host::POSIX::PTrace &ptrace() const override;
+  Host::Linux::PTrace &ptrace() const override;
 
 protected:
   ErrorCode updateInfo() override;
