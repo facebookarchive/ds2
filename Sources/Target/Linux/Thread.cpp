@@ -84,6 +84,7 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
 
     if (waitStatus >> 8 == (SIGTRAP | (PTRACE_EVENT_CLONE << 8))) { // (1)
       _stopInfo.event = StopInfo::kEventNone;
+      _stopInfo.reason = StopInfo::kReasonThreadSpawn;
     } else if (si.si_code == SI_TKILL && si.si_pid == getpid()) { // (2)
       // The only signal we are supposed to send to the inferior is a SIGSTOP.
       DS2ASSERT(_stopInfo.signal == SIGSTOP);

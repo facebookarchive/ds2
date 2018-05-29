@@ -215,17 +215,55 @@ ErrorCode Process::wait() {
 
     switch (_currentThread->_stopInfo.event) {
     case StopInfo::kEventNone:
-      // If the thread is stopped for no reason, it means the debugger (ds2)
-      // sent a SIGSTOP to it while it was already stopped for another reason,
-      // the SIGSTOP was queued, and now we're getting this notification. We
-      // have to ignore this and just let the thread continue.
-      // If `stepping` is true, it means the thread was actually being
-      // single-stepped before stopping, so instead of doing a `resume()`, we
-      // have to do a new `step()`.
-      if (stepping) {
+      // If _stopInfo.event is kEventNone it means the thread is either
+      // 1. stopped because another thread of the inferior stopped (e.g. because
+      //    of a breakpoint or received a signal, etc) and ds2 sent a SIGSTOP
+      //    to pause this thread while the other thread's stop is evaluated. In
+      //    this case we just resume the thread.
+      // 2. stopped because this thread called clone(2) (or similar e.g.
+      //    pthread_create). In this case we have two subcases:
+      //    a. The thread was running and hit the clone/spawn and thus was
+      //       stopped with a SIGTRAP. We just resume it and goto
+      //       continue_waiting. The loop will continue and the next waitpid
+      //       will handle the freshly spawned thread. In this case we call
+      //       resume as well.
+      //    b. We were single stepping (c.f. the `stepping` var) and
+      //       were stopped by a SIGTRAP for the step while simultaneously
+      //       being stopped via the SIGTRAP for the clone/spawn.
+      //       In this case we can run into a race condition with the
+      //       waitpid(3) call and thus have to handle the cloned thread
+      //       and the currentThread at once. So we call step on the
+      //       _currentThread and then beforeResume the cloned thread.
+      //
+      // We also have another theoretically possible case where we are not
+      // stopped by a clone but still stepping while encountering a kEventNone.
+      // This should not happen and we just assert that it does not.
+
+      if (_currentThread->_stopInfo.reason == StopInfo::kReasonThreadSpawn &&
+          stepping) { //(2b)
+        unsigned long spawnedThreadIdData;
+        CHK(ptrace().getEventMessage(_pid, spawnedThreadIdData));
+        auto const spawnedThreadId = static_cast<ThreadId>(spawnedThreadIdData);
+
+        int spawnedThreadStatus;
+        ThreadId const returnedThreadId =
+            ::waitpid(spawnedThreadId, &spawnedThreadStatus, WNOHANG | __WALL);
+        if (spawnedThreadId != returnedThreadId)
+          return kErrorProcessNotFound;
+        DS2LOG(Debug, "child thread tid %d %s", returnedThreadId,
+               Stringify::WaitStatus(spawnedThreadStatus));
+
         _currentThread->step();
+        auto newThread = new Thread(this, returnedThreadId);
+        newThread->beforeResume();
+      } else if (stepping) {
+        // We should never see a case where we're:
+        //   1. stopped for event kEventNone
+        //   2. stepping
+        //   3. not stopped for reason kReasonThreadSpawn
+        DS2BUG("inconsistent thread stop info");
       } else {
-        _currentThread->resume();
+        _currentThread->resume(); // (1) and (2a)
       }
       goto continue_waiting;
 
