@@ -76,6 +76,8 @@ public:
                            ProcessInfo const &pinfo, int signal = 0,
                            Address const &address = Address());
 
+  virtual ErrorCode getClonedTID(ProcessId pid, unsigned long &clonedTID);
+
 public:
   virtual ErrorCode getSigInfo(ProcessThreadId const &ptid, siginfo_t &si) = 0;
 
