@@ -163,9 +163,6 @@ fi
 if [ -n "${TARGET-}" ]; then
   if [[ "${TARGET}" == "Linux-X86_64" || "${TARGET}" == "Linux-X86_64-Clang" ]]; then
     args+=("--arch=x86_64")
-    if ! $opt_no_ds2_blacklists; then
-      args+=("--excluded" "$blacklist_dir/ds2/x86_64.blacklist")
-    fi
     if [[ "${PLATFORM-}" = "1" ]]; then
       args+=("--excluded" "$blacklist_dir/ds2/llvm_60.blacklist")
     fi
