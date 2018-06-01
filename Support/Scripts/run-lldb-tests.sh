@@ -155,6 +155,9 @@ fi
 
 if ! $opt_no_ds2_blacklists; then
   args+=("--excluded" "$blacklist_dir/ds2/general.blacklist")
+  if [ "$(linux_distribution)" == "centos" ]; then
+    args+=("--excluded" "$blacklist_dir/ds2/centos.blacklist")
+  fi
 fi
 
 if [ -n "${TARGET-}" ]; then
