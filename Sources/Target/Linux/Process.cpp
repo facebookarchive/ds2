@@ -319,7 +319,7 @@ bool Process::isAlive() const {
   return super::isAlive();
 }
 
-ds2::Host::POSIX::PTrace &Process::ptrace() const {
+ds2::Host::Linux::PTrace &Process::ptrace() const {
   return const_cast<Process *>(this)->_ptrace;
 }
 
