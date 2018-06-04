@@ -81,3 +81,7 @@ get_host_platform_name() {
 get_android_ndk_dir() {
   echo "/tmp/android-ndk"
 }
+
+check_program_exists() {
+  which "$1" >/dev/null 2>&1
+}

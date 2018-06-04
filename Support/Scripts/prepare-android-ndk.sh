@@ -19,6 +19,7 @@ case "$(uname)" in
   *)        die "This script works only on Linux and macOS.";;
 esac
 
+check_program_exists "wget" || die "'wget' not found"
 [ $# -le 0 ] || die "usage: $0"
 
 cd "/tmp"
