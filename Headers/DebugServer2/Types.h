@@ -146,6 +146,7 @@ struct StopInfo {
     kReasonThreadSpawn,
     kReasonThreadEntry,
     kReasonThreadExit,
+    kReasonClone,
 #if defined(OS_WIN32)
     kReasonMemoryError,
     kReasonMemoryAlignment,

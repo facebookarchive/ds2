@@ -125,6 +125,25 @@ ErrorCode PTrace::resume(ProcessThreadId const &ptid, ProcessInfo const &pinfo,
   return doStepResume(false, ptid, signal, address);
 }
 
+ErrorCode PTrace::getClonedTID(ProcessId pid, unsigned long &clonedTID) {
+#if defined(OS_LINUX)
+  auto res = wrapPtrace(PTRACE_GETEVENTMSG, pid, nullptr, &clonedTID);
+
+  if (res < 0) {
+    return Platform::TranslateError();
+  }
+
+  return kSuccess;
+#elif defined(OS_FREEBSD) || defined(OS_DARWIN)
+  // PTRACE_GETEVENTMSG does not exist on Darwin. TODO: Find alternative
+  // implementation. Alternatively, this method could be in Linux::PTrace, but
+  // various bugs exist
+  //   that cause Linux::Process to depend on it's Linux::Process::ptrace()
+  //   method returning a POSIX::PTrace and NOT a Linux::PTrace
+  return kErrorUnsupported;
+#endif
+}
+
 //
 // Execute will execute the code in the target process/thread,
 // the techinique for PTRACE is to read CPU state, rewrite the
