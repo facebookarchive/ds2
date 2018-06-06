@@ -39,6 +39,11 @@ start_android_emulator_step: &start_android_emulator_step
     command: ./Support/Scripts/start-android-emulator.sh
     background: true
 
+sleep: &sleep
+  run:
+    name: Sleep for Android emulator boot
+    command: sleep 30 
+
 build_only_defaults: &build_only_defaults
   <<: *docker_config
   steps:
@@ -61,6 +66,7 @@ build_and_test_android: &build_and_test_android
     - *configure_step
     - *build_step
     - *start_android_emulator_step
+    - *sleep
     - *test_step
 
 version: 2
