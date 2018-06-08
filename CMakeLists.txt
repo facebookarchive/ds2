@@ -10,6 +10,7 @@
 
 cmake_minimum_required(VERSION 3.7)
 cmake_policy(SET CMP0054 NEW)
+set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 project(DebugServer2)
 
