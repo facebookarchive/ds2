@@ -101,9 +101,9 @@ void SoftwareBreakpointManager::afterResume() {
   //
   auto it = _sites.begin();
   while (it != _sites.end()) {
-    it->second.type =
-        static_cast<Type>(it->second.type & ~kTypeTemporaryOneShot);
-    if (!it->second.type) {
+    it->second.lifetime = static_cast<Lifetime>(it->second.lifetime &
+                                                ~Lifetime::TemporaryOneShot);
+    if (it->second.lifetime == Lifetime::None) {
       // refs should always be 0 unless we have a kTypePermanent breakpoint.
       DS2ASSERT(it->second.refs == 0);
       disableLocation(it->second);
