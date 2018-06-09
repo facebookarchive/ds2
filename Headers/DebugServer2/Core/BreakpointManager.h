@@ -11,6 +11,7 @@
 #pragma once
 
 #include "DebugServer2/Target/ProcessDecl.h"
+#include "DebugServer2/Utils/Enums.h"
 
 #include <functional>
 
@@ -18,10 +19,11 @@ namespace ds2 {
 
 class BreakpointManager {
 public:
-  enum Lifetime : unsigned int {
-    kLifetimePermanent = (1 << 0),
-    kLifetimeTemporaryOneShot = (1 << 1),
-    kLifetimeTemporaryUntilHit = (1 << 2),
+  enum class Lifetime : unsigned int {
+    None = 0,
+    Permanent = (1 << 0),
+    TemporaryOneShot = (1 << 1),
+    TemporaryUntilHit = (1 << 2),
   };
 
   enum Mode {
@@ -109,3 +111,4 @@ public:
   virtual bool fillStopInfo(Target::Thread *thread, StopInfo &stopInfo) = 0;
 };
 } // namespace ds2
+ENABLE_BITMASK_OPERATORS(ds2::BreakpointManager::Lifetime);

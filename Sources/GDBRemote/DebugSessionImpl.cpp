@@ -1095,7 +1095,7 @@ ErrorCode DebugSessionImplBase::onInsertBreakpoint(
   if (bpm == nullptr)
     return kErrorUnsupported;
 
-  return bpm->add(address, BreakpointManager::kLifetimePermanent, size, mode);
+  return bpm->add(address, BreakpointManager::Lifetime::Permanent, size, mode);
 }
 
 ErrorCode DebugSessionImplBase::onRemoveBreakpoint(Session &session,
