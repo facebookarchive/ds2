@@ -36,13 +36,13 @@ ErrorCode BreakpointManager::add(Address const &address, Lifetime lifetime,
       return kErrorInvalidArgument;
 
     it->second.lifetime = static_cast<Lifetime>(it->second.lifetime | lifetime);
-    if (lifetime == kLifetimePermanent)
+    if (lifetime == Lifetime::Permanent)
       ++it->second.refs;
   } else {
     Site &site = _sites[address];
 
     site.refs = 0;
-    if (lifetime == kLifetimePermanent)
+    if (lifetime == Lifetime::Permanent)
       ++site.refs;
     site.address = address;
     site.lifetime = lifetime;
@@ -68,7 +68,7 @@ ErrorCode BreakpointManager::remove(Address const &address) {
     return kErrorNotFound;
 
   // If we have some sort of temporary breakpoint, just remove it.
-  if (!(it->second.lifetime & kLifetimePermanent))
+  if ((it->second.lifetime & Lifetime::Permanent) == Lifetime::None)
     goto do_remove;
 
   // If we have a permanent breakpoint, refs should be non-null. If refs is
@@ -78,15 +78,14 @@ ErrorCode BreakpointManager::remove(Address const &address) {
   if (--it->second.refs > 0)
     return kSuccess;
 
-  // If we had a breakpoint that only had lifetime kLifetimePermanent and refs
+  // If we had a breakpoint that only had lifetime Lifetime::Permanent and refs
   // is now 0, we need to remove it.
-  if (it->second.lifetime == kLifetimePermanent)
+  if (it->second.lifetime == Lifetime::Permanent)
     goto do_remove;
 
   // Otherwise, the breakpoint had multiple lifetimes; unset
-  // kLifetimePermanent and return.
-  it->second.lifetime =
-      static_cast<Lifetime>(it->second.lifetime & ~kLifetimePermanent);
+  // Lifetime::Permanent and return.
+  it->second.lifetime = it->second.lifetime & ~Lifetime::Permanent;
   return kSuccess;
 
 do_remove:
@@ -143,10 +142,10 @@ void BreakpointManager::disable(Target::Thread *thread) {
   //
   auto it = _sites.begin();
   while (it != _sites.end()) {
-    it->second.lifetime =
-        static_cast<Lifetime>(it->second.lifetime & ~kLifetimeTemporaryOneShot);
-    if (!it->second.lifetime) {
-      // refs should always be 0 unless we have a kLifetimePermanent breakpoint.
+    it->second.lifetime = it->second.lifetime & ~Lifetime::TemporaryOneShot;
+    if (it->second.lifetime == Lifetime::None) {
+      // refs should always be 0 unless we have a Lifetime::Permanent
+      // breakpoint.
       DS2ASSERT(it->second.refs == 0);
       _sites.erase(it++);
     } else {
@@ -168,7 +167,7 @@ bool BreakpointManager::hit(Address const &address, Site &site) {
   // BreakpointManager::disable
   //
   it->second.lifetime =
-      static_cast<Lifetime>(it->second.lifetime & ~kLifetimeTemporaryUntilHit);
+      static_cast<Lifetime>(it->second.lifetime & ~Lifetime::TemporaryUntilHit);
 
   site = it->second;
   return true;
