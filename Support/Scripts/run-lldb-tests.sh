@@ -22,7 +22,6 @@ cherry_pick_patches() {
   if [[ "$platform_name" = "android" ]]; then
     # This patch is purely to improve performance on CircleCI, won't ever be upstreamed.
     patch -d "$lldb_path" -p1 < "$testingPath/Patches/android-search-paths.patch"
-    patch -d "$lldb_path" -p1 < "$testingPath/Patches/getplatform-workaround.patch"
   fi
 
   cd "$OLDPWD"
