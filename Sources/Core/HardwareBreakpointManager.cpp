@@ -1,4 +1,3 @@
-//
 // Copyright (c) 2014-present, Facebook, Inc.
 // All rights reserved.
 //
@@ -20,7 +19,7 @@ namespace ds2 {
 
 HardwareBreakpointManager::HardwareBreakpointManager(
     Target::ProcessBase *process)
-    : super(process), _locations(maxWatchpoints(), 0) {}
+    : super(process), _locations(maxWatchpoints()) {}
 
 HardwareBreakpointManager::~HardwareBreakpointManager() {}
 
@@ -31,11 +30,10 @@ ErrorCode HardwareBreakpointManager::add(Address const &address,
     return kErrorInvalidArgument;
   }
 
-  if (mode == kModeRead) {
-    DS2LOG(Warning,
-           "read-only watchpoints are unsupported, setting as read-write");
+  // Readonly hardware watchpoints aren't natively implemented, so they
+  // are implemened in software instead.
+  if (mode == kModeRead)
     mode = static_cast<Mode>(mode | kModeWrite);
-  }
 
   return super::add(address, lifetime, size, mode);
 }
@@ -43,7 +41,7 @@ ErrorCode HardwareBreakpointManager::add(Address const &address,
 ErrorCode HardwareBreakpointManager::remove(Address const &address) {
   auto loc = std::find(_locations.begin(), _locations.end(), address);
   if (loc != _locations.end()) {
-    _locations[loc - _locations.begin()] = 0;
+    _locations.erase(loc);
   }
 
   return super::remove(address);
@@ -72,6 +70,7 @@ ErrorCode HardwareBreakpointManager::enableLocation(Site const &site,
 
   if (error == kSuccess) {
     _locations[idx] = site.address;
+    CHK(storeNewValueAtAddress(site.address));
   }
   return error;
 }
@@ -83,16 +82,48 @@ ErrorCode HardwareBreakpointManager::disableLocation(Site const &site,
   auto loc = std::find(_locations.begin(), _locations.end(), site.address);
   if (loc == _locations.end()) {
     return kErrorInvalidArgument;
+  } else {
+    int idx = loc - _locations.begin();
+
+    enumerateThreads(thread, [&](Target::Thread *t) {
+      if (t->state() == Target::Thread::kStopped && enabled(t)) {
+        error = disableLocation(idx, t);
+      }
+    });
+
+    return error;
   }
-  int idx = loc - _locations.begin();
+}
 
-  enumerateThreads(thread, [&](Target::Thread *t) {
-    if (t->state() == Target::Thread::kStopped && enabled(t)) {
-      error = disableLocation(idx, t);
-    }
-  });
+inline bool
+HardwareBreakpointManager::softwareImplementationOfReadonlyWatchpoints(
+    Address const &address, Site &site) {
+  if (site.mode == kModeRead && wasWritten(address)) {
+      return false;
+  } else {
+    return super::hit(address, site);
+  }
+}
 
-  return error;
+ErrorCode
+HardwareBreakpointManager::storeNewValueAtAddress(Address const &address) {
+  uint64_t value;
+  CHK(_process->readMemory(address, &value, sizeof(value)));
+
+  try {
+    // store the new value. this will throw if _sites[address.value()] == null
+    _sites.at(address.value()).memoryValue = value;
+    return kSuccess;
+  } catch (const std::out_of_range &) {
+    return kErrorInvalidAddress;
+  }
+}
+
+bool HardwareBreakpointManager::hit(Address const &address, Site &site) {
+  auto ret = softwareImplementationOfReadonlyWatchpoints(address, site);
+  DS2ASSERT(storeNewValueAtAddress(address) == kSuccess);
+
+  return ret;
 }
 
 int HardwareBreakpointManager::getAvailableLocation() {
@@ -104,7 +135,7 @@ int HardwareBreakpointManager::getAvailableLocation() {
   auto it = std::find(_locations.begin(), _locations.end(), 0);
   DS2ASSERT(it != _locations.end());
 
-  return (it - _locations.begin());
+  return it - _locations.begin();
 }
 
 void HardwareBreakpointManager::enumerateThreads(

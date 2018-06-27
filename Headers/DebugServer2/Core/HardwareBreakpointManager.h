@@ -26,6 +26,9 @@ public:
                 Mode mode) override;
   ErrorCode remove(Address const &address) override;
 
+protected:
+  bool hit(Address const &address, Site &site) override;
+
 public:
   int hit(Target::Thread *thread, Site &site) override;
 
@@ -39,10 +42,16 @@ protected:
   virtual ErrorCode disableLocation(int idx, Target::Thread *thread);
 
 protected:
+  bool softwareImplementationOfReadonlyWatchpoints(Address const &address,
+                                                   Site &site);
+  ErrorCode storeNewValueAtAddress(Address const &address);
+
+protected:
   bool enabled(Target::Thread *thread = nullptr) const override;
 
 public:
   virtual size_t maxWatchpoints();
+  virtual bool wasWritten(Address const &address);
 
 public:
   void enable(Target::Thread *thread = nullptr) override;
@@ -68,6 +77,16 @@ protected:
                                 std::vector<uint64_t> &regs) const;
 
 protected:
+  /*
+   * TODO(asb) currently _locations is used in tandem with _sites, where it's
+   * only purpose is to (as a vector) track the index of an address in debugRegs
+   * (see sources/core/x86/HWBPManager.enableLocation, whilst paying attention
+   * to the idx parameter).
+   * It would be nice to delete _locations and store the index in _sites.
+   * Currently the only reason we're doing that is because it isn't possible to
+   * make _sites (a std::map fixed-size, to stay true to the fixed size
+   * debugRegs on the platform).
+   */
   std::vector<uint64_t> _locations;
   std::unordered_set<ThreadId> _enabled;
 
