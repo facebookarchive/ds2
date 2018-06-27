@@ -12,7 +12,9 @@
 top="$(git rev-parse --show-toplevel)"
 source "$top/Support/Scripts/common.sh"
 
-cformat="clang-format-5.0"
+cformat=${CFORMAT:-clang-format-5.0}
+
+"$top/Support/Testing/Travis/travis-hacks.sh"
 
 # If we're at the root of the repository, create a build directory and go
 # there; otherwise, assume that we're already in the build directory the user

@@ -32,6 +32,30 @@ size_t HardwareBreakpointManager::maxWatchpoints() {
   return 4; // dr0, dr1, dr2, dr3
 }
 
+bool HardwareBreakpointManager::wasWritten(Address const &address) {
+  Site site;
+  try {
+    site = _sites.at(address);
+  } catch (const std::out_of_range &) {
+    // Impossible to check an address that hasn't been added to _sites
+    // (it should be added to _sites when the point was enabled)
+    DS2ASSERT(false);
+  }
+
+  uint64_t value;
+  auto err = _process->readMemory(address, &value, sizeof(value));
+  DS2ASSERT(err == kSuccess);
+
+  /*
+   * TODO(asb) this doesn't take into account a write where the value
+   * doesn't change. A long term solution would check the hardware OPCODE
+   * to ensure it was unrelated to writing to the memory address.
+   * for now, assume an unchanged value means this access was a read.
+   */
+  bool valueIsUnchanged = value == site.value;
+  return valueIsUnchanged;
+}
+
 ErrorCode HardwareBreakpointManager::enableLocation(Site const &site, int idx,
                                                     Target::Thread *thread) {
   ErrorCode error;
@@ -113,6 +137,9 @@ ErrorCode HardwareBreakpointManager::enableDebugCtrlReg(uint64_t &ctrlReg,
     EnableBit(ctrlReg, infoIdx);
     DisableBit(ctrlReg, infoIdx + 1);
     break;
+  // Readonly watchpoints aren't implemented in hardware, so a
+  // read|write watchpoint is placed, and write halts are filtered
+  // out in software. See #510
   case kModeRead:
   case kModeRead | kModeWrite:
     EnableBit(ctrlReg, infoIdx);
