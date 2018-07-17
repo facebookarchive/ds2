@@ -31,6 +31,7 @@ cherry_pick_patches() {
 get_android_compiler() {
   case "$1" in
     *-ARM) cc_name="arm-linux-androideabi-gcc";;
+    *-ARM64) cc_name="aarch64-linux-android-gcc";;
     *-X86) cc_name="i686-linux-android-gcc";;
     *) die "Running LLDB tests on $1 is not yet supported"
   esac
@@ -190,9 +191,11 @@ if [ -n "${TARGET-}" ]; then
     fi
   elif [[ "${TARGET}" == "Android-ARM" ]]; then
     args+=("--arch=arm")
+  elif [[ "${TARGET}" == "Android-ARM64" ]]; then
+    args+=("--arch=aarch64")
   fi
 else
-  # If this is a developer run (not running on Travis with a $TARGET), run all
+  # If this is a developer run (not running on CircleCI with a $TARGET), run all
   # tests by default.
   LLDB_TESTS="${LLDB_TESTS-all}"
 
