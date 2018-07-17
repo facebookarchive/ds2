@@ -87,4 +87,5 @@ RUN /tmp/install-cmake.sh
 RUN apt-get install -y default-jdk
 COPY Support/Scripts/install-android-emulator.sh /tmp
 RUN /tmp/install-android-emulator.sh arm
+RUN /tmp/install-android-emulator.sh arm64
 RUN /tmp/install-android-emulator.sh x86
