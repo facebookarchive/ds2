@@ -19,6 +19,15 @@ build_dir="$PWD"
 [ "$(uname)" == "Linux" ] || die "The gdb test suite requires a Linux host environment."
 [ -x "$build_dir/ds2" ]   || die "Unable to find a ds2 binary in the current directory."
 
+while test $# -gt 0; do
+  case "$1" in
+    --gdb-tests) shift
+      GDB_TESTS="$1"
+      shift;;
+    *) die "Unknown option \`$1'.";;
+  esac
+done
+
 source "$top/Support/Scripts/common.sh"
 
 gdb_ftp_path="https://ftp.gnu.org/gnu/gdb"

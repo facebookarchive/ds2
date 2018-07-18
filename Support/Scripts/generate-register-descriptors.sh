@@ -13,6 +13,15 @@ set -eu
 
 architectures=("X86" "X86_64" "ARM" "ARM64")
 
+while test $# -gt 0; do
+  case "$1" in
+    --clang-format) shift
+      CLANG_FORMAT="$1"
+      shift;;
+    *) die "Unknown option \`$1'.";;
+  esac
+done
+
 cformat="${CLANG_FORMAT-clang-format}"
 
 repo_root="$(cd "$(dirname "$0")" && git rev-parse --show-toplevel)"

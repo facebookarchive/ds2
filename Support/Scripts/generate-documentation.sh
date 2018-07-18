@@ -29,6 +29,15 @@ SSH_REPO="${REPO/https:\/\/github.com\//git@github.com:}"
 SHA="$(git rev-parse --verify HEAD)"
 CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
+while test $# -gt 0; do
+  case "$1" in
+    --encryption-label) shift
+      ENCRYPTION_LABEL="$1"
+      shift;;
+    *) die "Unknown option \`$1'.";;
+  esac
+done
+
 git_clone "$REPO" "$TARGET_DIRECTORY" "$TARGET_BRANCH"
 cd "$TARGET_DIRECTORY"
 
