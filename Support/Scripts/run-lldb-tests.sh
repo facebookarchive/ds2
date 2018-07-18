@@ -88,7 +88,7 @@ if [ "$(linux_distribution)" == "centos" ]; then
   llvm_build="$llvm_path/build"
   lldb_path="$llvm_path/tools/lldb"
   lldb_exe="$llvm_build/bin/lldb"
-  cc_exe="$(which gcc)"
+  cc_exe="$(which gcc)" || die "gcc not found"
 
   if ! $opt_fast; then
     git_clone "$REPO_BASE/llvm.git"  "$llvm_path"             "$UPSTREAM_BRANCH"
@@ -106,11 +106,11 @@ if [ "$(linux_distribution)" == "centos" ]; then
   fi
 elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_path="$build_dir/lldb"
-  lldb_exe="$(which lldb-6.0)"
+  lldb_exe="$(which lldb-6.0)" || die "lldb-6.0 not found"
 
   case "${TARGET}" in
     Android-*)     cc_exe="$(get_android_compiler ${TARGET})";;
-    *)             cc_exe="$(which gcc)";;
+    *)             cc_exe="$(which gcc)" || die "gcc not found";;
   esac
 
   python_base="$build_dir/lib"
@@ -203,7 +203,7 @@ EEOOFF
   chmod +x "$build_dir/ds2-strace.sh"
   server_path="$build_dir/ds2-strace.sh"
 elif $opt_use_lldb_server; then
-  server_path="$(which lldb-server-6.0)"
+  server_path="$(which lldb-server-6.0)" || die "lldb-server-6.0 not found"
 else
   server_path="$build_dir/ds2"
 fi
