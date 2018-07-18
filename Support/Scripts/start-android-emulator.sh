@@ -9,6 +9,15 @@
 ## PATENTS file in the same directory.
 ##
 
+while test $# -gt 0; do
+  case "$1" in
+    --target) shift
+      TARGET="$1"
+      shift;;
+    *) die "Unknown option \`$1'.";;
+  esac
+done
+
 TARGET="${TARGET-${CIRCLE_JOB}}"
 
 top="$(git rev-parse --show-toplevel)"

@@ -39,7 +39,6 @@ get_android_compiler() {
 
 REPO_BASE="https://github.com/llvm-mirror"
 UPSTREAM_BRANCH="release_60"
-TARGET="${TARGET-${CIRCLE_JOB}}"
 
 top="$(git rev-parse --show-toplevel)"
 build_dir="$PWD"
@@ -57,17 +56,34 @@ opt_log=false
 opt_strace=false
 opt_use_lldb_server=false
 
-for o in "$@"; do
-  case "$o" in
-    --fast) opt_fast=true;;
-    --no-ds2-blacklists) opt_no_ds2_blacklists=true;;
-    --no-upstream-blacklists) opt_no_upstream_blacklists=true;;
-    --log) opt_log=true;;
-    --strace) opt_strace=true;;
-    --use-lldb-server) opt_use_lldb_server=true;;
-    *) die "Unknown option \`$o'.";;
+while test $# -gt 0; do
+  case "$1" in
+    --fast) opt_fast=true
+	    shift;;
+    --no-ds2-blacklists) opt_no_ds2_blacklists=true
+	    shift;;
+    --no-upstream-blacklists) opt_no_upstream_blacklists=true
+	    shift;;
+    --log) opt_log=true
+	    shift;;
+    --strace) opt_strace=true
+	    shift;;
+    --use-lldb-server) opt_use_lldb_server=true
+	    shift;;
+    --lldb-tests) shift
+	    LLDB_TESTS="$1"
+	    shift;;
+    --target) shift
+	    TARGET="$1"
+	    shift;;
+    --platform) shift
+	    PLATFORM="$1"
+	    shift;;
+    *) die "Unknown option \`$1'.";;
   esac
 done
+
+TARGET="${TARGET-${CIRCLE_JOB}}"
 
 if $opt_use_lldb_server && $opt_log; then
   die "Logging with lldb-server is unsupported"
