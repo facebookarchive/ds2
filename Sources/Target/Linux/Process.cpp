@@ -245,17 +245,29 @@ ErrorCode Process::wait() {
         CHK(ptrace().getEventMessage(_pid, spawnedThreadIdData));
         auto const spawnedThreadId = static_cast<ThreadId>(spawnedThreadIdData);
 
-        int spawnedThreadStatus;
-        ThreadId const returnedThreadId =
-            ::waitpid(spawnedThreadId, &spawnedThreadStatus, WNOHANG | __WALL);
-        if (spawnedThreadId != returnedThreadId)
-          return kErrorProcessNotFound;
-        DS2LOG(Debug, "child thread tid %d %s", returnedThreadId,
-               Stringify::WaitStatus(spawnedThreadStatus));
+        if (_threads.find(spawnedThreadId) == _threads.end()) {
+          // If the newly cloned thread does not yet exist within the _threads
+          // vector then we have not yet seen it with waitpid(2). The most
+          // recent
+          // waitpid(2) returns a status guaranteeing a clone event did happen.
+          // Therefore, we wait and block until we see the cloned thread.
+          int spawnedThreadStatus;
+          ThreadId returnedThreadId =
+              blocking_waitpid(spawnedThreadId, &spawnedThreadStatus, __WALL);
+          if (spawnedThreadId != returnedThreadId)
+            return kErrorProcessNotFound;
+          DS2LOG(Debug, "child thread tid %d %s", returnedThreadId,
+                 Stringify::WaitStatus(spawnedThreadStatus));
 
-        _currentThread->step();
-        auto newThread = new Thread(this, returnedThreadId);
-        newThread->beforeResume();
+          _currentThread->step();
+          auto newThread = new Thread(this, returnedThreadId);
+          newThread->beforeResume();
+        } else {
+          // The new thread corresponding to this kReasonThreadSpawn was already
+          // caught by waitpid(2). Therefore, we only need to step the current
+          // thread.
+          _currentThread->step();
+        }
       } else if (stepping) {
         // We should never see a case where we're:
         //   1. stopped for event kEventNone
