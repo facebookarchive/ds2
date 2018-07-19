@@ -22,10 +22,10 @@ build_dir="$PWD"
 while test $# -gt 0; do
   case "$1" in
     --gdb-tests) shift
-      GDB_TESTS="$1"
-      shift;;
+      GDB_TESTS="$1";;
     *) die "Unknown option \`$1'.";;
   esac
+  shift
 done
 
 source "$top/Support/Scripts/common.sh"
