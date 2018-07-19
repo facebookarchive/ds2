@@ -58,29 +58,21 @@ opt_use_lldb_server=false
 
 while test $# -gt 0; do
   case "$1" in
-    --fast) opt_fast=true
-	    shift;;
-    --no-ds2-blacklists) opt_no_ds2_blacklists=true
-	    shift;;
-    --no-upstream-blacklists) opt_no_upstream_blacklists=true
-	    shift;;
-    --log) opt_log=true
-	    shift;;
-    --strace) opt_strace=true
-	    shift;;
-    --use-lldb-server) opt_use_lldb_server=true
-	    shift;;
+    --fast) opt_fast=true;;
+    --no-ds2-blacklists) opt_no_ds2_blacklists=true;;
+    --no-upstream-blacklists) opt_no_upstream_blacklists=true;;
+    --log) opt_log=true;;
+    --strace) opt_strace=true;;
+    --use-lldb-server) opt_use_lldb_server=true;;
     --lldb-tests) shift
-	    LLDB_TESTS="$1"
-	    shift;;
+	    LLDB_TESTS="$1";;
     --target) shift
-	    TARGET="$1"
-	    shift;;
+	    TARGET="$1";;
     --platform) shift
-	    PLATFORM="$1"
-	    shift;;
+	    PLATFORM="$1";;
     *) die "Unknown option \`$1'.";;
   esac
+  shift
 done
 
 TARGET="${TARGET-${CIRCLE_JOB}}"

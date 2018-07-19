@@ -32,10 +32,10 @@ CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 while test $# -gt 0; do
   case "$1" in
     --encryption-label) shift
-      ENCRYPTION_LABEL="$1"
-      shift;;
+      ENCRYPTION_LABEL="$1";;
     *) die "Unknown option \`$1'.";;
   esac
+  shift
 done
 
 git_clone "$REPO" "$TARGET_DIRECTORY" "$TARGET_BRANCH"

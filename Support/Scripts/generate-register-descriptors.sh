@@ -16,10 +16,10 @@ architectures=("X86" "X86_64" "ARM" "ARM64")
 while test $# -gt 0; do
   case "$1" in
     --clang-format) shift
-      CLANG_FORMAT="$1"
-      shift;;
+      CLANG_FORMAT="$1";;
     *) die "Unknown option \`$1'.";;
   esac
+  shift
 done
 
 cformat="${CLANG_FORMAT-clang-format}"

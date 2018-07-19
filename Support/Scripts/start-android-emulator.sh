@@ -12,10 +12,10 @@
 while test $# -gt 0; do
   case "$1" in
     --target) shift
-      TARGET="$1"
-      shift;;
+      TARGET="$1";;
     *) die "Unknown option \`$1'.";;
   esac
+  shift
 done
 
 TARGET="${TARGET-${CIRCLE_JOB}}"
