@@ -85,3 +85,8 @@ get_android_ndk_dir() {
 check_program_exists() {
   which "$1" >/dev/null 2>&1
 }
+
+get_program_path() {
+  local program=$(which $1) || die "$1 not found"
+  echo "${program}"
+}
