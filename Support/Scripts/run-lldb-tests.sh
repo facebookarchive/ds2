@@ -73,12 +73,9 @@ while test $# -gt 0; do
     --pudb) opt_pudb=true;;
     --strace) opt_strace=true;;
     --use-lldb-server) opt_use_lldb_server=true;;
-    --lldb-tests) shift
-	    LLDB_TESTS="$1";;
-    --target) shift
-	    TARGET="$1";;
-    --platform) shift
-	    PLATFORM="$1";;
+    --platform) PLATFORM=1;;
+    --lldb-tests) shift; LLDB_TESTS="$1";;
+    --target) shift; TARGET="$1";;
     --dotest-extra-args) shift; opt_dotest_extra_args="$1";;
     *) die "Unknown option \`$1'.";;
   esac
@@ -91,7 +88,7 @@ else
   python_exe=(python2.7)
 fi
 
-TARGET="${TARGET-${CIRCLE_JOB}}"
+TARGET="${TARGET-${CIRCLE_JOB-}}"
 
 if $opt_use_lldb_server && $opt_log; then
   die "Logging with lldb-server is unsupported"
