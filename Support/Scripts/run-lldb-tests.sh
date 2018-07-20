@@ -25,6 +25,11 @@ cherry_pick_patches() {
     patch -d "$lldb_path" -p1 < "$testingPath/Patches/getplatform-workaround.patch"
   fi
 
+  if $opt_pudb; then
+    # This patch is to enable debugging the lldb test suite with PUDB
+    patch -d "$lldb_path" -p1 < "$testingPath/Patches/fix-test-suite-path.patch"
+  fi
+
   cd "$OLDPWD"
 }
 
@@ -54,6 +59,7 @@ opt_fast=false
 opt_no_ds2_blacklists=false
 opt_no_upstream_blacklists=false
 opt_log=false
+opt_pudb=false
 opt_strace=false
 opt_use_lldb_server=false
 
@@ -63,6 +69,7 @@ while test $# -gt 0; do
     --no-ds2-blacklists) opt_no_ds2_blacklists=true;;
     --no-upstream-blacklists) opt_no_upstream_blacklists=true;;
     --log) opt_log=true;;
+    --pudb) opt_pudb=true;;
     --strace) opt_strace=true;;
     --use-lldb-server) opt_use_lldb_server=true;;
     --lldb-tests) shift
@@ -75,6 +82,12 @@ while test $# -gt 0; do
   esac
   shift
 done
+
+if $opt_pudb; then
+  python_exe=(python2.7 -m pudb)
+else
+  python_exe=(python2.7)
+fi
 
 TARGET="${TARGET-${CIRCLE_JOB}}"
 
@@ -275,4 +288,4 @@ if [ "${LLDB_TESTS-all}" != "all" ]; then
   args+=(-p "$LLDB_TESTS")
 fi
 
-python2.7 dotest.py "${args[@]}"
+"${python_exe[@]}" dotest.py "${args[@]}"
