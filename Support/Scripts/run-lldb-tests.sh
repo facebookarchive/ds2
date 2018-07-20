@@ -62,6 +62,7 @@ opt_log=false
 opt_pudb=false
 opt_strace=false
 opt_use_lldb_server=false
+opt_dotest_extra_args=""
 
 while test $# -gt 0; do
   case "$1" in
@@ -78,6 +79,7 @@ while test $# -gt 0; do
 	    TARGET="$1";;
     --platform) shift
 	    PLATFORM="$1";;
+    --dotest-extra-args) shift; opt_dotest_extra_args="$1";;
     *) die "Unknown option \`$1'.";;
   esac
   shift
@@ -287,5 +289,7 @@ export LLDB_TEST_TIMEOUT=8m
 if [ "${LLDB_TESTS-all}" != "all" ]; then
   args+=(-p "$LLDB_TESTS")
 fi
+
+args+=(${opt_dotest_extra_args})
 
 "${python_exe[@]}" dotest.py "${args[@]}"
