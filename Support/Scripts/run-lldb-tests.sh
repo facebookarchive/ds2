@@ -62,6 +62,7 @@ opt_log=false
 opt_pudb=false
 opt_strace=false
 opt_use_lldb_server=false
+opt_build_lldb=false
 opt_dotest_extra_args=""
 
 while test $# -gt 0; do
@@ -73,6 +74,7 @@ while test $# -gt 0; do
     --pudb) opt_pudb=true;;
     --strace) opt_strace=true;;
     --use-lldb-server) opt_use_lldb_server=true;;
+    --build-lldb) opt_build_lldb=true;;
     --platform) PLATFORM=1;;
     --lldb-tests) shift; LLDB_TESTS="$1";;
     --target) shift; TARGET="$1";;
@@ -104,12 +106,16 @@ else
   platform_name="linux"
 fi
 
-if [ "$(linux_distribution)" == "centos" ]; then
+case "${TARGET}" in
+  Android-*)     cc_exe="$(get_android_compiler ${TARGET})";;
+  *)             cc_exe="$(get_program_path gcc)";;
+esac
+
+if [[ "$(linux_distribution)" == "centos" ]] || $opt_build_lldb; then
   llvm_path="$build_dir/llvm"
   llvm_build="$llvm_path/build"
   lldb_path="$llvm_path/tools/lldb"
   lldb_exe="$llvm_build/bin/lldb"
-  cc_exe="$(get_program_path gcc)"
 
   if ! $opt_fast; then
     git_clone "$REPO_BASE/llvm.git"  "$llvm_path"             "$UPSTREAM_BRANCH"
@@ -118,10 +124,10 @@ if [ "$(linux_distribution)" == "centos" ]; then
 
     cherry_pick_patches "$llvm_path/tools/lldb"
 
-    if [ -z "${LLDB_EXE-}" ] ; then
+    if [ ! -e "${lldb_exe-}" ] ; then
       mkdir -p "$llvm_build"
       cd "$llvm_build"
-      cmake -G Ninja ..
+      cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug ..
       ninja lldb
     fi
   fi
@@ -129,10 +135,6 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_path="$build_dir/lldb"
   lldb_exe="$(get_program_path lldb-6.0)"
 
-  case "${TARGET}" in
-    Android-*)     cc_exe="$(get_android_compiler ${TARGET})";;
-    *)             cc_exe="$(get_program_path gcc)";;
-  esac
 
   python_base="$build_dir/lib"
   export LD_LIBRARY_PATH=$python_base
