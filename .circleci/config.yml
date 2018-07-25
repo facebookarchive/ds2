@@ -36,7 +36,7 @@ check_dirty_step: &check_dirty_step
 start_android_emulator_step: &start_android_emulator_step
   run:
     name: Start Android emulator
-    command: ./Support/Scripts/start-android-emulator.sh
+    command: ./Support/Scripts/start-android-emulator.py --target ${TARGET}
     background: true
 
 build_only_defaults: &build_only_defaults
@@ -136,6 +136,7 @@ jobs:
     <<: *build_and_test_android
     environment:
       PLATFORM: 1
+      TARGET: Android-ARM
       EXTRA_CMAKE_ARGS: "-DCMAKE_SYSTEM_VERSION=21"
   Android-ARM-16:
     <<: *build_only_defaults
