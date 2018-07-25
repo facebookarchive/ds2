@@ -75,9 +75,9 @@ RUN ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/asm
 
 # Install Android toolchains with our local script
 COPY Support/Scripts/common.sh /tmp
-COPY Support/Scripts/prepare-android-ndk.sh /tmp
+COPY Support/Scripts/prepare-android-ndk.py /tmp
 RUN apt-get install -y unzip
-RUN /tmp/prepare-android-ndk.sh
+RUN /tmp/prepare-android-ndk.py
 
 # Install a version of cmake that is at least the minimum version we support.
 COPY Support/Testing/CircleCI/install-cmake.sh /tmp
