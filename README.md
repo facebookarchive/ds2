@@ -129,12 +129,12 @@ cmake -G "Visual Studio 14 2015 ARM" -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Too
 For Android native debugging, it is possible to build ds2 with the Android NDK.
 A script is provided to download the Android NDK automatically for you.
 
-`Support/Scripts/prepare-android-ndk.sh` will download a working version
+`Support/Scripts/prepare-android-ndk.py` will download a working version
 of the NDK, extract it, and install it to `/tmp/android-ndk`.
 
 ```sh
 cd ds2
-./Support/Scripts/prepare-android-ndk.sh
+./Support/Scripts/prepare-android-ndk.py
 mkdir build && cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-Android-ARM.cmake ..
 make
@@ -148,7 +148,7 @@ NDK supports. If you want to target another api level, e.g. 21, add the flag
 
 If you would like to use ds2 to run tests in the LLDB test suite using an
 Android device, you should use the script
-`Support/Scripts/prepare-android-ndk.sh` to get a checkout of the android NDK.
+`Support/Scripts/prepare-android-ndk.py` to get a checkout of the android NDK.
 The LLDB test suite expects an NDK to exist on your host, and that script will
 download and unpack it where the CMake Toolchain files expect it to be.
 
