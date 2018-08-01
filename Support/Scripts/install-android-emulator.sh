@@ -27,7 +27,11 @@ if [ ! -f "$sdkmanager" ]; then
   rm -f "/tmp/${package_name}"
 fi
 
-echo "y" | "${sdkmanager}" --update
+if [[ $(hostname) =~ facebook ]]; then
+  sdkmanager="${sdkmanager} --verbose --no_https --proxy=http --proxy_host=fwdproxy --proxy_port=8080"
+fi
+
+echo "y" | ${sdkmanager} --update
 
 case "${target_arch}" in
   "arm")   emulator_image_arch="armeabi-v7a"; api_level="${2-21}";;
@@ -37,8 +41,8 @@ case "${target_arch}" in
 esac
 
 system_image_package="system-images;android-${api_level};default;${emulator_image_arch}"
-"${sdkmanager}" "platforms;android-${api_level}"
-"${sdkmanager}" "${system_image_package}"
+${sdkmanager} "platforms;android-${api_level}"
+${sdkmanager} "${system_image_package}"
 echo "no" | "${avdmanager}" create avd \
   --force -n "android-test-${target_arch}" \
   --package "${system_image_package}" \
