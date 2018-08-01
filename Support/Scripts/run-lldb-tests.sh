@@ -239,6 +239,9 @@ if [[ "${PLATFORM-}" = "1" ]]; then
     if ! $opt_no_ds2_blacklists; then
       args+=("--excluded" "$blacklist_dir/ds2/android.blacklist")
       args+=("--excluded" "$blacklist_dir/ds2/android_invalid_tests.blacklist")
+      if [[ "$TARGET" = 'Android-ARM64' ]]; then
+        args+=("--excluded" "$blacklist_dir/ds2/android-arm64.blacklist")
+      fi
     fi
   fi
 
