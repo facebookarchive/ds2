@@ -21,7 +21,7 @@ sdkmanager="${sdk_dir}/tools/bin/sdkmanager"
 avdmanager="${sdk_dir}/tools/bin/avdmanager"
 
 if [ ! -f "$sdkmanager" ]; then
-  package_name="sdk-tools-${host_platform_name}-3859397.zip"
+  package_name="sdk-tools-${host_platform_name}-4333796.zip"
   wget "https://dl.google.com/android/repository/${package_name}" -P /tmp
   unzip -d "${sdk_dir}" "/tmp/${package_name}"
   rm -f "/tmp/${package_name}"
@@ -36,8 +36,11 @@ case "${target_arch}" in
   *)     die "Unknown architecture '${target_arch}'.";;
 esac
 
+touch $HOME/.android/repositories.cfg
 system_image_package="system-images;android-${api_level};default;${emulator_image_arch}"
-"${sdkmanager}" "platforms;android-${api_level}"
+echo "y" | "${sdkmanager}" "emulator"
+echo "y" | "${sdkmanager}" "platform-tools"
+echo "y" | "${sdkmanager}" "platforms;android-${api_level}"
 "${sdkmanager}" "${system_image_package}"
 echo "no" | "${avdmanager}" create avd \
   --force -n "android-test-${target_arch}" \
