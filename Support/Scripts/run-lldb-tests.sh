@@ -275,9 +275,13 @@ if [[ "${PLATFORM-}" = "1" ]]; then
       adb pull "$lib" "$debug_libdir"
     done
     adb push "$server_path" "$working_dir"
-    adb shell "$working_dir/ds2" "${server_args[@]}" &
+    adb_shell_command="${working_dir}/ds2 ${server_args[@]}"
+    echo "${adb_shell_command}" > ds2.sh
+    chmod +x ds2.sh
+    adb push ds2.sh "${working_dir}"
+    adb shell "${working_dir}"/ds2.sh &
   fi
-  sleep 3
+  sleep 20 
 else
   if ! $opt_use_lldb_server && $opt_log; then
     export LLDB_DEBUGSERVER_LOG_FILE="$build_dir/ds2.log"
