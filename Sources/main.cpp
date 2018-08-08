@@ -542,7 +542,6 @@ __declspec(dllexport)
 int main(int argc, char **argv) {
   // clang-format on
 
-  ds2::Host::Platform::Initialize();
 #if !defined(OS_WIN32)
   ds2::SetLogColorsEnabled(isatty(fileno(stderr)));
 #endif
