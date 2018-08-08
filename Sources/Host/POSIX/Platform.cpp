@@ -32,10 +32,6 @@ extern char **environ;
 namespace ds2 {
 namespace Host {
 
-void Platform::Initialize() {
-  // Nothing to do here.
-}
-
 size_t Platform::GetPageSize() {
   static size_t sPageSize = 0;
 

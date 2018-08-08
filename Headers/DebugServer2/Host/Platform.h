@@ -23,9 +23,6 @@ namespace Host {
 
 class Platform {
 public:
-  static void Initialize();
-
-public:
   static CPUType GetCPUType();
   static CPUSubType GetCPUSubType();
   static Endian GetEndian();
