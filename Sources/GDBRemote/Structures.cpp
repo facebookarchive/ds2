@@ -548,6 +548,9 @@ std::string HostInfo::encode() const {
   ss << "watchpoint_exceptions_received:"
      << (watchpointExceptionsReceivedBefore ? "before" : "after") << ';';
 
+  if (defaultPacketTimeout > 0)
+    ss << "default_packet_timeout:" << defaultPacketTimeout << ';';
+
   return ss.str();
 }
 

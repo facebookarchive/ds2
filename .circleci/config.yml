@@ -16,7 +16,7 @@ docker_config: &docker_config
 configure_step: &configure_step
   run:
     name: Configure
-    command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-${TARGET-${CIRCLE_JOB}}.cmake ${EXTRA_CMAKE_ARGS-} ..
+    command: mkdir build && cd build && cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-${TARGET-${CIRCLE_JOB}}.cmake ${EXTRA_CMAKE_ARGS-} -DDS2TESTING=1 ..
 
 build_step: &build_step
   run:

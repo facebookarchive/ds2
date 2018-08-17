@@ -217,6 +217,7 @@ struct HostInfo {
   Endian endian;
   size_t pointerSize;
   uint32_t archFlags;
+  uint32_t defaultPacketTimeout;
 
   HostInfo() { clear(); }
 
@@ -228,6 +229,7 @@ struct HostInfo {
     endian = kEndianUnknown;
     pointerSize = 0;
     archFlags = 0;
+    defaultPacketTimeout = 0;
   }
 };
 

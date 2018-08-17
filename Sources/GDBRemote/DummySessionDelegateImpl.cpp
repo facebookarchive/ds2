@@ -108,6 +108,13 @@ ErrorCode DummySessionDelegateImpl::onQueryHostInfo(Session &,
   info.pointerSize = Platform::GetPointerSize();
   info.hostName = Platform::GetHostName(/*fqdn=*/true);
 
+#if defined(DS2TESTING)
+  // Running the test suite on an emulator over ADB through python in a
+  // container in a vm multithreaded on a ci server causes timeout issues. This
+  // forces an impossibly long delay to account for the guaranteed hiccups.
+  info.defaultPacketTimeout = 25;
+#endif
+
   return kSuccess;
 }
 

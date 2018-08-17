@@ -314,6 +314,10 @@ set_property(TARGET ds2 PROPERTY CXX_STANDARD 11)
 set_property(TARGET ds2 PROPERTY CXX_EXTENSIONS OFF)
 set_property(TARGET ds2 PROPERTY CXX_STANDARD_REQUIRED ON)
 
+if ("${DS2TESTING}")
+  target_compile_definitions(ds2 PRIVATE DS2TESTING)
+endif ()
+
 execute_process(COMMAND git rev-parse --short HEAD
                 WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                 OUTPUT_VARIABLE DS2_GIT_HASH
