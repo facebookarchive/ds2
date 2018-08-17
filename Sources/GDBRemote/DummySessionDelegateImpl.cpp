@@ -108,6 +108,12 @@ ErrorCode DummySessionDelegateImpl::onQueryHostInfo(Session &,
   info.pointerSize = Platform::GetPointerSize();
   info.hostName = Platform::GetHostName(/*fqdn=*/true);
 
+  // In complex workflows (such as used when testing Android-ARM on CircleCI) we
+  // can occasionally experience long delays that exceed the 1 second default
+  // timeout. Setting this very high causes no known problems while fixing test
+  // failures.
+  info.defaultPacketTimeout = 15;
+
   return kSuccess;
 }
 
