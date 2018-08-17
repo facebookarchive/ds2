@@ -111,6 +111,7 @@ private:
                         std::string const &);
   void Handle_qC(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_qCRC(ProtocolInterpreter::Handler const &, std::string const &);
+  void Handle_qEcho(ProtocolInterpreter::Handler const &, std::string const &);
   void Handle_qFileLoadAddress(ProtocolInterpreter::Handler const &,
                                std::string const &);
   void Handle_qGDBServerVersion(ProtocolInterpreter::Handler const &,

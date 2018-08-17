@@ -43,6 +43,18 @@ ErrorCode PlatformSessionImplBase::onQueryProcessList(
   return kSuccess;
 }
 
+ErrorCode PlatformSessionImplBase::onQuerySupported(
+    Session &session, Feature::Collection const &remoteFeatures,
+    Feature::Collection &localFeatures) const {
+  for (auto feature : remoteFeatures) {
+    DS2LOG(Debug, "platform feature: %s", feature.name.c_str());
+  }
+
+  localFeatures.push_back(std::string("qEcho"));
+
+  return kSuccess;
+}
+
 ErrorCode PlatformSessionImplBase::onQueryProcessInfo(Session &, ProcessId pid,
                                                       ProcessInfo &info) const {
   if (!Platform::GetProcessInfo(pid, info))

@@ -112,6 +112,7 @@ Session::Session(CompatibilityMode mode)
   REGISTER_HANDLER_EQUALS_1(qAttached);
   REGISTER_HANDLER_EQUALS_1(qC);
   REGISTER_HANDLER_EQUALS_1(qCRC);
+  REGISTER_HANDLER_EQUALS_1(qEcho);
   REGISTER_HANDLER_EQUALS_1(qFileLoadAddress);
   REGISTER_HANDLER_EQUALS_1(qGDBServerVersion);
   REGISTER_HANDLER_EQUALS_1(qGetPid);
@@ -1508,18 +1509,36 @@ void Session::Handle_qAttached(ProtocolInterpreter::Handler const &,
 void Session::Handle_qC(ProtocolInterpreter::Handler const &,
                         std::string const &) {
   ProcessThreadId ptid;
+  CompatibilityMode mode = _compatMode;
+  send("QC" + ptid.encode(mode));
+  return;
+  DS2LOG(Debug, "ptid: %d", ptid.pid);
   CHK_SEND(_delegate->onQueryCurrentThread(*this, ptid));
 
   //
   // LLDB compatibility mode sends only the process id.
   //
-  CompatibilityMode mode = _compatMode;
   if (mode == kCompatibilityModeLLDB) {
     mode = kCompatibilityModeGDB;
   }
 
   send("QC" + ptid.encode(mode));
 }
+/* void Session::Handle_qC(ProtocolInterpreter::Handler const &, */
+/*                         std::string const &) { */
+/*   ProcessThreadId ptid; */
+/*   CHK_SEND(_delegate->onQueryCurrentThread(*this, ptid)); */
+
+/*   // */
+/*   // LLDB compatibility mode sends only the process id. */
+/*   // */
+/*   CompatibilityMode mode = _compatMode; */
+/*   if (mode == kCompatibilityModeLLDB) { */
+/*     mode = kCompatibilityModeGDB; */
+/*   } */
+
+/*   send("QC" + ptid.encode(mode)); */
+/* } */
 
 //
 // Packet:        qCRC addr,length
@@ -1546,6 +1565,16 @@ void Session::Handle_qCRC(ProtocolInterpreter::Handler const &,
   std::ostringstream ss;
   ss << std::hex << std::setw(8) << std::setfill('0') << crc;
   send(ss.str());
+}
+
+//
+// Packet:        qEcho:%s
+// Description:   %s is any valid string. The response simply echos the packet.
+// Compatibility: LLDB
+//
+void Session::Handle_qEcho(ProtocolInterpreter::Handler const &,
+                           std::string const &args) {
+  send(args);
 }
 
 //
