@@ -1508,18 +1508,36 @@ void Session::Handle_qAttached(ProtocolInterpreter::Handler const &,
 void Session::Handle_qC(ProtocolInterpreter::Handler const &,
                         std::string const &) {
   ProcessThreadId ptid;
+  CompatibilityMode mode = _compatMode;
+  send("QC" + ptid.encode(mode));
+  return;
+  DS2LOG(Debug, "ptid: %d", ptid.pid);
   CHK_SEND(_delegate->onQueryCurrentThread(*this, ptid));
 
   //
   // LLDB compatibility mode sends only the process id.
   //
-  CompatibilityMode mode = _compatMode;
   if (mode == kCompatibilityModeLLDB) {
     mode = kCompatibilityModeGDB;
   }
 
   send("QC" + ptid.encode(mode));
 }
+/* void Session::Handle_qC(ProtocolInterpreter::Handler const &, */
+/*                         std::string const &) { */
+/*   ProcessThreadId ptid; */
+/*   CHK_SEND(_delegate->onQueryCurrentThread(*this, ptid)); */
+
+/*   // */
+/*   // LLDB compatibility mode sends only the process id. */
+/*   // */
+/*   CompatibilityMode mode = _compatMode; */
+/*   if (mode == kCompatibilityModeLLDB) { */
+/*     mode = kCompatibilityModeGDB; */
+/*   } */
+
+/*   send("QC" + ptid.encode(mode)); */
+/* } */
 
 //
 // Packet:        qCRC addr,length
