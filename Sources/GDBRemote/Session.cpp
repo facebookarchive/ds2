@@ -112,6 +112,7 @@ Session::Session(CompatibilityMode mode)
   REGISTER_HANDLER_EQUALS_1(qAttached);
   REGISTER_HANDLER_EQUALS_1(qC);
   REGISTER_HANDLER_EQUALS_1(qCRC);
+  REGISTER_HANDLER_EQUALS_1(qEcho);
   REGISTER_HANDLER_EQUALS_1(qFileLoadAddress);
   REGISTER_HANDLER_EQUALS_1(qGDBServerVersion);
   REGISTER_HANDLER_EQUALS_1(qGetPid);
@@ -1564,6 +1565,16 @@ void Session::Handle_qCRC(ProtocolInterpreter::Handler const &,
   std::ostringstream ss;
   ss << std::hex << std::setw(8) << std::setfill('0') << crc;
   send(ss.str());
+}
+
+//
+// Packet:        qEcho:%s
+// Description:   %s is any valid string. The response simply echos the packet.
+// Compatibility: LLDB
+//
+void Session::Handle_qEcho(ProtocolInterpreter::Handler const &,
+                           std::string const &args) {
+  send(args);
 }
 
 //

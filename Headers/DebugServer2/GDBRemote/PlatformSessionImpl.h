@@ -27,6 +27,9 @@ public:
   PlatformSessionImplBase();
 
 protected:
+  ErrorCode onQuerySupported(Session &session,
+                             Feature::Collection const &remoteFeatures,
+                             Feature::Collection &localFeatures) const override;
   ErrorCode onQueryProcessList(Session &session, ProcessInfoMatch const &match,
                                bool first, ProcessInfo &info) const override;
   ErrorCode onQueryProcessInfo(Session &session, ProcessId pid,
