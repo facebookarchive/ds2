@@ -79,6 +79,7 @@ ErrorCode DebugSessionImplBase::onQuerySupported(
   }
 
   // TODO PacketSize should be respected
+  localFeatures.push_back(std::string("qEcho+"));
   localFeatures.push_back(std::string("PacketSize=3fff"));
   localFeatures.push_back(std::string("QStartNoAckMode+"));
   localFeatures.push_back(std::string("qXfer:features:read+"));
