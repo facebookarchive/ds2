@@ -108,6 +108,8 @@ ErrorCode DummySessionDelegateImpl::onQueryHostInfo(Session &,
   info.pointerSize = Platform::GetPointerSize();
   info.hostName = Platform::GetHostName(/*fqdn=*/true);
 
+  info.defaultPacketTimeout = 25;
+
   return kSuccess;
 }
 
