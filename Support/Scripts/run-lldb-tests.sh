@@ -292,6 +292,11 @@ if [ "${LLDB_TESTS-all}" != "all" ]; then
   args+=(-p "$LLDB_TESTS")
 fi
 
+# The test infrastructure (ds2 on emulator tunneled via adb talkig to lldb in a
+# container) often causes hiccups and failures unrelated to ds2/lldb. We use
+# --rerun-all-issues assuming to attemmpt to limit these failures.
+args+=('--rerun-all-issues')
+
 args+=(${opt_dotest_extra_args})
 
 "${python_exe[@]}" dotest.py "${args[@]}"
