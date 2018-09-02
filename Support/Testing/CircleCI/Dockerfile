@@ -11,7 +11,7 @@
 # BEFORE PUSHING A NEW DOCKER IMAGE, PLEASE READ ALL OF THESE INSTRUCTIONS!
 #
 # To build a docker image using this file, run the following command:
-#     docker build -f Support/Testing/CircleCI/Dockerfile .
+#     docker build --file Support/Testing/CircleCI/Dockerfile .
 #
 # After building the image, you will see a line like this at the end of the
 # build process:
@@ -32,6 +32,9 @@
 # Publishing the image for use by CircleCI is done with:
 #     docker tag 360abf8e6246 sas42/ds2-build-env:<tag>
 #     docker push sas42/ds2-build-env:<tag>
+#
+# Alternatively, you can tag immediately after the build is finished via:
+#     docker build --file Support/Testing/CircleCI/Dockerfile --tag 2018-09-07_12-34-56
 
 FROM ubuntu:16.04
 MAINTAINER Stephane Sezer <sas@fb.com>
@@ -62,7 +65,7 @@ RUN python -m pip install --upgrade pip
 
 # Add LLVM apt repos
 RUN wget -O - "http://llvm.org/apt/llvm-snapshot.gpg.key" | apt-key add -
-RUN add-apt-repository -y "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main"
+RUN add-apt-repository -y "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main"
 RUN apt-get update
 
 # Install build dependencies
@@ -71,8 +74,9 @@ RUN apt-get install -y flex bison
 
 # Install x86 compilers
 RUN apt-get install -y g++-multilib
-RUN apt-get install -y clang-6.0
-RUN ln -s /usr/bin/clang-6.0 /usr/local/bin/clang
+RUN apt-get install -y clang-7
+RUN ln -s /usr/bin/clang-7 /usr/local/bin/clang
+RUN ln -s /usr/bin/clang++-7 /usr/local/bin/clang++
 
 # Install arm compilers
 RUN apt-get install -y g++-multilib-arm-linux-gnueabi
@@ -86,9 +90,9 @@ RUN update-alternatives --set x86_64-w64-mingw32-gcc /usr/bin/x86_64-w64-mingw32
 RUN update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
 
 # Install test dependencies
-RUN apt-get install -y git lldb-6.0 gdb clang-format-6.0 make dejagnu
-RUN ln -s /usr/bin/lldb-6.0 /usr/local/bin/lldb
-RUN ln -s /usr/bin/clang-format-6.0 /usr/local/bin/clang-format
+RUN apt-get install -y git lldb-7 python-lldb-7 gdb clang-format-7 make dejagnu
+RUN ln -s /usr/bin/lldb-7 /usr/local/bin/lldb
+RUN ln -s /usr/bin/clang-format-7 /usr/local/bin/clang-format
 
 # Install documentation dependencies
 RUN apt-get install -y doxygen graphviz

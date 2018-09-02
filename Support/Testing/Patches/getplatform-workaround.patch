@@ -1,8 +1,8 @@
 diff --git a/packages/Python/lldbsuite/test/lldbplatformutil.py b/packages/Python/lldbsuite/test/lldbplatformutil.py
-index f7da58b..dd1cec6 100644
+index 940b01e..f9d5e07 100644
 --- a/packages/Python/lldbsuite/test/lldbplatformutil.py
 +++ b/packages/Python/lldbsuite/test/lldbplatformutil.py
-@@ -127,6 +127,7 @@ def getDarwinOSTriples():
+@@ -129,6 +129,7 @@ def getDarwinOSTriples():
  
  def getPlatform():
      """Returns the target platform which the tests are running on."""
