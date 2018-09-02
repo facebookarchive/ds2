@@ -11,7 +11,7 @@
 
 docker_config: &docker_config
   docker:
-    - image: sas42/ds2-build-env:2018-09-06_18-42-00
+    - image: sas42/ds2-build-env:2018-09-07_17-08-00
 
 configure_step: &configure_step
   run:
@@ -71,12 +71,10 @@ jobs:
       - checkout
       - run:
           name: Apply clang-format
-          command: find Sources Headers -type f -exec clang-format-6.0 -i -style=file {} \;
+          command: find Sources Headers -type f -exec clang-format -i -style=file {} \;
       - *check_dirty_step
   Registers:
     <<: *docker_config
-    environment:
-      CLANG_FORMAT: clang-format-6.0
     steps:
       - checkout
       - run:
