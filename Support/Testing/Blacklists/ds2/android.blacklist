@@ -2,6 +2,16 @@ skip
 CreateAfterAttachTestCase.test_create_after_attach_with_popen
 CreateDuringStepTestCase.test_step_inst_with
 TestStopHook
+TestCrashDuringStep.CrashDuringStepTestCase.test_step_inst_with_dwarf
+lldbsuite.test.lldbtest.TestGModules.test_dwarf
+lldbsuite.test.lldbtest.TestSymbols.test_dwarf
+lldbsuite.test.lldbtest.TestLLVMStyle.test_dwarf
+lldbsuite.test.lldbtest.TestVirtualOverload.test_dwarf
+lldbsuite.test.lldbtest.TestNamespaceConflicts.test_dwarf
+lldbsuite.test.lldbtest.TestStats.test_dwarf
+lldbsuite.test.lldbtest.TestDataFormatterInvalidStdUniquePtr.test
+lldbsuite.test.lldbtest.TestSampleInlineTest.test_dwarf
+lldbsuite.test.lldbtest.TestScalarURem.test_dwarf
 
 xfail
 TestDataFormatterStdString.StdStringDataFormatterTestCase.test_with_run_command

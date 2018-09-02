@@ -44,7 +44,7 @@ get_android_compiler() {
 }
 
 REPO_BASE="https://github.com/llvm-mirror"
-UPSTREAM_BRANCH="release_60"
+UPSTREAM_BRANCH="release_70"
 
 top="$(git rev-parse --show-toplevel)"
 build_dir="$PWD"
@@ -133,7 +133,7 @@ if [[ "$(linux_distribution)" == "centos" ]] || $opt_build_lldb; then
   fi
 elif [ "$(linux_distribution)" == "ubuntu" ]; then
   lldb_path="$build_dir/lldb"
-  lldb_exe="$(get_program_path lldb-6.0)"
+  lldb_exe="$(get_program_path lldb-7)"
 
 
   python_base="$build_dir/lib"
@@ -147,8 +147,8 @@ elif [ "$(linux_distribution)" == "ubuntu" ]; then
 
     # Sync lldb libs to local build dir
     rsync -a /usr/lib/x86_64-linux-gnu/       "$python_base"
-    rsync -a /usr/lib/llvm-6.0/lib/python2.7/ "$python_base/python2.7"
-    rsync -a "$python_base/liblldb-6.0.so"    "$python_base/liblldb.so"
+    rsync -a /usr/lib/llvm-7/lib/python2.7/   "$python_base/python2.7"
+    rsync -a "$python_base/liblldb-7.so"      "$python_base/liblldb.so"
 
     # Fix broken python lldb symlinks
     cd "$PYTHONPATH/lldb"
@@ -186,8 +186,11 @@ fi
 if [ -n "${TARGET-}" ]; then
   if [[ "${TARGET}" == "Linux-X86_64" || "${TARGET}" == "Linux-X86_64-Clang" ]]; then
     args+=("--arch=x86_64")
-    if [[ "${PLATFORM-}" = "1" ]]; then
-      args+=("--excluded" "$blacklist_dir/ds2/llvm_60.blacklist")
+    if ! $opt_no_ds2_blacklists; then
+      args+=("--excluded" "$blacklist_dir/ds2/x86_64.blacklist")
+      if [[ "${PLATFORM-}" = "1" ]]; then
+        args+=("--excluded" "$blacklist_dir/ds2/x86_64-platform.blacklist")
+      fi
     fi
   elif [[ "${TARGET}" == "Linux-X86" || "${TARGET}" == "Linux-X86-Clang" || "${TARGET}" == "Android-X86" ]]; then
     args+=("--arch=i386")
@@ -198,9 +201,11 @@ if [ -n "${TARGET-}" ]; then
       args+=("--excluded" "$blacklist_dir/ds2/x86.blacklist")
     fi
     if [[ "${PLATFORM-}" = "1" ]]; then
-      args+=("--excluded" "$blacklist_dir/ds2/llvm_60.blacklist")
       if ! $opt_no_upstream_blacklists; then
         args+=("--excluded" "$blacklist_dir/upstream/x86-platform.blacklist")
+      fi
+      if ! $opt_no_ds2_blacklists; then
+        args+=("--excluded" "$blacklist_dir/ds2/x86-platform.blacklist")
       fi
     fi
   elif [[ "${TARGET}" == "Android-ARM" ]]; then
