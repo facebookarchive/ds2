@@ -8,8 +8,6 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "Session"
-
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
 #include "DebugServer2/GDBRemote/SessionDelegate.h"

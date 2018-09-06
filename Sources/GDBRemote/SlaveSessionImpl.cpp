@@ -8,8 +8,6 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "SlaveSession"
-
 #include "DebugServer2/GDBRemote/SlaveSessionImpl.h"
 
 namespace ds2 {

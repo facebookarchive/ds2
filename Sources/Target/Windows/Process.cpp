@@ -8,8 +8,6 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "Target::Process"
-
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/Windows/ExtraWrappers.h"

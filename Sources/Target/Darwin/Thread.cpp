@@ -9,8 +9,6 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "Target::Thread"
-
 #include "DebugServer2/Target/Darwin/Thread.h"
 #include "DebugServer2/Architecture/CPUState.h"
 #include "DebugServer2/Host/Darwin/PTrace.h"

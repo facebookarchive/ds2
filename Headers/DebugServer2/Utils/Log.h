@@ -50,14 +50,16 @@ void Log(int level, char const *classname, char const *funcname,
 
 #define PRI_PTR_CAST(VAL) ((uintptr_t)(VAL))
 
-#if defined(__DS2_LOG_CLASS_NAME__)
-#define DS2LOG(LVL, ...)                                                       \
-  ds2::Log(ds2::kLogLevel##LVL, __DS2_LOG_CLASS_NAME__, __FUNCTION__,          \
-           __VA_ARGS__)
+#if defined(COMPILER_MSVC)
+#define FUNCTION_NAME __FUNCTION__
+#elif defined(COMPILER_CLANG) || defined(COMPILER_GCC)
+#define FUNCTION_NAME __PRETTY_FUNCTION__
 #else
-#define DS2LOG(LVL, ...)                                                       \
-  ds2::Log(ds2::kLogLevel##LVL, nullptr, __FUNCTION__, __VA_ARGS__)
+#error "Compiler not supported."
 #endif
+
+#define DS2LOG(LVL, ...)                                                       \
+  ds2::Log(ds2::kLogLevel##LVL, nullptr, FUNCTION_NAME, __VA_ARGS__)
 
 #if !defined(NDEBUG)
 #define DS2ASSERT(COND)                                                        \

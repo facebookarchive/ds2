@@ -8,8 +8,6 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "Target::ProcessBase"
-
 #include "DebugServer2/Target/ProcessBase.h"
 #include "DebugServer2/Architecture/CPUState.h"
 #include "DebugServer2/Core/SoftwareBreakpointManager.h"

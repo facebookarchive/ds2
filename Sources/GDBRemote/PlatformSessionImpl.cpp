@@ -8,8 +8,6 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "PlatformSession"
-
 #include "DebugServer2/GDBRemote/PlatformSessionImpl.h"
 #include "DebugServer2/GDBRemote/Session.h"
 #include "DebugServer2/Host/Platform.h"

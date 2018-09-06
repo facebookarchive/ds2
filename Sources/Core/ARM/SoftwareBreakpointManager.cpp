@@ -8,8 +8,6 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "SoftwareBreakpointManager"
-
 #include "DebugServer2/Core/SoftwareBreakpointManager.h"
 #include "DebugServer2/Architecture/ARM/Branching.h"
 #include "DebugServer2/Target/Process.h"
