@@ -10,7 +10,7 @@
 ##
 
 if [ ! -e "/tmp/cmake.tar.gz" ] ; then
-  wget --continue --output-document="/tmp/cmake.tar.gz" "https://cmake.org/files/v3.12/cmake-3.12.1-Linux-x86_tar.gz"
+  wget --continue --output-document="/tmp/cmake.tar.gz" "https://cmake.org/files/v3.12/cmake-3.12.1-Linux-x86_64.tar.gz"
 fi
 
 tar --strip-components=1 -xf "/tmp/cmake.tar.gz" -C "/usr/local"
