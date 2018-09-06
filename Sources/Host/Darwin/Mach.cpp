@@ -8,8 +8,6 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "Mach"
-
 #include "DebugServer2/Host/Darwin/Mach.h"
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/Log.h"

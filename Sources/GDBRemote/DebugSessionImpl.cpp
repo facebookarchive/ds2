@@ -8,8 +8,6 @@
 // PATENTS file in the same directory.
 //
 
-#define __DS2_LOG_CLASS_NAME__ "DebugSession"
-
 #include "DebugServer2/GDBRemote/DebugSessionImpl.h"
 #include "DebugServer2/Core/HardwareBreakpointManager.h"
 #include "DebugServer2/Core/SoftwareBreakpointManager.h"
