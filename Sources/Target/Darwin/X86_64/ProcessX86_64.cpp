@@ -15,9 +15,6 @@
 #include <sys/mman.h>
 #include <sys/syscall.h>
 
-using ds2::Architecture::GDBDescriptor;
-using ds2::Architecture::LLDBDescriptor;
-
 namespace ds2 {
 namespace Target {
 namespace Darwin {
