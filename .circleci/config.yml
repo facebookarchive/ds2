@@ -11,7 +11,7 @@
 
 docker_config: &docker_config
   docker:
-    - image: sas42/ds2-build-env:2018-08-06_14-56-00
+    - image: sas42/ds2-build-env:2018-09-06_15-45-00
 
 configure_step: &configure_step
   run:
