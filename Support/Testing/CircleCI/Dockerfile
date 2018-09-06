@@ -40,6 +40,26 @@ MAINTAINER Stephane Sezer <sas@fb.com>
 RUN apt-get update
 RUN apt-get install -y software-properties-common python-software-properties wget
 
+# In case lldb needs built
+RUN apt-get install -y libz-dev swig ncurses-dev
+
+# Make the developer's life not suck
+RUN apt-add-repository -y ppa:neovim-ppa/stable
+RUN apt-get update -y
+RUN apt-get -y install sudo zsh tmux curl vim neovim
+
+# Debugging tools
+RUN apt-get install -y strace htop psmisc
+
+# Python 3.7 and misc
+RUN add-apt-repository -y ppa:deadsnakes/ppa
+RUN apt-get update -y
+RUN apt-get install -y python3.7
+RUN curl https://bootstrap.pypa.io/get-pip.py | python3.7
+RUN python3.7 -m pip install --upgrade pip
+RUN apt-get install -y python-pip
+RUN python -m pip install --upgrade pip
+
 # Add LLVM apt repos
 RUN wget -O - "http://llvm.org/apt/llvm-snapshot.gpg.key" | apt-key add -
 RUN add-apt-repository -y "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main"
@@ -52,6 +72,7 @@ RUN apt-get install -y flex bison
 # Install x86 compilers
 RUN apt-get install -y g++-multilib
 RUN apt-get install -y clang-6.0
+RUN ln -s /usr/bin/clang-6.0 /usr/local/bin/clang
 
 # Install arm compilers
 RUN apt-get install -y g++-multilib-arm-linux-gnueabi
@@ -66,6 +87,8 @@ RUN update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32
 
 # Install test dependencies
 RUN apt-get install -y git lldb-6.0 gdb clang-format-6.0 make dejagnu
+RUN ln -s /usr/bin/lldb-6.0 /usr/local/bin/lldb
+RUN ln -s /usr/bin/clang-format-6.0 /usr/local/bin/clang-format
 
 # Install documentation dependencies
 RUN apt-get install -y doxygen graphviz
@@ -78,6 +101,7 @@ COPY Support/Scripts/common.sh /tmp
 COPY Support/Scripts/prepare-android-ndk.py /tmp
 RUN apt-get install -y unzip
 RUN /tmp/prepare-android-ndk.py
+RUN ln -s /tmp/android-sdk-linux/platform-tools/adb /usr/local/bin/adb
 
 # Install a version of cmake that is at least the minimum version we support.
 COPY Support/Testing/CircleCI/install-cmake.sh /tmp
