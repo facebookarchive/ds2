@@ -16,14 +16,12 @@
 
 #include <cerrno>
 #include <csignal>
-// clang-format off
-#include <sys/types.h>
-#include <sys/ptrace.h>
+#include <sys/ptrace.h> // NOLINT
+#include <sys/types.h>  // NOLINT
 #include <sys/wait.h>
 #if defined(OS_LINUX)
 #include <asm/ptrace.h>
 #endif
-// clang-format on
 
 namespace ds2 {
 namespace Utils {

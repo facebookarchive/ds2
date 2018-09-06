@@ -13,7 +13,6 @@
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Core/BreakpointManager.h"
 #include "DebugServer2/Host/Darwin/LibProc.h"
-#include "DebugServer2/Host/Darwin/PTrace.h"
 #include "DebugServer2/Target/Darwin/Thread.h"
 #include "DebugServer2/Utils/Log.h"
 
@@ -27,7 +26,6 @@
 #include <sys/wait.h>
 
 using ds2::Host::Darwin::LibProc;
-using ds2::Host::Darwin::PTrace;
 
 #define super ds2::Target::Darwin::MachOProcess
 

@@ -12,14 +12,11 @@
 
 #include "DebugServer2/GDBRemote/SessionBase.h"
 #include "DebugServer2/GDBRemote/ProtocolHelpers.h"
-#include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Utils/HexValues.h"
 #include "DebugServer2/Utils/Log.h"
 
 #include <iomanip>
 #include <sstream>
-
-using ds2::Host::Platform;
 
 namespace ds2 {
 namespace GDBRemote {

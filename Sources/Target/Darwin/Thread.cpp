@@ -13,7 +13,6 @@
 
 #include "DebugServer2/Target/Darwin/Thread.h"
 #include "DebugServer2/Architecture/CPUState.h"
-#include "DebugServer2/Host/Darwin/LibProc.h"
 #include "DebugServer2/Host/Darwin/PTrace.h"
 #include "DebugServer2/Target/Process.h"
 #include "DebugServer2/Utils/Log.h"
@@ -29,8 +28,6 @@
 namespace ds2 {
 namespace Target {
 namespace Darwin {
-
-using Host::Darwin::LibProc;
 
 Thread::Thread(ds2::Target::Process *process, ThreadId tid)
     : super(process, tid), _lastSyscallNumber(-1) {}

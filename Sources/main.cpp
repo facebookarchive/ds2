@@ -34,7 +34,6 @@
 #include <unistd.h>
 #endif
 
-using ds2::BreakpointManager;
 using ds2::GDBRemote::DebugSessionImpl;
 using ds2::GDBRemote::PlatformSessionImpl;
 using ds2::GDBRemote::Session;
