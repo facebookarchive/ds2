@@ -16,7 +16,7 @@
   namespace TARGET {                                                           \
   class NAME;                                                                  \
   }                                                                            \
-  using TARGET::NAME;
+  using TARGET::NAME
 
 namespace ds2 {
 namespace Target {

@@ -49,4 +49,4 @@ operator!(Enum e) {
 #define ENABLE_BITMASK_OPERATORS(x)                                            \
   template <> struct EnableBitMaskOperators<x> {                               \
     static const bool enable = true;                                           \
-  };
+  }
