@@ -9,11 +9,8 @@
 ## PATENTS file in the same directory.
 ##
 
-cmake_version="3.10"
-cmake_package_name="cmake-${cmake_version}.0-Linux-x86_64"
-cmake_archive="${cmake_package_name}.tar.gz"
-if [ ! -e "${cmake_archive}" ] ; then
-  wget --continue --output-document="/tmp/${cmake_archive}" "https://cmake.org/files/v${cmake_version}/${cmake_archive}"
+if [ ! -e "/tmp/cmake.tar.gz" ] ; then
+  wget --continue --output-document="/tmp/cmake.tar.gz" "https://cmake.org/files/v3.12/cmake-3.12.1-Linux-x86_tar.gz"
 fi
 
-tar --strip-components=1 -xf "/tmp/${cmake_archive}" -C "/usr/local"
+tar --strip-components=1 -xf "/tmp/cmake.tar.gz" -C "/usr/local"
