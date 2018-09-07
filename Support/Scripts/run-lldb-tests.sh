@@ -25,11 +25,6 @@ cherry_pick_patches() {
     patch -d "$lldb_path" -p1 < "$testingPath/Patches/getplatform-workaround.patch"
   fi
 
-  if $opt_pudb; then
-    # This patch is to enable debugging the lldb test suite with PUDB
-    patch -d "$lldb_path" -p1 < "$testingPath/Patches/fix-test-suite-path.patch"
-  fi
-
   cd "$OLDPWD"
 }
 
