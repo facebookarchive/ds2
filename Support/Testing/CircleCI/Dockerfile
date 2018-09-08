@@ -59,6 +59,8 @@ RUN curl https://bootstrap.pypa.io/get-pip.py | python3.7
 RUN python3.7 -m pip install --upgrade pip
 RUN apt-get install -y python-pip
 RUN python -m pip install --upgrade pip
+RUN apt-get install -y python3-pip
+RUN python3 -m pip install --upgrade pip
 
 # Add LLVM apt repos
 RUN wget -O - "http://llvm.org/apt/llvm-snapshot.gpg.key" | apt-key add -
