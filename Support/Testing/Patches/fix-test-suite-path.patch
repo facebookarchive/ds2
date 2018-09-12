@@ -1,0 +1,13 @@
+diff --git a/test/use_lldb_suite.py b/test/use_lldb_suite.py
+index 6e24b9d..617af38 100644
+--- a/test/use_lldb_suite.py
++++ b/test/use_lldb_suite.py
+@@ -4,7 +4,7 @@ import sys
+
+
+ def find_lldb_root():
+-    lldb_root = os.path.dirname(inspect.getfile(inspect.currentframe()))
++    lldb_root = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+     while True:
+         lldb_root = os.path.dirname(lldb_root)
+         if lldb_root is None:
