@@ -519,8 +519,11 @@ static int VersionMain(int argc, char **argv) {
 }
 
 [[noreturn]] static void UsageDie(char const *argv0) {
-  static const std::vector<std::pair<std::string, bool>> modes = {
-      {"version", false}, {"gdbserver", true}, {"platform", true}};
+  std::vector<std::pair<std::string, bool>> modes = {{"version", false},
+                                                     {"gdbserver", true}};
+#if !defined(OS_WIN32)
+  modes.emplace_back("platform", true);
+#endif
 
   ::fprintf(stderr, "Usage:\n");
   for (auto const &mode : modes) {
