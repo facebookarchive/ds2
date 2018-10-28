@@ -6,7 +6,7 @@
 ## Source License found in the LICENSE file in the root directory of this
 ## source tree. An additional grant of patent rights can be found in the
 ## PATENTS file in the same directory.
-##
 
-# This is a dummy file used by the .appveyor CMake config. It's empty because
-# Windows doesn't need any additional settings, unlike WinStore.
+set(CMAKE_SYSTEM_NAME Windows)
+set(CMAKE_SYSTEM_VERSION 10.0)
+set(CMAKE_GENERATOR_PLATFORM x64)
