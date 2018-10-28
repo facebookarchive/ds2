@@ -305,6 +305,12 @@ set(DEBUGSERVER2_SOURCES
     ${CORE_SOURCES}
     )
 
+if (MSVC_IDE OR XCODE)
+  file(GLOB_RECURSE headers
+    Headers/DebugServer2/*.h)
+  set(DEBUGSERVER2_SOURCES ${DEBUGSERVER2_SOURCES} ${headers})
+endif()
+
 if (LIBRARY)
   add_library(ds2 SHARED ${DEBUGSERVER2_SOURCES})
 else ()
@@ -460,7 +466,7 @@ if ("${OS_NAME}" MATCHES "FreeBSD")
 endif ()
 
 if ("${OS_NAME}" MATCHES "Windows")
-  target_link_libraries(ds2  shlwapi ws2_32)
+  target_link_libraries(ds2 shlwapi ws2_32)
   if ("${CMAKE_SYSTEM_NAME}" MATCHES "WindowsStore")
     target_link_libraries(ds2 onecore)
   else ()
