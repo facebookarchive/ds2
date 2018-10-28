@@ -8,14 +8,6 @@
 ## PATENTS file in the same directory.
 ##
 
-# This is meant to be used on Windows, to generate Visual Studio project files.
-# We cannot specify the architure we are targetting (x86, arm, etc) here
-# because that needs to be specified in the generator instead.
-# For instance,
-#     cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-WinStore.cmake -G"Visual Studio 14 2015" ..
-# will build for WinStore x86, whereas
-#     cmake -DCMAKE_TOOLCHAIN_FILE=../Support/CMake/Toolchain-WinStore.cmake -G"Visual Studio 14 2015 ARM" ..
-# will build for WinStore ARM.
 set(CMAKE_SYSTEM_NAME WindowsStore)
 set(CMAKE_SYSTEM_VERSION 10.0)
 
