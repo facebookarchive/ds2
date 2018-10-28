@@ -482,3 +482,5 @@ if (STATIC AND DEFINED CMAKE_THREAD_LIBS_INIT AND
 else ()
   target_link_libraries(ds2 ${CMAKE_THREAD_LIBS_INIT})
 endif ()
+
+install(TARGETS ds2 DESTINATION bin)
