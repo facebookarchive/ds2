@@ -17,8 +17,8 @@
 #endif
 
 #if defined(OS_WIN32)
-#include <winsock2.h>
-#include <ws2tcpip.h>
+#include <WS2tcpip.h>
+#include <WinSock2.h>
 #define SOCK_ERRNO WSAGetLastError()
 #define SOCK_WOULDBLOCK WSAEWOULDBLOCK
 #define SOCK_NAMETOOLONG WSAENAMETOOLONG

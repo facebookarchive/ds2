@@ -12,7 +12,7 @@
 
 #if defined(_WIN32)
 // clang-format off
-#include <winsock2.h>
+#include <WinSock2.h>
 #include <windef.h>
 // clang-format on
 #if !defined(__MINGW32__)

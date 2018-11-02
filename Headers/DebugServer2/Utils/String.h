@@ -18,7 +18,7 @@
 #include <string>
 
 #if defined(OS_WIN32)
-#include <windows.h>
+#include <Windows.h>
 #endif
 
 #define STR_HELPER(S) #S

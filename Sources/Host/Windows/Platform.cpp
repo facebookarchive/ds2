@@ -15,13 +15,13 @@
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
 
+#include <Psapi.h>
+#include <Shlwapi.h>
+#include <WinSock2.h>
+#include <Windows.h>
 #include <cstdio>
 #include <lmcons.h>
-#include <psapi.h>
-#include <shlwapi.h>
 #include <vector>
-#include <windows.h>
-#include <winsock2.h>
 
 namespace ds2 {
 namespace Host {

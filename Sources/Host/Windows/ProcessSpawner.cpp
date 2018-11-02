@@ -14,7 +14,7 @@
 #include "DebugServer2/Utils/Log.h"
 #include "DebugServer2/Utils/String.h"
 
-#include <windows.h>
+#include <Windows.h>
 
 using ds2::Host::Platform;
 

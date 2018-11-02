@@ -18,7 +18,7 @@
 #include "DebugServer2/Utils/String.h"
 #include "DebugServer2/Utils/Stringify.h"
 
-#include <psapi.h>
+#include <Psapi.h>
 #include <vector>
 
 using ds2::Host::Platform;

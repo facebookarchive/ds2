@@ -14,7 +14,7 @@
 
 #include <memory>
 #if defined(OS_WIN32)
-#include <winsock2.h>
+#include <WinSock2.h>
 #elif defined(OS_POSIX)
 #include <sys/socket.h>
 #endif

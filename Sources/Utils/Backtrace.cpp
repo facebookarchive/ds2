@@ -16,7 +16,7 @@
 #include <dlfcn.h>
 #include <execinfo.h>
 #elif defined(OS_WIN32)
-#include <windows.h>
+#include <Windows.h>
 #endif
 
 namespace ds2 {
