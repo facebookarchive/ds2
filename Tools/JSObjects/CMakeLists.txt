@@ -50,6 +50,13 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
                                            -Wno-sign-compare)
   target_compile_options(
       jsobjects PRIVATE $<$<COMPILE_LANGUAGE:C>:-D_POSIX_C_SOURCE=200809L>)
+    target_compile_options(jsobjects PRIVATE -Wno-deprecated-declarations
+      -Wno-sign-conversion -Wno-unused-macros -Wno-shorten-64-to-32
+      -Wno-missing-noreturn -Wno-conversion -Wno-documentation
+      -Wno-missing-prototypes -Wno-conditional-uninitialized
+      -Wno-reserved-id-macro -Wno-unreachable-code
+      -Wno-array-bounds-pointer-arithmetic -Wno-strict-prototypes
+      -Wno-inconsistent-dllimport -Wno-unreachable-code-return)
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   target_compile_options(jsobjects PRIVATE /W3 /DSTRICT /wd4996)
   target_compile_options(jsobjects PRIVATE /MP)
