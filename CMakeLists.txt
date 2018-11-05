@@ -394,7 +394,8 @@ if (TIZEN)
 endif ()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
-    "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND
+    NOT "${CMAKE_CXX_SIMULATE_ID}" MATCHES "MSVC"))
   include(CheckCCompilerFlag)
   include(CheckCXXCompilerFlag)
 
