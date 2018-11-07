@@ -12,6 +12,7 @@ environment:
     - toolchain: "Windows-x86_64"
     - toolchain: "Windows-x86"
     - toolchain: "WinStore-x86"
+    - toolchain: "WinStore-x86_64"
     - toolchain: "WinStore-ARM"
 
 clone_folder: c:\projects\ds2
