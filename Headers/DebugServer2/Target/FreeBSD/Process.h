@@ -49,8 +49,8 @@ protected:
   ErrorCode updateInfo() override;
   ErrorCode updateAuxiliaryVector() override;
   ErrorCode enumerateAuxiliaryVector(
-      std::function<
-          void(Support::ELFSupport::AuxiliaryVectorEntry const &)> const &cb);
+      std::function<void(Support::ELFSupport::AuxiliaryVectorEntry const
+                             &)> const &cb) override;
 
 protected:
   friend class Thread;
