@@ -83,21 +83,14 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
 
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC"
-    AND "${CMAKE_GENERATOR}" MATCHES "Visual Studio")
-  # The generators of the form "Visual Studio 15 2017 Win64" are deprecated
-  # but still supported. Instead the target arch should be passed via
-  # `cmake -G "Visual Studio 15 2017" -A x64 ...`
-  # Support both variants below
-  if ("${CMAKE_GENERATOR}" MATCHES "ARM"
-      OR "${CMAKE_GENERATOR_PLATFORM}" MATCHES "ARM")
-    set(ARCH_NAME "ARM")
-  elseif ("${CMAKE_GENERATOR}" MATCHES "Win64"
-      OR "${CMAKE_GENERATOR_PLATFORM}" MATCHES "x64")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+  if ("${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" MATCHES "x64")
     set(ARCH_NAME "X86_64")
-  else ()
+  elseif ("${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" MATCHES "X86")
     set(ARCH_NAME "X86")
-  endif ()
+  elseif ("${CMAKE_CXX_COMPILER_ARCHITECTURE_ID}" MATCHES "ARM")
+    set(ARCH_NAME "ARM")
+  endif()
 endif ()
 
 set(ARCHITECTURE_COMMON_SOURCES
