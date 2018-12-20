@@ -115,7 +115,7 @@ ErrorCode Platform::TranslateKernError(kern_return_t kret) {
   case KERN_RESOURCE_SHORTAGE:
     return ds2::kErrorNoMemory;
   default:
-    DS2BUG("unknown error code: %d [%s]", kret, mach_error_string(kret));
+    DS2BUGV("unknown error code: %d [%s]", kret, mach_error_string(kret));
   }
 }
 

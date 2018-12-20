@@ -358,6 +358,7 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
     // intentional fall-through to kRedirectConsole
     case kRedirectUnset:
       _descriptors[n].mode = kRedirectConsole;
+      DS2_FALLTHROUGH;
     case kRedirectConsole:
       // do nothing
       break;
@@ -390,10 +391,10 @@ ErrorCode ProcessSpawner::run(std::function<bool()> preExecAction) {
 
     case kRedirectBuffer:
       _outputBuffer.clear();
-    // fall-through
+      DS2_FALLTHROUGH;
     case kRedirectDelegate:
       startRedirectThread = true;
-    // fall-through
+      DS2_FALLTHROUGH;
     case kRedirectTerminal:
       if (term[RD] == -1) {
         if (!open_terminal(term)) {

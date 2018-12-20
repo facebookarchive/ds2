@@ -160,7 +160,7 @@ ErrorCode Platform::TranslateError(int error) {
   case ENOENT:
     return ds2::kErrorNotFound;
   default:
-    DS2BUG("unknown error code: %d", error);
+    DS2BUGV("unknown error code: %d", error);
   }
 }
 

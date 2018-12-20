@@ -425,7 +425,8 @@ std::string Socket::address() const {
     return std::string();
   }
 
-  char addressStr[std::max(INET_ADDRSTRLEN, INET6_ADDRSTRLEN)];
+  char *addressStr =
+      static_cast<char *>(alloca(std::max(INET_ADDRSTRLEN, INET6_ADDRSTRLEN)));
   switch (ss.ss_family) {
   case AF_INET:
     inet_ntop(AF_INET,
@@ -438,7 +439,7 @@ std::string Socket::address() const {
               addressStr, sizeof(addressStr));
     break;
   default:
-    DS2BUG("unknown socket family: %u", (unsigned int)ss.ss_family);
+    DS2BUGV("unknown socket family: %u", (unsigned int)ss.ss_family);
   }
   return addressStr;
 }
@@ -457,7 +458,7 @@ std::string Socket::port() const {
     return ds2::Utils::ToString(
         ntohs(reinterpret_cast<struct sockaddr_in6 *>(&ss)->sin6_port));
   default:
-    DS2BUG("unknown socket family: %u", (unsigned int)ss.ss_family);
+    DS2BUGV("unknown socket family: %u", (unsigned int)ss.ss_family);
   }
 }
 } // namespace Host

@@ -405,7 +405,7 @@ std::string StopInfo::encode(CompatibilityMode mode, bool listThreads) const {
     break;
 
   default:
-    DS2BUG("impossible StopInfo event: %s", Stringify::StopEvent(event));
+    DS2BUGV("impossible StopInfo event: %s", Stringify::StopEvent(event));
   }
 
   //
@@ -651,8 +651,6 @@ std::string RegisterInfo::encode(int xmlSet) const {
   case kEncodingVector:
     encodingName = "vector";
     break;
-  default:
-    return std::string();
   }
 
   char const *formatName;
@@ -696,8 +694,6 @@ std::string RegisterInfo::encode(int xmlSet) const {
   case kFormatVectorFloat32:
     formatName = "vector-float32";
     break;
-  default:
-    return std::string();
   }
 
   std::vector<std::pair<std::string, std::string>> regInfo;

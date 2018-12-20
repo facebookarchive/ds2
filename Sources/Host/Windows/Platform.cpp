@@ -256,7 +256,7 @@ ErrorCode Platform::TranslateError(DWORD error) {
   case ERROR_PARTIAL_COPY:
     return ds2::kErrorNoSpace;
   default:
-    DS2BUG("unknown error code: %#lx", error);
+    DS2BUGV("unknown error code: %#lx", error);
   }
 }
 

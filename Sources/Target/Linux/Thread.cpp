@@ -126,8 +126,8 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
   } break;
 
   default:
-    DS2BUG("impossible StopInfo event: %s",
-           Stringify::StopEvent(_stopInfo.event));
+    DS2BUGV("impossible StopInfo event: %s",
+            Stringify::StopEvent(_stopInfo.event));
   }
 
   return kSuccess;

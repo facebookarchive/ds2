@@ -55,19 +55,19 @@ ErrorCode PTrace::kill(ProcessThreadId const &ptid, int signal) {
 ErrorCode PTrace::readString(ProcessThreadId const &ptid,
                              Address const &address, std::string &str,
                              size_t length, size_t *count) {
-  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
+  DS2BUGV("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 
 ErrorCode PTrace::readMemory(ProcessThreadId const &ptid,
                              Address const &address, void *buffer,
                              size_t length, size_t *count) {
-  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
+  DS2BUGV("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 
 ErrorCode PTrace::writeMemory(ProcessThreadId const &ptid,
                               Address const &address, void const *buffer,
                               size_t length, size_t *count) {
-  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
+  DS2BUGV("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 
 ErrorCode PTrace::suspend(ProcessThreadId const &ptid) {

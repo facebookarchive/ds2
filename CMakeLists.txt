@@ -418,6 +418,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR
   enable_warning(ds2 -Wall)
   enable_warning(ds2 -Wextra)
   enable_warning(ds2 -Werror)
+  enable_warning(ds2 -Wpedantic)
 
   # Disable `-Wunused-parameter` to help with callbacks and delegates.
   enable_warning(ds2 -Wno-unused-parameter)

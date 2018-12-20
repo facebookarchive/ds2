@@ -67,8 +67,8 @@ ErrorCode Thread::resume(int signal, Address const &address) {
   switch (_state) {
   case kInvalid:
   case kRunning:
-    DS2BUG("trying to suspend tid %" PRI_PID " in state %s", tid(),
-           Stringify::ThreadState(_state));
+    DS2BUGV("trying to suspend tid %" PRI_PID " in state %s", tid(),
+            Stringify::ThreadState(_state));
     break;
 
   case kTerminated:
@@ -281,7 +281,7 @@ void Thread::updateState(DEBUG_EVENT const &de) {
   } break;
 
   default:
-    DS2BUG("unknown debug event code: %lu", de.dwDebugEventCode);
+    DS2BUGV("unknown debug event code: %lu", de.dwDebugEventCode);
   }
 }
 } // namespace Windows

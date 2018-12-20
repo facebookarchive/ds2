@@ -160,7 +160,7 @@ ErrorCode PTrace::readBytes(ProcessThreadId const &ptid, Address const &address,
 ErrorCode PTrace::readString(ProcessThreadId const &ptid,
                              Address const &address, std::string &str,
                              size_t length, size_t *count) {
-  char buffer[length];
+  char *buffer = static_cast<char *>(alloca(length));
   ErrorCode err = readBytes(ptid, address, buffer, length, count, true);
   if (err != kSuccess)
     return err;

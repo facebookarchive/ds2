@@ -79,14 +79,23 @@ void Log(int level, char const *classname, char const *funcname,
 #endif
 
 #if defined(COMPILER_CLANG) || defined(COMPILER_GCC)
-#define DS2BUG(MESSAGE, ...)                                                   \
+#define DS2BUG(MESSAGE)                                                        \
   do {                                                                         \
-    DS2LOG(Fatal, "bug at %s:%d: " MESSAGE, __FILE__, __LINE__,                \
-           ##__VA_ARGS__);                                                     \
+    DS2LOG(Fatal, "bug at %s:%d: " MESSAGE, __FILE__, __LINE__);               \
+    DS2_UNREACHABLE();                                                         \
+  } while (0)
+#define DS2BUGV(MESSAGE, ...)                                                  \
+  do {                                                                         \
+    DS2LOG(Fatal, "bug at %s:%d: " MESSAGE, __FILE__, __LINE__, __VA_ARGS__);  \
     DS2_UNREACHABLE();                                                         \
   } while (0)
 #elif defined(COMPILER_MSVC)
-#define DS2BUG(MESSAGE, ...)                                                   \
+#define DS2BUG(MESSAGE)                                                        \
+  do {                                                                         \
+    DS2LOG(Fatal, "bug at %s:%d: " MESSAGE, __FILE__, __LINE__);               \
+    DS2_UNREACHABLE();                                                         \
+  } while (0)
+#define DS2BUGV(MESSAGE, ...)                                                  \
   do {                                                                         \
     DS2LOG(Fatal, "bug at %s:%d: " MESSAGE, __FILE__, __LINE__, __VA_ARGS__);  \
     DS2_UNREACHABLE();                                                         \

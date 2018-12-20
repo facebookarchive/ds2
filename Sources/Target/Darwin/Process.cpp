@@ -289,7 +289,7 @@ ErrorCode Process::readString(Address const &address, std::string &str,
   if (_currentThread == nullptr)
     return kErrorProcessNotFound;
 
-  char buf[length];
+  char *buf = static_cast<char *>(alloca(length));
   ErrorCode err;
 
   err = mach().readMemory(_currentThread->tid(), address, buf, length, count);

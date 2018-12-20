@@ -206,9 +206,6 @@ ErrorCode DebugSessionImplBase::queryStopInfo(Session &session, Thread *thread,
   case StopInfo::kEventKill:
     DS2ASSERT(stop.reason == StopInfo::kReasonNone);
     break;
-
-  default:
-    DS2BUG("impossible StopInfo event: %s", Stringify::StopEvent(stop.event));
   }
 
   _process->enumerateThreads(

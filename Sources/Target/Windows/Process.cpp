@@ -270,8 +270,8 @@ ErrorCode Process::wait() {
     }
 
     default:
-      DS2BUG("unknown debug event code: %s",
-             Stringify::DebugEvent(de.dwDebugEventCode));
+      DS2BUGV("unknown debug event code: %s",
+              Stringify::DebugEvent(de.dwDebugEventCode));
     }
   }
 }

@@ -26,13 +26,13 @@ namespace Darwin {
 ErrorCode PTrace::readCPUState(ProcessThreadId const &ptid,
                                ProcessInfo const &pinfo,
                                Architecture::CPUState &state) {
-  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
+  DS2BUGV("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 
 ErrorCode PTrace::writeCPUState(ProcessThreadId const &ptid,
                                 ProcessInfo const &pinfo,
                                 Architecture::CPUState const &state) {
-  DS2BUG("impossible to use ptrace to %s on Darwin", __FUNCTION__);
+  DS2BUGV("impossible to use ptrace to %s on Darwin", __FUNCTION__);
 }
 } // namespace Darwin
 } // namespace Host

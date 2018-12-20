@@ -19,17 +19,17 @@ namespace ds2 {
 
 int HardwareBreakpointManager::hit(Target::Thread *thread, Site &site) {
   return -1;
-};
+}
 
 ErrorCode HardwareBreakpointManager::enableLocation(Site const &site, int idx,
                                                     Target::Thread *thread) {
   return kErrorUnsupported;
-};
+}
 
 ErrorCode HardwareBreakpointManager::disableLocation(int idx,
                                                      Target::Thread *thread) {
   return kErrorUnsupported;
-};
+}
 
 size_t HardwareBreakpointManager::maxWatchpoints() {
   return _process->getMaxWatchpoints();

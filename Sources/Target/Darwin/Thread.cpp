@@ -57,7 +57,7 @@ ErrorCode Thread::updateStopInfo(int waitStatus) {
 
   switch (_stopInfo.event) {
   case StopInfo::kEventNone:
-    DS2BUG("thread stopped for unknown reason, status=%#x", waitStatus);
+    DS2BUGV("thread stopped for unknown reason, status=%#x", waitStatus);
 
   case StopInfo::kEventExit:
   case StopInfo::kEventKill:

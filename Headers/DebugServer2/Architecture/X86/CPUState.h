@@ -9,6 +9,8 @@
 //
 
 #pragma once
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 
 #if !defined(CPUSTATE_H_INTERNAL)
 #error "You shall not include this file directly."
@@ -408,6 +410,7 @@ public:
 };
 
 #pragma pack(pop)
+#pragma GCC diagnostic pop
 } // namespace X86
 } // namespace Architecture
 } // namespace ds2

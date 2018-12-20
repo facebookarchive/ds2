@@ -12,6 +12,9 @@
 #include "DebugServer2/Utils/Stringify.h"
 #include "DebugServer2/Utils/Log.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcovered-switch-default"
+
 namespace ds2 {
 namespace Utils {
 
@@ -91,5 +94,6 @@ char const *Stringify::StopReason(StopInfo::Reason reason) {
     DO_DEFAULT("unknown StopInfo reason", reason)
   }
 }
+#pragma GCC diagnostic pop
 } // namespace Utils
 } // namespace ds2
