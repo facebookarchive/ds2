@@ -38,7 +38,7 @@ def run_clang_tidy(ignores: [str], file: str) -> Optional[subprocess.CompletedPr
 
 def get_parent_ccdb_from(path: str) -> Optional[str]:
     current_directory = path
-    while current_directory is not "/":
+    while current_directory != "/":
         if os.path.exists(os.path.join(current_directory, "compile_commands.json")):
             return os.path.join(current_directory, "compile_commands.json")
         else:
