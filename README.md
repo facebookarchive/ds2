@@ -174,12 +174,9 @@ See the `CONTRIBUTING.md` file for how to help out.
 
 ## License
 
-ds2 is licensed under the University of Illinois/NCSA Open Source License.
-
-We also provide an additional patent grant which can be found in the `PATENTS`
-file in the root directory of this source tree.
+ds2 is licensed under the Apache License v2.0 with LLVM Exceptions.
 
 regsgen2, a tool used to generate register definitions is also licensed under
-the University of Illinois/NCSA Open Source License and uses a json library
+the Apache License v2.0 with LLVM Exceptions and uses a json library
 licensed under the Boost Software License. A complete copy of the latter can be
 found in `Tools/libjson/LICENSE_1_0.txt`.
