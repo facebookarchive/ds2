@@ -42,4 +42,4 @@ most cases, just running `clang-format` on your code should be enough.
 ## License
 
 By contributing to ds2, you agree that your contributions will be licensed
-under its University of Illinois/NCSA Open Source License.
+under the Apache License v2.0 with LLVM Exceptions.
