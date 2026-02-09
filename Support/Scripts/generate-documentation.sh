@@ -1,13 +1,9 @@
 #!/usr/bin/env bash
+## Copyright (c) Meta Platforms, Inc. and affiliates.
 ##
-## Copyright (c) 2014-present, Facebook, Inc.
-## All rights reserved.
-##
-## This source code is licensed under the University of Illinois/NCSA Open
-## Source License found in the LICENSE file in the root directory of this
-## source tree. An additional grant of patent rights can be found in the
-## PATENTS file in the same directory.
-##
+## This source code is licensed under the Apache License v2.0 with LLVM
+## Exceptions found in the LICENSE file in the root directory of this
+## source tree.
 
 # This is used to automatically generate documentation for the project and is
 # inspired by https://gist.github.com/domenic/ec8b0fc8ab45f39403dd

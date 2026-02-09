@@ -1,12 +1,8 @@
-//
 // Copyright (c) 2015, Jakub Klama <jakub@ixsystems.com>
-// All rights reserved.
 //
-// This source code is licensed under the University of Illinois/NCSA Open
-// Source License found in the LICENSE file in the root directory of this
-// source tree. An additional grant of patent rights can be found in the
-// PATENTS file in the same directory.
-//
+// This source code is licensed under the Apache License v2.0 with LLVM
+// Exceptions found in the LICENSE file in the root directory of this
+// source tree.
 
 #include "DebugServer2/Host/Platform.h"
 #include "DebugServer2/Host/FreeBSD/ProcStat.h"
